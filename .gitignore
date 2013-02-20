@@ -1,0 +1,7 @@
+*.pyc
+
+# PyCharm user-specific files
+#######################
+
+.idea/workspace.xml
+.idea/tasks.xml
