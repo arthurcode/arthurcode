@@ -1,3 +1,82 @@
 from django.db import models
+from django.contrib.auth.models import User
+from django.core.exceptions import ValidationError
+from utils import is_blank
+from validators import not_blank
 
-# Create your models here.
+
+class AuthorProfile(models.Model):
+    """
+    Each registered User may have zero or more author profiles.  An author profile defines a pen name that will be used
+    to sign blog posts.  An author's pen name must be be unique.
+    """
+    ERROR_CREATE_NO_EMAIL = "The associated user's e-mail address cannot be blank."
+    ERROR_CREATE_NO_FIRST_LAST_NAME = "Could not generate a default pen name because the user's first-name and/or \
+                                   last-name is blank.  Please either specify the author's pen name or specify the \
+                                   user's first and last name."
+
+    user = models.ForeignKey(User)
+
+    pen_name = models.CharField(max_length=100,
+                                help_text="The name under which you will author blog postings.  If left blank it \
+                                           will default to 'first-name last-name'.",
+                                null=False,
+                                blank=True,
+                                unique=True)
+
+    def clean(self, *args, **kwargs):
+        self._validate_email()
+        self._validate_pen_name()
+
+    def _validate_email(self):
+        # The user field, even though it's required, can still be undefined at the point this code is executed.  Check
+        # for a user_id == None; checking for user == None doesn't seem to work properly. No doubt it has something to
+        # do with django not being able to build the model instance
+        if self.user_id and is_blank(self.user.email):
+            raise ValidationError(AuthorProfile.ERROR_CREATE_NO_EMAIL)
+
+    def _validate_pen_name(self):
+        """
+         If the pen_name is blank a default of '<first-name> <last-name>' will be used.  If the user's first-name
+         and/or last-name are blank a ValidationError will be raised.
+        """
+        if not is_blank(self.pen_name):
+            return
+        if is_blank(self.user.first_name) or is_blank(self.user.last_name):
+            raise ValidationError(AuthorProfile.ERROR_CREATE_NO_FIRST_LAST_NAME)
+        self.pen_name = "%s %s" % (self.user.first_name, self.user.last_name)
+
+    def __unicode__(self):
+        return self.pen_name
+
+
+class Post(models.Model):
+    TITLE_MAX_LENGTH = 200
+
+    author = models.ForeignKey(AuthorProfile)
+
+    title = models.CharField(max_length=TITLE_MAX_LENGTH,
+                             validators=[not_blank])
+
+    title_slug = models.SlugField(max_length=TITLE_MAX_LENGTH,
+                                  unique_for_date="pub_date",
+                                  verbose_name="title for URLs",
+                                  validators=[not_blank])
+
+    pub_date = models.DateField(auto_now_add=True,
+                                null=False,
+                                verbose_name="publication date")
+
+    mod_date = models.DateField(auto_now=True, verbose_name="last-modified date")
+    body = models.TextField(help_text="The text of this blog post",
+                            validators=[not_blank])
+
+    def get_author_name(self):
+        return self.author.pen_name
+
+    def get_author_email(self):
+        return self.author.user.email
+
+    def __unicode__(self):
+        return self.title
+
