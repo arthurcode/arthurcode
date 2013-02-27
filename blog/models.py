@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from utils import is_blank
 from validators import not_blank
 
@@ -81,6 +82,16 @@ class Post(models.Model):
 
     def get_author_email(self):
         return self.author.user.email
+
+    def get_url(self):
+        params = {
+            'year': self.pub_date.year,
+            'month': self.pub_date.month,
+            'day': self.pub_date.day,
+            'slug': self.title_slug
+        }
+        return reverse("post_detail", kwargs=params)
+
 
     def __unicode__(self):
         return self.title

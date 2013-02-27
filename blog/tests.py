@@ -129,6 +129,18 @@ class PostTest(TestCase):
             self.create_post(title="new title", title_slug=slug, author=self.author, body="body")
         self.assertIn("title_slug", str(cm.exception))
 
+    def test_get_url(self):
+        title = "Why I Love Yoga Pants"
+        title_slug = "why-i-love-yoga-pants"
+        body = "some meaningless text"
+        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
+        url = post.get_url()
+
+        # check that the url is sane
+        c = Client()
+        response = c.get(url)
+        self.assertEqual(200, response.status_code)
+
     def create_post(self, *args, **kwargs):
         post = Post(*args, **kwargs)
         post.full_clean()
