@@ -222,6 +222,19 @@ class GenericArchiveViewTests(TestCase):
         self.assert_post_not_in_archive(off_by_one_year, post, level='month')
         self.assert_post_not_in_archive(off_by_one_year, post, level='year')
 
+    def test_post_detail_view(self):
+        post_date = datetime.date.today()
+        post = self.create_post(post_date)
+        response = self.c.get(post.get_url())
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, "blog/post_detail.html")
+        self.assertContains(response, post.title)
+        self.assertContains(response, post.get_author_name())
+
+        bogus_url = post.get_url().rstrip("/") + "garbage/"
+        response = self.c.get(bogus_url)
+        self.assertEqual(404, response.status_code)
+
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
