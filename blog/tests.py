@@ -3,6 +3,8 @@ from django.contrib.auth.models import User
 from blog.models import AuthorProfile, Post
 from django.core.exceptions import ValidationError
 from blog import validators
+from django.test.client import Client
+import datetime
 
 # -----------------------------
 # MODEL TESTS
@@ -127,9 +129,51 @@ class PostTest(TestCase):
             self.create_post(title="new title", title_slug=slug, author=self.author, body="body")
         self.assertIn("title_slug", str(cm.exception))
 
-
     def create_post(self, *args, **kwargs):
         post = Post(*args, **kwargs)
         post.full_clean()
         post.save()
+        return post
+
+
+#-----------------------------
+# VIEW TESTS
+#-----------------------------
+
+class GenericArchiveViewTests(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+        self.n = 1
+        self.user = User(username="arthur", password="whocares", email="me@example.com")
+        self.user.full_clean()
+        self.user.save()
+        self.author = AuthorProfile(user=self.user, pen_name="Captain Yoga Pants")
+        self.author.full_clean()
+        self.author.save()
+
+    def test_archive_templates_used(self):
+        today = datetime.date.today()
+        self.create_post(today)
+
+        response = self.c.get('/blog/archive/')
+        self.assertTemplateUsed(response, "blog/post_archive.html")
+
+        response = self.c.get('/blog/%s/' % today.year)
+        self.assertTemplateUsed(response, "blog/post_archive_year.html")
+
+        response = self.c.get('/blog/%s/%s/' % (today.year, today.month))
+        self.assertTemplateUsed(response, "blog/post_archive_month.html")
+
+        response = self.c.get('/blog/%s/%s/%s/' % (today.year, today.month, today.day))
+        self.assertTemplateUsed(response, "blog/post_archive_day.html")
+
+    def create_post(self, date):
+        title = "title %d" % self.n
+        slug = "title_slug_%d" % self.n
+        body = "some text"
+        post = Post(pub_date=date, body=body, title=title, title_slug=slug, author=self.author)
+        post.full_clean()
+        post.save()
+        self.n += 1
         return post
