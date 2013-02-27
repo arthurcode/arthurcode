@@ -168,12 +168,67 @@ class GenericArchiveViewTests(TestCase):
         response = self.c.get(self.get_archive_url(today, 'day'))
         self.assertTemplateUsed(response, "blog/post_archive_day.html")
 
+    def test_empty_views_allowed(self):
+        # we don't want archive views with no posts to throw 404
+        posts = Post.objects.all()
+        self.assertEqual(0, len(posts))
+        today = datetime.date.today()
+
+        response = self.c.get(self.get_archive_url(today))
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "No posts in the archive", 1)
+
+        response = self.c.get(self.get_archive_url(today, 'year'))
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "No posts for year %s" % today.year, 1)
+
+        response = self.c.get(self.get_archive_url(today, 'month'))
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "No posts for", 1)
+
+        response = self.c.get(self.get_archive_url(today, 'day'))
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "No posts for", 1)
+
+    def test_archive_non_empty_views(self):
+        post_date = datetime.date(2012, 8, 22)
+        off_by_one_day = datetime.date(2012, 8, 23)
+        off_by_one_month = datetime.date(2012, 7, 22)
+        off_by_one_year = datetime.date(2011, 8, 22)
+
+        post = self.create_post(post_date)
+
+        self.assert_post_in_archive(post_date, post, level='day')
+        self.assert_post_in_archive(post_date, post, level='month')
+        self.assert_post_in_archive(post_date, post, level='year')
+        self.assert_post_in_archive(post_date, post, level='all')
+
+        self.assert_post_not_in_archive(off_by_one_day, post, level='day')
+        self.assert_post_not_in_archive(off_by_one_month, post, level='day')
+        self.assert_post_not_in_archive(off_by_one_month, post, level='month')
+        self.assert_post_not_in_archive(off_by_one_year, post, level='day')
+        self.assert_post_not_in_archive(off_by_one_year, post, level='month')
+        self.assert_post_not_in_archive(off_by_one_year, post, level='year')
+
+    def assert_post_in_archive(self, date, post, level='all'):
+        url = self.get_archive_url(date, level)
+        response = self.c.get(url)
+        self.assertContains(response, post.title)
+
+    def assert_post_not_in_archive(self, date, post, level='all'):
+        url = self.get_archive_url(date, level)
+        response = self.c.get(url)
+        self.assertNotContains(response, post.title)
+
     def create_post(self, date):
         title = "title %d" % self.n
         slug = "title_slug_%d" % self.n
         body = "some text"
-        post = Post(pub_date=date, body=body, title=title, title_slug=slug, author=self.author)
+        post = Post(body=body, title=title, title_slug=slug, author=self.author)
         post.full_clean()
+        post.save()
+        # hack to bypass the auto_now_add=True behaviour of pub_date
+        post.pub_date = date
         post.save()
         self.n += 1
         return post
