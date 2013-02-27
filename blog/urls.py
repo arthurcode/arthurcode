@@ -1,14 +1,12 @@
 __author__ = 'rhyanarthur'
 
 from django.conf.urls import patterns, url
-from django.views.generic.dates import ArchiveIndexView
-from blog.models import Post
-from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView
+from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView
 
 
 urlpatterns = patterns('',
                        url(r'^archive/$',
-                           ArchiveIndexView.as_view(model=Post, date_field="pub_date"),
+                           BlogArchiveView.as_view(),
                            name="archive"),
 
                        url(r'^(?P<year>\d{4})/$',
