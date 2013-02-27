@@ -1,3 +1,23 @@
 {% extends "blog/base_blog.html" %}
 
-{% block content %} CONTENT HERE {% endblock %}
+{% block content %}
+    {% if object_list %}
+        <h1>All Posts for {{ month|date:"F Y" }}</h1>
+        <ul>
+            {% for post in object_list %}
+                <li>{{ post.pub_date|date:"F j, Y" }}: {{ post.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No posts for {{ month|date:"F Y" }}</h1>
+    {% endif %}
+
+    <p>
+        {% if previous_month %}
+            Previous Month: {{ previous_month|date:"F Y" }}
+        {% endif %}
+        {% if next_month %}
+            Next Month: {{ next_month|date:"F Y" }}
+        {% endif %}
+    </p>
+{% endblock %}
