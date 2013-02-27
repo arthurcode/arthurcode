@@ -114,6 +114,20 @@ class PostTest(TestCase):
                 self.create_post(title="whatever", title_slug="whatever", author=self.author, body=blank)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
+    def test_duplicate_titles_allowed(self):
+        title = "Hello, I am a title."
+        # as long as the slugs are different this should be allowed
+        self.create_post(title=title, title_slug="slug1", author=self.author, body="body")
+        self.create_post(title=title, title_slug="slug2", author=self.author, body="body")
+
+    def test_duplicate_slugs_not_allowed(self):
+        slug = "slug"
+        self.create_post(title="title", title_slug=slug, author=self.author, body="body")
+        with self.assertRaises(ValidationError) as cm:
+            self.create_post(title="new title", title_slug=slug, author=self.author, body="body")
+        self.assertIn("title_slug", str(cm.exception))
+
+
     def create_post(self, *args, **kwargs):
         post = Post(*args, **kwargs)
         post.full_clean()

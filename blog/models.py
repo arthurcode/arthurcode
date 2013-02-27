@@ -58,8 +58,13 @@ class Post(models.Model):
     title = models.CharField(max_length=TITLE_MAX_LENGTH,
                              validators=[not_blank])
 
+    # I originally wanted to use 'unique_for_date' to enforce that the title slug need only be unique for the
+    # publication date.  However, since this field is not edited on the admin form the dual-field uniqueness constraint
+    # was not being run by django when a post was added through the admin interface.  This type of constraint isn't
+    # enforced by the database, so the effect was that this condition was being effectively ignored.  This is
+    # django bug 13091.  Switch to using unique=True.
     title_slug = models.SlugField(max_length=TITLE_MAX_LENGTH,
-                                  unique_for_date="pub_date",
+                                  unique=True,
                                   verbose_name="title for URLs",
                                   validators=[not_blank])
 
