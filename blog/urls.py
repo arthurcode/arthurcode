@@ -1,7 +1,7 @@
 __author__ = 'rhyanarthur'
 
 from django.conf.urls import patterns, url
-from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView
+from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, BlogPostDetailView
 
 
 urlpatterns = patterns('',
@@ -19,5 +19,9 @@ urlpatterns = patterns('',
 
                        url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/$',
                            BlogDayArchiveView.as_view(),
-                           name="day_archive")
+                           name="day_archive"),
+
+                       url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)',
+                           BlogPostDetailView.as_view(),
+                           name="post_detail"),
 )

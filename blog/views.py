@@ -1,5 +1,5 @@
 from blog.models import Post
-from django.views.generic.dates import YearArchiveView, MonthArchiveView, DayArchiveView, ArchiveIndexView
+from django.views.generic.dates import YearArchiveView, MonthArchiveView, DayArchiveView, ArchiveIndexView, DateDetailView
 
 
 class BlogArchiveBaseView():
@@ -27,4 +27,9 @@ class BlogMonthArchiveView(BlogArchiveBaseView, MonthArchiveView):
 
 class BlogDayArchiveView(BlogArchiveBaseView, DayArchiveView):
     pass
+
+class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
+    allow_empty = False
+    slug_field = 'title_slug'
+    context_object_name = 'post'
 
