@@ -1,3 +1,13 @@
 {% extends "blog/base_blog.html" %}
 
-{% block content %} CONTENT HERE {% endblock %}
+{% comment %}
+Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-date-based/
+{% endcomment %}
+
+{% block content %}
+    <ul>
+        {% for post in latest %}
+            <li>{{ post.pub_date }}: {{ post.title }}</li>
+        {% endfor %}
+    </ul>
+{% endblock %}
