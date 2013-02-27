@@ -21,7 +21,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('author', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.AuthorProfile'])),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('title_slug', self.gf('django.db.models.fields.SlugField')(max_length=200)),
+            ('title_slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=200)),
             ('pub_date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('mod_date', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
             ('body', self.gf('django.db.models.fields.TextField')()),
@@ -81,7 +81,7 @@ class Migration(SchemaMigration):
             'mod_date': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
             'pub_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'title_slug': ('django.db.models.fields.SlugField', [], {'max_length': '200'})
+            'title_slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '200'})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
