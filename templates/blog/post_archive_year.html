@@ -5,7 +5,7 @@
         <h1>All Posts for {{ year }}</h1>
         <ul>
             {% for post in object_list %}
-                <li>{{ post.title }} - {{ post.pub_date|date:"F j, Y" }}</li>
+                <li><a href="{{ post.get_url }}">{{ post.title }} - {{ post.pub_date|date:"F j, Y" }}</a></li>
             {% endfor %}
         </ul>
     {% else %}

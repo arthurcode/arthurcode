@@ -8,7 +8,7 @@ Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-d
     {% if latest %}
         <ul>
             {% for post in latest %}
-                <li>{{ post.pub_date }}: {{ post.title }}</li>
+                <li><a href="{{ post.get_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
             {% endfor %}
         </ul>
     {% else %}
