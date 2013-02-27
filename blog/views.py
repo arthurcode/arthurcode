@@ -10,6 +10,7 @@ class BlogArchiveBaseView():
     queryset = Post.objects.all()
     allow_empty = True
     make_object_list = True
+    month_format = '%m'
 
 
 class BlogArchiveView(BlogArchiveBaseView, ArchiveIndexView):

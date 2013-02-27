@@ -14,10 +14,10 @@ urlpatterns = patterns('',
                            name="year_archive"),
 
                        url(r'^(?P<year>\d{4})/(?P<month>\d+)/$',
-                           BlogMonthArchiveView.as_view(month_format='%m'),
+                           BlogMonthArchiveView.as_view(),
                            name="month_archive"),
 
                        url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/$',
-                           BlogDayArchiveView.as_view(month_format='%m'),
+                           BlogDayArchiveView.as_view(),
                            name="day_archive")
 )
