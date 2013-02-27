@@ -1,3 +1,24 @@
 {% extends "blog/base_blog.html" %}
 
-{% block content %} CONTENT HERE {% endblock %}
+{% block content %}
+
+    {% if object_list %}
+        <h1>Posts for {{ day|date:"F j, Y" }}</h1>
+        <ul>
+            {% for post in object_list %}
+                <li>{{ post.title }}</li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <h1>No posts for {{ day|date:"F j, Y" }}</h1>
+    {% endif %}
+
+    <p>
+        {% if previous_day %}
+            Previous Day: {{ previous_day|date:"F j, Y" }}
+        {% endif %}
+        {% if next_day %}
+            Next Day: {{ next_day|date:"F j, Y" }}
+        {% endif %}
+    </p>
+{% endblock %}
