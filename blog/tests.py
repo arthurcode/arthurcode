@@ -156,16 +156,16 @@ class GenericArchiveViewTests(TestCase):
         today = datetime.date.today()
         self.create_post(today)
 
-        response = self.c.get('/blog/archive/')
+        response = self.c.get(self.get_archive_url(today))
         self.assertTemplateUsed(response, "blog/post_archive.html")
 
-        response = self.c.get('/blog/%s/' % today.year)
+        response = self.c.get(self.get_archive_url(today, 'year'))
         self.assertTemplateUsed(response, "blog/post_archive_year.html")
 
-        response = self.c.get('/blog/%s/%s/' % (today.year, today.month))
+        response = self.c.get(self.get_archive_url(today, 'month'))
         self.assertTemplateUsed(response, "blog/post_archive_month.html")
 
-        response = self.c.get('/blog/%s/%s/%s/' % (today.year, today.month, today.day))
+        response = self.c.get(self.get_archive_url(today, 'day'))
         self.assertTemplateUsed(response, "blog/post_archive_day.html")
 
     def create_post(self, date):
@@ -177,3 +177,18 @@ class GenericArchiveViewTests(TestCase):
         post.save()
         self.n += 1
         return post
+
+    def get_archive_url(self, date, level='all'):
+        """
+        level must be one of [all, year, month, day]
+        """
+        if level == 'all':
+            return "/blog/archive/"
+        if level == 'year':
+            return '/blog/%s/' % date.year
+        if level == 'month':
+            return '/blog/%s/%s/' % (date.year, date.month)
+        if level == 'day':
+            return '/blog/%s/%s/%s/' % (date.year, date.month, date.day)
+        raise Exception("Unrecognized level: %s" % level)
+
