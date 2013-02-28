@@ -5,5 +5,10 @@
     {% block navigation %} <p>[navigation here]</p> {% endblock %}
     {% block side_bar %} <p>[sidebar here]</p> {% endblock %}
     {% block content %}{% endblock %}
-    {% block footer %} <p>[footer here]</p> {% endblock %}
+    {% block footer %}
+        <div>
+            {% url archive as archive_url%}
+            <a href="{{ archive_url }}">archive</a>
+        </div>
+    {% endblock %}
 {% endblock %}

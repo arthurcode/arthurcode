@@ -15,10 +15,12 @@
 
     <p>
         {% if previous_day %}
-            Previous Day: {{ previous_day|date:"F j, Y" }}
+            {% url day_archive previous_day.year previous_day.month previous_day.day as link %}
+            Previous Day: <a href="{{ link }}">{{ previous_day|date:"F j, Y" }}</a>
         {% endif %}
         {% if next_day %}
-            Next Day: {{ next_day|date:"F j, Y" }}
+            {% url day_archive next_day.year next_day.month next_day.day as link %}
+            Next Day: <a href="{{ link }}">{{ next_day|date:"F j, Y" }}</a>
         {% endif %}
     </p>
 {% endblock %}
