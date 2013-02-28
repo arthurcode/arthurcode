@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from blog.models import AuthorProfile, Post
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 from blog import validators
 from django.test.client import Client
 import datetime
@@ -263,12 +264,15 @@ class GenericArchiveViewTests(TestCase):
         level must be one of [all, year, month, day]
         """
         if level == 'all':
-            return "/blog/archive/"
+            return reverse("archive")
         if level == 'year':
-            return '/blog/%s/' % date.year
+            params = {'year': date.year}
+            return reverse("year_archive", kwargs=params)
         if level == 'month':
-            return '/blog/%s/%s/' % (date.year, date.month)
+            params = {'year': date.year, 'month': date.month}
+            return reverse("month_archive", kwargs=params)
         if level == 'day':
-            return '/blog/%s/%s/%s/' % (date.year, date.month, date.day)
+            params = {'year': date.year, 'month': date.month, 'day': date.day}
+            return reverse("day_archive", kwargs=params)
         raise Exception("Unrecognized level: %s" % level)
 
