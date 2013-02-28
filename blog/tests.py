@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from blog import validators
 from django.test.client import Client
 import datetime
+from monthdelta import MonthDelta
 
 # -----------------------------
 # MODEL TESTS
@@ -190,18 +191,22 @@ class GenericArchiveViewTests(TestCase):
         response = self.c.get(self.get_archive_url(today))
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "No posts in the archive", 1)
+        self.verify_generic_archive_properties(response, date=today)
 
         response = self.c.get(self.get_archive_url(today, 'year'))
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "No posts for year %s" % today.year, 1)
+        self.verify_generic_archive_properties(response, date=today, level='year')
 
         response = self.c.get(self.get_archive_url(today, 'month'))
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "No posts for", 1)
+        self.verify_generic_archive_properties(response, date=today, level='month')
 
         response = self.c.get(self.get_archive_url(today, 'day'))
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "No posts for", 1)
+        self.verify_generic_archive_properties(response, date=today, level='day')
 
     def test_archive_non_empty_views(self):
         post_date = datetime.date(2012, 8, 22)
@@ -231,6 +236,7 @@ class GenericArchiveViewTests(TestCase):
         self.assertTemplateUsed(response, "blog/post_detail.html")
         self.assertContains(response, post.title)
         self.assertContains(response, post.get_author_name())
+        self.assert_contains_link(response, self.get_archive_url())
 
         bogus_url = post.get_url().rstrip("/") + "garbage/"
         response = self.c.get(bogus_url)
@@ -240,11 +246,42 @@ class GenericArchiveViewTests(TestCase):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
         self.assertContains(response, post.title)
+        self.verify_generic_archive_properties(response, date=date, level=level)
 
     def assert_post_not_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
         self.assertNotContains(response, post.title)
+        self.verify_generic_archive_properties(response, date=date, level=level)
+
+    def assert_contains_link(self, response, url, count=None):
+        fragment = "href=\"%s\"" % url
+        self.assertContains(response, fragment, count=count)
+
+    def verify_generic_archive_properties(self, response, date=None, level='all'):
+        # all pages should have a link to the archives in the footer
+        self.assert_contains_link(response, self.get_archive_url())
+
+        if level in ['all', 'year']:
+            return
+        today = datetime.date.today()
+
+        if level == 'month':
+            previous_month = date + MonthDelta(-1)
+            self.assert_contains_link(response, self.get_archive_url(date=previous_month, level='month'))
+            next_month = date + MonthDelta(+1)
+            next_month.replace(next_month.year, next_month.month, 1)
+            # make sure it isn't a future month
+            if next_month <= today:
+                self.assert_contains_link(response, self.get_archive_url(date=next_month, level='month'))
+
+        elif level == 'day':
+            previous_day = date - datetime.timedelta(1)
+            self.assert_contains_link(response, self.get_archive_url(date=previous_day, level='day'))
+            next_day = date + datetime.timedelta(1)
+            # make sure it isn't a future day
+            if next_day <= today:
+                self.assert_contains_link(response, self.get_archive_url(date=next_day, level='day'))
 
     def create_post(self, date):
         title = "title %d" % self.n
@@ -259,7 +296,7 @@ class GenericArchiveViewTests(TestCase):
         self.n += 1
         return post
 
-    def get_archive_url(self, date, level='all'):
+    def get_archive_url(self, date=None, level='all'):
         """
         level must be one of [all, year, month, day]
         """
