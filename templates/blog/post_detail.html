@@ -27,20 +27,23 @@
             <ul>
                 <li>({{ comment_count }})</li>
             </ul>
-
             {% if comments %}
-                {% recursetree comments %}
-                    <a name="c{{ node.id }}"></a>
-                    {{ node.comment }}
-                    {{ node.user }}
-                    {{ node.submit_date|timesince }} ago
-                    <a href="{{ post.get_url }}#c{{ node.id }}">#</a>
-                    {% render_comment_form for post %}
+                <ul>
+                    {% recursetree comments %}
+                        <li>
+                            <a name="c{{ node.id }}"></a>
+                            {{ node.comment }}
+                            {{ node.user }}
+                            {{ node.submit_date|timesince }} ago
+                            <a href="{{ post.get_url }}#c{{ node.id }}">#</a>
+                            {% render_comment_form for post %}
+                        </li>
 
-                    {% if not node.is_leaf_node %}
-                        {{ children }}
-                    {% endif %}
-                {% endrecursetree %}
+                        {% if not node.is_leaf_node %}
+                            <ul>{{ children }}</ul>
+                        {% endif %}
+                    {% endrecursetree %}
+                </ul>
             {% endif %}
             Please leave a comment
             {% render_comment_form for post %}
