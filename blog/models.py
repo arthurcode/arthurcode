@@ -84,7 +84,7 @@ class Post(models.Model):
     def get_author_email(self):
         return self.author.user.email
 
-    def get_url(self):
+    def get_absolute_url(self):
         params = {
             'year': self.pub_date.year,
             'month': self.pub_date.month,

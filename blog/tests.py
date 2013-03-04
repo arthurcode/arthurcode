@@ -131,12 +131,12 @@ class PostTest(TestCase):
             self.create_post(title="new title", title_slug=slug, author=self.author, body="body")
         self.assertIn("title_slug", str(cm.exception))
 
-    def test_get_url(self):
+    def test_get_absolute_url(self):
         title = "Why I Love Yoga Pants"
         title_slug = "why-i-love-yoga-pants"
         body = "some meaningless text"
         post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
-        url = post.get_url()
+        url = post.get_absolute_url()
 
         # check that the url is sane
         c = Client()
@@ -240,22 +240,22 @@ class GenericArchiveViewTests(TestCase):
     def test_post_detail_view(self):
         post_date = datetime.date.today()
         post = self.create_post(post_date)
-        response = self.c.get(post.get_url())
+        response = self.c.get(post.get_absolute_url())
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
         self.assertContains(response, post.title)
         self.assertContains(response, post.get_author_name())
         self.assert_contains_link(response, self.get_archive_url())
-        self.assert_does_not_contain_link(response, post.get_url())
+        self.assert_does_not_contain_link(response, post.get_absolute_url())
         self.assertNotContains(response, "last-modified")
 
         post_date = datetime.date.today() - datetime.timedelta(1)
         post = self.create_post(post_date)
-        response = self.c.get(post.get_url())
+        response = self.c.get(post.get_absolute_url())
         # last modified will default to today's date, which is one day later than the publication date
         self.assertContains(response, "last-modified")
 
-        bogus_url = post.get_url().rstrip("/") + "garbage/"
+        bogus_url = post.get_absolute_url().rstrip("/") + "garbage/"
         response = self.c.get(bogus_url)
         self.assertEqual(404, response.status_code)
 
@@ -275,8 +275,8 @@ class GenericArchiveViewTests(TestCase):
         # assert that only the latest post is rendered on the main page, and that there is a permalink to the post's url
         self.assertContains(response, post_2.title)
         self.assertNotContains(response, post_1.title)
-        self.assert_contains_link(response, post_2.get_url())
-        self.assert_does_not_contain_link(response, post_1.get_url())
+        self.assert_contains_link(response, post_2.get_absolute_url())
+        self.assert_does_not_contain_link(response, post_1.get_absolute_url())
 
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)

@@ -10,7 +10,7 @@ Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-d
             <li>{{ year }}</li>
             <ul>
                 {% for post in posts %}
-                    <li><a href="{{ post.get_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
+                    <li><a href="{{ post.get_absolute_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
                 {% endfor %}
             </ul>
         {% empty %}

@@ -9,7 +9,7 @@
             {% if post.mod_date != post.pub_date %}
                 <li>last-modified {{ post.mod_date|date:"F j, Y" }}</li>
             {% endif %}
-            {% with post.get_url as post_url %}
+            {% with post.get_absolute_url as post_url %}
                 {% if post_url != request.get_full_path %}
                     <li><a href="{{ post_url }}">permalink</a></li>
                 {% endif %}
@@ -35,7 +35,7 @@
                             {{ node.comment }}
                             {{ node.user }}
                             {{ node.submit_date|timesince }} ago
-                            <a href="{{ post.get_url }}#c{{ node.id }}">#</a>
+                            <a href="{{ post.get_absolute_url }}#c{{ node.id }}">#</a>
                             {% render_comment_form for post %}
                         </li>
 
