@@ -247,6 +247,13 @@ class GenericArchiveViewTests(TestCase):
         self.assertContains(response, post.get_author_name())
         self.assert_contains_link(response, self.get_archive_url())
         self.assert_does_not_contain_link(response, post.get_url())
+        self.assertNotContains(response, "last-modified")
+
+        post_date = datetime.date.today() - datetime.timedelta(1)
+        post = self.create_post(post_date)
+        response = self.c.get(post.get_url())
+        # last modified will default to today's date, which is one day later than the publication date
+        self.assertContains(response, "last-modified")
 
         bogus_url = post.get_url().rstrip("/") + "garbage/"
         response = self.c.get(bogus_url)
