@@ -1,13 +1,18 @@
 from blog.models import Post
 from django.views.generic.dates import YearArchiveView, MonthArchiveView, DayArchiveView, ArchiveIndexView, DateDetailView
+from django.core.exceptions import ObjectDoesNotExist
+from django.shortcuts import render_to_response
+from django.template import RequestContext
 import collections
 
+POST_PUB_DATE_FIELD = "pub_date"
+POST_CONTEXT_OBJECT_NAME = "post"
 
 class BlogArchiveBaseView():
     """
     Collects settings that are common to all GenericArchiveViews
     """
-    date_field = "pub_date"
+    date_field = POST_PUB_DATE_FIELD
     queryset = Post.objects.all()
     allow_empty = True
     make_object_list = True
@@ -45,8 +50,19 @@ class BlogMonthArchiveView(BlogArchiveBaseView, MonthArchiveView):
 class BlogDayArchiveView(BlogArchiveBaseView, DayArchiveView):
     pass
 
+
 class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
     allow_empty = False
     slug_field = 'title_slug'
-    context_object_name = 'post'
+    context_object_name = POST_CONTEXT_OBJECT_NAME
+
+
+def index(request):
+    try:
+        latest = Post.objects.latest(POST_PUB_DATE_FIELD)
+    except ObjectDoesNotExist:
+        latest = None
+    return render_to_response("blog/post_detail.html",
+                              {POST_CONTEXT_OBJECT_NAME: latest},
+                              context_instance=RequestContext(request))
 

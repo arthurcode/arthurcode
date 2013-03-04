@@ -1,10 +1,16 @@
 __author__ = 'rhyanarthur'
 
 from django.conf.urls import patterns, url
-from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, BlogPostDetailView
+from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, \
+    BlogPostDetailView, index
 
 
 urlpatterns = patterns('',
+
+                       url(r'^$',
+                           index,
+                           name="index"),
+
                        url(r'^archive/$',
                            BlogArchiveView.as_view(),
                            name="archive"),
