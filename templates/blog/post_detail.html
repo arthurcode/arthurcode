@@ -21,6 +21,12 @@
             {% load comments %}
             {% load mptt_tags %}
             {% get_comment_list for post as comments %}
+            {% get_comment_count for post as comment_count %}
+
+            <h2>Comments</h2>
+            <ul>
+                <li>({{ comment_count }})</li>
+            </ul>
 
             {% if comments %}
                 {% recursetree comments %}
@@ -36,6 +42,7 @@
                     {% endif %}
                 {% endrecursetree %}
             {% endif %}
+            Please leave a comment
             {% render_comment_form for post %}
         </div>
     {% else %}
