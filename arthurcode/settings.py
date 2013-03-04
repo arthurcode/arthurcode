@@ -125,6 +125,9 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south', # schema migrations
     'blog',
+    'django.contrib.comments',
+    'mptt',
+    'comments'
 )
 
 # A sample logging configuration. The only tangible logging
@@ -155,3 +158,5 @@ LOGGING = {
         },
     }
 }
+
+COMMENTS_APP = 'comments'

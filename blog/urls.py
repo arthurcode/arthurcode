@@ -1,6 +1,6 @@
 __author__ = 'rhyanarthur'
 
-from django.conf.urls import patterns, url
+from django.conf.urls import patterns, url, include
 from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, \
     BlogPostDetailView, index
 
@@ -30,4 +30,8 @@ urlpatterns = patterns('',
                        url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)',
                            BlogPostDetailView.as_view(),
                            name="post_detail"),
+)
+
+urlpatterns += patterns('',
+    (r'^comments/', include('django.contrib.comments.urls'))
 )

@@ -16,6 +16,28 @@
             {% endwith %}
         </ul>
         <div>{{ post.body }}</div>
+
+        <div>
+            {% load comments %}
+            {% load mptt_tags %}
+            {% get_comment_list for post as comments %}
+
+            {% if comments %}
+                {% recursetree comments %}
+                    <a name="c{{ node.id }}"></a>
+                    {{ node.comment }}
+                    {{ node.user }}
+                    {{ node.submit_date|timesince }} ago
+                    <a href="{{ post.get_url }}#c{{ node.id }}">#</a>
+                    {% render_comment_form for post %}
+
+                    {% if not node.is_leaf_node %}
+                        {{ children }}
+                    {% endif %}
+                {% endrecursetree %}
+            {% endif %}
+            {% render_comment_form for post %}
+        </div>
     {% else %}
         No post to display
     {% endif %}
