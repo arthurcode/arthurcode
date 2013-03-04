@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
+from django.contrib.comments.moderation import CommentModerator, moderator
 from utils import is_blank
 from validators import not_blank
 
@@ -95,4 +96,11 @@ class Post(models.Model):
 
     def __unicode__(self):
         return self.title
+
+
+class PostModerator(CommentModerator):
+    email_notification = False
+
+
+moderator.register(Post, PostModerator)
 
