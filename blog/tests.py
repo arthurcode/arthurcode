@@ -246,10 +246,30 @@ class GenericArchiveViewTests(TestCase):
         self.assertContains(response, post.title)
         self.assertContains(response, post.get_author_name())
         self.assert_contains_link(response, self.get_archive_url())
+        self.assert_does_not_contain_link(response, post.get_url())
 
         bogus_url = post.get_url().rstrip("/") + "garbage/"
         response = self.c.get(bogus_url)
         self.assertEqual(404, response.status_code)
+
+    def test_index(self):
+        # test that we don't die a horrible death when the index is rendered when there are no posts in the database
+        response = self.c.get(reverse('index'))
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, "blog/post_detail.html")
+        self.assertContains(response, "No post")
+
+        post_1 = self.create_post(datetime.date(2013, 01, 02))
+        post_2 = self.create_post(datetime.date(2013, 01, 03))
+        response = self.c.get(reverse('index'))
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, "blog/post_detail.html")
+
+        # assert that only the latest post is rendered on the main page, and that there is a permalink to the post's url
+        self.assertContains(response, post_2.title)
+        self.assertNotContains(response, post_1.title)
+        self.assert_contains_link(response, post_2.get_url())
+        self.assert_does_not_contain_link(response, post_1.get_url())
 
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
@@ -271,6 +291,9 @@ class GenericArchiveViewTests(TestCase):
     def assert_contains_link(self, response, url, count=None):
         fragment = "href=\"%s\"" % url
         self.assertContains(response, fragment, count=count)
+
+    def assert_does_not_contain_link(self, response, url):
+        self.assert_contains_link(response, url, count=0)
 
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
