@@ -5,13 +5,16 @@ Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-d
 {% endcomment %}
 
 {% block content %}
-    {% if latest %}
-        <ul>
-            {% for post in latest %}
-                <li><a href="{{ post.get_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
-            {% endfor %}
-        </ul>
-    {% else %}
-        <h1>No posts in the archive</h1>
-    {% endif %}
+    <ul>
+        {% for year,posts in breakdown_by_year.iteritems %}
+            <li>{{ year }}</li>
+            <ul>
+                {% for post in posts %}
+                    <li><a href="{{ post.get_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
+                {% endfor %}
+            </ul>
+        {% empty %}
+            <li>No posts in the archive</li>
+        {% endfor %}
+    </ul>
 {% endblock %}

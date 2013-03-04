@@ -228,6 +228,15 @@ class GenericArchiveViewTests(TestCase):
         self.assert_post_not_in_archive(off_by_one_year, post, level='month')
         self.assert_post_not_in_archive(off_by_one_year, post, level='year')
 
+    def test_archive_multiple_posts(self):
+        post_date_1 = datetime.date(2011, 8, 23)
+        post_date_2 = datetime.date(2013, 1, 1)
+
+        post_1 = self.create_post(post_date_1)
+        post_2 = self.create_post(post_date_2)
+        self.assert_post_in_archive(post_date_1, post_1, level='all')
+        self.assert_post_in_archive(post_date_2, post_2, level='all')
+
     def test_post_detail_view(self):
         post_date = datetime.date.today()
         post = self.create_post(post_date)
@@ -247,6 +256,11 @@ class GenericArchiveViewTests(TestCase):
         response = self.c.get(url)
         self.assertContains(response, post.title)
         self.verify_generic_archive_properties(response, date=date, level=level)
+
+        # verify that there is a breakdown by year
+        if level == 'all':
+            self.assertContains(response, '<li>%s</li>' % date.year, 1, html=True)
+
 
     def assert_post_not_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
