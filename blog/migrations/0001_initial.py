@@ -25,6 +25,7 @@ class Migration(SchemaMigration):
             ('pub_date', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('mod_date', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
             ('body', self.gf('django.db.models.fields.TextField')()),
+            ('enable_comments', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal('blog', ['Post'])
 
@@ -77,6 +78,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'Post'},
             'author': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.AuthorProfile']"}),
             'body': ('django.db.models.fields.TextField', [], {}),
+            'enable_comments': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'mod_date': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
             'pub_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),

@@ -78,6 +78,8 @@ class Post(models.Model):
     body = models.TextField(help_text="The text of this blog post",
                             validators=[not_blank])
 
+    enable_comments = models.BooleanField(default=True)
+
     def get_author_name(self):
         return self.author.pen_name
 
@@ -100,6 +102,7 @@ class Post(models.Model):
 
 class PostModerator(CommentModerator):
     email_notification = False
+    enable_field = 'enable_comments'
 
 
 moderator.register(Post, PostModerator)
