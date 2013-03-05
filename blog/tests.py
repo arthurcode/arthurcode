@@ -2,6 +2,7 @@ from django.test import TestCase
 from django.contrib.auth.models import User
 from blog.models import AuthorProfile, Post
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 from django.core.urlresolvers import reverse
 from blog import validators
 from django.test.client import Client
@@ -142,6 +143,24 @@ class PostTest(TestCase):
         c = Client()
         response = c.get(url)
         self.assertEqual(200, response.status_code)
+
+    def test_comments_enabled(self):
+        title = "Who Cares?"
+        title_slug = "not-me"
+        body = "some text"
+        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
+        self.assertTrue(post.enable_comments)
+
+        post.enable_comments = False
+        post.full_clean()
+        post.save()
+        self.assertFalse(post.enable_comments)
+
+        post.enable_comments = None
+        with self.assertRaises(IntegrityError) as cm:
+            post.full_clean()
+            post.save()
+        self.assertIn("enable_comments", str(cm.exception))
 
     def create_post(self, *args, **kwargs):
         post = Post(*args, **kwargs)
@@ -360,4 +379,3 @@ class GenericArchiveViewTests(TestCase):
             params = {'year': date.year, 'month': date.month, 'day': date.day}
             return reverse("day_archive", kwargs=params)
         raise Exception("Unrecognized level: %s" % level)
-
