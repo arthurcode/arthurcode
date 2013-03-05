@@ -6,8 +6,12 @@ from django.db.utils import IntegrityError
 from django.core.urlresolvers import reverse
 from blog import validators
 from django.test.client import Client
-import datetime
+import datetime, time
 from monthdelta import MonthDelta
+from comments.forms import MPTTCommentForm
+from comments.models import MPTTComment
+import django.contrib.comments as django_comments
+from django.contrib.comments.forms import CommentSecurityForm
 
 # -----------------------------
 # MODEL TESTS
@@ -150,11 +154,13 @@ class PostTest(TestCase):
         body = "some text"
         post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
         self.assertTrue(post.enable_comments)
+        self.assertTrue(post.is_commenting_enabled())
 
         post.enable_comments = False
         post.full_clean()
         post.save()
         self.assertFalse(post.enable_comments)
+        self.assertFalse(post.is_commenting_enabled())
 
         post.enable_comments = None
         with self.assertRaises(IntegrityError) as cm:
@@ -379,3 +385,95 @@ class GenericArchiveViewTests(TestCase):
             params = {'year': date.year, 'month': date.month, 'day': date.day}
             return reverse("day_archive", kwargs=params)
         raise Exception("Unrecognized level: %s" % level)
+
+
+class CommentingTest(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+        self.n = 1
+        self.user = User.objects.create_user("username", "someone@fake.com", "password")
+        self.author = AuthorProfile(user=self.user, pen_name="Captain Yoga Pants")
+        self.author.full_clean()
+        self.author.save()
+
+    def test_use_mptt_comments(self):
+        """
+        Test that we have properly customized the built-in comments app.
+        """
+        self.assertEqual(MPTTComment, django_comments.get_model())
+        self.assertEqual(MPTTCommentForm, django_comments.get_form())
+
+    def test_post_comments(self):
+        post = self.create_post()
+        data = self.make_post_comment_data(post, parent=None)
+        url = django_comments.get_form_target()
+        response = self.c.post(url, data, follow=True)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, "comments/posted.html")
+
+        # test that 1 comment has been created
+        self.assertEqual(1, MPTTComment.objects.all().count())
+        comment = MPTTComment.objects.all()[0]
+        self.assertIsNone(comment.parent_id)
+        self.assertEqual(str(post.id), comment.object_pk)
+
+        # reply to the previous comment
+        data = self.make_post_comment_data(post, parent=comment)
+        response = self.c.post(url, data, follow=True)
+        self.assertEquals(200, response.status_code)
+        self.assertTemplateUsed(response, "comments/posted.html")
+        self.assertEqual(2, MPTTComment.objects.all().count())
+
+        # the original comment should now have one child
+        self.assertEqual(1, comment.children.all().count())
+        reply = comment.children.all()[0]
+        self.assertEqual(comment.id, reply.parent_id)
+
+    def test_disable_comments(self):
+        post = self.create_post(enable_comments=False)
+        data = self.make_post_comment_data(post, parent=None)
+        url = django_comments.get_form_target()
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(400, response.status_code)
+        self.assertEqual(0, MPTTComment.objects.all().count())
+
+        post.enable_comments = True
+        post.save()
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        self.assertEqual(1, MPTTComment.objects.all().count())
+
+    def make_post_comment_data(self, post, parent=None):
+        timestamp = int(time.time())
+        form = CommentSecurityForm(post)
+        security_hash = form.initial_security_hash(timestamp)
+
+        # make sure the comment field varies for each post, otherwise django will detect that the comments are
+        # duplicates of each other and silently return the earlier comment
+        data = {
+            'name': 'John Doe',
+            'email': 'johndoe@fake.com',
+            'url': '',
+            'comment': 'testing, testing %d' % self.n,
+            'content_type': 'blog.post',
+            'timestamp': timestamp,
+            'object_pk': post.id,
+            'security_hash': security_hash,
+        }
+
+        if parent:
+            data.update({'parent': parent._get_pk_val()})
+
+        self.n += 1
+        return data
+
+    def create_post(self, enable_comments=True):
+        title = "title %d" % self.n
+        title_slug = "title-%d" % self.n
+        post = Post(title=title, title_slug=title_slug, author=self.author, body="text", enable_comments=enable_comments)
+        post.full_clean()
+        post.save()
+        self.n += 1
+        return post
+
