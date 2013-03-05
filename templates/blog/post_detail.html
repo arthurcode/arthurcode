@@ -16,7 +16,9 @@
                 {% endif %}
             {% endwith %}
         </ul>
-        <div>{{ post.body }}</div>
+        {% autoescape off %}
+            <div>{{ post.body }}</div>
+        {% endautoescape %}
 
         <div>
             {% load comments %}
