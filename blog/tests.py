@@ -271,12 +271,14 @@ class GenericArchiveViewTests(TestCase):
         response = self.c.get(reverse('index'))
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
+        self.assert_contains_link(response, reverse('index'))
 
         # assert that only the latest post is rendered on the main page, and that there is a permalink to the post's url
         self.assertContains(response, post_2.title)
         self.assertNotContains(response, post_1.title)
         self.assert_contains_link(response, post_2.get_absolute_url())
         self.assert_does_not_contain_link(response, post_1.get_absolute_url())
+        self.assert_contains_link(response, reverse('index'))
 
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
@@ -305,6 +307,8 @@ class GenericArchiveViewTests(TestCase):
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
         self.assert_contains_link(response, self.get_archive_url())
+        # all pages should have a link to the main blog page
+        self.assert_contains_link(response, reverse('index'))
 
         if level in ['all', 'year']:
             return
