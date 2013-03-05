@@ -1,4 +1,5 @@
 {% extends "blog/base_blog.html" %}
+{% load blog_extras %}
 
 {% block content %}
     <h1>{{ post.title }}</h1>
@@ -31,11 +32,11 @@
                 <ul>
                     {% recursetree comments %}
                         <li>
-                            <a name="c{{ node.id }}"></a>
+                            <a name="{% comment_anchor node %}"></a>
                             {{ node.comment }}
                             {{ node.user }}
                             {{ node.submit_date|timesince }} ago
-                            <a href="{{ post.get_absolute_url }}#c{{ node.id }}">#</a>
+                            <a href="{% comment_permalink node %}">#</a>
                             {% render_comment_form for post %}
                         </li>
 
