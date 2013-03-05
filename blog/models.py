@@ -95,6 +95,12 @@ class Post(models.Model):
         }
         return reverse("post_detail", kwargs=params)
 
+    def is_commenting_enabled(self):
+        """
+        Returns True if commenting is permitted on this post.  At this moment this simply returns the value of
+        the 'enable_comments' field, but in the future the calculation may become more complex.
+        """
+        return self.enable_comments
 
     def __unicode__(self):
         return self.title

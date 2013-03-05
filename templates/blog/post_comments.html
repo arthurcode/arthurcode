@@ -19,7 +19,9 @@
                     {{ node.user }}
                     {{ node.submit_date|timesince }} ago
                     <a href="{% comment_permalink node %}">#</a>
-                    {% render_comment_form for post %}
+                    {% if post.is_commenting_enabled %}
+                        {% render_comment_form for post %}
+                    {% endif %}
                 </li>
 
                 {% if not node.is_leaf_node %}
@@ -28,6 +30,10 @@
             {% endrecursetree %}
         </ul>
     {% endif %}
-    Please leave a comment
-    {% render_comment_form for post %}
+    {% if post.is_commenting_enabled %}
+        Please leave a comment
+        {% render_comment_form for post %}
+    {% else %}
+        Comments are disabled
+    {% endif %}
 </div>
