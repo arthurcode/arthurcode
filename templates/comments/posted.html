@@ -1,0 +1,9 @@
+{% extends "blog/base_blog.html" %}
+{% load blog_extras %}
+
+{% block title %}Thanks for commenting{% endblock %}
+
+{% block content %}
+  <h1>Thank you for your comment</h1>
+  <a href="{% comment_permalink comment %}">return to the original post</a>
+{% endblock %}
