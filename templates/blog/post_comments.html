@@ -1,0 +1,33 @@
+{% load comments %}
+{% load mptt_tags %}
+{% load blog_extras %}
+
+<div>
+    {% get_comment_list for post as comments %}
+    {% get_comment_count for post as comment_count %}
+
+    <h2>Comments</h2>
+    <ul>
+        <li>({{ comment_count }})</li>
+    </ul>
+    {% if comments %}
+        <ul>
+            {% recursetree comments %}
+                <li>
+                    <a name="{% comment_anchor node %}"></a>
+                    {{ node.comment }}
+                    {{ node.user }}
+                    {{ node.submit_date|timesince }} ago
+                    <a href="{% comment_permalink node %}">#</a>
+                    {% render_comment_form for post %}
+                </li>
+
+                {% if not node.is_leaf_node %}
+                    <ul>{{ children }}</ul>
+                {% endif %}
+            {% endrecursetree %}
+        </ul>
+    {% endif %}
+    Please leave a comment
+    {% render_comment_form for post %}
+</div>
