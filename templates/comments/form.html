@@ -4,6 +4,7 @@
     {% for field in form %}
         {% if field.is_hidden %}
             <div>{{ field }}</div>
+        {% elif field.html_name == "url" %}
         {% else %}
             {% if field.errors %}{{ field.errors }}{% endif %}
             <div class="yui3-control-group{% if field.errors %} error{% endif %}"
