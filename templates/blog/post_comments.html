@@ -13,8 +13,7 @@
                 <li class="comment">
                     <a name="{% comment_anchor node %}"></a>
                     <span id="user">{{ node.user }}</span>
-                    <span id="date">{{ node.submit_date|timesince }} ago</span>
-                    <a id="permalink" href="{% comment_permalink node %}">permalink</a>
+                    <a id="date" href="{% comment_permalink node %}">{{ node.submit_date|timesince }} ago</a>
                     <div class="text">{{ node.comment }}</div>
                     {% if post.is_commenting_enabled %}
                         {% render_comment_form for post %}
