@@ -6,10 +6,7 @@
     {% get_comment_list for post as comments %}
     {% get_comment_count for post as comment_count %}
 
-    <h2>Comments</h2>
-    <ul>
-        <li>({{ comment_count }})</li>
-    </ul>
+    <h2>Comments ({{ comment_count }})</h2>
     {% if comments %}
         <ul>
             {% recursetree comments %}
