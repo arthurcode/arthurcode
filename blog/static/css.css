@@ -81,6 +81,7 @@ h1 {
     display: inline;
 }
 
+/* style the comment section */
 div#comments {
     font-size: 80%;
 }
@@ -89,11 +90,19 @@ div#comments > ul {
     margin-left: 0;
 }
 
+/* styles for a list of comments */
+.comments {
+    margin-right: 0;
+    margin-bottom: 0;
+}
+
+/* individual comment styles */
 .comment {
-    padding: 10px;
+    padding: 10px 0 0px 10px;
     border-top: 2px solid lightgray;
     border-left: 4px solid lightgray;
     margin-top: 10px;
+    margin-right: 0;
 }
 
 .comment #user {
@@ -110,6 +119,7 @@ div#comments > ul {
     clear: both;
     padding-top: 0.5em;
     padding-bottom: 0.5em;
+    margin-left: 1em;
 }
 
 .comment button#reply {
@@ -119,4 +129,5 @@ div#comments > ul {
     padding: 0;
     font-style: italic;
     cursor: pointer;
+    font-size: 90%;
 }
