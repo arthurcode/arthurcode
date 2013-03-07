@@ -26,7 +26,7 @@ h1 {
     font-style: italic;
 }
 
-#bd li {
+.text li {
     list-style: disc;
 }
 
@@ -75,6 +75,21 @@ h1 {
 
 #post_data li {
     display: inline;
+}
+
+div#comments {
+    font-size: 80%;
+}
+
+div#comments > ul {
+    margin-left: 0;
+}
+
+ul.comments li {
+    padding: 10px;
+    border-top: 2px solid lightgray;
+    border-left: 4px solid lightgray;
+    margin-top: 10px;
 }
 
 

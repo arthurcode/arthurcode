@@ -2,13 +2,13 @@
 {% load mptt_tags %}
 {% load blog_extras %}
 
-<div>
+<div id="comments">
     {% get_comment_list for post as comments %}
     {% get_comment_count for post as comment_count %}
 
     <h2>Comments ({{ comment_count }})</h2>
     {% if comments %}
-        <ul>
+        <ul class="comments">
             {% recursetree comments %}
                 <li>
                     <a name="{% comment_anchor node %}"></a>
@@ -19,11 +19,10 @@
                     {% if post.is_commenting_enabled %}
                         {% render_comment_form for post %}
                     {% endif %}
+                    {% if not node.is_leaf_node %}
+                        <ul class="comments">{{ children }}</ul>
+                    {% endif %}
                 </li>
-
-                {% if not node.is_leaf_node %}
-                    <ul>{{ children }}</ul>
-                {% endif %}
             {% endrecursetree %}
         </ul>
     {% endif %}
