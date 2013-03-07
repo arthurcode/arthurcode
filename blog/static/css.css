@@ -85,11 +85,27 @@ div#comments > ul {
     margin-left: 0;
 }
 
-ul.comments li {
+.comment {
     padding: 10px;
     border-top: 2px solid lightgray;
     border-left: 4px solid lightgray;
     margin-top: 10px;
 }
 
+.comment #user {
+    font-weight: bolder;
+}
 
+.comment #date {
+    font-style: italic;
+}
+
+.comment #permalink {
+    float: right;
+    font-style: italic;
+}
+
+.comment .text {
+    clear: both;
+    padding-top: 0.5em;
+}
