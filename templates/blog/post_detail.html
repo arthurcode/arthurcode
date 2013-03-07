@@ -3,7 +3,7 @@
 {% block content %}
     <h1>{{ post.title }}</h1>
     {% if post %}
-        <ul>
+        <ul id="post_data">
             <li>{{ post.get_author_name }}</li>
             <li>{{ post.pub_date|date:"F j, Y" }}</li>
             {% if post.mod_date != post.pub_date %}

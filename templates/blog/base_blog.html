@@ -1,27 +1,38 @@
 {% extends "base.html" %}
 
 {% block site_wrapper %}
-    {% block banner %}
-        <div>
-            {% comment %} TODO: add the sitename into the default context {% endcomment %}
-            arthurcode
+    {% comment %} YUI 750px fixed width layout {% endcomment %}
+    <div id="doc" class="yui-t4">
+        <div id="hd">
+            {% block banner %}
+                <span class="sitename">arthurcode</span>
+            {% endblock %}
+
+            {% block navigation %}
+                <ul id="primary-navigation">
+                    <li><a href="{% url index %}">Blog</a></li>
+                    <li><a href="{% url about %}">About Me</a></li>
+                    <li><a href="{% url contact %}">Contact</a></li>
+                </ul>
+            {% endblock %}
         </div>
-    {% endblock %}
-
-    {% block navigation %}
-        <ul>
-            <li><a href="{% url index %}">Blog</a></li>
-            <li><a href="{% url about %}">About Me</a></li>
-            <li><a href="{% url contact %}">Contact</a></li>
-        </ul>
-    {% endblock %}
-
-    {% block content %}{% endblock %}
-
-    {% block footer %}
-        <div>
-            {% url archive as archive_url%}
-            <a href="{{ archive_url }}">archive</a>
+        <div id="bd">
+            <div id="yui-main">
+                <div class="yui-b">
+                    {% block content %}{% endblock %}
+                </div>
+            </div>
+            <div class="yui-b">
+                {% block sidebar %}
+                    {% url archive as archive_url%}
+                    <a href="{{ archive_url }}">archive</a>
+                {% endblock %}
+            </div>
         </div>
-    {% endblock %}
+        <div id="ft">
+            {% block footer %}
+                copyright 2013 www.arthurcode.com
+            {% endblock %}
+        </div>
+    </div>
 {% endblock %}
