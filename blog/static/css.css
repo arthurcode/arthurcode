@@ -11,6 +11,25 @@ a:link, a:visited {
     color: black;
 }
 
+#bd {
+    padding: 20px;
+}
+
+h1 {
+    margin: 0;
+}
+
+#ft {
+    background-color: #DCDCDC;
+    text-align: center;
+    padding: 1em;
+    font-style: italic;
+}
+
+#bd li {
+    list-style: disc;
+}
+
 #hd span.sitename {
     font-size: 350%;
     font-family: courier, monospace;
@@ -39,7 +58,7 @@ a:link, a:visited {
     display: inline-block;
 }
 
-#primary-navigation a:hover, #primary-navigation a:visited {
+#primary-navigation a:link, #primary-navigation a:visited {
     color: white;
 }
 
@@ -48,28 +67,14 @@ a:link, a:visited {
     border-bottom: none;
 }
 
-#bd {
-    padding: 20px;
-}
-
-#bd li {
-    list-style: disc;
-}
-
-ul#post_data {
+#post_data {
     font-size: 80%;
     font-style: italic;
     margin-left: 0;
 }
 
-ul#post_data li {
+#post_data li {
     display: inline;
 }
 
-#ft {
-    background-color: #DCDCDC;
-    text-align: center;
-    padding: 1em;
-    font-style: italic;
-}
 
