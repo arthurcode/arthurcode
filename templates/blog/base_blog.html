@@ -24,8 +24,11 @@
             </div>
             <div class="yui-b">
                 {% block sidebar %}
-                    {% url archive as archive_url%}
-                    <a href="{{ archive_url }}">archive</a>
+                    <ul>
+                        <li><a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a></li>
+                        {% url archive as archive_url%}
+                        <li><a href="{{ archive_url }}">archive</a></li>
+                    </ul>
                 {% endblock %}
             </div>
         </div>
