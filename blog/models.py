@@ -70,6 +70,11 @@ class Post(models.Model):
                                   verbose_name="title for URLs",
                                   validators=[not_blank])
 
+    synopsis = models.CharField(max_length=1000,
+                                validators=[not_blank],
+                                help_text="A few sentences summarizing this post.  Google may display this summary,"
+                                          " so put some effort into it.")
+
     pub_date = models.DateField(auto_now_add=True,
                                 null=False,
                                 verbose_name="publication date")

@@ -98,7 +98,8 @@ class PostTest(TestCase):
         self.blanks = ["", "  ", u"", u"  "]
 
     def test_create_post(self):
-        post = self.create_post(title="Why I Wear Yoga Pants", title_slug="slug", author=self.author, body="hi")
+        post = self.create_post(title="Why I Wear Yoga Pants", title_slug="slug", author=self.author, body="hi",
+                                synopsis="some synopsis")
         self.assertIsNotNone(post.pub_date)
         self.assertIsNotNone(post.mod_date)
         self.assertEqual(post.pub_date, post.mod_date)
@@ -108,39 +109,46 @@ class PostTest(TestCase):
     def test_create_post_title_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title=blank, title_slug="whatever", author=self.author, body="hi")
+                self.create_post(title=blank, title_slug="whatever", author=self.author, body="hi", synopsis="whatever")
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_create_post_slug_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title="whatever", title_slug=blank, author=self.author, body="hi")
+                self.create_post(title="whatever", title_slug=blank, author=self.author, body="hi", synopsis="whatever")
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_create_post_body_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title="whatever", title_slug="whatever", author=self.author, body=blank)
+                self.create_post(title="whatever", title_slug="whatever", author=self.author, body=blank, synopsis="whatever")
+            self.assertIn(validators.ERROR_BLANK, str(cm.exception))
+
+    def test_create_post_synopsis_cannot_be_blank(self):
+        for blank in self.blanks:
+            with self.assertRaises(ValidationError) as cm:
+                self.create_post(title="whatever", title_slug="whatever", author=self.author, body="whatever", synopsis=blank)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_duplicate_titles_allowed(self):
         title = "Hello, I am a title."
         # as long as the slugs are different this should be allowed
-        self.create_post(title=title, title_slug="slug1", author=self.author, body="body")
-        self.create_post(title=title, title_slug="slug2", author=self.author, body="body")
+        self.create_post(title=title, title_slug="slug1", author=self.author, body="body", synopsis="whatever")
+        self.create_post(title=title, title_slug="slug2", author=self.author, body="body", synopsis="whatever")
 
     def test_duplicate_slugs_not_allowed(self):
         slug = "slug"
-        self.create_post(title="title", title_slug=slug, author=self.author, body="body")
+        self.create_post(title="title", title_slug=slug, author=self.author, body="body", synopsis="whatever")
         with self.assertRaises(ValidationError) as cm:
-            self.create_post(title="new title", title_slug=slug, author=self.author, body="body")
+            self.create_post(title="new title", title_slug=slug, author=self.author, body="body", synopsis="whatever")
         self.assertIn("title_slug", str(cm.exception))
 
     def test_get_absolute_url(self):
         title = "Why I Love Yoga Pants"
         title_slug = "why-i-love-yoga-pants"
         body = "some meaningless text"
-        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
+        synopsis = "whatever"
+        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body, synopsis=synopsis)
         url = post.get_absolute_url()
 
         # check that the url is sane
@@ -152,7 +160,8 @@ class PostTest(TestCase):
         title = "Who Cares?"
         title_slug = "not-me"
         body = "some text"
-        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body)
+        synopsis = "whatever"
+        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body, synopsis=synopsis)
         self.assertTrue(post.enable_comments)
         self.assertTrue(post.is_commenting_enabled())
 
@@ -360,7 +369,8 @@ class GenericArchiveViewTests(TestCase):
         title = "title %d" % self.n
         slug = "title_slug_%d" % self.n
         body = "some text"
-        post = Post(body=body, title=title, title_slug=slug, author=self.author)
+        synopsis = "some synopsis"
+        post = Post(body=body, title=title, title_slug=slug, author=self.author, synopsis=synopsis)
         post.full_clean()
         post.save()
         # hack to bypass the auto_now_add=True behaviour of pub_date
@@ -471,7 +481,8 @@ class CommentingTest(TestCase):
     def create_post(self, enable_comments=True):
         title = "title %d" % self.n
         title_slug = "title-%d" % self.n
-        post = Post(title=title, title_slug=title_slug, author=self.author, body="text", enable_comments=enable_comments)
+        post = Post(title=title, title_slug=title_slug, author=self.author, body="text", enable_comments=enable_comments,
+                    synopsis="whatever")
         post.full_clean()
         post.save()
         self.n += 1

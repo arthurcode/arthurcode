@@ -10,6 +10,7 @@ import datetime
 POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
 TITLE_CONTEXT_OBJECT_NAME = "page_title"
+META_DESCRIPTION_FIELD = "meta_description"
 
 
 class BlogArchiveBaseView():
@@ -77,6 +78,7 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
     def get_context_data(self, **kwargs):
         data = super(BlogPostDetailView, self).get_context_data(**kwargs)
         data[TITLE_CONTEXT_OBJECT_NAME] = data[POST_CONTEXT_OBJECT_NAME].title
+        data[META_DESCRIPTION_FIELD] = data[POST_CONTEXT_OBJECT_NAME].synopsis
         return data
 
 
@@ -86,7 +88,8 @@ def index(request):
     except ObjectDoesNotExist:
         latest = None
     return render_to_response("blog/post_detail.html",
-                              {POST_CONTEXT_OBJECT_NAME: latest},
+                              {POST_CONTEXT_OBJECT_NAME: latest,
+                               META_DESCRIPTION_FIELD: latest and latest.synopsis},
                               context_instance=RequestContext(request))
 
 
