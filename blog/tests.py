@@ -267,6 +267,7 @@ class GenericArchiveViewTests(TestCase):
         self.assert_contains_link(response, self.get_archive_url())
         self.assert_does_not_contain_link(response, post.get_absolute_url())
         self.assertNotContains(response, "last-modified")
+        self.assert_page_title_is(response, post.title)
 
         post_date = datetime.date.today() - datetime.timedelta(1)
         post = create_post(pub_date=post_date, author=self.author)
@@ -291,6 +292,7 @@ class GenericArchiveViewTests(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
         self.assert_contains_link(response, reverse('index'))
+        self.assert_page_title_is(response, "Blog")
 
         # assert that only the latest post is rendered on the main page, and that there is a permalink to the post's url
         self.assertContains(response, post_2.title)
@@ -323,17 +325,25 @@ class GenericArchiveViewTests(TestCase):
     def assert_does_not_contain_link(self, response, url):
         self.assert_contains_link(response, url, count=0)
 
+    def assert_page_title_is(self, response, title):
+        self.assertContains(response, "<title>%s | Arthurcode</title>" % title, html=True)
+
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
         self.assert_contains_link(response, self.get_archive_url())
         # all pages should have a link to the main blog page
         self.assert_contains_link(response, reverse('index'))
 
-        if level in ['all', 'year']:
-            return
         today = datetime.date.today()
 
-        if level == 'month':
+        if level == 'all':
+            self.assert_page_title_is(response, 'Archive')
+
+        elif level == 'year':
+            self.assert_page_title_is(response, "%s Archive" % date.year)
+
+        elif level == 'month':
+            self.assert_page_title_is(response, "%s Archive" % date.strftime("%B %Y"))
             previous_month = date + MonthDelta(-1)
             self.assert_contains_link(response, self.get_archive_url(date=previous_month, level='month'))
             next_month = date + MonthDelta(+1)
@@ -343,6 +353,7 @@ class GenericArchiveViewTests(TestCase):
                 self.assert_contains_link(response, self.get_archive_url(date=next_month, level='month'))
 
         elif level == 'day':
+            self.assert_page_title_is(response, "%s Archive" % date.strftime("%B %d, %Y"))
             previous_day = date - datetime.timedelta(1)
             self.assert_contains_link(response, self.get_archive_url(date=previous_day, level='day'))
             next_day = date + datetime.timedelta(1)
