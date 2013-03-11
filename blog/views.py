@@ -1,12 +1,16 @@
 from blog.models import Post
 from django.views.generic.dates import YearArchiveView, MonthArchiveView, DayArchiveView, ArchiveIndexView, DateDetailView
+from django.views.generic.base import TemplateView
 from django.core.exceptions import ObjectDoesNotExist
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 import collections
+import datetime
 
 POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
+TITLE_CONTEXT_OBJECT_NAME = "page_title"
+
 
 class BlogArchiveBaseView():
     """
@@ -28,33 +32,52 @@ class BlogArchiveView(BlogArchiveBaseView, ArchiveIndexView):
         The variable is a dictionary mapping from year to the number of posts
         that were published within that year.
         """
-        data = super(ArchiveIndexView, self).get_context_data(**kwargs)
+        data = super(BlogArchiveView, self).get_context_data(**kwargs)
         breakdown_by_year = collections.defaultdict(list)
 
         for post in data['latest']:
             breakdown_by_year[post.pub_date.year].append(post)
         # django templates can't loop over defaultdicts, change back to a dict
         data['breakdown_by_year'] = dict(breakdown_by_year)
+        data[TITLE_CONTEXT_OBJECT_NAME] = 'Archive'
         return data
 
 
-
 class BlogYearArchiveView(BlogArchiveBaseView, YearArchiveView):
-    pass
+
+    def get_context_data(self, **kwargs):
+        data = super(BlogYearArchiveView, self).get_context_data(**kwargs)
+        data[TITLE_CONTEXT_OBJECT_NAME] = "%(year)s Archive" % self.kwargs
+        return data
 
 
 class BlogMonthArchiveView(BlogArchiveBaseView, MonthArchiveView):
-    pass
+
+    def get_context_data(self, **kwargs):
+        data = super(BlogMonthArchiveView, self).get_context_data(**kwargs)
+        month = datetime.date(int(self.kwargs['year']), int(self.kwargs['month']), 1)
+        data[TITLE_CONTEXT_OBJECT_NAME] = "%s Archive" % month.strftime("%B %Y")
+        return data
 
 
 class BlogDayArchiveView(BlogArchiveBaseView, DayArchiveView):
-    pass
+
+    def get_context_data(self, **kwargs):
+        data = super(BlogDayArchiveView, self).get_context_data(**kwargs)
+        day = datetime.date(int(self.kwargs['year']), int(self.kwargs['month']), int(self.kwargs['day']))
+        data[TITLE_CONTEXT_OBJECT_NAME] = "%s Archive" % day.strftime("%B %d, %Y")
+        return data
 
 
 class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
     allow_empty = False
     slug_field = 'title_slug'
     context_object_name = POST_CONTEXT_OBJECT_NAME
+
+    def get_context_data(self, **kwargs):
+        data = super(BlogPostDetailView, self).get_context_data(**kwargs)
+        data[TITLE_CONTEXT_OBJECT_NAME] = data[POST_CONTEXT_OBJECT_NAME].title
+        return data
 
 
 def index(request):
@@ -66,3 +89,20 @@ def index(request):
                               {POST_CONTEXT_OBJECT_NAME: latest},
                               context_instance=RequestContext(request))
 
+
+class AboutView(TemplateView):
+    template_name = "blog/about.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(AboutView, self).get_context_data(**kwargs)
+        data[TITLE_CONTEXT_OBJECT_NAME] = "About"
+        return data
+
+
+class ContactView(TemplateView):
+    template_name = "blog/contact.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(ContactView, self).get_context_data(**kwargs)
+        data[TITLE_CONTEXT_OBJECT_NAME] = "Contact"
+        return data

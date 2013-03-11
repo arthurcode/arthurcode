@@ -91,9 +91,6 @@ TEMPLATE_LOADERS = (
 #     'django.template.loaders.eggs.Loader',
 )
 
-from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
-TEMPLATE_CONTEXT_PROCESSORS = TCP + ('django.core.context_processors.request',)
-
 MIDDLEWARE_CLASSES = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -160,3 +157,21 @@ LOGGING = {
 }
 
 COMMENTS_APP = 'comments'
+
+# local (non-generated) settings
+SITE_NAME = 'Arthurcode'
+
+# TODO: tweak this description
+SITE_DESCRIPTION = 'A blog focused on web-technologies, such as django and css.'
+
+# context processor that adds our custom settings to a request
+def add_global_settings_to_request(request):
+    return {
+        'site_name': SITE_NAME,
+        'site_description': SITE_DESCRIPTION,
+        'request': request,
+    }
+
+from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
+TEMPLATE_CONTEXT_PROCESSORS = TCP + ('django.core.context_processors.request',
+                                     'arthurcode.settings.add_global_settings_to_request')
