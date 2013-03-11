@@ -98,7 +98,7 @@ class PostTest(TestCase):
         self.blanks = ["", "  ", u"", u"  "]
 
     def test_create_post(self):
-        post = self.create_post(title="Why I Wear Yoga Pants", title_slug="slug", author=self.author, body="hi",
+        post = create_post(title="Why I Wear Yoga Pants", title_slug="slug", author=self.author, body="hi",
                                 synopsis="some synopsis")
         self.assertIsNotNone(post.pub_date)
         self.assertIsNotNone(post.mod_date)
@@ -109,46 +109,42 @@ class PostTest(TestCase):
     def test_create_post_title_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title=blank, title_slug="whatever", author=self.author, body="hi", synopsis="whatever")
+                create_post(title=blank, author=self.author)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_create_post_slug_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title="whatever", title_slug=blank, author=self.author, body="hi", synopsis="whatever")
+                create_post(title_slug=blank, author=self.author)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_create_post_body_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title="whatever", title_slug="whatever", author=self.author, body=blank, synopsis="whatever")
+                create_post(author=self.author, body=blank)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_create_post_synopsis_cannot_be_blank(self):
         for blank in self.blanks:
             with self.assertRaises(ValidationError) as cm:
-                self.create_post(title="whatever", title_slug="whatever", author=self.author, body="whatever", synopsis=blank)
+                create_post(author=self.author, synopsis=blank)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
     def test_duplicate_titles_allowed(self):
         title = "Hello, I am a title."
         # as long as the slugs are different this should be allowed
-        self.create_post(title=title, title_slug="slug1", author=self.author, body="body", synopsis="whatever")
-        self.create_post(title=title, title_slug="slug2", author=self.author, body="body", synopsis="whatever")
+        create_post(title=title, title_slug="slug1", author=self.author)
+        create_post(title=title, title_slug="slug2", author=self.author)
 
     def test_duplicate_slugs_not_allowed(self):
         slug = "slug"
-        self.create_post(title="title", title_slug=slug, author=self.author, body="body", synopsis="whatever")
+        create_post(title="title", title_slug=slug, author=self.author)
         with self.assertRaises(ValidationError) as cm:
-            self.create_post(title="new title", title_slug=slug, author=self.author, body="body", synopsis="whatever")
+            create_post(title="new title", title_slug=slug, author=self.author)
         self.assertIn("title_slug", str(cm.exception))
 
     def test_get_absolute_url(self):
-        title = "Why I Love Yoga Pants"
-        title_slug = "why-i-love-yoga-pants"
-        body = "some meaningless text"
-        synopsis = "whatever"
-        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body, synopsis=synopsis)
+        post = create_post(author=self.author)
         url = post.get_absolute_url()
 
         # check that the url is sane
@@ -157,11 +153,7 @@ class PostTest(TestCase):
         self.assertEqual(200, response.status_code)
 
     def test_comments_enabled(self):
-        title = "Who Cares?"
-        title_slug = "not-me"
-        body = "some text"
-        synopsis = "whatever"
-        post = self.create_post(title=title, title_slug=title_slug, author=self.author, body=body, synopsis=synopsis)
+        post = create_post(author=self.author)
         self.assertTrue(post.enable_comments)
         self.assertTrue(post.is_commenting_enabled())
 
@@ -177,12 +169,6 @@ class PostTest(TestCase):
             post.save()
         self.assertIn("enable_comments", str(cm.exception))
 
-    def create_post(self, *args, **kwargs):
-        post = Post(*args, **kwargs)
-        post.full_clean()
-        post.save()
-        return post
-
 
 #-----------------------------
 # VIEW TESTS
@@ -192,7 +178,6 @@ class GenericArchiveViewTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.n = 1
         self.user = User(username="arthur", password="whocares", email="me@example.com")
         self.user.full_clean()
         self.user.save()
@@ -202,7 +187,7 @@ class GenericArchiveViewTests(TestCase):
 
     def test_archive_templates_used(self):
         today = datetime.date.today()
-        self.create_post(today)
+        create_post(pub_date=today, author=self.author)
 
         response = self.c.get(self.get_archive_url(today))
         self.assertTemplateUsed(response, "blog/post_archive.html")
@@ -248,7 +233,7 @@ class GenericArchiveViewTests(TestCase):
         off_by_one_month = datetime.date(2012, 7, 22)
         off_by_one_year = datetime.date(2011, 8, 22)
 
-        post = self.create_post(post_date)
+        post = create_post(pub_date=post_date, author=self.author)
 
         self.assert_post_in_archive(post_date, post, level='day')
         self.assert_post_in_archive(post_date, post, level='month')
@@ -266,14 +251,14 @@ class GenericArchiveViewTests(TestCase):
         post_date_1 = datetime.date(2011, 8, 23)
         post_date_2 = datetime.date(2013, 1, 1)
 
-        post_1 = self.create_post(post_date_1)
-        post_2 = self.create_post(post_date_2)
+        post_1 = create_post(pub_date=post_date_1, author=self.author)
+        post_2 = create_post(pub_date=post_date_2, author=self.author)
         self.assert_post_in_archive(post_date_1, post_1, level='all')
         self.assert_post_in_archive(post_date_2, post_2, level='all')
 
     def test_post_detail_view(self):
         post_date = datetime.date.today()
-        post = self.create_post(post_date)
+        post = create_post(pub_date=post_date, author=self.author)
         response = self.c.get(post.get_absolute_url())
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
@@ -284,7 +269,7 @@ class GenericArchiveViewTests(TestCase):
         self.assertNotContains(response, "last-modified")
 
         post_date = datetime.date.today() - datetime.timedelta(1)
-        post = self.create_post(post_date)
+        post = create_post(pub_date=post_date, author=self.author)
         response = self.c.get(post.get_absolute_url())
         # last modified will default to today's date, which is one day later than the publication date
         self.assertContains(response, "last-modified")
@@ -300,8 +285,8 @@ class GenericArchiveViewTests(TestCase):
         self.assertTemplateUsed(response, "blog/post_detail.html")
         self.assertContains(response, "No post")
 
-        post_1 = self.create_post(datetime.date(2013, 01, 02))
-        post_2 = self.create_post(datetime.date(2013, 01, 03))
+        post_1 = create_post(pub_date=datetime.date(2013, 01, 02), author=self.author)
+        post_2 = create_post(pub_date=datetime.date(2013, 01, 03), author=self.author)
         response = self.c.get(reverse('index'))
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
@@ -365,20 +350,6 @@ class GenericArchiveViewTests(TestCase):
             if next_day <= today:
                 self.assert_contains_link(response, self.get_archive_url(date=next_day, level='day'))
 
-    def create_post(self, date):
-        title = "title %d" % self.n
-        slug = "title_slug_%d" % self.n
-        body = "some text"
-        synopsis = "some synopsis"
-        post = Post(body=body, title=title, title_slug=slug, author=self.author, synopsis=synopsis)
-        post.full_clean()
-        post.save()
-        # hack to bypass the auto_now_add=True behaviour of pub_date
-        post.pub_date = date
-        post.save()
-        self.n += 1
-        return post
-
     def get_archive_url(self, date=None, level='all'):
         """
         level must be one of [all, year, month, day]
@@ -401,7 +372,6 @@ class CommentingTest(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.n = 1
         self.user = User.objects.create_user("username", "someone@fake.com", "password")
         self.author = AuthorProfile(user=self.user, pen_name="Captain Yoga Pants")
         self.author.full_clean()
@@ -415,7 +385,7 @@ class CommentingTest(TestCase):
         self.assertEqual(MPTTCommentForm, django_comments.get_form())
 
     def test_post_comments(self):
-        post = self.create_post()
+        post = create_post(author=self.author)
         data = self.make_post_comment_data(post, parent=None)
         url = django_comments.get_form_target()
         response = self.c.post(url, data, follow=True)
@@ -441,7 +411,7 @@ class CommentingTest(TestCase):
         self.assertEqual(comment.id, reply.parent_id)
 
     def test_disable_comments(self):
-        post = self.create_post(enable_comments=False)
+        post = create_post(enable_comments=False, author=self.author)
         data = self.make_post_comment_data(post, parent=None)
         url = django_comments.get_form_target()
         response = self.c.post(url, data, follow=True)
@@ -458,6 +428,7 @@ class CommentingTest(TestCase):
         timestamp = int(time.time())
         form = CommentSecurityForm(post)
         security_hash = form.initial_security_hash(timestamp)
+        index = COUNTER.next()
 
         # make sure the comment field varies for each post, otherwise django will detect that the comments are
         # duplicates of each other and silently return the earlier comment
@@ -465,7 +436,7 @@ class CommentingTest(TestCase):
             'name': 'John Doe',
             'email': 'johndoe@fake.com',
             'url': '',
-            'comment': 'testing, testing %d' % self.n,
+            'comment': 'testing, testing %d' % index,
             'content_type': 'blog.post',
             'timestamp': timestamp,
             'object_pk': post.id,
@@ -475,16 +446,44 @@ class CommentingTest(TestCase):
         if parent:
             data.update({'parent': parent._get_pk_val()})
 
-        self.n += 1
         return data
 
-    def create_post(self, enable_comments=True):
-        title = "title %d" % self.n
-        title_slug = "title-%d" % self.n
-        post = Post(title=title, title_slug=title_slug, author=self.author, body="text", enable_comments=enable_comments,
-                    synopsis="whatever")
+
+class Counter():
+    def __init__(self):
+        self.n = 0
+
+    def next(self):
+        self.n += 1
+        return self.n
+
+
+COUNTER = Counter()
+
+
+def create_post(**kwargs):
+    """
+    Creates a blog posting using the given keyword arguments.  If a required field is not present in the keywords then
+    a suitable default will be inserted.  As such, this method should not be used to test the 'requiredness' of a
+    field.
+    """
+    index = COUNTER.next()
+    title = kwargs.get('title', 'Some Title %d' % index)
+    title_slug = kwargs.get('title_slug', 'some-title-%d' % index)
+    author = kwargs.get('author', None)
+    synopsis = kwargs.get('synopsis', 'Some synopsis.')
+    body = kwargs.get('body', 'Some body text.')
+    enable_comments = kwargs.get('enable_comments', True)
+
+    post = Post(title=title, title_slug=title_slug, author=author, synopsis=synopsis, body=body,
+                enable_comments=enable_comments)
+    post.full_clean()
+    post.save()
+
+    if 'pub_date' in kwargs:
+        post.pub_date = kwargs['pub_date']
         post.full_clean()
         post.save()
-        self.n += 1
-        return post
+
+    return post
 
