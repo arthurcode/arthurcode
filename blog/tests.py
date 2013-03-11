@@ -459,7 +459,16 @@ class CommentingTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, MPTTComment.objects.all().count())
 
-    def make_post_comment_data(self, post, parent=None):
+    def test_comment_form_error(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post, email="garbage-email-address")
+        url = django_comments.get_form_target()
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "Please correct the error below")
+        self.assertTemplateUsed(response, "comments/preview.html")
+
+    def make_post_comment_data(self, post, **kwargs):
         timestamp = int(time.time())
         form = CommentSecurityForm(post)
         security_hash = form.initial_security_hash(timestamp)
@@ -468,15 +477,16 @@ class CommentingTest(TestCase):
         # make sure the comment field varies for each post, otherwise django will detect that the comments are
         # duplicates of each other and silently return the earlier comment
         data = {
-            'name': 'John Doe',
-            'email': 'johndoe@fake.com',
-            'url': '',
-            'comment': 'testing, testing %d' % index,
+            'name': kwargs.get('name', 'John Doe'),
+            'email': kwargs.get('email', 'johndoe@fake.com'),
+            'url': kwargs.get('url', ''),
+            'comment': kwargs.get('comment', 'testing, testing %d' % index),
             'content_type': 'blog.post',
             'timestamp': timestamp,
             'object_pk': post.id,
             'security_hash': security_hash,
         }
+        parent = kwargs.get('parent', None)
 
         if parent:
             data.update({'parent': parent._get_pk_val()})
