@@ -301,6 +301,25 @@ class GenericArchiveViewTests(TestCase):
         self.assert_does_not_contain_link(response, post_1.get_absolute_url())
         self.assert_contains_link(response, reverse('index'))
 
+    def test_about_and_contact_views(self):
+        about_url = reverse('about')
+        contact_url = reverse('contact')
+        index_url = reverse('index')
+
+        # about view
+        response = self.c.get(about_url)
+        self.assertEqual(200, response.status_code)
+        self.assert_page_title_is(response, "About")
+        self.assert_contains_link(response, index_url)
+        self.assert_contains_link(response, contact_url)
+
+        # contact view
+        response = self.c.get(contact_url)
+        self.assertEqual(200, response.status_code)
+        self.assert_page_title_is(response, "Contact")
+        self.assert_contains_link(response, about_url)
+        self.assert_contains_link(response, index_url)
+
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
