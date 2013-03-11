@@ -268,6 +268,7 @@ class ViewTests(TestCase):
         self.assert_does_not_contain_link(response, post.get_absolute_url())
         self.assertNotContains(response, "last-modified")
         self.assert_page_title_is(response, post.title)
+        self.assert_meta_desc_is(response, post.synopsis)
 
         post_date = datetime.date.today() - datetime.timedelta(1)
         post = create_post(pub_date=post_date, author=self.author)
@@ -300,6 +301,7 @@ class ViewTests(TestCase):
         self.assert_contains_link(response, post_2.get_absolute_url())
         self.assert_does_not_contain_link(response, post_1.get_absolute_url())
         self.assert_contains_link(response, reverse('index'))
+        self.assert_meta_desc_is(response, post_2.synopsis)
 
     def test_about_and_contact_views(self):
         about_url = reverse('about')
@@ -330,7 +332,6 @@ class ViewTests(TestCase):
         if level == 'all':
             self.assertContains(response, '<li>%s</li>' % date.year, 1, html=True)
 
-
     def assert_post_not_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
@@ -346,6 +347,10 @@ class ViewTests(TestCase):
 
     def assert_page_title_is(self, response, title):
         self.assertContains(response, "<title>%s | Arthurcode</title>" % title, html=True)
+
+    def assert_meta_desc_is(self, response, desc):
+        meta = '<meta name="description" content="%s"/>' % desc
+        self.assertContains(response, meta, html=True)
 
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
