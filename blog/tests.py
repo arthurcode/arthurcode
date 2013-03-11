@@ -467,6 +467,7 @@ class CommentingTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertContains(response, "Please correct the error below")
         self.assertTemplateUsed(response, "comments/preview.html")
+        self.assertNotContains(response, "URL")  # url field should be hidden
 
     def make_post_comment_data(self, post, **kwargs):
         timestamp = int(time.time())
