@@ -9,7 +9,7 @@ import datetime
 
 POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
-TITLE_CONTEXT_OBJECT_NAME = "page_title"
+PAGE_TITLE_FIELD = "page_title"
 META_DESCRIPTION_FIELD = "meta_description"
 
 
@@ -40,7 +40,7 @@ class BlogArchiveView(BlogArchiveBaseView, ArchiveIndexView):
             breakdown_by_year[post.pub_date.year].append(post)
         # django templates can't loop over defaultdicts, change back to a dict
         data['breakdown_by_year'] = dict(breakdown_by_year)
-        data[TITLE_CONTEXT_OBJECT_NAME] = 'Archive'
+        data[PAGE_TITLE_FIELD] = 'Archive'
         return data
 
 
@@ -48,7 +48,7 @@ class BlogYearArchiveView(BlogArchiveBaseView, YearArchiveView):
 
     def get_context_data(self, **kwargs):
         data = super(BlogYearArchiveView, self).get_context_data(**kwargs)
-        data[TITLE_CONTEXT_OBJECT_NAME] = "%(year)s Archive" % self.kwargs
+        data[PAGE_TITLE_FIELD] = "%(year)s Archive" % self.kwargs
         return data
 
 
@@ -57,7 +57,7 @@ class BlogMonthArchiveView(BlogArchiveBaseView, MonthArchiveView):
     def get_context_data(self, **kwargs):
         data = super(BlogMonthArchiveView, self).get_context_data(**kwargs)
         month = datetime.date(int(self.kwargs['year']), int(self.kwargs['month']), 1)
-        data[TITLE_CONTEXT_OBJECT_NAME] = "%s Archive" % month.strftime("%B %Y")
+        data[PAGE_TITLE_FIELD] = "%s Archive" % month.strftime("%B %Y")
         return data
 
 
@@ -66,7 +66,7 @@ class BlogDayArchiveView(BlogArchiveBaseView, DayArchiveView):
     def get_context_data(self, **kwargs):
         data = super(BlogDayArchiveView, self).get_context_data(**kwargs)
         day = datetime.date(int(self.kwargs['year']), int(self.kwargs['month']), int(self.kwargs['day']))
-        data[TITLE_CONTEXT_OBJECT_NAME] = "%s Archive" % day.strftime("%B %d, %Y")
+        data[PAGE_TITLE_FIELD] = "%s Archive" % day.strftime("%B %d, %Y")
         return data
 
 
@@ -77,7 +77,7 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
 
     def get_context_data(self, **kwargs):
         data = super(BlogPostDetailView, self).get_context_data(**kwargs)
-        data[TITLE_CONTEXT_OBJECT_NAME] = data[POST_CONTEXT_OBJECT_NAME].title
+        data[PAGE_TITLE_FIELD] = data[POST_CONTEXT_OBJECT_NAME].title
         data[META_DESCRIPTION_FIELD] = data[POST_CONTEXT_OBJECT_NAME].synopsis
         return data
 
@@ -98,7 +98,7 @@ class AboutView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super(AboutView, self).get_context_data(**kwargs)
-        data[TITLE_CONTEXT_OBJECT_NAME] = "About"
+        data[PAGE_TITLE_FIELD] = "About"
         return data
 
 
@@ -107,5 +107,5 @@ class ContactView(TemplateView):
 
     def get_context_data(self, **kwargs):
         data = super(ContactView, self).get_context_data(**kwargs)
-        data[TITLE_CONTEXT_OBJECT_NAME] = "Contact"
+        data[PAGE_TITLE_FIELD] = "Contact"
         return data
