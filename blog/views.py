@@ -89,6 +89,7 @@ def index(request):
         latest = None
     return render_to_response("blog/post_detail.html",
                               {POST_CONTEXT_OBJECT_NAME: latest,
+                               PAGE_TITLE_FIELD: "Blog",
                                META_DESCRIPTION_FIELD: latest and latest.synopsis},
                               context_instance=RequestContext(request))
 
