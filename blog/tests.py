@@ -174,7 +174,7 @@ class PostTest(TestCase):
 # VIEW TESTS
 #-----------------------------
 
-class GenericArchiveViewTests(TestCase):
+class ViewTests(TestCase):
 
     def setUp(self):
         self.c = Client()
