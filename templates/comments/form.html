@@ -16,8 +16,8 @@
     {% if node.id %}
         <input type="hidden" name="parent" id="parent_id" value="{{ node.id }}"/>
     {% endif %}
-    <p class="submit">
-        <input type="submit" name="post" class="submit-post" value="{% trans "Post" %}" />
-        <input type="submit" name="preview" class="submit-preview" value="{% trans "Preview" %}" />
-    </p>
+    <div class="yui3-controls">
+        <button type="submit" name="post" class="submit-post yui3-button">Post</button>
+        <button type="submit" name="preview" class="submit-preview yui3-button">Preview</button>
+    </div>
 </form>
