@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{{ STATIC_URL }}css.css" />
 
     <script src="http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js"></script>
-    <title>{% block title %}{% if page_title %}{{ page_title }} | {% endif %}{{ site_name }}{% endblock %}</title>
+    <title>{% block title %}{% if page_title %}{{ page_title }}{% endif %}{% endblock %} | {{ site_name }}</title>
     <meta name="description" content="{% firstof meta_description site_description %}" />
 </head>
 <body>
