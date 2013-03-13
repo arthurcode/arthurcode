@@ -9,12 +9,16 @@ from django.utils.html import escape
 # http://www.thebitguru.com/blog/view/299-Adding%20*%20to%20required%20fields
 
 REQUIRED_TEXT = "(required)"
+OPTIONAL_TEXT = "(optional)"
 
 
 def add_required_label_tag(original_function):
     """
     A function intended to decorate BoundField.label_tag().  The labels of required fields are automatically
-    given a 'required' html class, and '(required)' is appended to the label text.
+    given a 'required' html class, and '(required)' is appended to the label text.  Similarly, optional fields are
+    given the 'optional' html class and '(optional)' is appended to the label text.  Depending on whether or not a form
+    consists of mainly required or optional fields, one of either the optional or required text fields can be hidden
+    with css.
     """
     def required_label_tag(self, contents=None, attrs=None):
         contents = contents or escape(self.label)
@@ -28,6 +32,12 @@ def add_required_label_tag(original_function):
 
             if required_label not in contents:
                 contents += " %s" % required_label
+        else:
+            attrs = _add_class_attr(attrs, 'optional')
+            optional_label = "<span class='optional-text'>%s</span>" % OPTIONAL_TEXT
+
+            if optional_label not in contents:
+                contents += " %s" % optional_label
 
         return original_function(self, contents, attrs)
     return required_label_tag
