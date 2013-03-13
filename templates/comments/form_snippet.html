@@ -1,4 +1,6 @@
 {% load comments i18n %}
+{% load blog_extras %}
+
 <form class="comment" action="{% comment_form_target %}" method="post">{% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
     {% for field in form %}
@@ -7,7 +9,7 @@
         {% else %}
             <div class="field{% if field.errors %} error{% endif %}"
                     {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
-                {{ field.label_tag }} {{ field }}
+                {% field_label_tag field %} {{ field }}
             </div>
         {% endif %}
     {% endfor %}
