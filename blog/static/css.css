@@ -98,11 +98,12 @@ div#comments > ul {
 
 /* individual comment styles */
 .comment {
-    padding: 10px 0 0px 10px;
+    padding: 10px 0 0 10px;
     border-top: 2px solid lightgray;
     border-left: 4px solid lightgray;
     margin-top: 10px;
     margin-right: 0;
+    overflow: auto;
 }
 
 .comment #user {
@@ -130,4 +131,97 @@ div#comments > ul {
     font-style: italic;
     cursor: pointer;
     font-size: 90%;
+}
+
+/************************************
+ *  FORM STYLES
+ ************************************/
+
+/* display form metadata in italics and slightly smaller text */
+form span.error, form span.required-text, form span.optional-text {
+    font-style: italic;
+    font-size: 80%;
+}
+
+/* display form errors in red */
+form span.error {
+    color: red;
+}
+
+/* when a field has an error but a red border around the input */
+.field.error textarea, .field.error input {
+    border: 1px solid red;
+}
+
+/* Horizontal form layout.  Each field is two columns.  In the first column is the field label followed by
+   the (required) or (optional) string.  In the second column is the input area. Field errors are displayed in
+   the second column, directly above the input area.  Note that the column widths will need to be tuned individually
+   for each form. 25% and 75% seem to work well for the comment form.  In addition, when absolutely positioning the
+   elements in the first column the top coordinates will vary with relative font sizes. Experiment with it.
+
+   The form width is fixed at 30em and each sub-field consumes 100% of its parent's width.  At 30em the form's labels
+   consume as much as possible of the smaller right column.  Any smaller and the label text would break into two lines
+   and cause problems with absolutely positioned elements.
+   */
+
+form.comment {
+    width: 30em;
+    overflow: auto;
+}
+
+.field {
+    position: relative;  /* need to absolutely position a few of it's children */
+    float: left;         /* float-to-fix-a-float */
+    clear: both;         /* stack fields vertically */
+    margin: 0.25em 0;    /* small top and bottom margins, no horizontal margins */
+    width: 100%;
+}
+
+label {
+    padding: 0;
+    margin: 0;
+}
+
+/* style the second, larger column within a field */
+.field input, .field textarea {
+    margin-left: 25%;
+    float: left;
+    clear: left;
+}
+
+.field span.error {
+    margin-left: 25%;
+    float: left;
+    clear: left;
+}
+
+/* Leave a 3% margin between columns */
+.field span.label {
+    position: absolute;
+    text-align: right;
+    right: 78%;
+    top: 0;
+}
+
+.field span.required-text, .field span.optional-text {
+    position: absolute;
+    text-align: right;
+    right: 78%;
+    top: 1.6em;
+}
+
+/* Align the controls with the form input fields. */
+form .controls {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+form .controls .submit-post {
+    margin-left: 25%;
+}
+
+/* most of the form fields are required, so we'll hide the (required) in favour of (optional) */
+form.comment span.required-text {
+    visibility: hidden;
 }

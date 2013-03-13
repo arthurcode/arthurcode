@@ -58,6 +58,17 @@ def add_field_errors_to_label(original_function):
     return field_errors_label_tag
 
 
+def add_span_to_label(original_function):
+    """
+    A function intended to decorate BoundField.label_tag().  The field's label text is wrapped in a span with
+    class 'label' in order to allow css syling on the element.
+    """
+    def span_label_tag(self, contents=None, attrs=None):
+        contents = contents or "<span class='label'>%s</span>" % unicode(escape(self.label))
+        return original_function(self, contents, attrs)
+    return span_label_tag
+
+
 def _add_class_attr(attrs, clazz):
     attrs = attrs or {}
     if 'class' in attrs:
@@ -74,6 +85,7 @@ def decorate_bound_field():
     from django.forms.forms import BoundField
     BoundField.label_tag = add_field_errors_to_label(BoundField.label_tag)
     BoundField.label_tag = add_required_label_tag(BoundField.label_tag)
+    BoundField.label_tag = add_span_to_label(BoundField.label_tag)
 
 decorate_bound_field()
 
