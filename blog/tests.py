@@ -459,14 +459,29 @@ class CommentingTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertEqual(1, MPTTComment.objects.all().count())
 
-    def test_comment_form_error(self):
+    def test_comment_form_email_error(self):
         post = create_post(author=self.author)
         data = self.make_post_comment_data(post, email="garbage-email-address")
+        self.assert_comment_form_error(data, 'email', 'Enter a valid e-mail address.')
+
+        data = self.make_post_comment_data(post, email="")
+        self.assert_comment_form_error(data, 'email', 'This field is required.')
+
+    def test_comment_form_name_error(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post, name="")
+        self.assert_comment_form_error(data, 'name', 'This field is required.')
+
+    def test_comment_form_comment_error(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post, comment="")
+        self.assert_comment_form_error(data, 'comment', 'This field is required.')
+
+    def assert_comment_form_error(self, data, field_name, field_error):
         url = django_comments.get_form_target()
         response = self.c.post(url, data, follow=True)
         self.assertEqual(200, response.status_code)
-        self.assertContains(response, "Please correct the error below")
-        self.assertTemplateUsed(response, "comments/preview.html")
+        self.assertFormError(response, 'form', field_name, field_error)
         self.assertNotContains(response, "URL")  # url field should be hidden
 
     def make_post_comment_data(self, post, **kwargs):
