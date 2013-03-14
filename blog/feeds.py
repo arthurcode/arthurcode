@@ -16,9 +16,8 @@ class LatestPostsFeed(Feed):
     feed_copyright = "Copyright (c) 2013, arthurcode.com"
     categories = ("web development", "django")
     feed_type = Rss201rev2Feed  # RSS 2.01
-
-    def description(self):
-        return "The latest in django web-development from Rhyan Arthur, founder of arthurcode.com (%s)." % self.get_feed_and_version()
+    feed_version = "RSS 2.01"
+    description = "The latest in django web-development from Rhyan Arthur, founder of arthurcode.com."
 
     def link(self):
         return reverse('index')
@@ -67,13 +66,8 @@ class LatestPostsFeed(Feed):
     def author_link(self):
         return self.link()
 
-    def get_feed_and_version(self):
-        return "RSS 2.01"
-
 
 class AtomLatestPostsFeed(LatestPostsFeed):
     feed_type = Atom1Feed
     subtitle = LatestPostsFeed.description
-
-    def get_feed_and_version(self):
-        return "Atom 1.0"
+    feed_version = "Atom 1.0"

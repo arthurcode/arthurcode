@@ -6,6 +6,7 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 import collections
 import datetime
+from feeds import LatestPostsFeed, AtomLatestPostsFeed
 
 POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
@@ -113,3 +114,12 @@ class ContactView(TemplateView):
 
 class FeedsView(TemplateView):
     template_name = "blog/feeds.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(FeedsView, self).get_context_data(**kwargs)
+        data.update({
+            'title': 'Latest Blog Postings',
+            'rss_version': LatestPostsFeed.feed_version,
+            'atom_version': AtomLatestPostsFeed.feed_version
+        })
+        return data

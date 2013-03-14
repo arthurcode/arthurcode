@@ -89,6 +89,17 @@ body.contact #primary-navigation .contact a {
     float: left;
 }
 
+ul.feeds {
+    list-style-type: none;
+}
+/* http://www.w3schools.com/Css/css_list.asp */
+ul.feeds li {
+    background-image: url('icons/rss_16x16.png');
+    background-repeat: no-repeat;
+    background-position: 0 2px;
+    padding-left: 20px;
+}
+
 #post_data {
     font-size: 80%;
     font-style: italic;
