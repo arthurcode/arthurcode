@@ -12,6 +12,8 @@ from comments.forms import MPTTCommentForm
 from comments.models import MPTTComment
 import django.contrib.comments as django_comments
 from django.contrib.comments.forms import CommentSecurityForm
+from bs4 import BeautifulSoup
+
 
 # -----------------------------
 # MODEL TESTS
@@ -269,12 +271,14 @@ class ViewTests(TestCase):
         self.assertNotContains(response, "last-modified")
         self.assert_page_title_is(response, post.title)
         self.assert_meta_desc_is(response, post.synopsis)
+        self.assert_has_single_comment_form(response)
 
         post_date = datetime.date.today() - datetime.timedelta(1)
         post = create_post(pub_date=post_date, author=self.author)
         response = self.c.get(post.get_absolute_url())
         # last modified will default to today's date, which is one day later than the publication date
         self.assertContains(response, "last-modified")
+        self.assert_has_single_comment_form(response)
 
         bogus_url = post.get_absolute_url().rstrip("/") + "garbage/"
         response = self.c.get(bogus_url)
@@ -302,6 +306,7 @@ class ViewTests(TestCase):
         self.assert_does_not_contain_link(response, post_1.get_absolute_url())
         self.assert_contains_link(response, reverse('index'))
         self.assert_meta_desc_is(response, post_2.synopsis)
+        self.assert_has_single_comment_form(response)
 
     def test_about_and_contact_views(self):
         about_url = reverse('about')
@@ -351,6 +356,35 @@ class ViewTests(TestCase):
     def assert_meta_desc_is(self, response, desc):
         meta = '<meta name="description" content="%s"/>' % desc
         self.assertContains(response, meta, html=True)
+
+    def assert_has_single_comment_form(self, response):
+        soup = BeautifulSoup(response.content)
+        forms = soup.find_all('form', 'comment')
+        self.assertEquals(1, len(forms))
+        labels = forms[0].find_all('label')
+
+        # honeypot, name, email and comment
+        self.assertEquals(4, len(labels))
+
+        # honeypot is optional
+        label_honeypot = forms[0].find('label', {'for': 'id_honeypot'})
+        self.assertIsNotNone(label_honeypot.find('span', 'optional-text'))
+        self.assertIsNone(label_honeypot.find('span', 'required-text'))
+
+        # name is required
+        label_name = forms[0].find('label', {'for': 'id_name'})
+        self.assertIsNotNone(label_name.find('span', 'required-text'))
+        self.assertIsNone(label_name.find('span', 'optional-text'))
+
+        # email is required
+        label_email = forms[0].find('label', {'for': 'id_email'})
+        self.assertIsNotNone(label_email.find('span', 'required-text'))
+        self.assertIsNone(label_email.find('span', 'optional-text'))
+
+        # comment is required
+        label_comment = forms[0].find('label', {'for': 'id_comment'})
+        self.assertIsNotNone(label_comment.find('span', 'required-text'))
+        self.assertIsNone(label_comment.find('span', 'optional-text'))
 
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
@@ -477,12 +511,36 @@ class CommentingTest(TestCase):
         data = self.make_post_comment_data(post, comment="")
         self.assert_comment_form_error(data, 'comment', 'This field is required.')
 
-    def assert_comment_form_error(self, data, field_name, field_error):
+    def assert_comment_form_error(self, data, field_name, field_error, required=True):
         url = django_comments.get_form_target()
         response = self.c.post(url, data, follow=True)
         self.assertEqual(200, response.status_code)
         self.assertFormError(response, 'form', field_name, field_error)
         self.assertNotContains(response, "URL")  # url field should be hidden
+        soup = BeautifulSoup(response.content)
+        forms = soup.find_all('form', 'comment')  # shortcut to narrow by class=comment
+
+        # there should be exactly one comment form on the page
+        self.assertEqual(1, len(forms))
+        form = forms[0]
+
+        # the label corresponding to <field-name> should contain the error strings
+        label = form.find('label', {'for': 'id_%s' % field_name})
+        self.assertIsNotNone(label)
+
+        # assert that there is a 'label' span
+        self.assertIsNotNone(label.find('span', 'label'))
+
+        if required:
+            self.assertIsNotNone(label.find('span', 'required-text'))
+        else:
+            self.assertIsNotNone(label.find('span', 'optional-text'))
+
+        # assert that there is an 'error' span that contains the expected error message fragment
+        error_span = label.find('span', 'error')
+        self.assertIsNotNone(error_span)
+        self.assertTrue(field_error in error_span.get_text())
+
 
     def make_post_comment_data(self, post, **kwargs):
         timestamp = int(time.time())
