@@ -11,7 +11,7 @@
     <title>{% block title %}{% if page_title %}{{ page_title }}{% endif %}{% endblock %} | {{ site_name }}</title>
     <meta name="description" content="{% firstof meta_description site_description %}" />
 </head>
-<body>
+<body class="{% block body_class %}blog{% endblock %}">
 {% block site_wrapper %} {% endblock %}
 </body>
 </html>

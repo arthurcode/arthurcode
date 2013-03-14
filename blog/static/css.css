@@ -71,6 +71,13 @@ h1 {
     border-bottom: none;
 }
 
+/* show which navigation link is active */
+body.blog #primary-navigation .blog a,
+body.about #primary-navigation .about a,
+body.contact #primary-navigation .contact a {
+    border: 2px solid black;
+}
+
 #post_data {
     font-size: 80%;
     font-style: italic;

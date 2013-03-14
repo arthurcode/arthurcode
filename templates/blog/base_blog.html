@@ -10,9 +10,9 @@
 
             {% block navigation %}
                 <ul id="primary-navigation">
-                    <li><a href="{% url index %}">Blog</a></li>
-                    <li><a href="{% url about %}">About Me</a></li>
-                    <li><a href="{% url contact %}">Contact</a></li>
+                    <li class="blog"><a href="{% url index %}">Blog</a></li>
+                    <li class="about"><a href="{% url about %}">About Me</a></li>
+                    <li class="contact"><a href="{% url contact %}">Contact</a></li>
                 </ul>
             {% endblock %}
         </div>
