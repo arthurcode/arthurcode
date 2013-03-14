@@ -2,7 +2,8 @@ __author__ = 'rhyanarthur'
 
 from django.conf.urls import patterns, url, include
 from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, \
-    BlogPostDetailView, index, AboutView, ContactView
+    BlogPostDetailView, index, AboutView, ContactView, FeedsView
+from blog.feeds import LatestPostsFeed, AtomLatestPostsFeed
 
 urlpatterns = patterns('',
 
@@ -35,4 +36,7 @@ urlpatterns += patterns('',
     (r'^comments/', include('django.contrib.comments.urls')),
     url(r'^about/', AboutView.as_view(), name="about"),
     url(r'^contact/', ContactView.as_view(), name="contact"),
+    url(r'^rss/', LatestPostsFeed(), name="rss"),
+    url(r'atom/', AtomLatestPostsFeed(), name="atom"),
+    url(r'feeds/', FeedsView.as_view(), name="feeds"),
 )

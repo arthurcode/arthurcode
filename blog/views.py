@@ -110,3 +110,6 @@ class ContactView(TemplateView):
         data = super(ContactView, self).get_context_data(**kwargs)
         data[PAGE_TITLE_FIELD] = "Contact"
         return data
+
+class FeedsView(TemplateView):
+    template_name = "blog/feeds.html"

@@ -15,6 +15,8 @@
                     <li class="contact"><a href="{% url contact %}">Contact</a></li>
                 </ul>
             {% endblock %}
+
+            <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}/icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
         </div>
         <div id="bd">
             <div id="yui-main">

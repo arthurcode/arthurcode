@@ -39,15 +39,21 @@ h1 {
     font-family: courier, monospace;
     color: steelblue;
     letter-spacing: 0.2em;
-    padding-left: 20px
+    padding-left: 20px;
+    float: left;
 }
 
 #primary-navigation {
     margin-left: 0;
     border-radius: 10px;
     float: left;
-    width: 100%;
+    clear: both;
     padding-left: 20px;
+    display: inline-block;
+}
+
+#primary-navigation li {
+    display: inline-block;
 }
 
 #primary-navigation a {
@@ -76,6 +82,11 @@ body.blog #primary-navigation .blog a,
 body.about #primary-navigation .about a,
 body.contact #primary-navigation .contact a {
     border: 2px solid black;
+}
+
+#hd .rss {
+    display: inline-block;
+    float: left;
 }
 
 #post_data {
