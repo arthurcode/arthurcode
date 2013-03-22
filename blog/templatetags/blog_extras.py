@@ -1,5 +1,6 @@
 from django import template
 import re
+from bs4 import BeautifulSoup
 
 register = template.Library()
 
@@ -55,6 +56,20 @@ def field_label_tag(field):
     return "<label%s>%s</label>" % (match.group('attrs'), text)
 
 
+def aria_required_field(field):
+    """
+     Add 'required' and 'aria-required' attributes to the html of required fields.
+     See http://john.foliot.ca/required-inputs/ for background on why
+     I'm adding these attributes.
+    """
+    if not field.field.required:
+        return unicode(field)
+    soup = BeautifulSoup(unicode(field))
+    element = soup.contents[0]
+    element.attrs.update({'required': '', 'aria-required': 'true'})
+    return unicode(soup)
+
 register.simple_tag(comment_anchor)
 register.simple_tag(comment_permalink)
 register.simple_tag(field_label_tag)
+register.simple_tag(aria_required_field)
