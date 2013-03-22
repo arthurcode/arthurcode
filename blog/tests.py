@@ -591,6 +591,25 @@ class CommentingTest(TestCase):
         data = self.make_post_comment_data(post, comment="")
         self.assert_comment_form_error(data, 'comment', 'This field is required.')
 
+    def test_comments_from_authenticated_users(self):
+        self.assertEqual(0, MPTTComment.objects.all().count())
+        url = django_comments.get_form_target()
+        post = create_post(author=self.author)
+
+        login_successful = self.c.login(username=self.user.username, password="password")
+        self.assertTrue(login_successful, "Login attempt unexpectedly failed.")
+
+        # even if name and e-mail are left blank, we should use the values from the user's profile
+        data = self.make_post_comment_data(post, name="", email="")
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+
+        self.assertEqual(self.user.username, comment.user.username)
+        self.assertEqual(self.user.email, comment.user.email)
+
     def assert_comment_form_error(self, data, field_name, field_error, required=True):
         url = django_comments.get_form_target()
         response = self.c.post(url, data, follow=True)
