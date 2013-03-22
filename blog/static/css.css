@@ -9,6 +9,8 @@ html {
 #doc {
     background-color: white;
     border-radius: 10px;
+    font-family: georgia, sans-serif;
+    line-height: 1.5em;
 }
 
 a:link, a:visited {
