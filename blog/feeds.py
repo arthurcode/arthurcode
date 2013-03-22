@@ -4,7 +4,22 @@ from django.contrib.syndication.views import Feed
 from django.core.urlresolvers import reverse
 from blog.models import Post
 import datetime
-from django.utils.feedgenerator import Atom1Feed, Rss201rev2Feed
+from django.utils.feedgenerator import Atom1Feed, Rss201rev2Feed, rfc3339_date
+
+
+# BEGIN PATCH - https://code.djangoproject.com/ticket/14656
+# 'published' element missing from atom feeds
+Atom1Feed._add_item_elements = Atom1Feed.add_item_elements
+
+
+def atom1feed_add_item_elements_patched(self, handler, item, *args, **kwargs):
+    if item['pubdate'] is not None:
+        handler.addQuickElement(u"published", rfc3339_date(item['pubdate']).decode('utf-8'))
+        # include args, kwargs for future compatibility
+    self._add_item_elements(handler, item, *args, **kwargs)
+
+Atom1Feed.add_item_elements = atom1feed_add_item_elements_patched
+# - END PATCH
 
 
 class LatestPostsFeed(Feed):
@@ -43,13 +58,10 @@ class LatestPostsFeed(Feed):
     def item_author_email(self, post):
         return post.get_author_email()
 
-    def item_author_link(self, post):
-        # assumes that a single author posts on this blog
-        return self.author_link()
-
     def item_pubdate(self, post):
         """
         This method requires a datetime.datetime return value, so we need to convert out datetime.date pub_date.
+        TODO: look into using the last-modified date for Atom feeds
         """
         return datetime.datetime.combine(post.pub_date, datetime.time(0, 0, 0, 0))
 
@@ -63,11 +75,11 @@ class LatestPostsFeed(Feed):
     def feed_url(self):
         return reverse('rss')
 
-    def author_link(self):
-        return self.link()
-
 
 class AtomLatestPostsFeed(LatestPostsFeed):
     feed_type = Atom1Feed
     subtitle = LatestPostsFeed.description
     feed_version = "Atom 1.0"
+
+    def feed_url(self):
+        return reverse('atom')

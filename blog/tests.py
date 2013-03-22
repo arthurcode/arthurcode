@@ -13,6 +13,7 @@ from comments.models import MPTTComment
 import django.contrib.comments as django_comments
 from django.contrib.comments.forms import CommentSecurityForm
 from bs4 import BeautifulSoup
+from feeds import LatestPostsFeed, AtomLatestPostsFeed
 
 
 # -----------------------------
@@ -327,6 +328,85 @@ class ViewTests(TestCase):
         self.assert_contains_link(response, about_url)
         self.assert_contains_link(response, index_url)
 
+    def test_rss_view(self):
+        # make more posts than will be displayed in the feeds
+        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        rss_url = reverse('rss')
+        response = self.c.get(rss_url)
+        self.assertEqual(200, response.status_code)
+        soup = BeautifulSoup(response.content)
+        rss = soup.find('rss')
+        self.assertIsNotNone(rss)
+
+        title = rss.find('title').text
+        self.assertEquals(LatestPostsFeed.title, title)
+        link = rss.find('link').text
+        self.assertTrue(link.endswith(reverse('index')))
+        description = rss.find('description').text
+        self.assertEquals(LatestPostsFeed.description, description)
+        copy_right = rss.find('copyright').text
+        self.assertEquals(LatestPostsFeed.feed_copyright, copy_right)
+
+        items = rss.find_all('item')
+        self.assertEquals(LatestPostsFeed.NUM_POSTS, len(items))
+
+        for item, post in zip(items, posts):
+            title = item.find('title').text
+            self.assertEquals(post.title, title)
+            link = item.find('link').text
+            self.assertTrue(link.endswith(post.get_absolute_url()))
+            description = item.find('description').text
+            self.assertEquals(post.synopsis, description)
+            author = item.find('author').text
+            self.assertEquals("%s (%s)" % (post.get_author_email(), post.get_author_name()), author)
+            guid = item.find('guid').text
+            self.assertEquals(link, guid)
+
+    def test_atom_view(self):
+        # make more posts than will be displayed in the feeds
+        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        atom_url = reverse('atom')
+        response = self.c.get(atom_url)
+        self.assertEquals(200, response.status_code)
+        soup = BeautifulSoup(response.content)
+        feed = soup.find('feed')
+        self.assertIsNotNone(feed)
+
+        title = feed.find('title').text
+        self.assertEquals(LatestPostsFeed.title, title)
+        link = feed.find('link', {'rel': 'alternate'})
+        link_href = link.attrs['href']
+        self.assertTrue(link_href.endswith(reverse('index')))
+        self.assertEquals(link_href, feed.find('id').text)
+        link = feed.find('link', {'rel': 'self'})
+        self.assertTrue(link.attrs['href'].endswith(atom_url))
+
+        author = feed.find('author')
+        self.assertEquals(LatestPostsFeed.author_name, author.find('name').text)
+        self.assertEquals(LatestPostsFeed.author_email, author.find('email').text)
+        subtitle = feed.find('subtitle')
+        self.assertEquals(LatestPostsFeed.description, subtitle.text)
+        rights = feed.find('rights')
+        self.assertEquals(LatestPostsFeed.feed_copyright, rights.text)
+        entries = feed.find_all('entry')
+        self.assertEquals(LatestPostsFeed.NUM_POSTS, len(entries))
+
+        for entry, post in zip(entries, posts):
+            title = entry.find('title').text
+            self.assertEquals(post.title, title)
+            link = entry.find('link')
+            link_href = link.attrs['href']
+            self.assertTrue(link_href.endswith(post.get_absolute_url()))
+
+            author = entry.find('author')
+            self.assertEquals(post.get_author_name(), author.find('name').text)
+            self.assertEquals(post.get_author_email(), author.find('email').text)
+            self.assertEquals(link_href, entry.find('id').text)
+            summary = entry.find('summary')
+            self.assertEquals(post.synopsis, summary.text)
+            # assert the atom feed item has a 'published' element (django bug 14656)
+            self.assertIsNotNone(entry.find('published'))
+
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
@@ -578,6 +658,11 @@ class Counter():
 
 
 COUNTER = Counter()
+
+
+def make_consecutive_daily_posts(num, **kwargs):
+    today = datetime.date.today()
+    return [create_post(pub_date=(today - datetime.timedelta(x)), **kwargs) for x in xrange(num)]
 
 
 def create_post(**kwargs):
