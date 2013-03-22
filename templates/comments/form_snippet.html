@@ -7,10 +7,14 @@
         {% if field.is_hidden %}
             <div>{{ field }}</div>
         {% else %}
-            <div class="field{% if field.errors %} error{% endif %}"
-                    {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
-                {% field_label_tag field %} {% aria_required_field field %}
-            </div>
+            {% if field.name == "name" and user.is_authenticated %}
+            {% elif field.name == "email" and user.is_authenticated %}
+            {% else %}
+                <div class="field{% if field.errors %} error{% endif %}"
+                        {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
+                    {% field_label_tag field %} {% aria_required_field field %}
+                </div>
+            {% endif %}
         {% endif %}
     {% endfor %}
     {% comment %} The parent field was added to support threaded comments {% endcomment %}
