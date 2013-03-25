@@ -13,7 +13,7 @@ from comments.models import MPTTComment
 import django.contrib.comments as django_comments
 from django.contrib.comments.forms import CommentSecurityForm
 from bs4 import BeautifulSoup
-from feeds import LatestPostsFeed, AtomLatestPostsFeed
+from feeds import LatestPostsFeed
 
 
 # -----------------------------
@@ -108,6 +108,7 @@ class PostTest(TestCase):
         self.assertEqual(post.pub_date, post.mod_date)
         self.assertEqual(self.author.pen_name, post.get_author_name())
         self.assertEqual(self.user.email, post.get_author_email())
+        self.assertEqual(post.is_draft, False)
 
     def test_create_post_title_cannot_be_blank(self):
         for blank in self.blanks:
@@ -172,6 +173,20 @@ class PostTest(TestCase):
             post.save()
         self.assertIn("enable_comments", str(cm.exception))
 
+    def test_draft_post(self):
+        today = datetime.date.today()
+        two_days_ago = today - datetime.timedelta(2)
+        post = create_post(author=self.author, is_draft=True, pub_date=two_days_ago)
+        self.assertTrue(post.is_draft)
+        self.assertEqual(0, Post.published.count())
+        self.assertEqual(two_days_ago, post.pub_date)
+
+        post.publish()
+        self.assertFalse(post.is_draft)
+        self.assertEqual(today, post.pub_date)
+        self.assertEqual(today, post.mod_date)
+        self.assertEqual(1, Post.published.count())
+
 
 #-----------------------------
 # VIEW TESTS
@@ -205,8 +220,11 @@ class ViewTests(TestCase):
         self.assertTemplateUsed(response, "blog/post_archive_day.html")
 
     def test_empty_views_allowed(self):
+        # create a draft post - these should never show up in the archives
+        post = create_post(author=self.author, is_draft=True)
+
         # we don't want archive views with no posts to throw 404
-        posts = Post.objects.all()
+        posts = Post.published.all()
         self.assertEqual(0, len(posts))
         today = datetime.date.today()
 
@@ -285,6 +303,23 @@ class ViewTests(TestCase):
         response = self.c.get(bogus_url)
         self.assertEqual(404, response.status_code)
 
+    def test_draft_post_detail_view(self):
+        draft_post = create_post(author=self.author, is_draft=True)
+        params = {'year': draft_post.pub_date.year,
+                  'month': draft_post.pub_date.month,
+                  'day': draft_post.pub_date.day,
+                  'slug': draft_post.title_slug}
+
+        # verify that the draft post cannot be viewed at its 'public' url
+        public_url = reverse('post_detail', kwargs=params)
+        response = self.c.get(public_url)
+        self.assertEqual(404, response.status_code)
+
+        # after the draft has been published it should be visible at the public url
+        draft_post.publish()
+        response = self.c.get(public_url)
+        self.assertEqual(200, response.status_code)
+
     def test_index(self):
         # test that we don't die a horrible death when the index is rendered when there are no posts in the database
         response = self.c.get(reverse('index'))
@@ -294,13 +329,16 @@ class ViewTests(TestCase):
 
         post_1 = create_post(pub_date=datetime.date(2013, 01, 02), author=self.author)
         post_2 = create_post(pub_date=datetime.date(2013, 01, 03), author=self.author)
+        # the latest post is a draft - it shouldn't show up on the home page
+        draft_post = create_post(pub_date=datetime.date(2013, 01, 04), author=self.author, is_draft=True)
         response = self.c.get(reverse('index'))
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, "blog/post_detail.html")
         self.assert_contains_link(response, reverse('index'))
         self.assert_page_title_is(response, "Blog")
 
-        # assert that only the latest post is rendered on the main page, and that there is a permalink to the post's url
+        # assert that only the latest (non-draft) post is rendered on the main page
+        # and that there is a permalink to the post's url
         self.assertContains(response, post_2.title)
         self.assertNotContains(response, post_1.title)
         self.assert_contains_link(response, post_2.get_absolute_url())
@@ -308,6 +346,13 @@ class ViewTests(TestCase):
         self.assert_contains_link(response, reverse('index'))
         self.assert_meta_desc_is(response, post_2.synopsis)
         self.assert_has_single_comment_form(response)
+
+        # publish the draft post and assert that now it appears on the home page
+        draft_post.publish()
+        response = self.c.get(reverse('index'))
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, draft_post.title)
+        self.assertNotContains(response, post_2.title)
 
     def test_about_and_contact_views(self):
         about_url = reverse('about')
@@ -331,6 +376,9 @@ class ViewTests(TestCase):
     def test_rss_view(self):
         # make more posts than will be displayed in the feeds
         posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        # create a draft post - this shouldn't be shown in the feeds
+        create_post(author=self.author, is_draft=True)
+
         rss_url = reverse('rss')
         response = self.c.get(rss_url)
         self.assertEqual(200, response.status_code)
@@ -365,6 +413,9 @@ class ViewTests(TestCase):
     def test_atom_view(self):
         # make more posts than will be displayed in the feeds
         posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        # create a draft post - this shouldn't be shown in the feeds
+        create_post(author=self.author, is_draft=True)
+
         atom_url = reverse('atom')
         response = self.c.get(atom_url)
         self.assertEquals(200, response.status_code)
@@ -697,9 +748,10 @@ def create_post(**kwargs):
     synopsis = kwargs.get('synopsis', 'Some synopsis.')
     body = kwargs.get('body', 'Some body text.')
     enable_comments = kwargs.get('enable_comments', True)
+    is_draft = kwargs.get('is_draft', False)
 
     post = Post(title=title, title_slug=title_slug, author=author, synopsis=synopsis, body=body,
-                enable_comments=enable_comments)
+                enable_comments=enable_comments, is_draft=is_draft)
     post.full_clean()
     post.save()
 

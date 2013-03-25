@@ -38,7 +38,7 @@ class LatestPostsFeed(Feed):
         return reverse('index')
 
     def items(self):
-        return Post.objects.order_by('-pub_date')[:LatestPostsFeed.NUM_POSTS]
+        return Post.published.order_by('-pub_date')[:LatestPostsFeed.NUM_POSTS]
 
     def item_title(self, post):
         return post.title

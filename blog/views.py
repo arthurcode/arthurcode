@@ -19,7 +19,7 @@ class BlogArchiveBaseView():
     Collects settings that are common to all GenericArchiveViews
     """
     date_field = POST_PUB_DATE_FIELD
-    queryset = Post.objects.all()
+    queryset = Post.published.all()
     allow_empty = True
     make_object_list = True
     month_format = '%m'
@@ -85,7 +85,7 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
 
 def index(request):
     try:
-        latest = Post.objects.latest(POST_PUB_DATE_FIELD)
+        latest = Post.published.latest(POST_PUB_DATE_FIELD)
     except ObjectDoesNotExist:
         latest = None
     return render_to_response("blog/post_detail.html",

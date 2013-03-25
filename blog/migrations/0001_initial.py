@@ -27,6 +27,7 @@ class Migration(SchemaMigration):
             ('mod_date', self.gf('django.db.models.fields.DateField')(auto_now=True, blank=True)),
             ('body', self.gf('django.db.models.fields.TextField')()),
             ('enable_comments', self.gf('django.db.models.fields.BooleanField')(default=True)),
+            ('is_draft', self.gf('django.db.models.fields.BooleanField')(default=True)),
         ))
         db.send_create_signal('blog', ['Post'])
 
@@ -81,6 +82,7 @@ class Migration(SchemaMigration):
             'body': ('django.db.models.fields.TextField', [], {}),
             'enable_comments': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_draft': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'mod_date': ('django.db.models.fields.DateField', [], {'auto_now': 'True', 'blank': 'True'}),
             'pub_date': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'synopsis': ('django.db.models.fields.CharField', [], {'max_length': '1000'}),

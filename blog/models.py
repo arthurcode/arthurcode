@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.contrib.comments.moderation import CommentModerator, moderator
 from utils import is_blank
 from validators import not_blank
+import datetime
 
 
 class AuthorProfile(models.Model):
@@ -52,8 +53,16 @@ class AuthorProfile(models.Model):
         return self.pen_name
 
 
+class PublishedPostManager(models.Manager):
+    def get_query_set(self):
+        return super(PublishedPostManager, self).get_query_set().filter(is_draft=False)
+
+
 class Post(models.Model):
     TITLE_MAX_LENGTH = 200
+
+    objects = models.Manager()
+    published = PublishedPostManager()
 
     author = models.ForeignKey(AuthorProfile)
 
@@ -85,6 +94,8 @@ class Post(models.Model):
 
     enable_comments = models.BooleanField(default=True)
 
+    is_draft = models.BooleanField(default=True)
+
     def get_author_name(self):
         return self.author.pen_name
 
@@ -92,6 +103,7 @@ class Post(models.Model):
         return self.author.user.email
 
     def get_absolute_url(self):
+        #TODO: modify this method for draft postings
         params = {
             'year': self.pub_date.year,
             'month': self.pub_date.month,
@@ -106,6 +118,14 @@ class Post(models.Model):
         the 'enable_comments' field, but in the future the calculation may become more complex.
         """
         return self.enable_comments
+
+    def publish(self):
+        if self.is_draft:
+            today = datetime.date.today()
+            self.pub_date = today
+            self.mod_date = today
+            self.is_draft = False
+            self.save()
 
     def __unicode__(self):
         return self.title
