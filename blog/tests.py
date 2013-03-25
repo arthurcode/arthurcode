@@ -196,7 +196,8 @@ class ViewTests(TestCase):
 
     def setUp(self):
         self.c = Client()
-        self.user = User(username="arthur", password="whocares", email="me@example.com")
+        self.user = User.objects.create_user('arthur', 'me@example.com', 'whocares')
+        self.user.is_staff = True
         self.user.full_clean()
         self.user.save()
         self.author = AuthorProfile(user=self.user, pen_name="Captain Yoga Pants")
@@ -315,17 +316,27 @@ class ViewTests(TestCase):
         response = self.c.get(public_url)
         self.assertEqual(404, response.status_code)
 
-        # assert that the post can be viewed at its 'private' url
+        # assert that the private url can only be viewed by a staff member
         private_url = draft_post.get_absolute_url()
         self.assertNotEqual(public_url, private_url)
         response = self.c.get(private_url)
         self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, "admin/login.html")
+
+        # login as a staff member
+        login_successful = self.c.login(username=self.user.username, password='whocares')
+        self.assertTrue(login_successful)
+
+        response = self.c.get(private_url)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, "blog/post_detail.html")
 
         # after the draft has been published it should be visible at the public url
         draft_post.publish()
         response = self.c.get(public_url)
         self.assertEqual(200, response.status_code)
         self.assertEqual(public_url, draft_post.get_absolute_url())
+        self.assertTemplateUsed(response, "blog/post_detail.html")
 
         # assert that the draft is no longer visible at the private url
         response = self.c.get(private_url)

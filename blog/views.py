@@ -7,6 +7,8 @@ from django.template import RequestContext
 import collections
 import datetime
 from feeds import LatestPostsFeed, AtomLatestPostsFeed
+from django.utils.decorators import method_decorator
+from django.contrib.admin.views.decorators import staff_member_required
 
 POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
@@ -85,6 +87,10 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
 
 class BlogDraftPostDetailView(BlogPostDetailView):
     queryset = Post.objects.filter(is_draft=True)
+
+    @method_decorator(staff_member_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(BlogDraftPostDetailView, self).dispatch(request, *args, **kwargs)
 
 
 def index(request):
