@@ -37,6 +37,7 @@
         <div id="ft">
             {% block footer %}
                 copyright &copy 2013 www.arthurcode.com
+                {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
             {% endblock %}
         </div>
     </div>
