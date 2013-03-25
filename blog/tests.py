@@ -315,10 +315,21 @@ class ViewTests(TestCase):
         response = self.c.get(public_url)
         self.assertEqual(404, response.status_code)
 
+        # assert that the post can be viewed at its 'private' url
+        private_url = draft_post.get_absolute_url()
+        self.assertNotEqual(public_url, private_url)
+        response = self.c.get(private_url)
+        self.assertEqual(200, response.status_code)
+
         # after the draft has been published it should be visible at the public url
         draft_post.publish()
         response = self.c.get(public_url)
         self.assertEqual(200, response.status_code)
+        self.assertEqual(public_url, draft_post.get_absolute_url())
+
+        # assert that the draft is no longer visible at the private url
+        response = self.c.get(private_url)
+        self.assertEqual(404, response.status_code)
 
     def test_index(self):
         # test that we don't die a horrible death when the index is rendered when there are no posts in the database

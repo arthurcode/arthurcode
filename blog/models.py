@@ -103,14 +103,17 @@ class Post(models.Model):
         return self.author.user.email
 
     def get_absolute_url(self):
-        #TODO: modify this method for draft postings
         params = {
             'year': self.pub_date.year,
             'month': self.pub_date.month,
             'day': self.pub_date.day,
             'slug': self.title_slug
         }
-        return reverse("post_detail", kwargs=params)
+        if self.is_draft:
+            view_name = "draft_post_detail"
+        else:
+            view_name = "post_detail"
+        return reverse(view_name, kwargs=params)
 
     def is_commenting_enabled(self):
         """

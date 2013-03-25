@@ -83,6 +83,10 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
         return data
 
 
+class BlogDraftPostDetailView(BlogPostDetailView):
+    queryset = Post.objects.filter(is_draft=True)
+
+
 def index(request):
     try:
         latest = Post.published.latest(POST_PUB_DATE_FIELD)

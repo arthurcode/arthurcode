@@ -2,7 +2,7 @@ __author__ = 'rhyanarthur'
 
 from django.conf.urls import patterns, url, include
 from blog.views import BlogYearArchiveView, BlogMonthArchiveView, BlogDayArchiveView, BlogArchiveView, \
-    BlogPostDetailView, index, AboutView, ContactView, FeedsView
+    BlogPostDetailView, index, AboutView, ContactView, FeedsView, BlogDraftPostDetailView
 from blog.feeds import LatestPostsFeed, AtomLatestPostsFeed
 
 urlpatterns = patterns('',
@@ -30,6 +30,10 @@ urlpatterns = patterns('',
                        url(r'^(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)',
                            BlogPostDetailView.as_view(),
                            name="post_detail"),
+
+                       url(r'^drafts/(?P<year>\d{4})/(?P<month>\d+)/(?P<day>\d+)/(?P<slug>[-\w]+)',
+                           BlogDraftPostDetailView.as_view(),
+                           name="draft_post_detail"),
 )
 
 urlpatterns += patterns('',
