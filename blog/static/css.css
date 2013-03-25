@@ -19,6 +19,7 @@ a:link, a:visited {
 
 #bd {
     padding: 20px;
+    min-height: 500px;
 }
 
 h1 {
