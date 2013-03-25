@@ -137,12 +137,12 @@ div#comments > ul {
     overflow: auto;
 }
 
-.comment #user {
+.user {
     font-weight: bolder;
     color: steelblue;
 }
 
-.comment #date {
+.comment .date {
     font-style: italic;
     text-decoration: none;
 }
