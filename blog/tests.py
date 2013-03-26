@@ -102,13 +102,17 @@ class PostTest(TestCase):
 
     def test_create_post(self):
         post = create_post(title="Why I Wear Yoga Pants", title_slug="slug", author=self.author, body="hi",
-                                synopsis="some synopsis")
+                                synopsis="some synopsis", tags=["tag1", "tag2"])
         self.assertIsNotNone(post.pub_date)
         self.assertIsNotNone(post.mod_date)
         self.assertEqual(post.pub_date, post.mod_date)
         self.assertEqual(self.author.pen_name, post.get_author_name())
         self.assertEqual(self.user.email, post.get_author_email())
         self.assertEqual(post.is_draft, False)
+        tags = post.tags.all()
+        self.assertEqual(2, len(tags))
+        self.assertEqual("tag1", tags[0].name)
+        self.assertEqual("tag2", tags[1].name)
 
     def test_create_post_title_cannot_be_blank(self):
         for blank in self.blanks:
@@ -480,6 +484,22 @@ class ViewTests(TestCase):
             # assert the atom feed item has a 'published' element (django bug 14656)
             self.assertIsNotNone(entry.find('published'))
 
+    def test_related_content(self):
+        tags = ["django", "web development", "css"]
+        posts = make_consecutive_daily_posts(10, author=self.author, tags=tags)
+        # since they all have the same tags, each should have 9 similar posts
+        post = posts[0]
+        response = self.c.get(post.get_absolute_url())
+        soup = BeautifulSoup(response.content)
+        related = soup.find('div', 'related-content')
+        self.assertIsNotNone(related, "The related-content div is missing")
+        related_posts = related.find_all('a')
+        self.assertEquals(5, len(related_posts))
+
+        titles = [post.title for post in posts[1:]]
+        for related_post in related_posts:
+            self.assertIn(related_post.text, titles)
+
     def assert_post_in_archive(self, date, post, level='all'):
         url = self.get_archive_url(date, level)
         response = self.c.get(url)
@@ -771,14 +791,25 @@ def create_post(**kwargs):
     body = kwargs.get('body', 'Some body text.')
     enable_comments = kwargs.get('enable_comments', True)
     is_draft = kwargs.get('is_draft', False)
+    tags = kwargs.get('tags', [])
 
     post = Post(title=title, title_slug=title_slug, author=author, synopsis=synopsis, body=body,
                 enable_comments=enable_comments, is_draft=is_draft)
+
     post.full_clean()
     post.save()
 
+    needs_another_save = False
+
+    for tag in tags:
+        post.tags.add(tag)
+        needs_another_save = True
+
     if 'pub_date' in kwargs:
         post.pub_date = kwargs['pub_date']
+        needs_another_save = True
+
+    if needs_another_save:
         post.full_clean()
         post.save()
 
