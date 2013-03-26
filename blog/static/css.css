@@ -197,7 +197,7 @@ form span.error {
    */
 
 form.comment {
-    width: 30em;
+    width: 40em;
     overflow: auto;
 }
 
@@ -216,13 +216,13 @@ label {
 
 /* style the second, larger column within a field */
 .field input, .field textarea {
-    margin-left: 25%;
+    margin-left: 20%;
     float: left;
     clear: left;
 }
 
 .field span.error {
-    margin-left: 25%;
+    margin-left: 20%;
     float: left;
     clear: left;
 }
@@ -231,14 +231,14 @@ label {
 .field span.label {
     position: absolute;
     text-align: right;
-    right: 78%;
+    right: 83%;
     top: 0;
 }
 
 .field span.required-text, .field span.optional-text {
     position: absolute;
     text-align: right;
-    right: 78%;
+    right: 83%;
     top: 1.6em;
 }
 
@@ -250,10 +250,18 @@ form .controls {
 }
 
 form .controls .submit-post {
-    margin-left: 25%;
+    margin-left: 20%;
 }
 
 /* most of the form fields are required, so we'll hide the (required) in favour of (optional) */
 form.comment span.required-text {
     visibility: hidden;
+}
+
+form.comment input {
+    width: 50%;
+}
+
+form.comment textarea {
+    width: 79%;
 }
