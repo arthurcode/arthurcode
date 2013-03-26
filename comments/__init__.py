@@ -1,14 +1,11 @@
-from models import MPTTComment
-from forms import MPTTCommentForm
-
 from django.conf import settings
 from django.core import urlresolvers
 from django.core.exceptions import ImproperlyConfigured
-from django.contrib.comments.models import Comment
-from django.contrib.comments.forms import CommentForm
+from comments.models import Comment, MPTTComment
+from comments.forms import CommentForm, MPTTCommentForm
 from django.utils.importlib import import_module
 
-DEFAULT_COMMENTS_APP = 'django.contrib.comments'
+DEFAULT_COMMENTS_APP = 'comments'
 
 def get_comment_app():
     """
@@ -43,7 +40,7 @@ def get_model():
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_model"):
         return get_comment_app().get_model()
     else:
-        return Comment
+        return MPTTComment
 
 def get_form():
     """
@@ -52,7 +49,7 @@ def get_form():
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_form"):
         return get_comment_app().get_form()
     else:
-        return CommentForm
+        return MPTTCommentForm
 
 def get_form_target():
     """
@@ -61,7 +58,7 @@ def get_form_target():
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_form_target"):
         return get_comment_app().get_form_target()
     else:
-        return urlresolvers.reverse("django.contrib.comments.views.comments.post_comment")
+        return urlresolvers.reverse("comments.views.comment.post_comment")
 
 def get_flag_url(comment):
     """
@@ -70,7 +67,7 @@ def get_flag_url(comment):
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_flag_url"):
         return get_comment_app().get_flag_url(comment)
     else:
-        return urlresolvers.reverse("django.contrib.comments.views.moderation.flag",
+        return urlresolvers.reverse("comments.views.moderation.flag",
                                     args=(comment.id,))
 
 def get_delete_url(comment):
@@ -80,7 +77,7 @@ def get_delete_url(comment):
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_delete_url"):
         return get_comment_app().get_delete_url(comment)
     else:
-        return urlresolvers.reverse("django.contrib.comments.views.moderation.delete",
+        return urlresolvers.reverse("comments.views.moderation.delete",
                                     args=(comment.id,))
 
 def get_approve_url(comment):
@@ -90,16 +87,5 @@ def get_approve_url(comment):
     if get_comment_app_name() != DEFAULT_COMMENTS_APP and hasattr(get_comment_app(), "get_approve_url"):
         return get_comment_app().get_approve_url(comment)
     else:
-        return urlresolvers.reverse("django.contrib.comments.views.moderation.approve",
+        return urlresolvers.reverse("comments.views.moderation.approve",
                                     args=(comment.id,))
-
-
-# For more information read the django docs on customizing the commenting framework:
-# https://docs.djangoproject.com/en/dev/ref/contrib/comments/custom/
-
-def get_model():
-    return MPTTComment
-
-
-def get_form():
-    return MPTTCommentForm

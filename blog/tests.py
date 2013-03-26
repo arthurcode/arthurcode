@@ -10,10 +10,10 @@ import datetime, time
 from monthdelta import MonthDelta
 from comments.forms import MPTTCommentForm
 from comments.models import MPTTComment
-import django.contrib.comments as django_comments
 from django.contrib.comments.forms import CommentSecurityForm
 from bs4 import BeautifulSoup
 from feeds import LatestPostsFeed
+import comments as comments_app
 
 
 # -----------------------------
@@ -633,13 +633,13 @@ class CommentingTest(TestCase):
         """
         Test that we have properly customized the built-in comments app.
         """
-        self.assertEqual(MPTTComment, django_comments.get_model())
-        self.assertEqual(MPTTCommentForm, django_comments.get_form())
+        self.assertEqual(MPTTComment, comments_app.get_model())
+        self.assertEqual(MPTTCommentForm, comments_app.get_form())
 
     def test_post_comments(self):
         post = create_post(author=self.author)
         data = self.make_post_comment_data(post, parent=None)
-        url = django_comments.get_form_target()
+        url = comments_app.get_form_target()
         response = self.c.post(url, data, follow=True)
         self.assertEquals(200, response.status_code)
         self.assertTemplateUsed(response, "comments/posted.html")
@@ -665,7 +665,7 @@ class CommentingTest(TestCase):
     def test_disable_comments(self):
         post = create_post(enable_comments=False, author=self.author)
         data = self.make_post_comment_data(post, parent=None)
-        url = django_comments.get_form_target()
+        url = comments_app.get_form_target()
         response = self.c.post(url, data, follow=True)
         self.assertEqual(400, response.status_code)
         self.assertEqual(0, MPTTComment.objects.all().count())
@@ -696,7 +696,7 @@ class CommentingTest(TestCase):
 
     def test_comments_from_authenticated_users(self):
         self.assertEqual(0, MPTTComment.objects.all().count())
-        url = django_comments.get_form_target()
+        url = comments_app.get_form_target()
         post = create_post(author=self.author)
 
         login_successful = self.c.login(username=self.user.username, password="password")
@@ -714,7 +714,7 @@ class CommentingTest(TestCase):
         self.assertEqual(self.user.email, comment.user.email)
 
     def assert_comment_form_error(self, data, field_name, field_error, required=True):
-        url = django_comments.get_form_target()
+        url = comments_app.get_form_target()
         response = self.c.post(url, data, follow=True)
         self.assertEqual(200, response.status_code)
         self.assertFormError(response, 'form', field_name, field_error)

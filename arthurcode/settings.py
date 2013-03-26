@@ -122,7 +122,6 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'south', # schema migrations
     'blog',
-    'django.contrib.comments',
     'mptt',
     'comments',
     'taggit',
@@ -156,8 +155,6 @@ LOGGING = {
         },
     }
 }
-
-COMMENTS_APP = 'comments'
 
 # local (non-generated) settings
 SITE_NAME = 'Arthurcode'

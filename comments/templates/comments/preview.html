@@ -4,7 +4,7 @@
 {% block title %}{% trans "Preview your comment" %}{% endblock %}
 
 {% block content %}
-  {% load comments %}
+  {% load comment %}
   <form action="{% comment_form_target %}" method="post">{% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
     {% if form.errors %}

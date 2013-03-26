@@ -58,10 +58,10 @@ import datetime
 
 from django.conf import settings
 from django.core.mail import send_mail
-from django.contrib.comments import signals
+from comments import signals
 from django.db.models.base import ModelBase
 from django.template import Context, loader
-from django.contrib import comments
+import comments
 from django.contrib.sites.models import Site
 from django.utils import timezone
 

@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.contrib.syndication.views import Feed
 from django.contrib.sites.models import Site
-from django.contrib import comments
+import comments
 from django.utils.translation import ugettext as _
 
 

@@ -2,8 +2,8 @@ from django import template
 from django.template.loader import render_to_string
 from django.conf import settings
 from django.contrib.contenttypes.models import ContentType
-from django.contrib import comments
 from django.utils.encoding import smart_unicode
+import comments
 
 register = template.Library()
 

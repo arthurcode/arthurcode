@@ -1,6 +1,6 @@
 from mptt.models import MPTTModel, TreeForeignKey
 from django.contrib.auth.models import User
-from django.contrib.comments.managers import CommentManager
+from comments.managers import CommentManager
 from django.contrib.contenttypes import generic
 from django.contrib.contenttypes.models import ContentType
 from django.contrib.sites.models import Site

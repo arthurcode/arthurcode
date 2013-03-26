@@ -37,7 +37,7 @@ urlpatterns = patterns('',
 )
 
 urlpatterns += patterns('',
-    (r'^comments/', include('django.contrib.comments.urls')),
+    (r'^comments/', include('comments.urls')),
     url(r'^about/', AboutView.as_view(), name="about"),
     url(r'^contact/', ContactView.as_view(), name="contact"),
     url(r'^rss/', LatestPostsFeed(), name="rss"),
