@@ -16,6 +16,14 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('blog', ['AuthorProfile'])
 
+        # Adding model 'TaggedPost'
+        db.create_table('blog_taggedpost', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('tag', self.gf('django.db.models.fields.related.ForeignKey')(related_name='blog_taggedpost_items', to=orm['taggit.Tag'])),
+            ('content_object', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['blog.Post'])),
+        ))
+        db.send_create_signal('blog', ['TaggedPost'])
+
         # Adding model 'Post'
         db.create_table('blog_post', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -35,6 +43,9 @@ class Migration(SchemaMigration):
     def backwards(self, orm):
         # Deleting model 'AuthorProfile'
         db.delete_table('blog_authorprofile')
+
+        # Deleting model 'TaggedPost'
+        db.delete_table('blog_taggedpost')
 
         # Deleting model 'Post'
         db.delete_table('blog_post')
@@ -89,12 +100,24 @@ class Migration(SchemaMigration):
             'title': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'title_slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '200'})
         },
+        'blog.taggedpost': {
+            'Meta': {'object_name': 'TaggedPost'},
+            'content_object': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['blog.Post']"}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'tag': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'blog_taggedpost_items'", 'to': "orm['taggit.Tag']"})
+        },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
             'app_label': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'taggit.tag': {
+            'Meta': {'object_name': 'Tag'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '100'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '100'})
         }
     }
 

@@ -23,3 +23,16 @@
         No post to display
     {% endif %}
 {% endblock %}
+
+{% block related_content %}
+    {% with post.tags.similar_objects|slice:":5" as related_posts %}
+        {% if related_posts %}
+            <h4>Similar Posts</h4>
+            <ul>
+            {% for related_post in related_posts %}
+                <li><a href="{{ related_post.get_absolute_url }}">{{related_post.title}}</a></li>
+            {% endfor %}
+            <ul>
+        {% endif %}
+    {% endwith %}
+{% endblock %}

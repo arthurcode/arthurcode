@@ -124,7 +124,8 @@ INSTALLED_APPS = (
     'blog',
     'django.contrib.comments',
     'mptt',
-    'comments'
+    'comments',
+    'taggit',
 )
 
 # A sample logging configuration. The only tangible logging

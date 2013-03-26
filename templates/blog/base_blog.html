@@ -31,6 +31,7 @@
                         {% url archive as archive_url%}
                         <li><a href="{{ archive_url }}">archive</a></li>
                     </ul>
+                    {% block related_content %}{% endblock %}
                 {% endblock %}
             </div>
         </div>

@@ -6,6 +6,8 @@ from django.contrib.comments.moderation import CommentModerator, moderator
 from utils import is_blank
 from validators import not_blank
 import datetime
+from taggit.managers import TaggableManager
+from taggit.models import TaggedItemBase
 
 
 class AuthorProfile(models.Model):
@@ -53,6 +55,14 @@ class AuthorProfile(models.Model):
         return self.pen_name
 
 
+class TaggedPost(TaggedItemBase):
+    """
+    A custom tag for Posts.  Since I'll only be tagging posts it's a little more efficient to use a ForeignKey
+    relationship rather than a generic Foreign key: http://django-taggit.readthedocs.org/en/latest/custom_tagging.html
+    """
+    content_object = models.ForeignKey('Post')
+
+
 class PublishedPostManager(models.Manager):
     def get_query_set(self):
         return super(PublishedPostManager, self).get_query_set().filter(is_draft=False)
@@ -63,6 +73,7 @@ class Post(models.Model):
 
     objects = models.Manager()
     published = PublishedPostManager()
+    tags = TaggableManager(through=TaggedPost)
 
     author = models.ForeignKey(AuthorProfile)
 
