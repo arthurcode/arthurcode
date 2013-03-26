@@ -66,8 +66,7 @@ class LatestPostsFeed(Feed):
         return datetime.datetime.combine(post.pub_date, datetime.time(0, 0, 0, 0))
 
     def item_categories(self, post):
-        # TODO: return tags when I add them
-        return LatestPostsFeed.categories
+        return (tag.name for tag in post.tags.all())
 
     def item_copyright(self, post):
         return LatestPostsFeed.feed_copyright

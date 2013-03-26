@@ -401,7 +401,7 @@ class ViewTests(TestCase):
 
     def test_rss_view(self):
         # make more posts than will be displayed in the feeds
-        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author, tags=["tag1", "tag2"])
         # create a draft post - this shouldn't be shown in the feeds
         create_post(author=self.author, is_draft=True)
 
@@ -435,10 +435,15 @@ class ViewTests(TestCase):
             self.assertEquals("%s (%s)" % (post.get_author_email(), post.get_author_name()), author)
             guid = item.find('guid').text
             self.assertEquals(link, guid)
+            categories = item.find_all('category')
+            self.assertEquals(2, len(categories))
+            self.assertEquals("tag1", categories[0].text)
+            self.assertEquals("tag2", categories[1].text)
+
 
     def test_atom_view(self):
         # make more posts than will be displayed in the feeds
-        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author)
+        posts = make_consecutive_daily_posts(LatestPostsFeed.NUM_POSTS + 3, author=self.author, tags=["tag3", "tag4"])
         # create a draft post - this shouldn't be shown in the feeds
         create_post(author=self.author, is_draft=True)
 
@@ -483,6 +488,11 @@ class ViewTests(TestCase):
             self.assertEquals(post.synopsis, summary.text)
             # assert the atom feed item has a 'published' element (django bug 14656)
             self.assertIsNotNone(entry.find('published'))
+
+            categories = entry.find_all('category')
+            self.assertEquals(2, len(categories))
+            self.assertEquals("tag3", categories[0].attrs['term'])
+            self.assertEquals("tag4", categories[1].attrs['term'])
 
     def test_related_content(self):
         tags = ["django", "web development", "css"]
