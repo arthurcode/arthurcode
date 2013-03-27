@@ -226,6 +226,9 @@ class CommentModerator(object):
             moderate_after_date = getattr(content_object, self.auto_moderate_field)
             if moderate_after_date is not None and self._get_delta(timezone.now(), moderate_after_date).days >= self.moderate_after:
                 return True
+        if self.is_spam(comment, content_object, request):
+            comment.is_spam = True
+            return True
         return False
 
     def email(self, comment, content_object, request):
@@ -244,6 +247,9 @@ class CommentModerator(object):
                                                           content_object)
         message = t.render(c)
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=True)
+
+    def is_spam(self, comment, content_object, request):
+        return False
 
 class Moderator(object):
     """

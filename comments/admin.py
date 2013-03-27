@@ -14,12 +14,12 @@ class CommentsAdmin(admin.ModelAdmin):
          {'fields': ('user', 'user_name', 'user_email', 'user_url', 'comment')}
         ),
         (_('Metadata'),
-         {'fields': ('submit_date', 'ip_address', 'is_public', 'is_removed')}
+         {'fields': ('submit_date', 'ip_address', 'is_public', 'is_removed', 'is_spam')}
         ),
     )
 
-    list_display = ('name', 'content_type', 'object_pk', 'ip_address', 'submit_date', 'is_public', 'is_removed')
-    list_filter = ('submit_date', 'site', 'is_public', 'is_removed')
+    list_display = ('name', 'content_type', 'object_pk', 'ip_address', 'submit_date', 'is_public', 'is_removed', 'is_spam')
+    list_filter = ('submit_date', 'site', 'is_public', 'is_removed', 'is_spam')
     date_hierarchy = 'submit_date'
     ordering = ('-submit_date',)
     raw_id_fields = ('user',)

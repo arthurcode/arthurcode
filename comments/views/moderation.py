@@ -136,6 +136,7 @@ def perform_approve(request, comment):
 
     comment.is_removed = False
     comment.is_public = True
+    comment.is_spam = False
     comment.save()
 
     signals.comment_was_flagged.send(
