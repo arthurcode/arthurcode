@@ -1,8 +1,5 @@
-__author__ = 'rhyanarthur'
-
 from django.contrib import admin
 from comments.models import MPTTComment
-from comments.models import Comment
 from django.utils.translation import ugettext_lazy as _, ungettext
 from comments import get_model
 from comments.views.moderation import perform_flag, perform_approve, perform_delete
@@ -73,12 +70,5 @@ class CommentsAdmin(admin.ModelAdmin):
 
 # Only register the default admin if the model is the built-in comment model
 # (this won't be true if there's a custom comment app).
-if get_model() is Comment:
-    admin.site.register(Comment, CommentsAdmin)
-
-#TODO: make my custom comment admin suck a whole lot less
-class CommentAdmin(admin.ModelAdmin):
-    pass
-
-
-admin.site.register(MPTTComment, CommentAdmin)
+if get_model() is MPTTComment:
+    admin.site.register(MPTTComment, CommentsAdmin)
