@@ -6,14 +6,16 @@ from django.db.utils import IntegrityError
 from django.core.urlresolvers import reverse
 from blog import validators
 from django.test.client import Client
+from django.test.utils import override_settings
 import datetime, time
 from monthdelta import MonthDelta
 from comments.forms import MPTTCommentForm
 from comments.models import MPTTComment
-from django.contrib.comments.forms import CommentSecurityForm
+from comments.forms import CommentSecurityForm
 from bs4 import BeautifulSoup
 from feeds import LatestPostsFeed
 import comments as comments_app
+from mock import patch
 
 
 # -----------------------------
@@ -620,14 +622,70 @@ class ViewTests(TestCase):
         raise Exception("Unrecognized level: %s" % level)
 
 
+class AkismetPostMock():
+
+    VERIFY_KEY_PATH = "/1.1/verify-key"
+    COMMENT_CHECK_PATH = "/1.1/comment-check"
+    SUBMIT_SPAM_PATH = "/1.1/submit-spam"
+    SUBMIT_HAM_PATH = "/1.1/submit-ham"
+
+    DEFAULTS = {
+        VERIFY_KEY_PATH: ("valid", 200),     # valid key
+        COMMENT_CHECK_PATH: ("false", 200),  # not spam
+        SUBMIT_SPAM_PATH: ("", 200),         # success
+        SUBMIT_HAM_PATH: ("", 200)           # success
+    }
+
+    def __init__(self):
+        self.vals = AkismetPostMock.DEFAULTS
+        self.post_args = []
+
+    def post(self, *args):
+        self.post_args.append(args)
+        return self.vals[args[2]]
+
+    def set_comment_is_spam(self, spam):
+        self.vals[AKISMET_POST_MOCK.COMMENT_CHECK_PATH] = (str(spam).lower(), 200)
+
+    def set_check_comment_response(self, response, status):
+        self.vals[AKISMET_POST_MOCK.COMMENT_CHECK_PATH] = (response, status)
+
+    def set_valid_key(self, valid):
+        if valid:
+            value = "valid"
+        else:
+            value = "invalid"
+        self.vals[AKISMET_POST_MOCK.VERIFY_KEY_PATH] = (value, 200)
+
+    def set_check_key_response(self, response, status):
+        self.vals[AKISMET_POST_MOCK.VERIFY_KEY_PATH] = (response, status)
+
+    def set_submit_ham_response(self, status):
+        self.vals[AKISMET_POST_MOCK.SUBMIT_HAM_PATH] = ("", status)
+
+    def set_submit_spam_response(self, status):
+        self.vals[AKISMET_POST_MOCK.SUBMIT_SPAM_PATH] = ("", status)
+
+    def restore_defaults(self):
+        self.vals = AkismetPostMock.DEFAULTS
+        self.post_args = []
+
+AKISMET_POST_MOCK = AkismetPostMock()
+
+
+@override_settings(AKISMET_KEY="myfakekey")
+@patch('comments.akismet.__post', AKISMET_POST_MOCK.post)
 class CommentingTest(TestCase):
 
+    USER_AGENT = 'Mozilla/5.0'
+
     def setUp(self):
-        self.c = Client()
-        self.user = User.objects.create_user("username", "someone@fake.com", "password")
+        self.c = Client(HTTP_USER_AGENT=CommentingTest.USER_AGENT)
+        self.user = User.objects.create_superuser("username", "someone@fake.com", "password")
         self.author = AuthorProfile(user=self.user, pen_name="Captain Yoga Pants")
         self.author.full_clean()
         self.author.save()
+        AKISMET_POST_MOCK.restore_defaults()
 
     def test_use_mptt_comments(self):
         """
@@ -712,6 +770,94 @@ class CommentingTest(TestCase):
 
         self.assertEqual(self.user.username, comment.user.username)
         self.assertEqual(self.user.email, comment.user.email)
+
+    def test_comment_marked_spam(self):
+        comment = self._make_spam_comment()
+        self.assertTrue(comment.is_spam)
+
+    def test_comments_allowed_invalid_key(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post)
+        url = comments_app.get_form_target()
+        AKISMET_POST_MOCK.set_valid_key(False)
+        AKISMET_POST_MOCK.set_comment_is_spam(True)
+
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+
+        self.assertFalse(comment.is_spam)
+        self.assertTrue(comment.is_public)
+
+    def test_comments_allowed_akismet_key_error(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post)
+        url = comments_app.get_form_target()
+        AKISMET_POST_MOCK.set_check_key_response('', 404)
+        AKISMET_POST_MOCK.set_comment_is_spam(True)
+
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+
+        self.assertFalse(comment.is_spam)
+        self.assertTrue(comment.is_public)
+
+    def test_comments_allowed_akismet_check_spam_error(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post)
+        url = comments_app.get_form_target()
+        AKISMET_POST_MOCK.set_valid_key(True)
+        AKISMET_POST_MOCK.set_check_comment_response('', 404)
+
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+
+        self.assertFalse(comment.is_spam)
+        self.assertTrue(comment.is_public)
+
+    def test_approve_comments_clears_spam_and_notifies_akismet(self):
+        # make sure the logged in user has permissions to moderate comments (it's a superuser)
+        login_successful = self.c.login(username=self.user.username, password="password")
+        self.assertTrue(login_successful)
+
+        comment = self._make_spam_comment()
+        self.assertTrue(comment.is_spam)
+        url = reverse("comments-approve", args=[comment.id])
+        response = self.c.post(url, follow=True)
+        self.assertEqual(200, response.status_code)
+
+        # reload the comment
+        comment = MPTTComment.objects.get(id=comment.id)
+        self.assertFalse(comment.is_spam)
+        self.assertTrue(comment.is_public)
+
+        # assert that the comment moderator sent a submit_ham message to Akismet
+        post_args = AKISMET_POST_MOCK.post_args.pop()
+        self.assertEqual(AKISMET_POST_MOCK.SUBMIT_HAM_PATH, post_args[2])
+
+    def _make_spam_comment(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post)
+        url = comments_app.get_form_target()
+        AKISMET_POST_MOCK.set_valid_key(True)
+        AKISMET_POST_MOCK.set_comment_is_spam(True)
+
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+        self.assertTrue(comment.is_spam)
+        self.assertFalse(comment.is_public)
+        return comment
 
     def assert_comment_form_error(self, data, field_name, field_error, required=True):
         url = comments_app.get_form_target()
