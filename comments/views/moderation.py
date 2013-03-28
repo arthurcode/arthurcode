@@ -89,6 +89,21 @@ def approve(request, comment_id, next=None):
             template.RequestContext(request)
         )
 
+@csrf_protect
+@permission_required("comments.can_moderate")
+def mark_as_spam(request, comment_id, next=None):
+    comment = get_object_or_404(comments.get_model(), pk=comment_id, site__pk=settings.SITE_ID)
+
+    if request.method == 'POST':
+        perform_mark_as_spam(request, comment)
+        return next_redirect(request, next, mark_as_spam_done, c=comment.pk)
+
+    else:
+        return render_to_response('comments/mark_spam.html',
+            {'comment': comment, "next": next},
+            template.RequestContext(request)
+        )
+
 # The following functions actually perform the various flag/aprove/delete
 # actions. They've been broken out into separate functions to that they
 # may be called from admin actions.
@@ -187,4 +202,9 @@ delete_done = confirmation_view(
 approve_done = confirmation_view(
     template = "comments/approved.html",
     doc = 'Displays a "comment was approved" success page.'
+)
+
+mark_as_spam_done = confirmation_view(
+    template = "comments/marked_spam.html",
+    doc = 'Displays a "comment was marked as spam" success page.'
 )

@@ -843,6 +843,25 @@ class CommentingTest(TestCase):
         post_args = AKISMET_POST_MOCK.post_args.pop()
         self.assertEqual(AKISMET_POST_MOCK.SUBMIT_HAM_PATH, post_args[2])
 
+    def test_mark_as_spam_notifies_akismet(self):
+        # make sure the logged in user has permissions to moderate comments (it's a superuser)
+        login_successful = self.c.login(username=self.user.username, password="password")
+        self.assertTrue(login_successful)
+
+        comment = self._make_ham_comment()
+        url = reverse("comments-mark-spam", args=[comment.id])
+        response = self.c.post(url, follow=True)
+        self.assertEqual(200, response.status_code)
+
+        # reload the comment
+        comment = MPTTComment.objects.get(id=comment.id)
+        self.assertTrue(comment.is_spam)
+        self.assertFalse(comment.is_public)
+
+        # assert that the comment moderator sent a submit_spam message to Akismet
+        post_args = AKISMET_POST_MOCK.post_args.pop()
+        self.assertEqual(AKISMET_POST_MOCK.SUBMIT_SPAM_PATH, post_args[2])
+
     def _make_spam_comment(self):
         post = create_post(author=self.author)
         data = self.make_post_comment_data(post)
@@ -857,6 +876,22 @@ class CommentingTest(TestCase):
         comment = comments[0]
         self.assertTrue(comment.is_spam)
         self.assertFalse(comment.is_public)
+        return comment
+
+    def _make_ham_comment(self):
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post)
+        url = comments_app.get_form_target()
+        AKISMET_POST_MOCK.set_valid_key(True)
+        AKISMET_POST_MOCK.set_comment_is_spam(False)
+
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        comments = MPTTComment.objects.all()
+        self.assertEqual(1, len(comments))
+        comment = comments[0]
+        self.assertFalse(comment.is_spam)
+        self.assertTrue(comment.is_public)
         return comment
 
     def assert_comment_form_error(self, data, field_name, field_error, required=True):

@@ -9,6 +9,8 @@ urlpatterns = patterns('comments.views',
     url(r'^deleted/$',       'moderation.delete_done',      name='comments-delete-done'),
     url(r'^approve/(\d+)/$', 'moderation.approve',          name='comments-approve'),
     url(r'^approved/$',      'moderation.approve_done',     name='comments-approve-done'),
+    url(r'^mark-spam/(\d+)/$', 'moderation.mark_as_spam',   name='comments-mark-spam'),
+    url(r'^marked-spam/$',   'moderation.mark_as_spam_done',name='comments-mark-spam-done'),
 )
 
 urlpatterns += patterns('',
