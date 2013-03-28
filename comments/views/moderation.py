@@ -2,9 +2,9 @@ from __future__ import absolute_import
 
 from django import template
 from django.conf import settings
-from django.contrib import comments
+import comments
 from django.contrib.auth.decorators import login_required, permission_required
-from django.contrib.comments import signals
+from comments import signals
 from django.contrib.comments.views.utils import next_redirect, confirmation_view
 from django.shortcuts import get_object_or_404, render_to_response
 from django.views.decorators.csrf import csrf_protect
@@ -133,11 +133,18 @@ def perform_approve(request, comment):
         user    = request.user,
         flag    = comments.models.CommentFlag.MODERATOR_APPROVAL,
     )
-
+    originally_spam = comment.is_spam
     comment.is_removed = False
     comment.is_public = True
     comment.is_spam = False
     comment.save()
+
+    if originally_spam:
+        signals.comment_was_marked_not_spam.send(
+            sender = comment.__class__,
+            comment = comment,
+            request = request,
+        )
 
     signals.comment_was_flagged.send(
         sender  = comment.__class__,
@@ -146,6 +153,26 @@ def perform_approve(request, comment):
         created = created,
         request = request,
     )
+
+
+def perform_mark_as_spam(request, comment):
+    """
+    This manually performs the 'mark-as-spam' logic that the CommentModerator would have performed if
+    it had detected that this comment was spam.
+    """
+    originally_spam = comment.is_spam
+
+    comment.is_spam = True
+    comment.is_public = False
+    comment.save()
+
+    if not originally_spam:
+        signals.comment_was_marked_as_spam.send(
+            sender = comment.__class__,
+            comment = comment,
+            request = request,
+        )
+
 
 # Confirmation views.
 

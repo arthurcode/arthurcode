@@ -19,3 +19,14 @@ comment_was_posted = Signal(providing_args=["comment", "request"])
 # was a user requesting removal of a comment, a moderator approving/removing a
 # comment, or some other custom user flag.
 comment_was_flagged = Signal(providing_args=["comment", "flag", "created", "request"])
+
+# Sent after an administrator marks a comment as spam.  If an admin has to mark
+# a comment as spam that means that it was missed by our spam filter.  Some
+# comment moderators may be able to learn from this mistake, which is why we send
+# the signal.
+comment_was_marked_as_spam = Signal(providing_args=["comment", "request"])
+
+# Sent after a comment that was initially marked as spam is marked as
+# not-spam by an administrator.  Some comment moderators may be able to learn
+# from this mistake, which is why we send the signal.
+comment_was_marked_not_spam = Signal(providing_args=["comment", "request"])

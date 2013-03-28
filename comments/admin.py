@@ -2,7 +2,7 @@ from django.contrib import admin
 from comments.models import MPTTComment
 from django.utils.translation import ugettext_lazy as _, ungettext
 from comments import get_model
-from comments.views.moderation import perform_flag, perform_approve, perform_delete
+from comments.views.moderation import perform_flag, perform_approve, perform_delete, perform_mark_as_spam
 
 
 class CommentsAdmin(admin.ModelAdmin):
@@ -24,7 +24,8 @@ class CommentsAdmin(admin.ModelAdmin):
     ordering = ('-submit_date',)
     raw_id_fields = ('user',)
     search_fields = ('comment', 'user__username', 'user_name', 'user_email', 'user_url', 'ip_address')
-    actions = ["flag_comments", "approve_comments", "remove_comments"]
+    actions = ["flag_comments", "approve_comments", "remove_comments", "mark_as_spam"]
+    readonly_fields = ('is_spam',)
 
     def get_actions(self, request):
         actions = super(CommentsAdmin, self).get_actions(request)
@@ -36,6 +37,8 @@ class CommentsAdmin(admin.ModelAdmin):
                 actions.pop('approve_comments')
             if 'remove_comments' in actions:
                 actions.pop('remove_comments')
+            if 'mark_as_spam' in actions:
+                actions.pop('mark_as_spam')
         return actions
 
     def flag_comments(self, request, queryset):
@@ -52,6 +55,11 @@ class CommentsAdmin(admin.ModelAdmin):
         self._bulk_flag(request, queryset, perform_delete,
                         lambda n: ungettext('removed', 'removed', n))
     remove_comments.short_description = _("Remove selected comments")
+
+    def mark_as_spam(self, request, queryset):
+        self._bulk_flag(request, queryset, perform_mark_as_spam,
+                        lambda n: ungettext('marked as spam', 'marked as spam', n))
+    mark_as_spam.short_description = _("Mark comments as spam")
 
     def _bulk_flag(self, request, queryset, action, done_message):
         """

@@ -69,9 +69,7 @@ class Comment(BaseCommentAbstractModel):
                                                   'A "This comment has been removed" message will ' \
                                                   'be displayed instead.'))
 
-    is_spam = models.BooleanField(_('is spam'), default=False,
-                                  help_text=_('Check this box if the comment is spam.  Checking this box does'
-                                              '*NOT* automatically set is_public=False.'))
+    is_spam = models.BooleanField(_('is spam'), default=False)
 
     # Manager
     objects = CommentManager()

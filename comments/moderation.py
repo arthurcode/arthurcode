@@ -64,6 +64,8 @@ from django.template import Context, loader
 import comments
 from django.contrib.sites.models import Site
 from django.utils import timezone
+from akismet import AkismetError, verify_key, comment_check, submit_ham, submit_spam
+
 
 class AlreadyModerated(Exception):
     """
@@ -226,7 +228,7 @@ class CommentModerator(object):
             moderate_after_date = getattr(content_object, self.auto_moderate_field)
             if moderate_after_date is not None and self._get_delta(timezone.now(), moderate_after_date).days >= self.moderate_after:
                 return True
-        if self.is_spam(comment, content_object, request):
+        if self.check_spam(comment, content_object, request):
             comment.is_spam = True
             return True
         return False
@@ -248,8 +250,87 @@ class CommentModerator(object):
         message = t.render(c)
         send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, recipient_list, fail_silently=True)
 
-    def is_spam(self, comment, content_object, request):
+    def check_spam(self, comment, content_object, request):
         return False
+
+    def marked_as_spam(self, comment, request):
+        pass
+
+    def marked_not_spam(self, comment, request):
+        pass
+
+
+class AkismetCommentModerator(CommentModerator):
+    """ Checks for comment spam using the Akismet API.
+
+    Expects there to be an AKISMET_KEY variable in settings.py.
+    """
+
+    def check_spam(self, comment, content_object, request):
+        """
+        Returns True if the comment is spam and False if it's ham.
+        """
+        key = self._get_key()
+
+        if not key:
+            # TODO: log a warning
+            return False
+
+        try:
+            if verify_key(key, comment.site.domain):
+                data = self._get_data_from_comment(comment)
+                data.update({
+                    # not stored on the comment model, have to get them from the request
+                    'referrer': request.META.get('HTTP_REFERER', ''),
+                    'user_agent': request.META.get('HTTP_USER_AGENT', '')
+                })
+                return comment_check(key, comment.site.domain, **data)
+        except AkismetError, e:
+            # TODO: log a warning with the exception
+            print e.response, e.statuscode
+        return False
+
+    def marked_as_spam(self, comment, request):
+        key = self._get_key()
+        if not key:
+            return
+
+        try:
+            if verify_key(key, comment.site.domain):
+                data = self._get_data_from_comment(comment)
+                submit_spam(key, comment.site.domain, **data)
+        except AkismetError, e:
+            print e.response, e.statuscode
+
+    def marked_not_spam(self, comment, request):
+        key = self._get_key()
+        if not key:
+            return
+
+        try:
+            if verify_key(key, comment.site.domain):
+                data = self._get_data_from_comment(comment)
+                submit_ham(key, comment.site.domain, **data)
+        except AkismetError, e:
+            print e.response, e.statuscode
+
+    def _get_key(self):
+        return getattr(settings, 'AKISMET_KEY', None)
+
+    def _get_data_from_comment(self, comment):
+        data = {
+            'comment_type': 'comment',
+            'comment_author': comment.user_name.encode('utf-8'),
+            'comment_author_email': comment.user_email.encode('utf-8'),
+            'comment_content': comment.comment.encode('utf-8'),
+            'user_ip': unicode(comment.ip_address or ''),
+            'user_agent': '',
+        }
+
+        if comment.user_url:
+            data.update('comment_author_url', comment.user_url.encode('utf-8'))
+
+        return data
 
 class Moderator(object):
     """
@@ -294,6 +375,8 @@ class Moderator(object):
         """
         signals.comment_will_be_posted.connect(self.pre_save_moderation, sender=comments.get_model())
         signals.comment_was_posted.connect(self.post_save_moderation, sender=comments.get_model())
+        signals.comment_was_marked_as_spam.connect(self.marked_as_spam_moderation, sender=comments.get_model())
+        signals.comment_was_marked_not_spam.connect(self.marked_not_spam_moderation, sender=comments.get_model())
 
     def register(self, model_or_iterable, moderation_class):
         """
@@ -356,6 +439,18 @@ class Moderator(object):
         if model not in self._registry:
             return
         self._registry[model].email(comment, comment.content_object, request)
+
+    def marked_as_spam_moderation(self, sender, comment, request, **kwargs):
+        model = comment.content_type.model_class()
+        if model not in self._registry:
+            return
+        self._registry[model].marked_as_spam(comment, request)
+
+    def marked_not_spam_moderation(self, sender, comment, request, **kwargs):
+        model = comment.content_type.model_class()
+        if model not in self._registry:
+            return
+        self._registry[model].marked_not_spam(comment, request)
 
 # Import this instance in your own code to use in registering
 # your models for moderation.
