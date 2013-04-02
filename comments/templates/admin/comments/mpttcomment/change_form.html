@@ -1,0 +1,13 @@
+{% extends "admin/change_form.html" %}
+
+{% block after_related_objects %}
+    {% if original %}
+        <div class="submit-row">
+            {% if original.is_spam or not original.is_public or original.is_removed %}
+                <input type="submit" value="Approve" name="approve">
+            {% elif not original.spam %}
+                <input type="submit" value="Mark As Spam" name="spam">
+            {% endif %}
+        </div>
+    {% endif %}
+{% endblock %}

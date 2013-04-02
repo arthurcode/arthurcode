@@ -76,6 +76,19 @@ class CommentsAdmin(admin.ModelAdmin):
                         n_comments)
         self.message_user(request, msg % {'count': n_comments, 'action': done_message(n_comments)})
 
+    def save_model(self, request, obj, form, change):
+        """
+        Custom handling for the admin 'action' buttons I manually added to the model change_form view.
+        Hopefully hacks like this won't be necessary in future versions of django:
+        https://code.djangoproject.com/ticket/12090
+        """
+        super(CommentsAdmin, self).save_model(request, obj, form, change)
+
+        if 'approve' in form.data:
+            perform_approve(request, obj)
+        elif 'spam' in form.data:
+            perform_mark_as_spam(request, obj)
+
 # Only register the default admin if the model is the built-in comment model
 # (this won't be true if there's a custom comment app).
 if get_model() is MPTTComment:
