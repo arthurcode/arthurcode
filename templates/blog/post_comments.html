@@ -14,8 +14,14 @@
                     <a name="{% comment_anchor node %}"></a>
                     <span class="user">{{ node.user_name }}</span>
                     <a class="date" href="{% comment_permalink node %}">{{ node.submit_date|timesince }} ago</a>
-                    <div class="text">{{ node.comment }}</div>
-                    {% if post.is_commenting_enabled %}
+                    <div class="text">
+                        {% if not node.is_removed %}
+                            {{ node.comment }}
+                        {% else %}
+                            <em>(Comment has been removed)</em>
+                        {% endif %}
+                    </div>
+                    {% if post.is_commenting_enabled and not node.is_removed %}
                         <button id="reply">Reply</button>
                         {% render_comment_form for post %}
                     {% endif %}

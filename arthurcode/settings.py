@@ -173,3 +173,6 @@ def add_global_settings_to_request(request):
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + ('django.core.context_processors.request',
                                      'arthurcode.settings.add_global_settings_to_request')
+
+
+COMMENTS_HIDE_REMOVED = False
