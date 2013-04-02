@@ -84,8 +84,15 @@ class BaseCommentNode(template.Node):
         # be present on a custom comment model subclass. If they exist, we
         # should filter on them.
         field_names = [f.name for f in self.comment_model._meta.fields]
-        if 'is_public' in field_names:
+
+        if 'lft' in field_names and 'rght' in field_names:
+            # mptt comments - remove non-public comments as well as their descendants
+            private_comments = qs.filter(is_public=False)
+            for pc in private_comments:
+                qs = qs.exclude(tree_id=pc.tree_id, lft__gte=pc.lft, rght__lte=pc.rght)
+        elif 'is_public' in field_names:
             qs = qs.filter(is_public=True)
+
         if getattr(settings, 'COMMENTS_HIDE_REMOVED', True) and 'is_removed' in field_names:
             qs = qs.filter(is_removed=False)
 

@@ -862,9 +862,68 @@ class CommentingTest(TestCase):
         post_args = AKISMET_POST_MOCK.post_args.pop()
         self.assertEqual(AKISMET_POST_MOCK.SUBMIT_SPAM_PATH, post_args[2])
 
-    def _make_spam_comment(self):
+    def test_removed_and_non_public_comments(self):
         post = create_post(author=self.author)
-        data = self.make_post_comment_data(post)
+        comment1 = self._make_ham_comment(post, parent=None)
+        comment1_1 = self._make_ham_comment(post, parent=comment1)
+        comment1_1_1 = self._make_ham_comment(post, parent=comment1_1)
+        comment2 = self._make_ham_comment(post, parent=None)
+
+        response = self.c.get(post.get_absolute_url())
+        self.assertEquals(200, response.status_code)
+        comment_div = BeautifulSoup(response.content).select('div#comments')[0]
+        self.assertIsNotNone(comment_div)
+        root_comments = comment_div.ul.find_all('li', recursive=False)
+        self.assertEqual(2, len(root_comments))
+
+        self.assertEqual(comment1.comment, root_comments[0].div.text.strip())
+        self.assertEqual(comment2.comment, root_comments[1].div.text.strip())
+
+        # mark comment1 as 'removed'
+        comment1 = MPTTComment.objects.get(pk=comment1.pk)
+        comment1.is_removed = True
+        comment1.full_clean()
+        comment1.save()
+
+        response = self.c.get(post.get_absolute_url())
+        self.assertEquals(200, response.status_code)
+        comment_div = BeautifulSoup(response.content).select('div#comments')[0]
+        self.assertIsNotNone(comment_div)
+        root_comments = comment_div.ul.find_all('li', recursive=False)
+        self.assertEqual(2, len(root_comments))
+
+        self.assertEqual("(Comment has been removed)", root_comments[0].div.text.strip())
+        self.assertEqual(comment2.comment, root_comments[1].div.text.strip())
+
+        # assert that the text of the replies to comment1 are still visible
+        comment1_li = root_comments[0]
+        self.assertIsNotNone(comment1_li.ul)
+        self.assertEquals(comment1_1.comment, comment_div.li.ul.li.div.text.strip())
+        self.assertEquals(comment1_1_1.comment, comment_div.li.ul.li.ul.li.div.text.strip())  # oh god
+
+        # mark comment1 as 'non-public'
+        comment1 = MPTTComment.objects.get(pk=comment1.pk)
+        comment1.is_public = False
+        comment1.full_clean()
+        comment1.save()
+
+        response = self.c.get(post.get_absolute_url())
+        self.assertEquals(200, response.status_code)
+        comment_div = BeautifulSoup(response.content).select('div#comments')[0]
+        self.assertIsNotNone(comment_div)
+        root_comments = comment_div.ul.find_all('li', recursive=False)
+
+        # only comment2 should be visible, all children of comment1 should be hidden
+        self.assertEqual(1, len(root_comments))
+        self.assertEqual(comment2.comment, root_comments[0].div.text.strip())
+        self.assertIsNone(root_comments[0].ul)  # no child comments
+
+    def _make_spam_comment(self, post=None, **kwargs):
+        if not post:
+            post = create_post(author=self.author)
+
+        num_comments = MPTTComment.objects.count()
+        data = self.make_post_comment_data(post, **kwargs)
         url = comments_app.get_form_target()
         AKISMET_POST_MOCK.set_valid_key(True)
         AKISMET_POST_MOCK.set_comment_is_spam(True)
@@ -872,15 +931,18 @@ class CommentingTest(TestCase):
         response = self.c.post(url, data, follow=True)
         self.assertEqual(200, response.status_code)
         comments = MPTTComment.objects.all()
-        self.assertEqual(1, len(comments))
-        comment = comments[0]
+        self.assertEqual(num_comments + 1, len(comments))
+        comment = MPTTComment.objects.order_by('-submit_date')[0]
         self.assertTrue(comment.is_spam)
         self.assertFalse(comment.is_public)
         return comment
 
-    def _make_ham_comment(self):
-        post = create_post(author=self.author)
-        data = self.make_post_comment_data(post)
+    def _make_ham_comment(self, post=None, **kwargs):
+        if not post:
+            post = create_post(author=self.author)
+
+        num_comments = MPTTComment.objects.count()
+        data = self.make_post_comment_data(post, **kwargs)
         url = comments_app.get_form_target()
         AKISMET_POST_MOCK.set_valid_key(True)
         AKISMET_POST_MOCK.set_comment_is_spam(False)
@@ -888,8 +950,8 @@ class CommentingTest(TestCase):
         response = self.c.post(url, data, follow=True)
         self.assertEqual(200, response.status_code)
         comments = MPTTComment.objects.all()
-        self.assertEqual(1, len(comments))
-        comment = comments[0]
+        self.assertEqual(num_comments + 1, len(comments))
+        comment = MPTTComment.objects.order_by('-submit_date')[0]
         self.assertFalse(comment.is_spam)
         self.assertTrue(comment.is_public)
         return comment
