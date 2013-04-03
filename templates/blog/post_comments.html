@@ -21,6 +21,9 @@
                             <em>(Comment has been removed)</em>
                         {% endif %}
                     </div>
+                    {% with node as comment %}
+                        {% include 'blog/post_comment_moderation_opts.html' %}
+                    {% endwith %}
                     {% if post.is_commenting_enabled and not node.is_removed %}
                         <button id="reply">Reply</button>
                         {% render_comment_form for post %}

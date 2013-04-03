@@ -157,6 +157,18 @@ class Comment(BaseCommentAbstractModel):
         }
         return _('Posted by %(user)s at %(date)s\n\n%(comment)s\n\nhttp://%(domain)s%(url)s') % d
 
+    def is_approved(self):
+        """
+        Returns True if this comment has been flagged for removal and subsequently approved by a moderator.
+        """
+        return self.flags.filter(flag=CommentFlag.MODERATOR_APPROVAL).count() > 0
+
+    def is_flagged_for_removal(self):
+        """
+        Returns True if this comment has been flagged for removal.
+        """
+        return self.flags.filter(flag=CommentFlag.SUGGEST_REMOVAL).count() > 0
+
 class CommentFlag(models.Model):
     """
     Records a flag on a comment. This is intentionally flexible; right now, a

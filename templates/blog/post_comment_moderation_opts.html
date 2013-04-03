@@ -1,0 +1,19 @@
+{% if not comment.is_removed %}
+    <div class="moderation">
+        {% if comment.is_approved %}
+            <span class="approved">(approved)</span>
+        {% elif comment.is_flagged_for_removal %}
+            <span class="flagged">(suggested for removal)</span>
+            {% if perms.comments.can_moderate %}
+                <a href="{% url comments-approve comment.id %}">approve</a>
+            {% endif %}
+        {% elif not perms.comments.can_moderate %}
+            <a href="{% url comments-flag comment.id %}">suggest removal</a>
+        {% endif %}
+
+        {% if perms.comments.can_moderate %}
+            <a href="{% url comments-mark-spam comment.id %}">mark as spam</a>
+            <a href="{% url comments-delete comment.id %}">remove text</a>
+        {% endif %}
+    </div>
+{% endif %}
