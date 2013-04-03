@@ -146,7 +146,7 @@ class Post(models.Model):
 
 
 class PostModerator(AkismetCommentModerator):
-    email_notification = False
+    email_notification = True
     enable_field = 'enable_comments'
 
 

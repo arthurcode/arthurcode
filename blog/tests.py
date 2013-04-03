@@ -16,7 +16,8 @@ from bs4 import BeautifulSoup
 from feeds import LatestPostsFeed
 import comments as comments_app
 from mock import patch
-
+from django.core import mail
+from arthurcode import settings
 
 # -----------------------------
 # MODEL TESTS
@@ -917,6 +918,133 @@ class CommentingTest(TestCase):
         self.assertEqual(1, len(root_comments))
         self.assertEqual(comment2.comment, root_comments[0].div.text.strip())
         self.assertIsNone(root_comments[0].ul)  # no child comments
+
+    def test_email_managers_on_new_comment(self):
+        post = create_post(author=self.author)
+        comment = self._make_ham_comment(post)
+        self.assertEqual(1, len(mail.outbox))
+        email = mail.outbox[0]
+        self.assertTrue(comment.comment in email.body)
+        self.assertFalse("SPAM" in email.body)
+
+        for manager in settings.MANAGERS:
+            self.assertTrue(manager[1] in email.recipients())
+
+        mail.outbox = []
+        comment = self._make_spam_comment(post)
+        self.assertEqual(1, len(mail.outbox))
+        email = mail.outbox[0]
+        self.assertTrue(comment.comment in email.body)
+        self.assertTrue("SPAM" in email.body)
+
+    def test_email_managers_and_comment_author_on_new_reply(self):
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post)
+        mail.outbox = []
+        comment1_1 = self._make_ham_comment(post, parent=comment1, name="FOO", email="someoneelse@fake.com")
+
+        # one to managers, one to the author of the original comment
+        self.assertEqual(2, len(mail.outbox))
+
+        managers_email = mail.outbox[0]
+        self.assertTrue(comment1_1.comment in managers_email.body)
+        self.assertTrue("FOO replied to %s" % comment1.user_name in managers_email.body)
+
+        for manager in settings.MANAGERS:
+            self.assertTrue(manager[1] in managers_email.recipients())
+
+        parent_email = mail.outbox[1]
+        self.assertTrue(comment1_1.comment in parent_email.body)
+        self.assertTrue("FOO replied to %s" % comment1.user_name in parent_email.body)
+        recipients = parent_email.recipients()
+        self.assertEqual(1, len(recipients))
+        self.assertEqual(recipients[0], comment1.user_email)
+        self.assertTrue("FOO replied to your comment" in parent_email.subject)
+
+    def test_email_comment_ancestors_on_new_reply(self):
+        user1 = ("JJ Abrams", "jj@fake.com")
+        user2 = ("RL Stein", "rl@fake.com")
+        user3 = ("Adam A", "adam@fake.com")
+        user4 = ("Sherry B", "sherry@fake.com")
+
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post, name=user1[0], email=user1[1])
+        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1)
+        comment1_1_1 = self._make_ham_comment(post, name=user3[0], email=user3[1], parent=comment1_1)
+        mail.outbox = []
+        comment1_1_1_1 = self._make_ham_comment(post, name=user4[0], email=user4[1], parent=comment1_1_1)
+
+        # there should have been 4 emails sent - one to the managers, one to the comment parent, and one to each of
+        # the comment ancestors
+
+        # for privacy reasons the emails sent to regular users should only have one email address in the "To" field
+        self.assertTrue(4, len(mail.outbox))
+        for email in mail.outbox[1:]:
+            self.assertEqual(1, len(email.recipients()))
+            self.assertTrue(comment1_1_1_1.comment in email.body)
+
+        self.assertEqual(user3[1], mail.outbox[1].recipients()[0])  # parent
+        self.assertEqual(user1[1], mail.outbox[2].recipients()[0])  # ancestors
+        self.assertEqual(user2[1], mail.outbox[3].recipients()[0])
+
+    def test_respect_email_on_reply_setting(self):
+        user1 = ("JJ Abrams", "jj@fake.com")
+        user2 = ("RL Stein", "rl@fake.com")
+        user3 = ("Adam A", "adam@fake.com")
+        user4 = ("Sherry B", "sherry@fake.com")
+
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post, name=user1[0], email=user1[1])
+        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1)
+        comment1_1.email_on_reply = False
+        comment1_1.save()
+        comment1_1_1 = self._make_ham_comment(post, name=user3[0], email=user3[1], parent=comment1_1)
+        comment1_1_1.email_on_reply = False
+        comment1_1_1.save()
+        mail.outbox = []
+        comment1_1_1_1 = self._make_ham_comment(post, name=user4[0], email=user4[1], parent=comment1_1_1)
+
+        # there should have been 2 emails sent - one to the managers, and one to user1 because that is the only
+        # ancestor comment configured to allow us to email reply notifications
+        self.assertEqual(2, len(mail.outbox))
+        self.assertEqual(settings.MANAGERS[0][1], mail.outbox[0].recipients()[0])
+        self.assertEqual(user1[1], mail.outbox[1].recipients()[0])  # parent
+
+    def test_email_comment_author_at_most_once(self):
+        user1 = ("JJ Abrams", "jj@fake.com")
+        user2 = ("RL Stein", "rl@fake.com")
+
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post, name=user1[0], email=user1[1])
+        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1)
+        comment1_1_1 = self._make_ham_comment(post, name=user1[0], email=user1[1], parent=comment1_1)
+        mail.outbox = []
+        comment1_1_1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1_1_1)
+
+        # only the managers and user1 should have been notified via email
+        # user2 is technically an ancestor but there's not point in emailing him because he wrote the reply!
+        self.assertEqual(2, len(mail.outbox))
+        self.assertEqual(settings.MANAGERS[0][1], mail.outbox[0].recipients()[0])
+        self.assertEqual(user1[1], mail.outbox[1].recipients()[0])
+
+    def test_do_not_email_spam_comments_to_non_admins(self):
+        user1 = ("JJ Abrams", "jj@fake.com")
+        user2 = ("RL Stein", "rl@fake.com")
+        user3 = ("Adam A", "adam@fake.com")
+        user4 = ("Sherry B", "sherry@fake.com")
+
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post, name=user1[0], email=user1[1])
+        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1)
+        comment1_1_1 = self._make_ham_comment(post, name=user3[0], email=user3[1], parent=comment1_1)
+        mail.outbox = []
+        # this comment is SPAM!
+        comment1_1_1_1 = self._make_spam_comment(post, name=user4[0], email=user4[1], parent=comment1_1_1)
+
+        # there should only have been one e-mail sent out.  The regular users should not have been notified because
+        # the comment was spam
+        self.assertEqual(1, len(mail.outbox))
+        self.assertEqual([x[1] for x in settings.MANAGERS], mail.outbox[0].recipients())
 
     def _make_spam_comment(self, post=None, **kwargs):
         if not post:

@@ -1,0 +1,11 @@
+{% if comment.parent %}
+{{ comment.user_name }} replied to {{ comment.parent.user_name }} on {{ comment.submit_date }}:
+{% else %}
+{{ comment.user_name }} wrote on {{ comment.submit_date }}:
+{% endif %}
+
+{{ comment.comment }}
+
+{% if comment.is_spam %}
+THIS COMMENT HAS BEEN MARKED AS SPAM
+{% endif %}

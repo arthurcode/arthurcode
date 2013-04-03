@@ -213,6 +213,8 @@ class CommentFlag(models.Model):
 # http://do.abl.es/methods/1524/django-threaded-comments/
 class MPTTComment(MPTTModel, Comment):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    email_on_reply = models.BooleanField(_('email comment author'), default=True,
+                                       help_text='Email the comment author when someone replies to this thread.')
 
     class MPTTMeta:
         order_insertion_by = ['submit_date']
