@@ -69,7 +69,8 @@ class Comment(BaseCommentAbstractModel):
                                                   'A "This comment has been removed" message will ' \
                                                   'be displayed instead.'))
 
-    is_spam = models.BooleanField(_('is spam'), default=False)
+    is_spam = models.BooleanField(_('is spam'), default=False,
+                                  help_text='Marking a comment as spam will set is_public=False and is_spam=True')
 
     # Manager
     objects = CommentManager()
@@ -212,7 +213,8 @@ class CommentFlag(models.Model):
 
 # http://do.abl.es/methods/1524/django-threaded-comments/
 class MPTTComment(MPTTModel, Comment):
-    parent = TreeForeignKey('self', null=True, blank=True, related_name='children')
+    parent = TreeForeignKey('self', null=True, blank=True, related_name='children',
+                            help_text='Do not re-parent a comment unless you REALLY know what you are doing.')
     email_on_reply = models.BooleanField(_('email comment author'), default=True,
                                        help_text='Email the comment author when someone replies to this thread.')
 
