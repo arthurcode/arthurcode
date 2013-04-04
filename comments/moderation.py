@@ -235,12 +235,13 @@ class CommentModerator(object):
 
     def email(self, comment, content_object, request):
         """
-        Send email notification of a new comment to site staff when email
-        notifications have been requested.
+        Send email notification of a new comment to site staff and comment authors when a new
+        comment/reply is posted.
 
+        Returns the list of recipients to whom an email notification was sent.
         """
         if not self.email_notification:
-            return
+            return []
 
         recipient_list = [manager_tuple[1] for manager_tuple in settings.MANAGERS]
         subject = '[%s] New comment posted on "%s"' % (Site.objects.get_current().name,
@@ -248,25 +249,27 @@ class CommentModerator(object):
         self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, recipient_list)
 
         if comment.is_public and hasattr(comment, 'parent'):
-            self._email_comment_parent(comment, content_object, request)
-            self._email_comment_ancestors(comment, content_object, request)
+            recipient_list.extend(self._email_comment_parent(comment, content_object, request))
+            recipient_list.extend(self._email_comment_ancestors(comment, content_object, request))
+        return recipient_list
 
     def _email_comment_parent(self, comment, content_object, request):
-        if not comment.parent or not comment.parent.email_on_reply:
-            return
+        recipient_list = []
 
-        # don't send a reply if the parent has no email address, or if the parent email address matches the author of
-        # the reply's email address
-        if not comment.parent.user_email or comment.parent.user_email == comment.user_email:
-            return
+        if comment.parent and \
+                comment.parent.user_email and \
+                comment.parent.email_on_reply and \
+                comment.parent.user_email != comment.user_email:
+            recipient_list.append(comment.parent.user_email)
 
         subject = '[%s] %s replied to your comment on "%s"' % (Site.objects.get_current().name,
                                                                comment.user_name, content_object)
-        self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, [comment.parent.user_email])
+        self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, recipient_list)
+        return recipient_list
 
     def _email_comment_ancestors(self, comment, content_object, request):
         if not comment.parent:
-            return
+            return []
 
         ancestors = comment.parent.get_ancestors(include_self=False)
         recipient_list = set()
@@ -280,8 +283,11 @@ class CommentModerator(object):
         for recipient in recipient_list:
             # we don't want the comment authors to see the email addresses of the other comment authors
             self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, [recipient])
+        return recipient_list
 
     def _send_email(self, comment, content_object, template, subject, recipient_list):
+        if not recipient_list:
+            return
         t = loader.get_template(template)
         c = Context({ 'comment': comment,
                       'content_object': content_object,

@@ -8,6 +8,7 @@ from validators import not_blank
 import datetime
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase
+from django.contrib.sites.models import Site
 
 
 class AuthorProfile(models.Model):
@@ -148,6 +149,27 @@ class Post(models.Model):
 class PostModerator(AkismetCommentModerator):
     email_notification = True
     enable_field = 'enable_comments'
+
+    def email(self, comment, content_object, request):
+        """
+        Make sure the author of the blog post is notified via email whenever a new (public) comment is added to
+        their post.
+        """
+
+        recipient_list = super(PostModerator, self).email(comment, content_object, request)
+        # email the post author if he/she hasn't already been notified
+        author_email = content_object.get_author_email()
+
+        if self.email_notification and \
+                comment.is_public and \
+                author_email and \
+                author_email != comment.user_email and \
+                author_email not in recipient_list:
+            subject = '[%s] New comment posted on "%s"' % (Site.objects.get_current().name,
+                                                                     content_object)
+            self._send_email(comment, content_object, "comments/email_new_comment.html", subject, [author_email])
+            recipient_list.append(author_email)
+        return recipient_list
 
 
 moderator.register(Post, PostModerator)
