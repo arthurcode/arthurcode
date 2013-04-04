@@ -1,8 +1,67 @@
 from django.contrib import admin
-from comments.models import MPTTComment
+from comments.models import MPTTComment, CommentFlag
 from django.utils.translation import ugettext_lazy as _, ungettext
 from comments import get_model
 from comments.views.moderation import perform_flag, perform_approve, perform_delete, perform_mark_as_spam
+
+# TODO: put this code in a better place since it's specific to Blog's models
+from django.contrib.admin import SimpleListFilter
+from blog.models import Post
+
+
+class PostFilter(SimpleListFilter):
+    """
+    Allow admin users to filter comments based on the blog post they were added to.
+    """
+    title = _('post')
+    parameter_name = 'post'
+
+    def lookups(self, request, model_admin):
+        return [(p.id, _(p.title)) for p in Post.objects.order_by('-pub_date')]
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+        return queryset.filter(object_pk=self.value())
+
+
+class HasCommentFlagFilter(SimpleListFilter):
+    # the following three fields should be specified by the subclass
+    flag = None
+    title = "placeholder"
+    parameter_name = "placeholder"
+
+    def lookups(self, request, model_admin):
+        return (
+            ('True', 'Yes'),
+            ('False', 'No'),
+        )
+
+    def queryset(self, request, queryset):
+        if not self.value():
+            return queryset
+
+        flagged_comments = CommentFlag.objects \
+            .filter(flag=self.flag) \
+            .values('comment__pk') \
+            .distinct('comment__pk')
+
+        if self.value() == "True":
+            return queryset.filter(pk__in=flagged_comments)
+        else:
+            return queryset.exclude(pk__in=flagged_comments)
+
+
+class IsFlaggedForRemovalFilter(HasCommentFlagFilter):
+    title = _('is flagged for removal')
+    parameter_name = 'flagged'
+    flag = CommentFlag.SUGGEST_REMOVAL
+
+
+class IsApprovedFilter(HasCommentFlagFilter):
+    title = _('is approved')
+    parameter_name ='approved'
+    flag = CommentFlag.MODERATOR_APPROVAL
 
 
 class CommentsAdmin(admin.ModelAdmin):
@@ -14,12 +73,14 @@ class CommentsAdmin(admin.ModelAdmin):
          {'fields': ('user', 'user_name', 'user_email', 'user_url', 'comment', 'email_on_reply')}
         ),
         (_('Metadata'),
-         {'fields': ('submit_date', 'ip_address', 'is_public', 'is_removed', 'is_spam')}
+         {'fields': ('submit_date', 'ip_address', 'is_public', 'is_removed', 'is_spam', 'parent')}
         ),
     )
 
-    list_display = ('name', 'content_type', 'object_pk', 'ip_address', 'submit_date', 'is_public', 'is_removed', 'is_spam')
-    list_filter = ('submit_date', 'site', 'is_public', 'is_removed', 'is_spam')
+    list_display = ('name', 'content_type', 'object_pk', 'ip_address', 'submit_date', 'is_public', 'is_removed', 'is_spam',
+                    'is_approved', 'is_flagged_for_removal',)
+    list_filter = ('submit_date', 'site', 'is_public', 'is_removed', 'is_spam', PostFilter, IsFlaggedForRemovalFilter,
+                   IsApprovedFilter,)
     date_hierarchy = 'submit_date'
     ordering = ('-submit_date',)
     raw_id_fields = ('user',)
