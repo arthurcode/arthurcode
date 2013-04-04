@@ -235,10 +235,8 @@ class CommentModerator(object):
 
     def email(self, comment, content_object, request):
         """
-        Send email notification of a new comment to site staff and comment authors when a new
-        comment/reply is posted.
-
-        Returns the list of recipients to whom an email notification was sent.
+        Send email notification of a new comment to site staff.
+        Returns the list of recipients (email-addresses) who were notified of the new comment.
         """
         if not self.email_notification:
             return []
@@ -247,42 +245,6 @@ class CommentModerator(object):
         subject = '[%s] New comment posted on "%s"' % (Site.objects.get_current().name,
                                                        content_object)
         self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, recipient_list)
-
-        if comment.is_public and hasattr(comment, 'parent'):
-            recipient_list.extend(self._email_comment_parent(comment, content_object, request))
-            recipient_list.extend(self._email_comment_ancestors(comment, content_object, request))
-        return recipient_list
-
-    def _email_comment_parent(self, comment, content_object, request):
-        recipient_list = []
-
-        if comment.parent and \
-                comment.parent.user_email and \
-                comment.parent.email_on_reply and \
-                comment.parent.user_email != comment.user_email:
-            recipient_list.append(comment.parent.user_email)
-
-        subject = '[%s] %s replied to your comment on "%s"' % (Site.objects.get_current().name,
-                                                               comment.user_name, content_object)
-        self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, recipient_list)
-        return recipient_list
-
-    def _email_comment_ancestors(self, comment, content_object, request):
-        if not comment.parent:
-            return []
-
-        ancestors = comment.parent.get_ancestors(include_self=False)
-        recipient_list = set()
-        subject = '[%s] %s replied to your comment thread on "%s"' % (Site.objects.get_current().name,
-                                                                      comment.user_name, content_object)
-
-        for ancestor in ancestors:
-            if ancestor.email_on_reply and ancestor.user_email and ancestor.user_email not in [comment.parent.user_email, comment.user_email]:
-                recipient_list.add(ancestor.user_email)
-
-        for recipient in recipient_list:
-            # we don't want the comment authors to see the email addresses of the other comment authors
-            self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, [recipient])
         return recipient_list
 
     def _send_email(self, comment, content_object, template, subject, recipient_list):
@@ -305,7 +267,52 @@ class CommentModerator(object):
         pass
 
 
-class AkismetCommentModerator(CommentModerator):
+class MPTTCommentModerator(CommentModerator):
+
+    def email(self, comment, content_object, request):
+        recipient_list = super(MPTTCommentModerator, self).email(comment, content_object, request)
+
+        if self.email_notification and comment.is_public:
+            recipient_list.extend(self._email_comment_parent(comment, content_object, request, already_notified=recipient_list))
+            recipient_list.extend(self._email_comment_ancestors(comment, content_object, request, already_notified=recipient_list))
+        return recipient_list
+
+    def _email_comment_parent(self, comment, content_object, request, already_notified):
+        recipient_list = []
+        recipients_to_exclude = already_notified + [comment.user_email]
+
+        if comment.parent and \
+                comment.parent.user_email and \
+                comment.parent.email_on_reply and \
+                comment.parent.user_email not in recipients_to_exclude:
+            recipient_list.append(comment.parent.user_email)
+
+        subject = '[%s] %s replied to your comment on "%s"' % (Site.objects.get_current().name,
+                                                               comment.user_name, content_object)
+        self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, recipient_list)
+        return recipient_list
+
+    def _email_comment_ancestors(self, comment, content_object, request, already_notified):
+        if not comment.parent:
+            return []
+
+        ancestors = comment.parent.get_ancestors(include_self=False)
+        recipient_list = set()
+        subject = '[%s] %s replied to your comment thread on "%s"' % (Site.objects.get_current().name,
+                                                                      comment.user_name, content_object)
+        recipients_to_exclude = already_notified + [comment.user_email]
+
+        for ancestor in ancestors:
+            if ancestor.email_on_reply and ancestor.user_email and ancestor.user_email not in recipients_to_exclude:
+                recipient_list.add(ancestor.user_email)
+
+        for recipient in recipient_list:
+            # we don't want the comment authors to see the email addresses of the other comment authors
+            self._send_email(comment, content_object, 'comments/email_new_comment.html', subject, [recipient])
+        return recipient_list
+
+
+class AkismetModeratorMixin:
     """ Checks for comment spam using the Akismet API.
 
     Expects there to be an AKISMET_KEY variable in settings.py.

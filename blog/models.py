@@ -2,7 +2,7 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
-from comments.moderation import AkismetCommentModerator, moderator
+from comments.moderation import AkismetModeratorMixin, MPTTCommentModerator, moderator
 from utils import is_blank
 from validators import not_blank
 import datetime
@@ -146,7 +146,7 @@ class Post(models.Model):
         return self.title
 
 
-class PostModerator(AkismetCommentModerator):
+class PostModerator(AkismetModeratorMixin, MPTTCommentModerator):
     email_notification = True
     enable_field = 'enable_comments'
 
