@@ -1,4 +1,5 @@
 from django import template
+from django.forms import CheckboxInput
 import re
 from bs4 import BeautifulSoup
 
@@ -69,7 +70,16 @@ def aria_required_field(field):
     element.attrs.update({'required': '', 'aria-required': 'true'})
     return unicode(soup)
 
+def field_class(field):
+    """
+    Returns "checkbox" for checkbox fields and "text" for all other fields.
+    """
+    if field.field.widget.__class__.__name__ == CheckboxInput().__class__.__name__:
+        return "checkbox"
+    return "text"
+
 register.simple_tag(comment_anchor)
 register.simple_tag(comment_permalink)
 register.simple_tag(field_label_tag)
 register.simple_tag(aria_required_field)
+register.simple_tag(field_class)

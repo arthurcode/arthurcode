@@ -10,6 +10,7 @@ html {
     background-color: white;
     border-radius: 10px;
     font-family: georgia, sans-serif;
+    font-size: large;
     line-height: 1.5em;
 }
 
@@ -184,6 +185,16 @@ div#comments > ul {
  *  FORM STYLES
  ************************************/
 
+/* debug */
+/*input, textarea, button, span, form, .field {*/
+    /*border: 1px solid red;*/
+    /*outline: 1px solid red;*/
+/*}*/
+
+/*label {*/
+    /*border: 1px solid yellow;*/
+/*}*/
+
 /* display form metadata in italics and slightly smaller text */
 form span.error, form span.required-text, form span.optional-text {
     font-style: italic;
@@ -214,14 +225,17 @@ form span.error {
 form.comment {
     width: 40em;
     overflow: auto;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
 }
 
 .field {
     position: relative;  /* need to absolutely position a few of it's children */
     float: left;         /* float-to-fix-a-float */
     clear: both;         /* stack fields vertically */
-    margin: 0.25em 0;    /* small top and bottom margins, no horizontal margins */
     width: 100%;
+    margin: 0.25em 0 !important; /* required for the alignment to work properly */
+    padding: 0 !important;
 }
 
 label {
@@ -229,33 +243,53 @@ label {
     margin: 0;
 }
 
+/* styles for checkbox fields */
+.field.checkbox span.required-text, .field.checkbox span.optional-text {
+    visibility: hidden;
+}
+
+.field.checkbox input {
+    width: 15px;
+    padding: 0;
+    margin-left: 20%;
+}
+
+.field.checkbox label {
+    position: absolute;
+    text-align: left;
+    left: 24%;
+}
+
+/* Styles for text fields */
 /* style the second, larger column within a field */
-.field input, .field textarea {
+.field.text input, .field.text textarea {
     margin-left: 20%;
     float: left;
     clear: left;
 }
 
-.field span.error {
+.field.text span.error {
     margin-left: 20%;
     float: left;
     clear: left;
 }
 
 /* Leave a 3% margin between columns */
-.field span.label {
+.field.text span.label {
     position: absolute;
     text-align: right;
     right: 83%;
     top: 0;
 }
 
-.field span.required-text, .field span.optional-text {
+.field.text span.required-text, .field.text span.optional-text {
     position: absolute;
     text-align: right;
     right: 83%;
     top: 1.6em;
 }
+
+
 
 /* Align the controls with the form input fields. */
 form .controls {

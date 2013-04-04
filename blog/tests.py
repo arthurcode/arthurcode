@@ -549,8 +549,8 @@ class ViewTests(TestCase):
         self.assertEquals(1, len(forms))
         labels = forms[0].find_all('label')
 
-        # honeypot, name, email and comment
-        self.assertEquals(4, len(labels))
+        # honeypot, name, email, comment, and allow replies
+        self.assertEquals(5, len(labels))
 
         # honeypot is optional
         label_honeypot = forms[0].find('label', {'for': 'id_honeypot'})
@@ -571,6 +571,11 @@ class ViewTests(TestCase):
         label_comment = forms[0].find('label', {'for': 'id_comment'})
         self.assertIsNotNone(label_comment.find('span', 'required-text'))
         self.assertIsNone(label_comment.find('span', 'optional-text'))
+
+        # the reply_on_email field is optional
+        label_email_on_reply = forms[0].find('label', {'for': 'id_email_on_reply'})
+        self.assertIsNotNone(label_email_on_reply)
+        self.assertIsNotNone(label_email_on_reply.find('span', 'optional-text'))
 
     def verify_generic_archive_properties(self, response, date=None, level='all'):
         # all pages should have a link to the archives in the footer
@@ -995,12 +1000,8 @@ class CommentingTest(TestCase):
 
         post = create_post(author=self.author)
         comment1 = self._make_ham_comment(post, name=user1[0], email=user1[1])
-        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1)
-        comment1_1.email_on_reply = False
-        comment1_1.save()
-        comment1_1_1 = self._make_ham_comment(post, name=user3[0], email=user3[1], parent=comment1_1)
-        comment1_1_1.email_on_reply = False
-        comment1_1_1.save()
+        comment1_1 = self._make_ham_comment(post, name=user2[0], email=user2[1], parent=comment1, email_on_reply=False)
+        comment1_1_1 = self._make_ham_comment(post, name=user3[0], email=user3[1], parent=comment1_1, email_on_reply=False)
         mail.outbox = []
         comment1_1_1_1 = self._make_ham_comment(post, name=user4[0], email=user4[1], parent=comment1_1_1)
 
@@ -1132,6 +1133,7 @@ class CommentingTest(TestCase):
             'timestamp': timestamp,
             'object_pk': post.id,
             'security_hash': security_hash,
+            'email_on_reply': kwargs.get('email_on_reply', True)
         }
         parent = kwargs.get('parent', None)
 

@@ -200,6 +200,7 @@ class CommentForm(CommentDetailsForm):
 
 class MPTTCommentForm(CommentForm):
     parent = forms.ModelChoiceField(queryset=MPTTComment.objects.all(), required=False, widget=forms.HiddenInput)
+    email_on_reply = forms.BooleanField(label=("Email me when someone replies to my comment thread"), required=False, initial=True, widget=forms.CheckboxInput)
 
     def __init__(self, *args, **kwargs):
         """
@@ -214,4 +215,5 @@ class MPTTCommentForm(CommentForm):
     def get_comment_create_data(self):
         data = super(MPTTCommentForm, self).get_comment_create_data()
         data['parent'] = self.cleaned_data['parent']
+        data['email_on_reply'] = self.cleaned_data['email_on_reply']
         return data
