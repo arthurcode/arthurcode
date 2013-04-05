@@ -78,6 +78,11 @@ def field_class(field):
         return "checkbox"
     return "text"
 
+
+@register.filter(name="is_checkbox")
+def is_checkbox(field):
+    return field_class(field) == "checkbox"
+
 register.simple_tag(comment_anchor)
 register.simple_tag(comment_permalink)
 register.simple_tag(field_label_tag)

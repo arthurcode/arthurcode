@@ -211,6 +211,10 @@ form span.error {
     border: 1px solid red;
 }
 
+.field.error input[type='checkbox'] {
+    outline: 1px solid red;  /* border doesn't seem to work for checkboxes */
+}
+
 /* Horizontal form layout.  Each field is two columns.  In the first column is the field label followed by
    the (required) or (optional) string.  In the second column is the input area. Field errors are displayed in
    the second column, directly above the input area.  Note that the column widths will need to be tuned individually
@@ -245,19 +249,19 @@ label {
 
 /* styles for checkbox fields */
 .field.checkbox span.required-text, .field.checkbox span.optional-text {
-    visibility: hidden;
+    display: none;
 }
 
 .field.checkbox input {
     width: 15px;
     padding: 0;
-    margin-left: 20%;
+    margin: 1% 2% 0 20%;  /* trying to vertically center the darn thing, it still drifts with font size */
+    float: left;
+    clear: left;
 }
 
 .field.checkbox label {
-    position: absolute;
-    text-align: left;
-    left: 24%;
+    float: left;
 }
 
 /* Styles for text fields */
@@ -272,6 +276,24 @@ label {
     margin-left: 20%;
     float: left;
     clear: left;
+}
+
+.field.checkbox span.error {
+    display: block;
+}
+
+/* when the checkbox label has an error, reverse the ordering of the label text and error text using
+   relative positioning.  Oh god, this is horrible.  The 1em and 2em 'nudges' were determined experimentally and
+   will have to be tuned whenever the relative difference in font sizes is modified. This also assumes that each of
+   the error and label spans takes up exactly one line. */
+.field.checkbox.error span.label {
+    position: relative;
+    top: 1em;
+}
+
+.field.checkbox.error span.error {
+    position: relative;
+    bottom: 2em;
 }
 
 /* Leave a 3% margin between columns */

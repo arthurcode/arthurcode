@@ -1,5 +1,10 @@
 {% load blog_extras %}
 
 <div class="field {% field_class field %}{% if field.errors %} error{% endif %}">
-    {% field_label_tag field %} {% aria_required_field field %}
+    {% if field|is_checkbox %}
+        {# easier to style if the input comes before the label #}
+        {% aria_required_field field %} {% field_label_tag field %}
+    {% else %}
+        {% field_label_tag field %} {% aria_required_field field %}
+    {% endif %}
 </div>
