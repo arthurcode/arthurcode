@@ -3,20 +3,31 @@
 
 <form class="comment" action="{% comment_form_target %}" method="post">{% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
+
+    {#Render the hidden fields#}
     {% for field in form %}
         {% if field.is_hidden %}
             <div>{{ field }}</div>
-        {% else %}
-            {% if field.name == "name" and user.is_authenticated %}
-            {% elif field.name == "email" and user.is_authenticated %}
-            {% else %}
-                <div class="field {% field_class field %}{% if field.errors %} error{% endif %}"
-                        {% ifequal field.name "honeypot" %} style="display:none;"{% endifequal %}>
-                    {% field_label_tag field %} {% aria_required_field field %}
-                </div>
-            {% endif %}
         {% endif %}
     {% endfor %}
+
+    {# render the honeypot #}
+    <div class="field text" style="display:none;">
+        {% field_label_tag form.honeypot %}{% aria_required_field form.honeypot %}
+    </div>
+
+    {# render the visible fields #}
+    {% if not user.is_authenticated %}
+        {# render name and email fields #}
+        {% with form.name as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.email as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+    {% else %}
+        {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+    {% endif %}
+
     {% comment %} The parent field was added to support threaded comments {% endcomment %}
     {% if node.id %}
         <input type="hidden" name="parent" id="parent_id" value="{{ node.id }}"/>

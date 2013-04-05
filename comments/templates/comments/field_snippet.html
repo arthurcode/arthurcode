@@ -1,0 +1,5 @@
+{% load blog_extras %}
+
+<div class="field {% field_class field %}{% if field.errors %} error{% endif %}">
+    {% field_label_tag field %} {% aria_required_field field %}
+</div>
