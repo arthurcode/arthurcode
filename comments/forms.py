@@ -226,8 +226,8 @@ class MPTTCommentForm(CommentForm):
             email = cleaned_data.get('email')
 
             if email_on_reply and not email:
-                self._errors['email'] = self.error_class([u"You must provide an email address to be notified of replies."])
-                self._errors['email_on_reply'] = self.error_class([u"an email address is required"])
+                self._errors['email'] = self.error_class([u"You must provide an email address to be notified of replies"])
+                self._errors['email_on_reply'] = self.error_class([u"An email address is required"])
                 del cleaned_data['email']
                 del cleaned_data['email_on_reply']
         return cleaned_data

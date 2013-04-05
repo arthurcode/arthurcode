@@ -755,6 +755,13 @@ class CommentingTest(TestCase):
         data = self.make_post_comment_data(post, comment="")
         self.assert_comment_form_error(data, 'comment', 'This field is required.')
 
+    def test_comment_form_email_on_reply_error(self):
+        # when email_on_reply = True an email address must be provided
+        post = create_post(author=self.author)
+        data = self.make_post_comment_data(post, email_on_reply=True, email="")
+        self.assert_comment_form_error(data, 'email_on_reply', 'An email address is required', required=False)
+        self.assert_comment_form_error(data, 'email', 'You must provide an email address to be notified of replies', required=False)
+
     def test_comments_from_authenticated_users(self):
         self.assertEqual(0, MPTTComment.objects.all().count())
         url = comments_app.get_form_target()
