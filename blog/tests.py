@@ -762,6 +762,31 @@ class CommentingTest(TestCase):
         self.assert_comment_form_error(data, 'email_on_reply', 'An email address is required', required=False)
         self.assert_comment_form_error(data, 'email', 'You must provide an email address to be notified of replies', required=False)
 
+    def test_comments_without_email(self):
+        post = create_post(author=self.author)
+        comment1 = self._make_ham_comment(post, email="", email_on_reply=False)
+        mail.outbox = []
+        comment1_1 = self._make_ham_comment(post, parent=comment1, email="person1@fake.com")
+
+        # one email to managers, one email to post author
+        self.assertEqual(2, len(mail.outbox))
+
+        mail.outbox = []
+        comment1_1_1 = self._make_ham_comment(post, parent=comment1_1, email="person2@fake.com")
+
+        # one email to managers, one to post author, and one to person1@fake.com
+        self.assertEqual(3, len(mail.outbox))
+
+        mail.outbox = []
+        comment1_1_1_1 = self._make_ham_comment(post, parent=comment1_1_1, email="person3@fake.com")
+
+        # one email to managers, one to post author, one to person2 and one to person1
+        self.assertEqual(4, len(mail.outbox))
+
+        # test a spam comment without an email address
+        self._make_spam_comment(post, email="", email_on_reply=False)
+
+
     def test_comments_from_authenticated_users(self):
         self.assertEqual(0, MPTTComment.objects.all().count())
         url = comments_app.get_form_target()

@@ -373,7 +373,7 @@ class AkismetModeratorMixin:
         data = {
             'comment_type': 'comment',
             'comment_author': comment.user_name.encode('utf-8'),
-            'comment_author_email': comment.user_email.encode('utf-8'),
+            'comment_author_email': unicode(comment.user_email or ''),
             'comment_content': comment.comment.encode('utf-8'),
             'user_ip': unicode(comment.ip_address or ''),
             'user_agent': '',
