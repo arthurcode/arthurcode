@@ -43,18 +43,3 @@
         Comments are disabled
     {% endif %}
 </div>
-
-<script type="text/javascript">
-    YUI().use('node', function(Y) {
-        // initially hide all comment reply forms
-        Y.all('.comment form').each(function(f) {
-            f.addClass('hidden');
-        });
-
-        // toggle the reply form visibility when the reply button is hit
-        Y.delegate('click', function(e) {
-            var form = e.currentTarget.next('form');
-            form.toggleClass('hidden');
-        }, document, 'button#reply');
-    });
-</script>
