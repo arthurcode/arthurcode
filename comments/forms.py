@@ -98,7 +98,7 @@ class CommentDetailsForm(CommentSecurityForm):
     Handles the specific details of the comment (name, comment, etc.).
     """
     name          = forms.CharField(label=_("Name"), max_length=50)
-    email         = forms.EmailField(label=_("Email address"))
+    email         = forms.EmailField(label=_("Email address"), required=False)
     url           = forms.URLField(label=_("URL"), required=False)
     comment       = forms.CharField(label=_('Comment'), widget=forms.Textarea,
                                     max_length=COMMENT_MAX_LENGTH)
@@ -200,7 +200,7 @@ class CommentForm(CommentDetailsForm):
 
 class MPTTCommentForm(CommentForm):
     parent = forms.ModelChoiceField(queryset=MPTTComment.objects.all(), required=False, widget=forms.HiddenInput)
-    email_on_reply = forms.BooleanField(label=("Email me when someone replies to my comment thread"), required=False, initial=True, widget=forms.CheckboxInput)
+    email_on_reply = forms.BooleanField(label=("Email me when someone replies to my comment thread"), required=False, initial=False, widget=forms.CheckboxInput)
 
     def __init__(self, *args, **kwargs):
         """
@@ -217,3 +217,19 @@ class MPTTCommentForm(CommentForm):
         data['parent'] = self.cleaned_data['parent']
         data['email_on_reply'] = self.cleaned_data['email_on_reply']
         return data
+
+    def clean(self):
+        cleaned_data = super(MPTTCommentForm, self).clean()
+
+        if 'email_on_reply' in cleaned_data and 'email' in cleaned_data:
+            email_on_reply = cleaned_data.get('email_on_reply')
+            email = cleaned_data.get('email')
+
+            if email_on_reply and not email:
+                self._errors['email'] = self.error_class([u"You must provide an email address to be notified of replies."])
+                self._errors['email_on_reply'] = self.error_class([u"an email address is required"])
+                del cleaned_data['email']
+                del cleaned_data['email_on_reply']
+        return cleaned_data
+
+

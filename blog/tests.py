@@ -564,8 +564,8 @@ class ViewTests(TestCase):
 
         # email is required
         label_email = forms[0].find('label', {'for': 'id_email'})
-        self.assertIsNotNone(label_email.find('span', 'required-text'))
-        self.assertIsNone(label_email.find('span', 'optional-text'))
+        self.assertIsNone(label_email.find('span', 'required-text'))
+        self.assertIsNotNone(label_email.find('span', 'optional-text'))
 
         # comment is required
         label_comment = forms[0].find('label', {'for': 'id_comment'})
@@ -743,10 +743,7 @@ class CommentingTest(TestCase):
     def test_comment_form_email_error(self):
         post = create_post(author=self.author)
         data = self.make_post_comment_data(post, email="garbage-email-address")
-        self.assert_comment_form_error(data, 'email', 'Enter a valid e-mail address.')
-
-        data = self.make_post_comment_data(post, email="")
-        self.assert_comment_form_error(data, 'email', 'This field is required.')
+        self.assert_comment_form_error(data, 'email', 'Enter a valid e-mail address.', required=False)
 
     def test_comment_form_name_error(self):
         post = create_post(author=self.author)
