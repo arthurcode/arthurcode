@@ -40,11 +40,22 @@
 {% endblock %}
 
 {% block javascript %}
+    {{ block.super }}
     <script type="text/javascript">
         YUI().use('node', function(Y) {
             // initially hide all comment reply forms
             Y.all('.comment form').each(function(f) {
                 f.addClass('hidden');
+            });
+
+            // give the comment form fields some dynamic initial values
+            Y.all('form.comment').each(function(f) {
+                // initially 'check' the email_on_reply box on forms that don't have an email field
+                // (because this implies that the email is already known)
+                if (f.one('input#id_email') == null) {
+                    var reply_on_email = f.one('input#id_email_on_reply');
+                    reply_on_email.setAttribute("checked", "checked")
+                }
             });
 
             // toggle the reply form visibility when the reply button is hit
