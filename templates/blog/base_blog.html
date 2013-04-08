@@ -43,3 +43,37 @@
         </div>
     </div>
 {% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', function(Y) {
+            // comment forms - make the 'email' field required when the 'email_on_reply' box is checked
+            Y.delegate('click', function(e) {
+                var form = e.currentTarget.ancestor('form');
+                // how to get the current value of a check-box?
+
+                var email_field = form.one('input#id_email').ancestor('div.field');
+                if (email_field != null) {
+                    var label = email_field.one('label');
+                    var input = email_field.one('input');
+                    // replace optional-text with required-text
+                    var optional_text = label.one('span.optional-text');
+                    var required_text = label.one('span.required-text');
+
+                    if (optional_text != null) {
+                        optional_text.replace("<span class='required-text'>(required)</span>");
+                        input.setAttribute("aria-required", "true");
+                        input.setAttribute("required", "");
+                    } else if (required_text != null) {
+                        required_text.replace("<span class='optional-text'>(optional)</span>");
+                        input.removeAttribute("aria-required");
+                        input.removeAttribute("required");
+                    }
+                }
+
+                //form.toggleClass('hidden');
+            }, document, 'form.comment input#id_email_on_reply');
+        });
+    </script>
+{% endblock %}
