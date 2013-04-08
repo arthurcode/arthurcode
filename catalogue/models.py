@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
 from blog.validators import not_blank
 from django.core.urlresolvers import reverse
+from mptt.utils import drilldown_tree_for_node
 
 
 class Category(MPTTModel, models.Model):
@@ -29,6 +30,13 @@ class Category(MPTTModel, models.Model):
 
     def get_absolute_url(self):
         return reverse('catalog_category', kwargs={'category_slug': self.slug})
+
+    def product_count(self):
+        """
+        Returns the number of products that are linked directly to this category.  This does not count products
+        that are in subcategories of this product.
+        """
+        return self.product_set.count()
 
 
 class Product(models.Model):
