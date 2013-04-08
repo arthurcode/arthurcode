@@ -20,9 +20,9 @@
     {% if not user.is_authenticated %}
         {# render name and email fields #}
         {% with form.name as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.email as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
         {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% with form.email as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
     {% else %}
         {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
         {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
