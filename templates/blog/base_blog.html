@@ -47,13 +47,16 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('node', function(Y) {
-            // comment forms - make the 'email' field required when the 'email_on_reply' box is checked
-            Y.delegate('click', function(e) {
-                var form = e.currentTarget.ancestor('form');
-                // how to get the current value of a check-box?
+        YUI().use('node', 'node-event-simulate', function(Y) {
 
-                var email_field = form.one('input#id_email').ancestor('div.field');
+            function syncCommentFormFields(form) {
+                var email_on_reply = form.one('input#id_email_on_reply').get("checked");
+                var email_field = null;
+
+                if (form.one('input#id_email') != null) {
+                    email_field = form.one('input#id_email').ancestor('div.field');
+                }
+
                 if (email_field != null) {
                     var label = email_field.one('label');
                     var input = email_field.one('input');
@@ -61,19 +64,37 @@
                     var optional_text = label.one('span.optional-text');
                     var required_text = label.one('span.required-text');
 
-                    if (optional_text != null) {
-                        optional_text.replace("<span class='required-text'>(required)</span>");
+                    if (email_on_reply) {
+                        if (optional_text != null) {
+                            optional_text.replace("<span class='required-text'>(required)</span>");
+                        }
                         input.setAttribute("aria-required", "true");
                         input.setAttribute("required", "");
-                    } else if (required_text != null) {
-                        required_text.replace("<span class='optional-text'>(optional)</span>");
+                        email_field.removeClass("hidden");
+                    } else {
+                        if (required_text != null) {
+                            required_text.replace("<span class='optional-text'>(optional)</span>");
+                        }
                         input.removeAttribute("aria-required");
                         input.removeAttribute("required");
+                        email_field.addClass("hidden");
+                        // if we're hiding the input field we have to clear any text that is inside of it, otherwise
+                        // the hidden text could cause a form validation error :-(
+                        input.setAttribute("value", "");
                     }
                 }
+            }
 
-                //form.toggleClass('hidden');
+            // comment forms - make the 'email' field visible & required when the 'email_on_reply' box is checked
+            Y.delegate('click', function(e) {
+                var form = e.currentTarget.ancestor('form');
+                syncCommentFormFields(form);
             }, document, 'form.comment input#id_email_on_reply');
+
+            Y.all('form.comment').each(function(f) {
+                syncCommentFormFields(f);
+            });
+
         });
     </script>
 {% endblock %}
