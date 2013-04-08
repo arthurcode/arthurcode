@@ -125,6 +125,7 @@ INSTALLED_APPS = (
     'mptt',
     'comments',
     'taggit',
+    'catalogue',
 )
 
 # A sample logging configuration. The only tangible logging
