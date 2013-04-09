@@ -1,18 +1,7 @@
-{% extends "base_hd_ft.html" %}
+{% extends "base_site.html" %}
 
 {% block header %}
-    {% block banner %}
-        <span class="sitename">arthurcode</span>
-    {% endblock %}
-
-    {% block navigation %}
-        <ul id="primary-navigation">
-            <li class="blog"><a href="{% url index %}">Blog</a></li>
-            <li class="about"><a href="{% url about %}">About Me</a></li>
-            <li class="contact"><a href="{% url contact %}">Contact</a></li>
-        </ul>
-    {% endblock %}
-
+    {{ block.super }}
     <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
 {% endblock %}
 {% block body %}
@@ -29,10 +18,6 @@
             {% block related_content %}{% endblock %}
         {% endblock %}
     </div>
-{% endblock %}
-{% block footer %}
-    copyright &copy 2013 www.arthurcode.com
-    {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}
 
 {% block javascript %}

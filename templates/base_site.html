@@ -1,0 +1,20 @@
+{% extends 'base_hd_ft.html' %}
+
+{% block header %}
+    {% block banner %}
+        <span class="sitename">arthurcode</span>
+    {% endblock %}
+
+    {% block navigation %}
+        <ul id="primary-navigation">
+            <li class="blog"><a href="{% url index %}">Blog</a></li>
+            <li class="about"><a href="{% url about %}">About Me</a></li>
+            <li class="contact"><a href="{% url contact %}">Contact</a></li>
+        </ul>
+    {% endblock %}
+{% endblock %}
+
+{% block footer %}
+    copyright &copy 2013 www.arthurcode.com
+    {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
+{% endblock %}

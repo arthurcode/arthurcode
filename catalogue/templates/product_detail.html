@@ -1,9 +1,11 @@
-{% extends "base.html" %}
+{% extends "base_site.html" %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
-{% block site_wrapper %}
-    <h1>{{ product.name }}</h1>
-    <p>{{ product.short_description }}</p>
-    <p>{{ product.long_description }}</p>
+{% block body %}
+    <div class="yui3-u-1">
+        <h1>{{ product.name }}</h1>
+        <p>{{ product.short_description }}</p>
+        <p>{{ product.long_description }}</p>
+    </div>
 {% endblock %}
