@@ -2,6 +2,8 @@
 
 {% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
+{% block body_class %}products{% endblock %}
+
 {% block body %}
     <div class="yui3-u-1">
         {% if category %}
