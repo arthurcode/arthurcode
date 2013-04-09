@@ -3,7 +3,6 @@ from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
 from blog.validators import not_blank
 from django.core.urlresolvers import reverse
-from mptt.utils import drilldown_tree_for_node
 
 
 class Category(MPTTModel, models.Model):
@@ -67,4 +66,4 @@ class Product(models.Model):
         return self.name
 
     def get_absolute_url(self):
-        return reverse('catalog_product', kwargs={'product_slug': self.slug})
+        return reverse('catalog_product', kwargs={'slug': self.slug})
