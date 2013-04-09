@@ -1,46 +1,41 @@
 {% extends "base.html" %}
 
 {% block site_wrapper %}
-    {% comment %} YUI 750px fixed width layout {% endcomment %}
-    <div id="doc" class="yui-t4">
-        <div id="hd">
-            {% block banner %}
-                <span class="sitename">arthurcode</span>
-            {% endblock %}
+    <div id="hd">
+        {% block banner %}
+            <span class="sitename">arthurcode</span>
+        {% endblock %}
 
-            {% block navigation %}
-                <ul id="primary-navigation">
-                    <li class="blog"><a href="{% url index %}">Blog</a></li>
-                    <li class="about"><a href="{% url about %}">About Me</a></li>
-                    <li class="contact"><a href="{% url contact %}">Contact</a></li>
+        {% block navigation %}
+            <ul id="primary-navigation">
+                <li class="blog"><a href="{% url index %}">Blog</a></li>
+                <li class="about"><a href="{% url about %}">About Me</a></li>
+                <li class="contact"><a href="{% url contact %}">Contact</a></li>
+            </ul>
+        {% endblock %}
+
+        <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
+    </div>
+    <div id="bd" class="yui3-g">
+        <div class="yui3-u-2-3">
+            {% block content %}{% endblock %}
+        </div>
+        <div class="yui3-u-1-3">
+            {% block sidebar %}
+                <ul>
+                    <li><a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a></li>
+                    {% url archive as archive_url%}
+                    <li><a href="{{ archive_url }}">archive</a></li>
                 </ul>
-            {% endblock %}
-
-            <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
-        </div>
-        <div id="bd">
-            <div id="yui-main">
-                <div class="yui-b">
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
-            <div class="yui-b">
-                {% block sidebar %}
-                    <ul>
-                        <li><a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a></li>
-                        {% url archive as archive_url%}
-                        <li><a href="{{ archive_url }}">archive</a></li>
-                    </ul>
-                    {% block related_content %}{% endblock %}
-                {% endblock %}
-            </div>
-        </div>
-        <div id="ft">
-            {% block footer %}
-                copyright &copy 2013 www.arthurcode.com
-                {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
+                {% block related_content %}{% endblock %}
             {% endblock %}
         </div>
+    </div>
+    <div id="ft">
+        {% block footer %}
+            copyright &copy 2013 www.arthurcode.com
+            {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
+        {% endblock %}
     </div>
 {% endblock %}
 

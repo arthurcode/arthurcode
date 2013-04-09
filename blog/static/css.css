@@ -6,7 +6,9 @@ html {
     background-color: #DCDCDC;
 }
 
-#doc {
+body {
+    width: 960px;
+    margin: auto;
     background-color: white;
     border-radius: 10px;
     font-family: georgia, sans-serif;
