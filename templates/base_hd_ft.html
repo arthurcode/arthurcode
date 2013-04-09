@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+
+{% block site_wrapper %}
+    <div id="hd">
+        {% block header %}{% endblock %}
+    </div>
+    <div id="bd" class="yui3-g">
+        {% block body %}{% endblock %}
+    </div>
+    <div id="ft">
+        {% block footer %}{% endblock %}
+    </div>
+{% endblock %}
