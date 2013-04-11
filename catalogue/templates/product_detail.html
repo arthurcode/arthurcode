@@ -6,6 +6,7 @@
 
 {% block body %}
     <div class="breadcrumbs yui3-u-1">
+        <a href="{% url catalogue_category ''%}">All Products</a> >
         {% for crumb in breadcrumbs %}
             <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
         {% endfor %}

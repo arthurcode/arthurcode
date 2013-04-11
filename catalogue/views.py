@@ -24,8 +24,10 @@ def category_view(request, category_slug=""):
         products = Product.active.filter(category__in=descendant_categories)
         meta_description = category.description
         child_categories = add_product_count(category.get_children())
+        parent_categories = category.get_ancestors(ascending=False, include_self=False)
     else:
         category = None
+        parent_categories = None
         products = Product.active.all()
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = add_product_count(Category.objects.root_nodes())

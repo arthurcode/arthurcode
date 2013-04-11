@@ -5,6 +5,22 @@
 {% block body_class %}products{% endblock %}
 
 {% block body %}
+
+    <div class="breadcrumbs yui3-u-1">
+        {% if category %}
+            <a href="{% url catalogue_category ''%}">All Products</a> >
+        {% else %}
+            All Products
+        {% endif %}
+        {% if parent_categories %}
+            {% for category in parent_categories %}
+                <a href="{% url catalogue_category category.slug %}">{{ category.name }}</a> >
+            {% endfor %}
+        {% endif %}
+        {{ category.name }}
+    </div>
+
+
     <div class="yui3-u-1-4">
     {% if child_categories %}
         {% if category %}

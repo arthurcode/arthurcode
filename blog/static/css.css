@@ -16,6 +16,10 @@ body {
     line-height: 1.5em;
 }
 
+.breadcrumbs {
+    font-size: 80%;
+}
+
 a:link, a:visited {
     color: black;
 }
