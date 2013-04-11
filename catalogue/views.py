@@ -2,6 +2,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from catalogue.models import Product, Category
+from arthurcode import settings
 
 
 def home_view(request):
@@ -12,6 +13,7 @@ def home_view(request):
 def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
+    meta_description = product.short_description
     return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
 
 
@@ -20,7 +22,9 @@ def category_view(request, category_slug=""):
         category = get_object_or_404(Category, slug=category_slug)
         descendant_categories = category.get_descendants(include_self=True)
         products = Product.active.filter(category__in=descendant_categories)
+        meta_description = category.description
     else:
         category = None
         products = Product.active.all()
+        meta_description = "All products for sale at %s." % settings.SITE_NAME
     return render_to_response("category.html", locals(), context_instance=RequestContext(request))
