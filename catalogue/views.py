@@ -17,6 +17,9 @@ def product_detail_view(request, slug=""):
 def category_view(request, category_slug=""):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
+        descendant_categories = category.get_descendants(include_self=True)
+        products = Product.active.filter(category__in=descendant_categories)
     else:
         category = None
+        products = Product.active.all()
     return render_to_response("category.html", locals(), context_instance=RequestContext(request))

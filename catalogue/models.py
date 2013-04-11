@@ -39,7 +39,15 @@ class Category(MPTTModel, models.Model):
         return self.product_set.count()
 
 
+class ActiveProductsManager(models.Manager):
+    def get_query_set(self):
+        return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)
+
+
 class Product(models.Model):
+    objects = models.Manager()
+    active = ActiveProductsManager()
+
     name = models.CharField(max_length=255, unique=True, validators=[not_blank])
     slug = models.SlugField(max_length=255,
                             unique=True,
