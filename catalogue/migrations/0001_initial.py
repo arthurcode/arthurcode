@@ -31,7 +31,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
             ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=255)),
             ('brand', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('sku', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('upc', self.gf('django.db.models.fields.CharField')(max_length=12)),
             ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
             ('sale_price', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=9, decimal_places=2, blank=True)),
             ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -86,8 +86,8 @@ class Migration(SchemaMigration):
             'quantity': ('django.db.models.fields.IntegerField', [], {}),
             'sale_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '9', 'decimal_places': '2', 'blank': 'True'}),
             'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
-            'sku': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
+            'upc': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         }
     }

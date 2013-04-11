@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
-from blog.validators import not_blank
+from blog.validators import not_blank, valid_upc
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 
@@ -59,7 +59,7 @@ class Product(models.Model):
                             help_text='Unique value for product page URL, created from name.',
                             validators=[not_blank])
     brand = models.CharField(max_length=50, validators=[not_blank])
-    sku = models.CharField(max_length=50, validators=[not_blank])
+    upc = models.CharField(max_length=12, validators=[valid_upc])
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
     sale_price = models.DecimalField(max_digits=9,
                                      decimal_places=2,
