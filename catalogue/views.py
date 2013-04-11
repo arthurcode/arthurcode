@@ -11,6 +11,7 @@ def home_view(request):
 
 def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
+    breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
 
 

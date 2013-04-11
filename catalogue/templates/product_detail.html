@@ -6,6 +6,13 @@
 
 {% block body %}
     <div class="yui3-u-1">
+        <div class="breadcrumbs">
+            {% for crumb in breadcrumbs %}
+                <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
+            {% endfor %}
+            {{ product.name }}
+        </div>
+
         <h1>{{ product.name }}</h1>
         <p>{{ product.short_description }}</p>
         <p>{{ product.long_description }}</p>
