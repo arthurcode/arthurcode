@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 import blog.urls
 import catalogue.urls
+from catalogue.views import home_view
 
 from django.contrib import admin
 admin.autodiscover()
@@ -19,4 +20,6 @@ urlpatterns = patterns('',
     url(r'^blog/', include(blog.urls)),
 
     url(r'^products/', include(catalogue.urls)),
+
+    url(r'^$', home_view, name="home"),
 )
