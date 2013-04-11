@@ -9,7 +9,8 @@ from django.core.exceptions import ValidationError
 class Category(MPTTModel, models.Model):
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children',
                             help_text='Parent category. Do not re-parent a category unless you REALLY know what you are doing.')
-    name = models.CharField(max_length=50, unique=True, validators=[not_blank])
+    name = models.CharField(max_length=50, unique=True, validators=[not_blank],
+                            help_text='Should make sense when prefixed with the word "All"')
     slug = models.SlugField(max_length=50,
                             unique=True,
                             help_text='Unique value for category page URL, created from name.',

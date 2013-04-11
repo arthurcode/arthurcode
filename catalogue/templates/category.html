@@ -5,24 +5,26 @@
 {% block body_class %}products{% endblock %}
 
 {% block body %}
-    <div class="yui3-u-1">
+    <div class="yui3-u-1-4">
+    {% if child_categories %}
         {% if category %}
-            <h1>{{ category.name }}</h1>
+            <h2>Sub Categories</h2>
+        {% else %}
+            <h2>Categories</h2>
+        {% endif %}
+        <ul>
+            {% for category in child_categories %}
+                <li><a href="{% url catalogue_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+    </div>
+
+    <div class="yui3-u-3-4">
+        {% if category %}
+            <h1>All {{ category.name }}</h1>
         {% else %}
             <h1>All Products</h1>
-        {% endif %}
-
-        {% if child_categories %}
-            {% if category %}
-                <h2>Sub Categories</h2>
-            {% else %}
-                <h2>Categories</h2>
-            {% endif %}
-            <ul>
-                {% for category in child_categories %}
-                    <li><a href="{% url catalogue_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
-                {% endfor %}
-            </ul>
         {% endif %}
 
         {% for product in products %}
