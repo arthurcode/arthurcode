@@ -2,6 +2,12 @@
     display: none;
 }
 
+ul {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
 html {
     background-color: #DCDCDC;
 }
@@ -59,6 +65,7 @@ h1 {
 
 #primary-navigation {
     margin-left: 0;
+    margin-top: 1em;
     border-radius: 10px;
     float: left;
     clear: both;
@@ -105,9 +112,7 @@ body.home #primary-navigation .home a {
     float: left;
 }
 
-ul.feeds {
-    list-style-type: none;
-}
+
 /* http://www.w3schools.com/Css/css_list.asp */
 ul.feeds li {
     background-image: url('icons/rss_16x16.png');
