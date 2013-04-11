@@ -73,6 +73,51 @@ class ProductTest(TestCase):
                 create_product(upc=upc)
             self.assertIn(validators.ERROR_BLANK, str(cm.exception))
 
+    def testDefaults(self):
+        category = create_category()
+        product = Product(name="Product", slug="slug", upc="000000000000", category=category, short_description="short",
+                          long_description="long", price="5.00", brand="XYZ", quantity=10)
+        product.full_clean()
+        product.save()
+        self.assertEquals(1, len(Product.objects.all()))
+        product = Product.objects.all()[0]
+
+        self.assertTrue(product.is_active)
+        self.assertFalse(product.is_featured)
+        self.assertFalse(product.is_bestseller)
+        self.assertIsNotNone(product.created_at)
+        self.assertIsNotNone(product.updated_at)
+
+    def testNoInactiveProductsInActiveCategories(self):
+        category = create_category(is_active=True)
+
+        with self.assertRaises(ValidationError) as cm:
+            create_product(category=category, is_active=False)
+        self.assertIn(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY, str(cm.exception))
+
+        category.is_active = False
+        category.full_clean()
+        category.save()
+
+        product = create_product(category=category, is_active=False)
+        self.assertIsNotNone(product)
+        self.assertFalse(product.is_active)
+
+        category = create_category(is_active=True)
+        product = create_product(category=category)
+        self.assertTrue(product.is_active)
+        product.is_active = False
+
+        with self.assertRaises(ValidationError) as cm:
+            product.full_clean()
+        self.assertIn(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY, str(cm.exception))
+
+    def testGetAbsoluteURL(self):
+        product = create_product()
+        url = product.get_absolute_url()
+        response = Client().get(url)
+        self.assertEquals(200, response.status_code)
+
 
 COUNTER = Counter()
 
@@ -107,9 +152,10 @@ def create_product(**kwargs):
     long_desc = kwargs.get('long_desc', "The long description.")
     price = kwargs.get('price', '5.99')
     quantity = kwargs.get('quantity', 10)
+    is_active = kwargs.get('is_active', True)
 
     product = Product(category=category, name=name, slug=slug, upc=upc, brand=brand, short_description=short_desc,
-                      long_description=long_desc, price=price, quantity=quantity)
+                      long_description=long_desc, price=price, quantity=quantity, is_active=is_active)
     product.full_clean()
     product.save()
     return product
