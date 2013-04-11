@@ -106,7 +106,7 @@ def index(request):
 
 
 class AboutView(TemplateView):
-    template_name = "blog/about.html"
+    template_name = "about.html"
 
     def get_context_data(self, **kwargs):
         data = super(AboutView, self).get_context_data(**kwargs)
@@ -115,7 +115,7 @@ class AboutView(TemplateView):
 
 
 class ContactView(TemplateView):
-    template_name = "blog/contact.html"
+    template_name = "contact.html"
 
     def get_context_data(self, **kwargs):
         data = super(ContactView, self).get_context_data(**kwargs)
