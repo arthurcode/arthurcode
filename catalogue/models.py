@@ -3,6 +3,7 @@ from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
 from blog.validators import not_blank
 from django.core.urlresolvers import reverse
+from django.core.exceptions import ValidationError
 
 
 class Category(MPTTModel, models.Model):
@@ -45,6 +46,9 @@ class ActiveProductsManager(models.Manager):
 
 
 class Product(models.Model):
+
+    ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
+
     objects = models.Manager()
     active = ActiveProductsManager()
 
@@ -70,6 +74,10 @@ class Product(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)
+
+    def clean(self):
+        if not self.is_active and self.category_id and self.category.is_active:
+            raise ValidationError(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY)
 
     def __unicode__(self):
         return self.name
