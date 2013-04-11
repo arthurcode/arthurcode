@@ -5,15 +5,25 @@
 {% block body_class %}products{% endblock %}
 
 {% block body %}
-    <div class="yui3-u-1">
-        <div class="breadcrumbs">
-            {% for crumb in breadcrumbs %}
-                <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
-            {% endfor %}
-            {{ product.name }}
-        </div>
+    <div class="breadcrumbs yui3-u-1">
+        {% for crumb in breadcrumbs %}
+            <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
+        {% endfor %}
+        {{ product.name }}
+    </div>
 
+    <div class="visual yui3-u-3-8">
+        <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
+    </div>
+    <div class="description yui3-u-5-8">
         <h1>{{ product.name }}</h1>
+        {% if product.sale_price %}
+            <span class="sale">On sale!</span>
+            <span class="sale-price">{{ product.sale_price }}</span>
+            <span class="old-price">{{ product.price }}</span>
+        {% else %}
+            <span class="price">{{ product.price }}</span>
+        {% endif %}
         <p>{{ product.short_description }}</p>
         <p>{{ product.long_description }}</p>
     </div>
