@@ -10,7 +10,7 @@ def home_view(request):
 
 
 def product_detail_view(request, slug=""):
-    product = get_object_or_404(Product, slug=slug, is_active=True)
+    product = get_object_or_404(Product, slug=slug)
     return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
 
 
