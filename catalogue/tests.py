@@ -1,8 +1,10 @@
 from django.test import TestCase
 from blog.tests import Counter
-from catalogue.models import Category
+from catalogue.models import Category, Product
 from datetime import datetime
 from django.test.client import Client
+from blog import validators
+from django.core.exceptions import ValidationError
 
 
 class CategoryTest(TestCase):
@@ -48,6 +50,30 @@ class CategoryTest(TestCase):
         self.assertEqual(0, root.product_count())
 
 
+class ProductTest(TestCase):
+
+    def setUp(self):
+        self.blanks = ["", u""]
+
+    def testProductUPC(self):
+        valid_upcs = ['111111111111', '012345678912']
+        invalid_upcs = ['hi', 'rightlength2', '0123456789', '012345678901234']
+
+        for upc in valid_upcs:
+            product = create_product(upc=upc)
+            self.assertEqual(upc, product.upc)
+
+        for upc in invalid_upcs:
+            with self.assertRaises(ValidationError) as cm:
+                create_product(upc=upc)
+            self.assertIn(validators.ERROR_UPC, str(cm.exception))
+
+        for upc in self.blanks:
+            with self.assertRaises(ValidationError) as cm:
+                create_product(upc=upc)
+            self.assertIn(validators.ERROR_BLANK, str(cm.exception))
+
+
 COUNTER = Counter()
 
 
@@ -68,3 +94,22 @@ def create_category(**kwargs):
     category.full_clean()
     category.save()
     return category
+
+
+def create_product(**kwargs):
+    count = COUNTER.next()
+    category = kwargs.get('category', create_root_category(name='Dummy Category %d' % count))
+    name = kwargs.get('name', 'Product%d' % count)
+    slug = kwargs.get('slug', 'product%d-slug' % count)
+    upc = kwargs.get('upc', '012345678901')
+    brand = kwargs.get('brand', 'XYZ Brand')
+    short_desc = kwargs.get('short_desc', "The short description.")
+    long_desc = kwargs.get('long_desc', "The long description.")
+    price = kwargs.get('price', '5.99')
+    quantity = kwargs.get('quantity', 10)
+
+    product = Product(category=category, name=name, slug=slug, upc=upc, brand=brand, short_description=short_desc,
+                      long_description=long_desc, price=price, quantity=quantity)
+    product.full_clean()
+    product.save()
+    return product
