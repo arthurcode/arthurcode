@@ -16,6 +16,7 @@ class Category(MPTTModel, models.Model):
     description = models.TextField(help_text='Content for description meta tag', validators=[not_blank])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = 'Categories'

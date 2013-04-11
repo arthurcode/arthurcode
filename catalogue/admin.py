@@ -20,7 +20,7 @@ admin.site.register(Product, ProductAdmin)
 
 
 class CategoryAdmin(MPTTModelAdmin):
-    list_display = ('name', 'product_count', 'created_at', 'updated_at',)
+    list_display = ('name', 'is_active', 'product_count', 'created_at', 'updated_at',)
     list_display_links = ('name',)
     search_fields = ['name', 'description']
     readonly_fields = ('created_at', 'updated_at',)
