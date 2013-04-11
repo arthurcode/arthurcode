@@ -90,7 +90,8 @@ h1 {
 body.blog #primary-navigation .blog a,
 body.about #primary-navigation .about a,
 body.contact #primary-navigation .contact a,
-body.products #primary-navigation .products a {
+body.products #primary-navigation .products a,
+body.home #primary-navigation .home a {
     border: 2px solid black;
 }
 
