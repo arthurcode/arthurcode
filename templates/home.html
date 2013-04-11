@@ -4,6 +4,13 @@
 
 {% block body %}
     <div class="yui3-u-1">
-        Welcome to my home page
+        {% if root_categories %}
+            <h2>Product Categories</h2>
+            <ul>
+                {% for category in root_categories %}
+                    <li><a href="{% url catalogue_category category.slug %}">{{ category.name }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
     </div>
 {% endblock %}

@@ -5,7 +5,8 @@ from catalogue.models import Product, Category
 
 
 def home_view(request):
-    return render_to_response("home.html", context_instance=RequestContext(request))
+    root_categories = Category.objects.root_nodes()
+    return render_to_response("home.html", locals(), context_instance=RequestContext(request))
 
 
 def product_detail_view(request, slug=""):
