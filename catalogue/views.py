@@ -23,8 +23,18 @@ def category_view(request, category_slug=""):
         descendant_categories = category.get_descendants(include_self=True)
         products = Product.active.filter(category__in=descendant_categories)
         meta_description = category.description
+        child_categories = add_product_count(category.get_children())
     else:
         category = None
         products = Product.active.all()
         meta_description = "All products for sale at %s." % settings.SITE_NAME
+        child_categories = add_product_count(Category.objects.root_nodes())
     return render_to_response("category.html", locals(), context_instance=RequestContext(request))
+
+
+def add_product_count(category_queryset):
+    """
+    Adds a 'product_count' attribute to the categories in the given queryset.  The count is cumulative over all
+    of a category's subcategories.
+    """
+    return Category.objects.add_related_count(category_queryset, Product, 'category', 'product_count', cumulative=True)
