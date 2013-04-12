@@ -1,7 +1,9 @@
+{% load extras %}
+
 <div class="pagination">
     <span class="step-links">
         {% if objects.has_previous %}
-            <a href="?page={{ objects.previous_page_number }}">previous</a>
+            <a href="{% add_get page=objects.previous_page_number %}">previous</a>
         {% else %}
             previous
         {% endif %}
@@ -11,7 +13,7 @@
         </span>
 
         {% if objects.has_next %}
-            <a href="?page={{ objects.next_page_number }}">next</a>
+            <a href="{% add_get page=objects.next_page_number %}">next</a>
         {% else %}
             next
         {% endif %}
@@ -19,25 +21,25 @@
         <span class="page-size">
             Items per page:
             {% if request.GET.pageSize != '16' and objects.paginator.per_page != 16 %}
-                <a href="?pageSize=16">16</a>
+                <a href="{% add_get pageSize=16 %}">16</a>
             {% else %}
                 16
             {% endif %}
 
             {% if request.GET.pageSize != '32' and objects.paginator.per_page != 32 %}
-                <a href="?pageSize=32">32</a>
+                <a href="{% add_get pageSize=32 %}">32</a>
             {% else %}
                 32
             {% endif %}
 
             {% if request.GET.pageSize != '64' and objects.paginator.per_page != 64 %}
-                <a href="?pageSize=64">64</a>
+                <a href="{% add_get pageSize=64 %}">64</a>
             {% else %}
                 64
             {% endif %}
 
             {% if request.GET.pageSize != 'All' %}
-                <a href="?pageSize=All">All</a>
+                <a href="{% add_get pageSize='All' %}">All</a>
             {% else %}
                 All
             {% endif %}

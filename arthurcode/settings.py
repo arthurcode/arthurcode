@@ -127,6 +127,7 @@ INSTALLED_APPS = (
     'taggit',
     'catalogue',
     'django.contrib.humanize',
+    'utils',
 )
 
 # A sample logging configuration. The only tangible logging
