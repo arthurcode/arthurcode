@@ -89,3 +89,26 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalogue_product', kwargs={'slug': self.slug})
+
+    def deactivate(self):
+        self.category = get_inactive_category()
+        self.is_active = False
+        self.full_clean()
+        self.save()
+
+
+def get_inactive_category():
+    """
+    Returns a special Category instance that can be used to store products that are no longer active.  We don't want
+    inactive products to live in active categories, but we will need to deactivate products and they need to reference
+    a category.
+    """
+    params = {
+        'name': 'Inactive Category',
+        'slug': 'inactive-category',
+        'is_active': False,
+        'description': 'This category stores all products that are no longer active.',
+        'parent': None
+    }
+    category, _ = Category.objects.get_or_create(**params)
+    return category

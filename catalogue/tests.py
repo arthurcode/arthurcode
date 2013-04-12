@@ -1,6 +1,6 @@
 from django.test import TestCase
 from blog.tests import Counter
-from catalogue.models import Category, Product
+from catalogue.models import Category, Product, get_inactive_category
 from datetime import datetime
 from django.test.client import Client
 from blog import validators
@@ -162,6 +162,24 @@ class ProductTest(TestCase):
         with self.assertRaises(ValidationError) as cm:
             create_product(price=5.00, sale_price=6.76)
         self.assertIn(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE, str(cm.exception))
+
+    def testDeactivate(self):
+        category = create_root_category(is_active=True)
+        self.assertTrue(category.is_active)
+        product = create_product(category=category, is_active=True)
+        self.assertTrue(product.is_active)
+
+        product.deactivate()
+        inactive_category = get_inactive_category()
+        product = Product.objects.get(id=product.id) # reload from the database to make sure it was saved
+        self.assertFalse(product.is_active)
+        self.assertEqual(inactive_category.name, product.category.name)
+        self.assertFalse(product.category.is_active)
+        self.assertEqual(inactive_category.id, product.category.id)
+
+        # test that you can call deactivate on a product multiple times without an error
+        product.deactivate()
+        product.deactivate()
 
 
 COUNTER = Counter()
