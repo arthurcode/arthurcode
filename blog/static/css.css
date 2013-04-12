@@ -365,6 +365,9 @@ form.comment textarea {
     text-align: center;
     font-size: 80%;
     line-height: 1.2em;
+    float: left;
+    margin-right: 1%;
+    height: 18em;
 }
 
 .thumbnail img {
