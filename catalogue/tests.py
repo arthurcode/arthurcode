@@ -5,6 +5,7 @@ from datetime import datetime
 from django.test.client import Client
 from blog import validators
 from django.core.exceptions import ValidationError
+from django.db.utils import IntegrityError
 
 
 class CategoryTest(TestCase):
@@ -118,6 +119,41 @@ class ProductTest(TestCase):
         response = Client().get(url)
         self.assertEquals(200, response.status_code)
 
+    def testQuantity(self):
+        # quantity must be an integer >= 0
+        category = create_root_category()
+        valid_quantities = [0, 1, 9999, 10000]
+
+        for quantity in valid_quantities:
+            product = create_product(quantity=quantity, category=category)
+            self.assertEqual(quantity, product.quantity)
+
+        # I can't run more than one of these tests per test method because this type of error causes my transaction
+        # to abort.  All code in a single test method runs inside a single transaction, and this code effectively
+        # kills the transaction
+        with self.assertRaises(IntegrityError) as cm:
+            create_product(quantity=-1, category=category)
+        self.assertIn("violates check constraint", str(cm.exception))
+
+    def testPrices(self):
+        # price cannot be zero
+        valid_prices = [0.01, 5, 10, 5.68, 29.99]
+        invalid_prices = [0, -1.32, -0.01]
+
+        for price in valid_prices:
+            product = create_product(price=price)
+            self.assertEquals(product.price, price)
+            product = create_product(price=1000, sale_price=price)
+            self.assertEqual(price, product.sale_price)
+
+        for price in invalid_prices:
+            with self.assertRaises(ValidationError) as cm:
+                create_product(price=price)
+            self.assertIn("Ensure this value is greater than or equal to 0.01", str(cm.exception))
+            with self.assertRaises(ValidationError) as cm:
+                create_product(price=10000, sale_price=price)
+            self.assertIn("Ensure this value is greater than or equal to 0.01", str(cm.exception))
+
 
 COUNTER = Counter()
 
@@ -143,7 +179,7 @@ def create_category(**kwargs):
 
 def create_product(**kwargs):
     count = COUNTER.next()
-    category = kwargs.get('category', create_root_category(name='Dummy Category %d' % count))
+    category = kwargs.get('category', None)
     name = kwargs.get('name', 'Product%d' % count)
     slug = kwargs.get('slug', 'product%d-slug' % count)
     upc = kwargs.get('upc', '012345678901')
@@ -151,11 +187,16 @@ def create_product(**kwargs):
     short_desc = kwargs.get('short_desc', "The short description.")
     long_desc = kwargs.get('long_desc', "The long description.")
     price = kwargs.get('price', '5.99')
+    sale_price = kwargs.get('sale_price', None)
     quantity = kwargs.get('quantity', 10)
     is_active = kwargs.get('is_active', True)
 
+    if not category:
+        category = create_root_category(name='Dummy Category %d' % count)
+
     product = Product(category=category, name=name, slug=slug, upc=upc, brand=brand, short_description=short_desc,
-                      long_description=long_desc, price=price, quantity=quantity, is_active=is_active)
+                      long_description=long_desc, price=price, quantity=quantity, is_active=is_active,
+                      sale_price=sale_price)
     product.full_clean()
     product.save()
     return product

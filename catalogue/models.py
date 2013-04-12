@@ -71,7 +71,7 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     short_description = models.CharField(max_length=500)
     long_description = models.TextField()
-    quantity = models.IntegerField()
+    quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)
