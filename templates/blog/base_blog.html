@@ -5,6 +5,7 @@
     <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
 {% endblock %}
 {% block body %}
+    <div class="yui3-g">
     <div class="yui3-u-2-3">
         {% block content %}{% endblock %}
     </div>
@@ -17,6 +18,7 @@
             </ul>
             {% block related_content %}{% endblock %}
         {% endblock %}
+    </div>
     </div>
 {% endblock %}
 

@@ -7,6 +7,7 @@
 {% block body_class %}products{% endblock %}
 
 {% block body %}
+    <div class="yui3-g">
     <div class="breadcrumbs yui3-u-1">
         <a href="{% url catalogue_category ''%}">All Products</a> >
         {% for crumb in breadcrumbs %}
@@ -28,5 +29,6 @@
         {% endif %}
         <p>{{ product.short_description }}</p>
         <p>{{ product.long_description }}</p>
+    </div>
     </div>
 {% endblock %}
