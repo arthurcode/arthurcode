@@ -358,6 +358,19 @@ form.comment textarea {
     width: 79%;
 }
 
+/* catalogue styles */
+
+.pagination {
+    clear: both;
+    width: 100%;
+    font-weight: lighter;
+    font-size: 80%;
+}
+
+.pagination .current {
+    margin: 0 10%;
+}
+
 /* thumbnail styles */
 .thumbnail {
     width: 20%;

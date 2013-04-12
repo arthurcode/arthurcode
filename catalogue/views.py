@@ -3,6 +3,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from catalogue.models import Product, Category
 from arthurcode import settings
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 
 def home_view(request):
@@ -21,16 +22,28 @@ def category_view(request, category_slug=""):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         descendant_categories = category.get_descendants(include_self=True)
-        products = Product.active.filter(category__in=descendant_categories)
+        product_list = Product.active.filter(category__in=descendant_categories)
         meta_description = category.description
         child_categories = add_product_count(category.get_children())
         parent_categories = category.get_ancestors(ascending=False, include_self=False)
     else:
         category = None
         parent_categories = None
-        products = Product.active.all()
+        product_list = Product.active.all()
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = add_product_count(Category.objects.root_nodes())
+
+    # paginate the product listing
+    paginator = Paginator(product_list, per_page=4, allow_empty_first_page=True)
+    page = request.GET.get('page')
+
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator._num_pages)
+
     return render_to_response("category.html", locals(), context_instance=RequestContext(request))
 
 
