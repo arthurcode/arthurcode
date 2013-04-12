@@ -198,6 +198,14 @@ class ProductTest(TestCase):
         product.deactivate()
         product.deactivate()
 
+    def testPercentSavings(self):
+        product = create_product(price=5.00)
+        self.assertEquals(0, product.percent_savings())
+        product.sale_price = 4
+        product.full_clean()
+        product.save()
+        self.assertEqual(20, product.percent_savings())
+
 
 COUNTER = Counter()
 

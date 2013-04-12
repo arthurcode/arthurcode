@@ -100,6 +100,11 @@ class Product(models.Model):
         self.full_clean()
         self.save()
 
+    def percent_savings(self):
+        if self.sale_price:
+            return (self.price - self.sale_price) * 100 / self.price
+        return 0
+
 
 def get_inactive_category():
     """
