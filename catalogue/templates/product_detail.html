@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% load humanize %}
+
 {% block title %}{{ product.name }}{% endblock %}
 
 {% block body_class %}products{% endblock %}
@@ -19,11 +21,10 @@
     <div class="description yui3-u-5-8">
         <h1>{{ product.name }}</h1>
         {% if product.sale_price %}
-            <span class="sale">On sale!</span>
-            <span class="sale-price">{{ product.sale_price }}</span>
-            <span class="old-price">{{ product.price }}</span>
+            Was: <span class="old-price">${{ product.price|floatformat:2|intcomma }}</span>
+            Now: <span class="sale-price">${{ product.sale_price|floatformat:2|intcomma }}</span>
         {% else %}
-            <span class="price">{{ product.price }}</span>
+            <span class="price">${{ product.price|floatformat:2|intcomma }}</span>
         {% endif %}
         <p>{{ product.short_description }}</p>
         <p>{{ product.long_description }}</p>
