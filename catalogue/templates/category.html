@@ -44,7 +44,7 @@
         {% endif %}
 
         {% for product in products %}
-            <a href="{% url catalogue_product product.slug %}">{{ product.name }}</a><br>
+            {% include "_thumbnail.html" %}
         {% endfor %}
     </div>
 {% endblock %}

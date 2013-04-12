@@ -357,3 +357,16 @@ form.comment input {
 form.comment textarea {
     width: 79%;
 }
+
+/* thumbnail styles */
+.thumbnail {
+    width: 20%;
+    border: 1px solid lightgray;
+    text-align: center;
+    font-size: 80%;
+}
+
+.thumbnail img {
+    width: 95%;
+    margin-top: 2%;
+}

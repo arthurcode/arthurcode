@@ -1,0 +1,9 @@
+{% comment %} Displays a thumbnail view of a product {% endcomment %}
+
+{% load humanize %}
+
+<div class="thumbnail">
+    <img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/>
+    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+    <span class="price">${{ product.price|intcomma }}</span>
+</div>
