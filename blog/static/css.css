@@ -368,7 +368,11 @@ form.comment textarea {
 }
 
 .pagination .current {
-    margin: 0 10%;
+    margin: 0 5%;
+}
+
+.pagination .page-size {
+    float: right;
 }
 
 /* thumbnail styles */

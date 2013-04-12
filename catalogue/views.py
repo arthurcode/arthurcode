@@ -5,6 +5,7 @@ from catalogue.models import Product, Category
 from arthurcode import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
+DEFAULT_PAGE_SIZE = 16
 
 def home_view(request):
     root_categories = Category.objects.root_nodes().filter(is_active=True).order_by('name')
@@ -34,7 +35,19 @@ def category_view(request, category_slug=""):
         child_categories = add_product_count(Category.objects.root_nodes())
 
     # paginate the product listing
-    paginator = Paginator(product_list, per_page=4, allow_empty_first_page=True)
+    pageSize = request.GET.get('pageSize') or DEFAULT_PAGE_SIZE
+
+    if pageSize == "All":
+        pageSize = max(product_list.count(), 1)
+
+    # make sure pageSize is an integer.  If it isn't, fall back to the default size
+    try:
+        pageSize = int(pageSize)
+        if pageSize < 1:
+            pageSize = DEFAULT_PAGE_SIZE
+    except:
+        pageSize = DEFAULT_PAGE_SIZE
+    paginator = Paginator(product_list, per_page=pageSize, allow_empty_first_page=True)
     page = request.GET.get('page')
 
     try:
