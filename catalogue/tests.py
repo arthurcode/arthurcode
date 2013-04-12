@@ -113,6 +113,23 @@ class ProductTest(TestCase):
             product.full_clean()
         self.assertIn(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY, str(cm.exception))
 
+    def testNoActiveProductsInInactiveCategories(self):
+        category = create_category(is_active=False)
+        self.assertFalse(category.is_active)
+
+        with self.assertRaises(ValidationError) as cm:
+            create_product(category=category, is_active=True)
+        self.assertIn(Product.ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY, str(cm.exception))
+
+        product = create_product(category=category, is_active=False)
+        self.assertFalse(product.is_active)
+        product.is_active = True
+
+        with self.assertRaises(ValidationError) as cm:
+            product.full_clean()
+        self.assertIn(Product.ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY, str(cm.exception))
+
+
     def testGetAbsoluteURL(self):
         product = create_product()
         url = product.get_absolute_url()
