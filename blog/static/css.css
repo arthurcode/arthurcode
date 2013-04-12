@@ -364,9 +364,18 @@ form.comment textarea {
     border: 1px solid lightgray;
     text-align: center;
     font-size: 80%;
+    line-height: 1.2em;
 }
 
 .thumbnail img {
     width: 95%;
     margin-top: 2%;
+}
+
+.thumbnail span {
+    display: block;
+}
+
+.thumbnail .sale-price, .thumbnail .sale {
+    color: red;
 }

@@ -3,7 +3,7 @@
 {% load humanize %}
 
 <div class="thumbnail">
-    <img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/>
+    <a href="{{ product.get_absolute_url }}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
     <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
     {% if product.sale_price %}
         <span class="sale-price">${{ product.sale_price|floatformat:2|intcomma }}</span>
