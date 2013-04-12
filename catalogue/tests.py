@@ -154,6 +154,15 @@ class ProductTest(TestCase):
                 create_product(price=10000, sale_price=price)
             self.assertIn("Ensure this value is greater than or equal to 0.01", str(cm.exception))
 
+    def testSalePriceMustBeLessThanPrice(self):
+        with self.assertRaises(ValidationError) as cm:
+            create_product(price=5.00, sale_price=5.00)
+        self.assertIn(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE, str(cm.exception))
+
+        with self.assertRaises(ValidationError) as cm:
+            create_product(price=5.00, sale_price=6.76)
+        self.assertIn(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE, str(cm.exception))
+
 
 COUNTER = Counter()
 

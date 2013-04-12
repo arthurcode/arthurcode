@@ -49,6 +49,7 @@ class ActiveProductsManager(models.Manager):
 class Product(models.Model):
 
     ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
+    ERROR_SALE_PRICE_MORE_THAN_PRICE = "The sale price must be less than or equal to the product price."
 
     objects = models.Manager()
     active = ActiveProductsManager()
@@ -79,6 +80,9 @@ class Product(models.Model):
     def clean(self):
         if not self.is_active and self.category_id and self.category.is_active:
             raise ValidationError(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY)
+
+        if self.sale_price and self.price and self.sale_price >= self.price:
+            raise ValidationError(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE)
 
     def __unicode__(self):
         return self.name
