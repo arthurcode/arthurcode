@@ -359,7 +359,24 @@ form.comment textarea {
 }
 
 /* catalogue styles */
+div.positioning {
+    position: relative;
+}
 
+
+div.refine {
+    width: 10em;
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+div.products {
+    margin-left: 11em;
+    float: left;
+}
+
+/* pagination styles */
 .pagination {
     clear: both;
     width: 100%;

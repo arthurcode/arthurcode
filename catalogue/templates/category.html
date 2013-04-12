@@ -20,8 +20,8 @@
         {{ category.name }}
     </div>
 
-
-    <div>
+    <div class="positioning">
+    <div class="refine">
     {% if child_categories %}
         {% if category %}
             <h2>Sub Categories</h2>
@@ -36,7 +36,7 @@
     {% endif %}
     </div>
 
-    <div>
+    <div class="products">
         {% if category %}
             <h1>All {{ category.name }}</h1>
         {% else %}
@@ -48,5 +48,6 @@
             {% include "_thumbnail.html" %}
         {% endfor %}
         {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+    </div>
     </div>
 {% endblock %}
