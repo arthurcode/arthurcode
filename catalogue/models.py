@@ -8,6 +8,8 @@ from django.db import transaction
 
 
 class Category(MPTTModel, models.Model):
+    ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT = "An inactive category cannot have an active subcategory"
+
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children',
                             help_text='Parent category. Do not re-parent a category unless you REALLY know what you are doing.')
     name = models.CharField(max_length=50, unique=True, validators=[not_blank],
@@ -59,6 +61,10 @@ class Category(MPTTModel, models.Model):
             product.is_active = is_active
             product.full_clean()
             product.save()
+
+    def clean(self):
+        if self.parent_id and self.is_active and not self.parent.is_active:
+            raise ValidationError(Category.ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT)
 
 
 class ActiveProductsManager(models.Manager):

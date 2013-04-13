@@ -50,6 +50,19 @@ class CategoryTest(TestCase):
         root = create_root_category()
         self.assertEqual(0, root.product_count())
 
+    def testNoActiveCategoriesBelowInactiveParent(self):
+        category = create_root_category(is_active=False)
+        with self.assertRaises(ValidationError) as cm:
+            create_category(is_active=True, parent=category)
+        self.assertIn(Category.ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT, str(cm.exception))
+
+        subcategory = create_category(is_active=False, parent=category)
+        subcategory.is_active = True
+        with self.assertRaises(ValidationError) as cm:
+            subcategory.full_clean()
+            subcategory.save()
+        self.assertIn(Category.ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT, str(cm.exception))
+
 
 class ProductTest(TestCase):
 
