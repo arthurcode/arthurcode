@@ -378,6 +378,7 @@ div.products {
 
 /* pagination styles */
 .pagination {
+    float: left;
     clear: both;
     width: 100%;
     font-weight: lighter;
@@ -394,13 +395,14 @@ div.products {
 
 /* thumbnail styles */
 .thumbnail {
-    width: 20%;
+    width: 11.9em;
     border: 1px solid lightgray;
     text-align: center;
     font-size: 80%;
     line-height: 1.2em;
     float: left;
     margin-right: 1%;
+    margin-bottom: 1%;
     height: 18em;
 }
 

@@ -9,8 +9,6 @@
     <div class="breadcrumbs">
         {% if category %}
             <a href="{% url catalogue_category ''%}">All Products</a> >
-        {% else %}
-            All Products
         {% endif %}
         {% if parent_categories %}
             {% for category in parent_categories %}
