@@ -4,6 +4,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from blog.validators import not_blank, valid_upc
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
+from django.db import transaction
 
 
 class Category(MPTTModel, models.Model):
@@ -39,6 +40,25 @@ class Category(MPTTModel, models.Model):
         that are in subcategories of this product.
         """
         return self.product_set.count()
+
+    @transaction.commit_on_success
+    def set_is_active(self, is_active):
+        """
+        When a category is activated or deactivated, all of its subcategories and products must be activated or
+        deactivated as well.
+        """
+        subcategories = self.get_descendants(include_self=True)
+        products = Product.objects.filter(category__in=subcategories)
+
+        for category in subcategories:
+            category.is_active = is_active
+            category.full_clean()
+            category.save()
+
+        for product in products:
+            product.is_active = is_active
+            product.full_clean()
+            product.save()
 
 
 class ActiveProductsManager(models.Manager):

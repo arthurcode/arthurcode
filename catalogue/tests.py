@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.test import TestCase, TransactionTestCase
 from blog.tests import Counter
 from catalogue.models import Category, Product, get_inactive_category
 from datetime import datetime
@@ -205,6 +205,39 @@ class ProductTest(TestCase):
         product.full_clean()
         product.save()
         self.assertEqual(20, product.percent_savings())
+
+
+class TransactionTests(TransactionTestCase):
+
+    def testActivateDeactivateCategory(self):
+        category = create_root_category(is_active=True)
+        category1 = create_category(is_active=True, parent=category)
+        category2 = create_category(is_active=True, parent=category)
+        category1_1 = create_category(is_active=True, parent=category1)
+        category1_2 = create_category(is_active=True, parent=category1)
+        product1_1 = create_product(is_active=True, category=category1_1)
+        product1_2 = create_product(is_active=True, category=category1_2)
+        self.assertEqual(2, Product.active.count())
+        self.assertEqual(5, Category.objects.filter(is_active=True).count())
+
+        # deactivate the root category, all categories and products are deactivated
+        category.set_is_active(False)
+        self.assertEqual(0, Product.active.count())
+        self.assertEqual(0, Category.objects.filter(is_active=True).count())
+
+        # reactivate the root category, all categories and products are activated
+        category.set_is_active(True)
+        self.assertEqual(2, Product.active.count())
+        self.assertEqual(5, Category.objects.filter(is_active=True).count())
+
+        # deactivate category1
+        category1.set_is_active(False)
+        self.assertEqual(2, Category.objects.filter(is_active=True).count())
+        self.assertEqual(0, Product.active.count())
+        self.assertTrue(Category.objects.get(id=category.id).is_active)
+        self.assertTrue(Category.objects.get(id=category2.id).is_active)
+
+        # TODO: mock an exception part way through the activate, verify that the entire operation was rolled back
 
 
 COUNTER = Counter()
