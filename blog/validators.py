@@ -1,6 +1,5 @@
 __author__ = 'rhyanarthur'
 
-from blog.utils import is_blank
 from django.core.exceptions import ValidationError
 import re
 
@@ -26,3 +25,14 @@ def valid_upc(upc_str):
     """
     if not upc_str or not UPC_PATTERN.match(upc_str):
         raise ValidationError(ERROR_UPC)
+
+
+# utils
+def is_blank(value):
+    """
+    Returns true if `value` is None, the empty string, or a string composed solely of whitespace.
+    This method can handle both regular strings and unicode strings.
+    """
+    if not value:
+        return True
+    return isinstance(value, (str, unicode)) and not value.strip()
