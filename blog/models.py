@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from comments.moderation import AkismetModeratorMixin, MPTTCommentModerator, moderator
-from validators import not_blank, is_blank
+from utils.validators import not_blank, is_blank
 import datetime
 from taggit.managers import TaggableManager
 from taggit.models import TaggedItemBase

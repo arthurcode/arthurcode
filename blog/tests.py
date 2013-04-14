@@ -4,7 +4,7 @@ from blog.models import AuthorProfile, Post
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 from django.core.urlresolvers import reverse
-from blog import validators
+from utils import validators
 from django.test.client import Client
 from django.test.utils import override_settings
 import datetime, time

@@ -1,7 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
-from blog.validators import not_blank, valid_upc
+from utils.validators import not_blank, valid_upc
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
