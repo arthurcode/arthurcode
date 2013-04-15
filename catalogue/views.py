@@ -17,10 +17,6 @@ def home_view(request):
 
 
 def product_detail_view(request, slug=""):
-    product = get_object_or_404(Product, slug=slug)
-    breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
-    meta_description = product.short_description
-
     if request.method == 'POST':
         # add to cart, create the bound form
         postdata = request.POST.copy()
@@ -40,6 +36,9 @@ def product_detail_view(request, slug=""):
         form.fields['product_slug'].widget.attrs['value'] = slug
     # set the test cookie on our first GET request
     request.session.set_test_cookie()
+    product = get_object_or_404(Product, slug=slug)
+    breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
+    meta_description = product.short_description
     return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
 
 
