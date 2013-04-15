@@ -3,5 +3,73 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block body %}
-  Your Shopping Cart
+    <table class="shopping-cart">
+        <caption>Your Shopping Cart</caption>
+        <thead>
+        <tr>
+            <th scope="col">Product</th>
+            <th scope="col">Price</th>
+            <th></th>
+            <th></th>
+            <th scope="col" class="right">Total</th>
+        </tr>
+        </thead>
+        <tfoot>
+        <tr>
+            <th class="right" colspan="4">
+                Cart Subtotal:
+            </th>
+            <th class="right">
+                {{ cart_subtotal }}
+            </th>
+        </tr>
+        {% if cart_items %}
+            <tr>
+                <th class="right" colspan="5">
+                    Checkout Now
+                </th>
+            </tr>
+        {% endif %}
+        </tfoot>
+        <tbody>
+        {% if cart_items %}
+            {% for item in cart_items %}
+                <tr>
+                    <td>
+                        <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
+                    </td>
+                    <td>
+                        {{ item.price }}
+                    </td>
+                    <td class="right">
+                        <form method="post" action="." class="cart">
+                            {% csrf_token %}
+                            <label for="quantity">Quantity:</label>
+                            <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity"
+                                   size="2" class="quantity" maxlength="5"/>
+                            <input type="hidden" name="item_id" value="{{ item.id }}" />
+                            <input type="submit" name="submit" value="Update" />
+                        </form>
+                    </td>
+                    <td>
+                        <form method="post" action="." class="cart">
+                            {% csrf_token %}
+                            <input type="hidden" name="item_id" value="{{ item.id }}" />
+                            <input type="submit" name="submit" value="Remove" />
+                        </form>
+                    </td>
+                    <td class="right">
+                        {{ item.total }}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="5">
+                    Your cart is empty
+                </td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}
