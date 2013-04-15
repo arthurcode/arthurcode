@@ -4,6 +4,7 @@ from django.template import RequestContext
 from catalogue.models import Product, Category
 from arthurcode import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from cart.forms import ProductAddToCartForm
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -16,6 +17,17 @@ def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     meta_description = product.short_description
+
+    if request.method == 'POST':
+        # add to cart, create the bound form
+        pass
+    else:
+        # it's a GET, create the unbound form.  Note request as a kwarg
+        form = ProductAddToCartForm(request=request)
+        # assign the hidden input the product slug
+        form.fields['product_slug'].widget.attrs['value'] = slug
+    # set the test cookie on our first GET request
+    request.session.set_test_cookie()
     return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
 
 

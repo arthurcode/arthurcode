@@ -29,6 +29,12 @@
         {% endif %}
         <p>{{ product.short_description }}</p>
         <p>{{ product.long_description }}</p>
-    </div>
+
+        <form method="post" action="." class="cart">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <br/>
+            <input type="submit" value="Add To Cart" name="submit" alt="Add to Cart" />
+        </form>
     </div>
 {% endblock %}
