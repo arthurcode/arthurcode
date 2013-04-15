@@ -128,6 +128,7 @@ INSTALLED_APPS = (
     'catalogue',
     'django.contrib.humanize',
     'utils',
+    'cart',
 )
 
 # A sample logging configuration. The only tangible logging
