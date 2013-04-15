@@ -30,7 +30,7 @@
             <p>{{ product.short_description }}</p>
             <p>{{ product.long_description }}</p>
 
-            <form method="post" action="." class="cart">
+            <form method="post" action="{% url catalogue_product product.slug %}" class="cart">
                 {% csrf_token %}
                 {{ form.as_p }}
                 <br/>

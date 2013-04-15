@@ -5,6 +5,9 @@ from catalogue.models import Product, Category
 from arthurcode import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from cart.forms import ProductAddToCartForm
+from django.core.urlresolvers import reverse
+from django.http import HttpResponseRedirect
+from cart import cartutils
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -20,7 +23,16 @@ def product_detail_view(request, slug=""):
 
     if request.method == 'POST':
         # add to cart, create the bound form
-        pass
+        postdata = request.POST.copy()
+        form = ProductAddToCartForm(request, postdata)
+        # check if posted data is valid
+        if form.is_valid():
+            #add to cart and redirect to cart page
+            cartutils.add_to_cart(request)
+            # if test cookie worked, get rid of it
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+            return HttpResponseRedirect(reverse('show_cart'))
     else:
         # it's a GET, create the unbound form.  Note request as a kwarg
         form = ProductAddToCartForm(request=request)
