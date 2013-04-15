@@ -1,9 +1,15 @@
 {% extends 'base_hd_ft.html' %}
 
+{% load cart_tags %}
+
 {% block header %}
     {% block banner %}
         <span class="sitename">arthurcode</span>
     {% endblock %}
+
+    <div class="cart-summary">
+        {% cart_summary request %}
+    </div>
 
     {% block navigation %}
         <ul id="primary-navigation">

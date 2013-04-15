@@ -55,3 +55,8 @@ def add_to_cart(request):
         ci.quantity = quantity
         ci.cart_id = _cart_id(request)
         ci.save()
+
+
+# returns the total number of items in the user's cart:
+def cart_distinct_item_count(request):
+    return get_cart_items(request).count()
