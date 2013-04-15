@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, include, url
 import blog.urls
 import catalogue.urls
+import cart.urls
 from catalogue.views import home_view
 
 from django.contrib import admin
@@ -22,4 +23,6 @@ urlpatterns = patterns('',
     url(r'^products/', include(catalogue.urls)),
 
     url(r'^$', home_view, name="home"),
+
+    url(r'^cart/', include(cart.urls)),
 )
