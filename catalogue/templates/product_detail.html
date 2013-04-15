@@ -8,33 +8,34 @@
 
 {% block body %}
     <div class="yui3-g">
-    <div class="breadcrumbs yui3-u-1">
-        <a href="{% url catalogue_category ''%}">All Products</a> >
-        {% for crumb in breadcrumbs %}
-            <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
-        {% endfor %}
-        {{ product.name }}
-    </div>
+        <div class="breadcrumbs yui3-u-1">
+            <a href="{% url catalogue_category ''%}">All Products</a> >
+            {% for crumb in breadcrumbs %}
+                <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
+            {% endfor %}
+            {{ product.name }}
+        </div>
 
-    <div class="visual yui3-u-3-8">
-        <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
-    </div>
-    <div class="description yui3-u-5-8">
-        <h1>{{ product.name }}</h1>
-        {% if product.sale_price %}
-            Was: <span class="old-price">${{ product.price|floatformat:2|intcomma }}</span>
-            Now: <span class="sale-price">${{ product.sale_price|floatformat:2|intcomma }}</span>
-        {% else %}
-            <span class="price">${{ product.price|floatformat:2|intcomma }}</span>
-        {% endif %}
-        <p>{{ product.short_description }}</p>
-        <p>{{ product.long_description }}</p>
+        <div class="visual yui3-u-3-8">
+            <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
+        </div>
+        <div class="description yui3-u-5-8">
+            <h1>{{ product.name }}</h1>
+            {% if product.sale_price %}
+                Was: <span class="old-price">${{ product.price|floatformat:2|intcomma }}</span>
+                Now: <span class="sale-price">${{ product.sale_price|floatformat:2|intcomma }}</span>
+            {% else %}
+                <span class="price">${{ product.price|floatformat:2|intcomma }}</span>
+            {% endif %}
+            <p>{{ product.short_description }}</p>
+            <p>{{ product.long_description }}</p>
 
-        <form method="post" action="." class="cart">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <br/>
-            <input type="submit" value="Add To Cart" name="submit" alt="Add to Cart" />
-        </form>
+            <form method="post" action="." class="cart">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <br/>
+                <input type="submit" value="Add To Cart" name="submit" alt="Add to Cart" />
+            </form>
+        </div>
     </div>
 {% endblock %}
