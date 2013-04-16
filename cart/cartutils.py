@@ -3,6 +3,7 @@ from catalogue.models import Product
 from django.shortcuts import get_object_or_404
 import random
 import decimal
+from exceptions import ValueError
 
 CART_ID_SESSION_KEY = 'cart_id'
 
@@ -72,11 +73,15 @@ def update_cart(request):
     quantity = postdata['quantity']
     cart_item = get_single_item(request, item_id)
     if cart_item:
-        if int(quantity) > 0:
-            cart_item.quantity = int(quantity)
-            cart_item.save()
-        else:
-            remove_from_cart(request)
+        try:
+            if int(quantity) > 0:
+                cart_item.quantity = int(quantity)
+                cart_item.save()
+            else:
+                remove_from_cart(request)
+        except ValueError:
+            # user gave an invalid quantity string, do nothing.
+            pass
 
 
 def remove_from_cart(request):
