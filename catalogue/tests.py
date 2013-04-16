@@ -3,7 +3,7 @@ from blog.tests import Counter
 from catalogue.models import Category, Product, get_inactive_category
 from datetime import datetime
 from django.test.client import Client
-from blog import validators
+from utils import validators
 from django.core.exceptions import ValidationError
 from django.db.utils import IntegrityError
 
