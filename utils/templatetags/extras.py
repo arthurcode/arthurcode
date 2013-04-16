@@ -1,5 +1,6 @@
 
 from django.template import Library, Node, resolve_variable
+import locale
 
 register = Library()
 
@@ -49,3 +50,13 @@ def add_get(parser, token):
         s = pair.split('=', 1)
         values[s[0]] = parser.compile_filter(s[1])
     return AddGetParameter(values)
+
+
+@register.filter(name='currency')
+def currency(value):
+    try:
+        locale.setlocale(locale.LC_ALL, 'en_US.UTF-8')
+    except:
+        locale.setlocale(locale.LC_ALL, '')
+    loc = locale.localeconv()
+    return locale.currency(value, loc['currency_symbol'], grouping=True)

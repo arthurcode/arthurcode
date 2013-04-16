@@ -1,6 +1,6 @@
 {% extends "base_site.html" %}
 
-{% load humanize %}
+{% load extras %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -22,10 +22,10 @@
         <div class="description yui3-u-5-8">
             <h1>{{ product.name }}</h1>
             {% if product.sale_price %}
-                Was: <span class="old-price">${{ product.price|floatformat:2|intcomma }}</span>
-                Now: <span class="sale-price">${{ product.sale_price|floatformat:2|intcomma }}</span>
+                Was: <span class="old-price">{{ product.price|currency }}</span>
+                Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
             {% else %}
-                <span class="price">${{ product.price|floatformat:2|intcomma }}</span>
+                <span class="price">{{ product.price|currency }}</span>
             {% endif %}
             <p>{{ product.short_description }}</p>
             <p>{{ product.long_description }}</p>

@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% load extras %}
+
 {% block title %}Shopping Cart{% endblock %}
 
 {% block body %}
@@ -20,7 +22,7 @@
                 Cart Subtotal:
             </th>
             <th class="right">
-                {{ cart_subtotal }}
+                {{ cart_subtotal|currency }}
             </th>
         </tr>
         {% if cart_items %}
@@ -39,7 +41,7 @@
                         <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
                     </td>
                     <td>
-                        {{ item.price }}
+                        {{ item.price|currency }}
                     </td>
                     <td class="right">
                         <form method="post" action="." class="cart">
@@ -59,7 +61,7 @@
                         </form>
                     </td>
                     <td class="right">
-                        {{ item.total }}
+                        {{ item.total|currency }}
                     </td>
                 </tr>
             {% endfor %}
