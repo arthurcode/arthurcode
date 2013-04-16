@@ -216,6 +216,10 @@ div#comments > ul {
     /*border: 1px solid yellow;*/
 /*}*/
 
+form input.quantity {
+    width: 1.5em; /* large enough for 2 digits */
+}
+
 /* display form metadata in italics and slightly smaller text */
 form span.error, form span.required-text, form span.optional-text {
     font-style: italic;
@@ -417,4 +421,42 @@ div.products {
 
 .thumbnail .sale-price, .thumbnail .sale {
     color: red;
+}
+
+/* add-to-cart form styles */
+form.add-to-cart {
+    width: 7em;
+    position: relative;
+}
+
+form.add-to-cart label {
+    float: left;
+    margin-bottom: 0.5em;
+}
+
+form.add-to-cart label span.error {
+    float: left;
+    clear: left;
+}
+
+form.add-to-cart input {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 1.5em;
+    padding: 0 0.3em;  /* required for the input to resize properly with changes in font size */
+}
+
+form.add-to-cart button {
+    clear: both;
+    display: block;
+    width: 100%;
+}
+
+form.add-to-cart input, form.add-to-cart label {
+    display: inline-block;
+}
+
+form.add-to-cart span.required-text {
+    display: none;  /* it's obvious that the quantity is required */
 }

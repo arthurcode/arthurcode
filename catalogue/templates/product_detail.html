@@ -1,6 +1,7 @@
 {% extends "base_site.html" %}
 
 {% load extras %}
+{% load blog_extras %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -30,10 +31,10 @@
             <p>{{ product.short_description }}</p>
             <p>{{ product.long_description }}</p>
 
-            <form method="post" action="{% url catalogue_product product.slug %}" class="cart">
+            <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
                 {% csrf_token %}
-                {{ form.as_p }}
-                <br/>
+                {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
+                {{ form.product_slug }}
                 <button type="submit" name="submit" class="yui3-button">Add to Cart</button>
             </form>
         </div>
