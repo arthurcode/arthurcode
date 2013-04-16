@@ -2,14 +2,15 @@ from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
 
+
 def show_cart(request):
     if request.method == "POST":
         postdata = request.POST.copy()
-        if postdata['submit'] == "Remove":
+        if 'Remove' in postdata:
             cartutils.remove_from_cart(request)
-        if postdata['submit'] == 'Update':
+        if 'Update' in postdata:
             cartutils.update_cart(request)
-        if postdata['submit'] == 'Checkout':
+        if 'Checkout' in postdata:
             pass
     cart_items = cartutils.get_cart_items(request)
     cart_subtotal = cartutils.cart_subtotal(request)
