@@ -16,10 +16,10 @@
             {{ product.name }}
         </div>
 
-        <div class="visual yui3-u-3-8">
+        <div class="visual yui3-u-1-2">
             <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
         </div>
-        <div class="description yui3-u-5-8">
+        <div class="description yui3-u-1-2">
             <h1>{{ product.name }}</h1>
             {% if product.sale_price %}
                 Was: <span class="old-price">{{ product.price|currency }}</span>
