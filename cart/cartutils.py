@@ -1,7 +1,6 @@
 from cart.models import CartItem
 from catalogue.models import Product
 from django.shortcuts import get_object_or_404
-import random
 import decimal
 from exceptions import ValueError
 
@@ -11,17 +10,8 @@ CART_ID_SESSION_KEY = 'cart_id'
 # get the current user's cart id, sets new one if blank
 def _cart_id(request):
     if request.session.get(CART_ID_SESSION_KEY, '') == '':
-        request.session[CART_ID_SESSION_KEY] = _generate_cart_id()
+        request.session[CART_ID_SESSION_KEY] = CartItem.generate_cart_id()
     return request.session[CART_ID_SESSION_KEY]
-
-
-def _generate_cart_id():
-    cart_id = ''
-    characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789!@#$%^&*()'
-    cart_id_length = 50
-    for y in range(cart_id_length):
-        cart_id += characters[random.randint(0, len(characters) - 1)]
-    return cart_id
 
 
 # return all items from the current user's cart

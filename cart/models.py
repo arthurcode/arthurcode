@@ -1,11 +1,13 @@
 from django.db import models
 from catalogue.models import Product
+from django.core.validators import MinValueValidator
+import random
 
 
 class CartItem(models.Model):
     cart_id = models.CharField(max_length=50)
     date_added = models.DateTimeField(auto_now_add=True)
-    quantity = models.IntegerField(default=1)
+    quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
     product = models.ForeignKey(Product, unique=False)
 
     class Meta:
@@ -35,3 +37,12 @@ class CartItem(models.Model):
 
     def __unicode__(self):
         return self.product.name
+
+    @classmethod
+    def generate_cart_id(cls):
+        cart_id = ''
+        characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz123456789!@#$%^&*()'
+        cart_id_length = 50
+        for y in range(cart_id_length):
+            cart_id += characters[random.randint(0, len(characters) - 1)]
+        return cart_id
