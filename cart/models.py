@@ -12,7 +12,8 @@ class CartItem(models.Model):
         ordering = ['date_added']
 
     def total(self):
-        return self.quantity * self.product.price
+        price = self.sale_price or self.price
+        return self.quantity * price
 
     def name(self):
         return self.product.name
@@ -20,6 +21,10 @@ class CartItem(models.Model):
     @property
     def price(self):
         return self.product.price
+
+    @property
+    def sale_price(self):
+        return self.product.sale_price
 
     def get_absolute_url(self):
         return self.product.get_absolute_url()
