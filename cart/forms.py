@@ -17,7 +17,12 @@ class ProductAddToCartForm(forms.Form):
 
     # custom validation to check for cookies
     def clean(self):
+        cleaned_data = super(ProductAddToCartForm, self).clean()
         if self.request:
             if not self.request.session.test_cookie_worked():
-                raise forms.ValidationError("Cookies must be enabled")
-        return self.cleaned_data
+                # even though this is a general form error, associate it with the quantity field.  This makes displaying
+                # the error message a little more automatic.
+                self._errors['quantity'] = self.error_class([u"Your browser must have cookies enabled in order to shop on this site."])
+                if 'quantity' in cleaned_data:
+                    del(cleaned_data['quantity'])
+        return cleaned_data
