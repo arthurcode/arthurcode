@@ -460,3 +460,11 @@ form.add-to-cart input, form.add-to-cart label {
 form.add-to-cart span.required-text {
     display: none;  /* it's obvious that the quantity is required */
 }
+
+/* shopping cart styles */
+
+table.shopping-cart img {
+    width: 4em;    /* TODO: add a max width as well */
+    margin: auto;
+    display: block;
+}
