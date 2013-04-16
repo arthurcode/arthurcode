@@ -28,8 +28,9 @@
             {% else %}
                 <span class="price">{{ product.price|currency }}</span>
             {% endif %}
-            <p>{{ product.short_description }}</p>
-            <p>{{ product.long_description }}</p>
+            {% autoescape off %}
+                <div class="text">{{ product.long_description }}</div>
+            {% endautoescape %}
 
             <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
                 {% csrf_token %}
