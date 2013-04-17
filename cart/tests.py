@@ -13,6 +13,8 @@ from django.test.client import Client
 from bs4 import BeautifulSoup
 from cart.forms import ProductAddToCartForm
 import cartutils
+import random
+
 
 class CartItemTest(TestCase):
 
@@ -195,12 +197,86 @@ class AddToCartFormTest(TestCase):
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, 'cart.html')
 
-        cart_id = self.c.session[cartutils.CART_ID_SESSION_KEY]
+        cart_id = get_cart_id(self.c)
         cart_items = CartItem.objects.filter(cart_id=cart_id)
         self.assertEqual(1, cart_items.count())
         item = cart_items[0]
         self.assertEqual(product, item.product)
         self.assertEqual(2, item.quantity)
+
+
+class ShoppingCartTest(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+
+    def testOneCartItemPerProduct(self):
+        product = create_product()
+        add_to_cart(self.c, product, 2)
+        cart_id = get_cart_id(self.c)
+        cart_items = CartItem.objects.filter(cart_id=cart_id)
+        self.assertEqual(1, cart_items.count())
+        item = cart_items[0]
+        self.assertEqual(product, item.product)
+        self.assertEqual(2, item.quantity)
+        date_added = item.date_added
+
+        add_to_cart(self.c, product, 3)
+        cart_items = CartItem.objects.filter(cart_id=cart_id)
+        self.assertEqual(1, cart_items.count())
+        item = cart_items[0]
+        self.assertEqual(product, item.product)
+        self.assertEqual(5, item.quantity)
+        self.assertEqual(date_added, item.date_added)
+
+    def testCartItemOrdering(self):
+        characters = 'abcdefghijklmnopqrstuvwxyz'
+        products = []
+
+        for x in xrange(20):
+            name = ''
+            for i in xrange(20):
+                name += characters[random.randint(0, len(characters)-1)]
+            product = create_product(name=name, slug=name)
+            self.assertEqual(name, product.name)
+            self.assertEqual(name, product.slug)
+            add_to_cart(self.c, product, 1)
+            products.append(product)
+
+        cart_id = get_cart_id(self.c)
+        cart_items = CartItem.objects.filter(cart_id=cart_id)
+        self.assertEqual(len(products), cart_items.count())
+
+        # the cart items should be ordered by the date they were added
+        for (product, cart_item) in zip(products, cart_items):
+            self.assertEqual(product, cart_item.product)
+            self.assertEqual(product.price, cart_item.price)
+            self.assertEqual(product.sale_price, cart_item.sale_price)
+
+    def testUniqueCarts(self):
+        c1 = Client()
+        c2 = Client()
+        product = create_product()
+
+        add_to_cart(c1, product, 2)
+        add_to_cart(c2, product, 3)
+        cart_items_1 = CartItem.objects.filter(cart_id=get_cart_id(c1))
+        cart_items_2 = CartItem.objects.filter(cart_id=get_cart_id(c2))
+        self.assertEqual(1, cart_items_1.count())
+        self.assertEqual(1, cart_items_2.count())
+
+        self.assertEqual(2, cart_items_1[0].quantity)
+        self.assertEqual(3, cart_items_2[0].quantity)
+
+
+def get_cart_id(client):
+    return client.session[cartutils.CART_ID_SESSION_KEY]
+
+
+def add_to_cart(client, product, quantity):
+    client.get(product.get_absolute_url()) # set test cookie
+    data = add_to_cart_post_data(product=product, quantity=quantity)
+    return client.post(product.get_absolute_url(), data, follow=True)
 
 
 def add_to_cart_post_data(**kwargs):
