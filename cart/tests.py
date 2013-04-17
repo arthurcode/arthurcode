@@ -10,7 +10,9 @@ from models import CartItem
 from catalogue.tests import create_product
 from django.core.exceptions import ValidationError
 from django.test.client import Client
-
+from bs4 import BeautifulSoup
+from cart.forms import ProductAddToCartForm
+import cartutils
 
 class CartItemTest(TestCase):
 
@@ -102,6 +104,115 @@ class CartItemTest(TestCase):
             cart_id = CartItem.generate_cart_id()
             self.assertIsNotNone(cart_id)
             self.assertEqual(50, len(cart_id))
+
+
+class AddToCartFormTest(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+
+    def testGetAddToCartForm(self):
+        product = create_product(quantity=2)
+        response = self.c.get(product.get_absolute_url())
+        self.assertEqual(200, response.status_code)
+        soup = BeautifulSoup(response.content)
+        form = soup.find('form', 'add-to-cart')
+        self.assertIsNotNone(form)
+
+        # test that there is only one visible label (for the quantity field)
+        labels = form.find_all('label')
+        self.assertEqual(1, len(labels))
+        label = labels[0]
+        self.assertIn("Quantity", label.text)
+        self.assertEqual('id_quantity', label.attrs['for'])
+
+        # test that the default quantity value is 1
+        quantity_input = form.find('input', {'id': 'id_quantity'})
+        self.assertIsNotNone(quantity_input)
+        self.assertEqual('1', quantity_input.attrs['value'])
+
+        # test that the hidden product slug field is properly filled out
+        slug_input = form.find('input', {'id': 'id_product_slug'})
+        self.assertIsNotNone(slug_input)
+        self.assertEqual(product.slug, slug_input.attrs['value'])
+
+    def testAddToCartQuantityError(self):
+        product = create_product()
+        url = product.get_absolute_url()
+
+        # make sure the test cookie is set
+        self.c.get(url)
+
+        data = add_to_cart_post_data(quantity='aa', product=product)
+        response = self.c.post(url, data, follow=True)
+
+        # there was a form error, so the original product page should have been rendered
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'product_detail.html')
+        self.assertContains(response, product.name)
+        soup = BeautifulSoup(response.content)
+        form = soup.find('form', 'add-to-cart')
+        quantity_label = form.find('label', {'for': 'id_quantity'})
+        error = quantity_label.find('span', 'error')
+        self.assertIn('Please enter a valid quantity', error.text)
+
+        data = add_to_cart_post_data(quantity='0', product=product)
+        response = self.c.post(url, data, follow=True)
+
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'product_detail.html')
+        self.assertContains(response, product.name)
+        soup = BeautifulSoup(response.content)
+        form = soup.find('form', 'add-to-cart')
+        quantity_label = form.find('label', {'for': 'id_quantity'})
+        error = quantity_label.find('span', 'error')
+        self.assertIn('Ensure this value is greater than or equal to 1', error.text)
+
+    def testCookiesNotEnabled(self):
+        # the test cookie hasn't been set, so the cookie test should fail
+        product = create_product()
+        url = product.get_absolute_url()
+        data = add_to_cart_post_data(quantity='2', product=product)
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'product_detail.html')
+        self.assertContains(response, product.name)
+
+        # the cookie error will be displayed in the quantity field
+        soup = BeautifulSoup(response.content)
+        form = soup.find('form', 'add-to-cart')
+        quantity_label = form.find('label', {'for': 'id_quantity'})
+        error = quantity_label.find('span', 'error')
+        self.assertIn(ProductAddToCartForm.ERROR_COOKIES_DISABLED, error.text)
+
+    def testSuccess(self):
+        product = create_product(quantity=5)
+        url = product.get_absolute_url()
+        self.c.get(url)  # set the test cookie
+
+        data = add_to_cart_post_data(quantity='2', product=product)
+        response = self.c.post(url, data, follow=True)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'cart.html')
+
+        cart_id = self.c.session[cartutils.CART_ID_SESSION_KEY]
+        cart_items = CartItem.objects.filter(cart_id=cart_id)
+        self.assertEqual(1, cart_items.count())
+        item = cart_items[0]
+        self.assertEqual(product, item.product)
+        self.assertEqual(2, item.quantity)
+
+
+def add_to_cart_post_data(**kwargs):
+    product = kwargs.pop('product')
+    quantity = kwargs.pop('quantity')
+    if len(kwargs) > 0:
+        raise Exception('Extra keyword args add_to_cart_post_data: %s' % kwargs)
+
+    return {
+        'quantity': str(quantity),
+        'product_slug': product.slug
+    }
 
 
 def create_cart_item(**kwargs):
