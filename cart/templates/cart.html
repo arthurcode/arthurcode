@@ -1,6 +1,7 @@
 {% extends "base_site.html" %}
 
 {% load extras %}
+{% load blog_extras %}
 
 {% block title %}Shopping Cart{% endblock %}
 
@@ -45,12 +46,10 @@
                         {{ item.price|currency }}
                     </td>
                     <td class="right">
-                        <form method="post" action="." class="cart">
+                        <form method="post" action="." class="update-cart">
                             {% csrf_token %}
-                            <label for="quantity">Quantity:</label>
-                            <input type="text" name="quantity" value="{{ item.quantity }}" id="quantity"
-                                   size="2" class="quantity" maxlength="5"/>
-                            <input type="hidden" name="item_id" value="{{ item.id }}" />
+                            {{ item.update_form.item_id }}
+                            {% field_label_tag item.update_form.quantity %} {% aria_required_field item.update_form.quantity %}
                             <button type="submit" name="Update" class="yui3-button">Update</button>
                         </form>
                     </td>

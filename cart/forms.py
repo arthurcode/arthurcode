@@ -1,5 +1,6 @@
 from django import forms
 from catalogue.models import Product
+from cart.models import CartItem
 
 
 class ProductAddToCartForm(forms.Form):
@@ -49,3 +50,28 @@ class ProductAddToCartForm(forms.Form):
             return u"Sorry, there is only 1 left in stock."
         else:
             return u"Sorry, there are only %d left in stock." % in_stock
+
+
+class UpdateCartItemForm(forms.Form):
+    quantity = forms.IntegerField(widget=forms.TextInput(attrs={'size': '2',
+                                                                'class': 'quantity',
+                                                                'maxlength': '5'}),
+                                  error_messages={'invalid': 'Please enter a valid quantity.'},
+                                  min_value=0)
+    item_id = forms.IntegerField(widget=forms.HiddenInput())
+
+    def clean(self):
+        cleaned_data = super(UpdateCartItemForm, self).clean()
+        quantity = cleaned_data.get('quantity', None)
+        item_id = cleaned_data.get('item_id', None)
+
+        if quantity and item_id:
+            item = CartItem.objects.get(id=item_id)
+            if item:
+                in_stock = item.product.quantity
+                if quantity > in_stock:
+                    msg = ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+                    self._errors['quantity'] = self.error_class([msg])
+                    del(cleaned_data['quantity'])
+        return cleaned_data
+

@@ -457,7 +457,7 @@ form.add-to-cart input, form.add-to-cart label {
     display: inline-block;
 }
 
-form.add-to-cart span.required-text {
+form.add-to-cart span.required-text, form.update-cart span.required-text {
     display: none;  /* it's obvious that the quantity is required */
 }
 
