@@ -204,6 +204,16 @@ class AddToCartFormTest(TestCase):
         self.assertEqual(product, item.product)
         self.assertEqual(2, item.quantity)
 
+    def testNoFormIfOutOfStock(self):
+        product = create_product(quantity=0)
+        url = product.get_absolute_url()
+        response = self.c.get(url)
+        self.assertEqual(200, response.status_code)
+        self.assertContains(response, "Out Of Stock")
+        soup = BeautifulSoup(response.content)
+        forms = soup.find_all('form')
+        self.assertEqual(0, len(forms))
+
 
 class ShoppingCartTest(TestCase):
 

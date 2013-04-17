@@ -468,3 +468,10 @@ table.shopping-cart img {
     margin: auto;
     display: block;
 }
+
+/* product detail styles */
+span.out-of-stock {
+    color: red;
+    text-transform: uppercase;
+    display: block;
+}
