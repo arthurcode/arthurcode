@@ -16,8 +16,18 @@ def show_cart(request):
             pass
     cart_items = cartutils.get_cart_items(request)
     cart_subtotal = cartutils.cart_subtotal(request)
+    continue_shopping_url = get_continue_shopping_url(request)
+    return render_to_response('cart.html', locals(), context_instance=RequestContext(request))
+
+
+def get_continue_shopping_url(request):
+    """
+    Returns a url that can be used in a 'continue-shopping' link from the shopping cart page.  By default the method
+    will return the root products url: /products/.  The referrer url will be used iff it extends from /products/.  Any
+    get query parameters in the referrer url will be preserved if it is used.
+    """
     continue_shopping_url = reverse('catalogue_category', kwargs={'category_slug': ''})
-    last_url = request.META.get('HTTP_REFERER', None)
+    last_url = request.META.get('HTTP_REFERER', None)  # (sic)
 
     if last_url:
         pr = urlparse(last_url)
@@ -27,5 +37,4 @@ def show_cart(request):
             query = pr[4]
             if query:
                 continue_shopping_url += "?%s" % query
-
-    return render_to_response('cart.html', locals(), context_instance=RequestContext(request))
+    return continue_shopping_url
