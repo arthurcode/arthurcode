@@ -2,6 +2,9 @@ from django import forms
 
 
 class ProductAddToCartForm(forms.Form):
+    ERROR_COOKIES_DISABLED = u"Your browser must have cookies enabled in order to shop on this site."
+
+
     quantity = forms.IntegerField(widget=forms.TextInput(attrs={'size': '2',
                                                                 'value': '1',
                                                                 'class': 'quantity',
@@ -22,7 +25,7 @@ class ProductAddToCartForm(forms.Form):
             if not self.request.session.test_cookie_worked():
                 # even though this is a general form error, associate it with the quantity field.  This makes displaying
                 # the error message a little more automatic.
-                self._errors['quantity'] = self.error_class([u"Your browser must have cookies enabled in order to shop on this site."])
+                self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
         return cleaned_data
