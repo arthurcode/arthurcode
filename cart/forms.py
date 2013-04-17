@@ -1,4 +1,5 @@
 from django import forms
+from catalogue.models import Product
 
 
 class ProductAddToCartForm(forms.Form):
@@ -21,6 +22,16 @@ class ProductAddToCartForm(forms.Form):
     # custom validation to check for cookies
     def clean(self):
         cleaned_data = super(ProductAddToCartForm, self).clean()
+        product_slug = cleaned_data.get('product_slug', None)
+        quantity = cleaned_data.get('quantity', None)
+
+        if product_slug and quantity > 0:
+            product = Product.objects.get(slug=product_slug)
+            if product and product.quantity < quantity:
+                msg = self.get_insufficient_stock_msg(product.quantity)
+                self._errors['quantity'] = self.error_class([msg])
+                del(cleaned_data['quantity'])
+
         if self.request:
             if not self.request.session.test_cookie_worked():
                 # even though this is a general form error, associate it with the quantity field.  This makes displaying
@@ -29,3 +40,11 @@ class ProductAddToCartForm(forms.Form):
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
         return cleaned_data
+
+    def get_insufficient_stock_msg(self, in_stock):
+        if in_stock <= 0:
+            return u"Sorry, this product is now out of stock."
+        elif in_stock == 1:
+            return u"Sorry, there is only 1 left in stock."
+        else:
+            return u"Sorry, there are only %d left in stock." % in_stock
