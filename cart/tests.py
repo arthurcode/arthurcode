@@ -140,35 +140,33 @@ class AddToCartFormTest(TestCase):
 
     def testAddToCartQuantityError(self):
         product = create_product()
-        url = product.get_absolute_url()
+        self.assertQuantityFormError(product, 'aa', 'Please enter a valid quantity')
+        self.assertQuantityFormError(product, 0, 'Ensure this value is greater than or equal to 1')
+        self.assertEqual(0, CartItem.objects.all().count())
 
-        # make sure the test cookie is set
-        self.c.get(url)
+    def testInsufficientStock(self):
+        product = create_product(quantity=4) # 4 in-stock
+        self.assertQuantityFormError(product, 5, 'Sorry, there are only 4 left in stock')
+        self.assertEqual(0, CartItem.objects.all().count())
 
-        data = add_to_cart_post_data(quantity='aa', product=product)
-        response = self.c.post(url, data, follow=True)
+        product.quantity = 1
+        product.full_clean()
+        product.save()
 
-        # there was a form error, so the original product page should have been rendered
+        self.assertQuantityFormError(product, 5, 'Sorry, there is only 1 left in stock')
+
+        product.quantity = 0
+        product.full_clean()
+        product.save()
+
+        # the form will not be rendered so we can't use the convenience method to do this test
+        response = add_to_cart(self.c, product, 1)
         self.assertEqual(200, response.status_code)
         self.assertTemplateUsed(response, 'product_detail.html')
         self.assertContains(response, product.name)
         soup = BeautifulSoup(response.content)
-        form = soup.find('form', 'add-to-cart')
-        quantity_label = form.find('label', {'for': 'id_quantity'})
-        error = quantity_label.find('span', 'error')
-        self.assertIn('Please enter a valid quantity', error.text)
-
-        data = add_to_cart_post_data(quantity='0', product=product)
-        response = self.c.post(url, data, follow=True)
-
-        self.assertEqual(200, response.status_code)
-        self.assertTemplateUsed(response, 'product_detail.html')
-        self.assertContains(response, product.name)
-        soup = BeautifulSoup(response.content)
-        form = soup.find('form', 'add-to-cart')
-        quantity_label = form.find('label', {'for': 'id_quantity'})
-        error = quantity_label.find('span', 'error')
-        self.assertIn('Ensure this value is greater than or equal to 1', error.text)
+        error_list = soup.find('div', 'error-list')
+        self.assertIn('Sorry, this product is now out of stock', error_list.text)
 
     def testCookiesNotEnabled(self):
         # the test cookie hasn't been set, so the cookie test should fail
@@ -213,6 +211,19 @@ class AddToCartFormTest(TestCase):
         soup = BeautifulSoup(response.content)
         forms = soup.find_all('form')
         self.assertEqual(0, len(forms))
+
+    def assertQuantityFormError(self, product, quantity, error_msg):
+        """
+        This method cannot be used to test cookie errors
+        """
+        response = add_to_cart(self.c, product, quantity)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'product_detail.html')
+        soup = BeautifulSoup(response.content)
+        form = soup.find('form', 'add-to-cart')
+        quantity_label = form.find('label', {'for': 'id_quantity'})
+        error = quantity_label.find('span', 'error')
+        self.assertIn(error_msg, error.text)
 
 
 class ShoppingCartTest(TestCase):
