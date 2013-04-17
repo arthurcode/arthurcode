@@ -25,10 +25,10 @@ class ProductAddToCartForm(forms.Form):
         product_slug = cleaned_data.get('product_slug', None)
         quantity = cleaned_data.get('quantity', None)
 
-        if product_slug and quantity > 0:
+        if product_slug and quantity:
             product = Product.objects.get(slug=product_slug)
             if product and product.quantity < quantity:
-                msg = self.get_insufficient_stock_msg(product.quantity)
+                msg = ProductAddToCartForm.get_insufficient_stock_msg(product.quantity)
                 self._errors['quantity'] = self.error_class([msg])
                 del(cleaned_data['quantity'])
 
@@ -41,7 +41,8 @@ class ProductAddToCartForm(forms.Form):
                     del(cleaned_data['quantity'])
         return cleaned_data
 
-    def get_insufficient_stock_msg(self, in_stock):
+    @classmethod
+    def get_insufficient_stock_msg(cls, in_stock):
         if in_stock <= 0:
             return u"Sorry, this product is now out of stock."
         elif in_stock == 1:
