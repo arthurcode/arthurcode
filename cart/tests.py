@@ -15,6 +15,8 @@ from cart.forms import ProductAddToCartForm
 import cartutils
 import random
 from mock import patch, Mock
+from django.core.urlresolvers import reverse
+from utils.templatetags.extras import currency
 
 
 class CartItemTest(TestCase):
@@ -272,6 +274,148 @@ class AddToCartFormTest(TestCase):
         self.assertIn(error_msg, error.text)
 
 
+class CartViewTest(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+
+    def testEmptyCartView(self):
+        # for now just test that we don't die a horrible death
+        response = self.show_cart()
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'cart.html')
+        rows = self.get_cart_item_rows(response)
+        self.assertEqual(1, len(rows))
+        row = rows[0]
+        self.assertIn("Your cart is empty", row.td.text)
+
+    def testZeroOutQuantity(self):
+        product1 = create_product()
+        product2 = create_product()
+        add_to_cart(self.c, product1, 1)
+        add_to_cart(self.c, product2, 1)
+        response = self.show_cart()
+
+        rows = self.get_cart_item_rows(response)
+        cart_items = get_cart_items(self.c)
+        self.assertEqual(2, len(rows))
+        for (row, item) in zip(rows, cart_items):
+            self.validate_cart_item_row(row, item)
+
+        response = update_cart(self.c, product1, 0)
+        self.assertEqual(200, response.status_code)
+
+        rows = self.get_cart_item_rows(response)
+        self.assertEqual(1, len(rows))
+        cart_items = get_cart_items(self.c)
+        self.validate_cart_item_row(rows[0], cart_items[0])
+
+        response = update_cart(self.c, product2, 0)
+        self.assertEqual(200, response.status_code)
+        rows = self.get_cart_item_rows(response)
+        self.assertEqual(1, len(rows))
+        self.assertIn('Your cart is empty', rows[0].td.text)
+
+    def testUpdateQuantityError(self):
+        product1 = create_product(quantity=3, price=5.00)
+        product2 = create_product(quantity=4, price=2.00)
+        add_to_cart(self.c, product1, 2)
+        add_to_cart(self.c, product2, 1)
+        subtotal = self.get_subtotal(self.show_cart())
+        self.assertEqual("$12.00", subtotal)
+
+        # not a number
+        self.assertQuantityFormError(product1, 'aa', 'Please enter a valid quantity')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+
+        # less than zero
+        self.assertQuantityFormError(product1, '-1', 'Ensure this value is greater than or equal to 0')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+
+        # insufficient stock
+        self.assertQuantityFormError(product1, '4', 'Sorry, there are only 3 left in stock')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+        self.assertQuantityFormError(product2, '5', 'Sorry, there are only 4 left in stock')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+
+        product1.quantity = 0
+        product1.save()
+        self.assertQuantityFormError(product1, '1', 'Sorry, this product is now out of stock')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+
+        product2.quantity = 1
+        product2.save()
+        self.assertQuantityFormError(product2, '2', 'Sorry, there is only 1 left in stock')
+        self.assertEqual(subtotal, self.get_subtotal(self.show_cart()))
+
+    def get_cart_item_rows(self, response):
+        table = self.get_table(response)
+        tbody = table.find('tbody')
+        return tbody.find_all('tr')
+
+    def get_subtotal(self, response):
+        table = self.get_table(response)
+        row = table.tfoot.tr
+        return row.find_all('th')[1].text.strip()
+
+    def get_table(self, response):
+        tables = BeautifulSoup(response.content).find_all('table')
+        self.assertEqual(1, len(tables))
+        return tables[0]
+
+    def show_cart(self):
+        response = self.c.get(reverse('show_cart'))
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'cart.html')
+        return response
+
+    def validate_cart_item_row(self, row, cart_item):
+        cells = row.find_all('td')
+
+        # in the first cell is a link to the product
+        name_cell = cells[0]
+        product_links = name_cell.find_all('a')
+        self.assertEqual(2, len(product_links))
+        text_link = product_links[1]
+        self.assertEqual(cart_item.product.name, text_link.text)
+
+        for a in product_links:
+            self.assertEqual(cart_item.get_absolute_url(), a.attrs['href'])
+
+        # the second cell is the price
+        price_cell = cells[1]
+        expected_price = currency(cart_item.price)
+        self.assertIn(expected_price, price_cell.text)
+        if cart_item.sale_price:
+            self.assertIn(currency(cart_item.sale_price), price_cell.text)
+
+        # the third cell is the quantity
+        self.assertEqual(str(cart_item.quantity), cells[2].text.strip())
+
+        # fourth cell contains the update quantity form
+
+        # fifth cell contains the remove from cart form
+
+        # sixth cell contains the row total
+        row_total = cells[5].text.strip()
+        self.assertEqual(currency(cart_item.total()), row_total)
+
+    def assertQuantityFormError(self, product, quantity, error_msg):
+        response = update_cart(self.c, product, quantity)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'cart.html')
+        rows = self.get_cart_item_rows(response)
+        for row in rows:
+            if row.td.a.attrs['href'] == product.get_absolute_url():
+                form = row.find('form', 'update-cart')
+                self.assertIsNotNone(form)
+                quantity_label = form.find('label', {'for': 'id_quantity'})
+                error = quantity_label.find('span', 'error')
+                self.assertIn(error_msg, error.text)
+                return
+        self.fail("Could not find the form to validate")
+
+
 class ShoppingCartTest(TestCase):
 
     def setUp(self):
@@ -409,10 +553,21 @@ def get_cart_id(client):
     return client.session[cartutils.CART_ID_SESSION_KEY]
 
 
+def get_cart_items(client):
+    return CartItem.objects.filter(cart_id=get_cart_id(client))
+
+
 def add_to_cart(client, product, quantity):
     client.get(product.get_absolute_url()) # set test cookie
     data = add_to_cart_post_data(product=product, quantity=quantity)
     return client.post(product.get_absolute_url(), data, follow=True)
+
+
+def update_cart(client, product, quantity):
+    cart_id = get_cart_id(client)
+    item = CartItem.objects.get(cart_id=cart_id, product=product)
+    data = make_update_cart_data(item_id=item.id, quantity=quantity)
+    return client.post(reverse('show_cart'), data, follow=True)
 
 
 def add_to_cart_post_data(**kwargs):
@@ -426,6 +581,17 @@ def add_to_cart_post_data(**kwargs):
         'product_slug': product.slug
     }
 
+
+def make_update_cart_data(**kwargs):
+    item_id = kwargs.pop('item_id')
+    quantity = kwargs.pop('quantity')
+    if kwargs:
+        raise Exception("Unused keyword arguments in make_update_cart_data")
+    return {
+        'item_id': item_id,
+        'quantity': quantity,
+        'Update': ''
+    }
 
 def create_cart_item(**kwargs):
     cart_id = kwargs.pop('cart_id', None)
