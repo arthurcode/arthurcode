@@ -57,6 +57,17 @@ def get_single_item(request, item_id):
     return get_object_or_404(CartItem, id=item_id, cart_id=_cart_id(request))
 
 
+def get_item_for_product(request, product):
+    """
+    Returns the cart-item corresponding to the given product, if one exists.  Returns None if the product is not
+    yet in the cart.
+    """
+    items = get_cart_items(request).filter(product_id=product.id)
+    if not items:
+        return None
+    return items[0]
+
+
 def update_cart(request):
     postdata = request.POST.copy()
     item_id = postdata['item_id']

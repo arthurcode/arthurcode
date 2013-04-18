@@ -1,6 +1,7 @@
 from django import forms
 from catalogue.models import Product
 from cart.models import CartItem
+import cartutils
 
 
 class ProductAddToCartForm(forms.Form):
@@ -26,19 +27,18 @@ class ProductAddToCartForm(forms.Form):
         product_slug = cleaned_data.get('product_slug', None)
         quantity = cleaned_data.get('quantity', None)
 
-        if product_slug and quantity:
-            product = Product.objects.get(slug=product_slug)
-            if product and product.quantity < quantity:
-                msg = ProductAddToCartForm.get_insufficient_stock_msg(product.quantity)
-                self._errors['quantity'] = self.error_class([msg])
-                del(cleaned_data['quantity'])
-
         if self.request:
             if not self.request.session.test_cookie_worked():
                 # even though this is a general form error, associate it with the quantity field.  This makes displaying
                 # the error message a little more automatic.
                 self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
+                    del(cleaned_data['quantity'])
+            elif product_slug and quantity:
+                product = Product.objects.get(slug=product_slug)
+                error = check_stock(product, self.request, quantity_to_add=quantity)
+                if error:
+                    self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
         return cleaned_data
 
@@ -60,6 +60,10 @@ class UpdateCartItemForm(forms.Form):
                                   min_value=0)
     item_id = forms.IntegerField(widget=forms.HiddenInput())
 
+    def __init__(self, request=None, *args, **kwargs):
+        self.request = request
+        super(UpdateCartItemForm, self).__init__(*args, **kwargs)
+
     def clean(self):
         cleaned_data = super(UpdateCartItemForm, self).clean()
         quantity = cleaned_data.get('quantity', None)
@@ -68,10 +72,43 @@ class UpdateCartItemForm(forms.Form):
         if quantity and item_id:
             item = CartItem.objects.get(id=item_id)
             if item:
-                in_stock = item.product.quantity
-                if quantity > in_stock:
-                    msg = ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
-                    self._errors['quantity'] = self.error_class([msg])
+                error = check_stock(item.product, self.request, final_quantity=quantity)
+                if error:
+                    self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
         return cleaned_data
+
+
+def check_stock(product, request, final_quantity=None, quantity_to_add=0):
+    """
+    Check whether there is enough product to satisfy the given cart request.  From the request we can get the
+    current number of products in their cart.  If final_quantity != None then the customer is using the update_cart
+    form to modify their cart.  If quantity_to_add > 0 then they are using the add-to-cart form to modify their cart.
+    A different error message is displayed in each case.
+
+    Returns None if the request is valid.  Returns an error message if the request is invalid.
+    """
+    in_stock = product.quantity
+    in_cart = 0
+    cart_item = cartutils.get_item_for_product(request, product)
+    if cart_item:
+        in_cart = cart_item.quantity
+
+    if final_quantity:
+        if final_quantity > in_stock:
+            return ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+    elif quantity_to_add > 0:
+        total = quantity_to_add + in_cart
+        if total > in_stock:
+            msg = ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+            if in_cart > 0:
+                msg += " You already have %d of these in your cart." % in_cart
+            return msg
+    else:
+        # just sanity check the cart
+        if in_cart > in_stock:
+            return "%s Please adjust your cart." % ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+    return None
+
+
 

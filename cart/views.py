@@ -14,7 +14,7 @@ def show_cart(request):
         if 'Remove' in postdata:
             cartutils.remove_from_cart(request)
         if 'Update' in postdata:
-            update_form = UpdateCartItemForm(postdata)
+            update_form = UpdateCartItemForm(request, postdata)
             if update_form.is_valid():
                 cartutils.update_cart(request)
             else:
@@ -31,7 +31,7 @@ def show_cart(request):
             form = bound_form
         else:
             # create an unbound form
-            form = UpdateCartItemForm()
+            form = UpdateCartItemForm(request)
             form.fields['item_id'].widget.attrs['value'] = cart_item.id
             form.fields['quantity'].widget.attrs['value'] = cart_item.quantity
         setattr(cart_item, 'update_form', form)
