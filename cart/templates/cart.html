@@ -44,7 +44,12 @@
                         <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
                     </td>
                     <td>
-                        {{ item.price|currency }}
+                        {% if item.sale_price %}
+                            <span class="sale-price">Sale: {{ item.sale_price|currency }}</span><br>
+                            <span class="old-price">Was: <del>{{ item.price }}</del></span>
+                        {% else %}
+                            {{ item.price|currency }}
+                        {% endif %}
                     </td>
                     <td class="right">
                         {% with item.check_stock as error %}

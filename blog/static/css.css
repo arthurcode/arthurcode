@@ -419,7 +419,7 @@ div.products {
     display: block;
 }
 
-.thumbnail .sale-price, .thumbnail .sale {
+.sale-price, .sale {
     color: red;
 }
 
