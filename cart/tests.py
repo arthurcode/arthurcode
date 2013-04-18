@@ -14,6 +14,7 @@ from bs4 import BeautifulSoup
 from cart.forms import ProductAddToCartForm
 import cartutils
 import random
+from mock import patch, Mock
 
 
 class CartItemTest(TestCase):
@@ -333,6 +334,75 @@ class ShoppingCartTest(TestCase):
 
         self.assertEqual(2, cart_items_1[0].quantity)
         self.assertEqual(3, cart_items_2[0].quantity)
+
+
+class CartUtilsTest(TestCase):
+
+    def setUp(self):
+        self.c = Client()
+        self._cart_id_mock = Mock(side_effect=(lambda x: x.cart_id))
+
+    def testGetCartItems(self):
+        product1 = create_product(price=5.00, sale_price=2.00)
+        product2 = create_product(price=6)
+        product3 = create_product(price=10)
+        product4 = create_product()  # not in any cart
+        c1 = Client()
+        c2 = Client()
+        add_to_cart(c1, product1, 2) # two types of product
+        add_to_cart(c1, product2, 3)
+        add_to_cart(c2, product3, 1) # one type of product
+
+        request1 = self._makeRequestMock(c1)
+        request2 = self._makeRequestMock(c2)
+
+        with patch('cart.cartutils._cart_id', self._cart_id_mock):
+            # test get cart items
+            items_c1 = cartutils.get_cart_items(request1)
+            items_c2 = cartutils.get_cart_items(request2)
+            self.assertEqual(2, items_c1.count())
+            self.assertEqual(1, items_c2.count())
+
+            # test distinct item count
+            self.assertEqual(2, cartutils.cart_distinct_item_count(request1))
+            self.assertEqual(1, cartutils.cart_distinct_item_count(request2))
+
+            # test get_item_for_product
+            self.assertIsNone(cartutils.get_item_for_product(request1, product4))
+            self.assertIsNone(cartutils.get_item_for_product(request2, product4))
+            self.assertIsNone(cartutils.get_item_for_product(request2, product1))
+            self.assertIsNotNone(cartutils.get_item_for_product(request1, product1))
+
+            # test subtotal
+            self.assertEqual(22, cartutils.cart_subtotal(request1))
+            self.assertEqual(10, cartutils.cart_subtotal(request2))
+
+            # remove all items from cart1
+            for item in items_c1:
+                cartutils.remove_from_cart(self._makeRequestMock(c1, {'item_id': item.id}))
+
+            self.assertEqual(0, cartutils.cart_subtotal(request1))
+            self.assertEqual(0, cartutils.cart_distinct_item_count(request1))
+            self.assertIsNone(cartutils.get_item_for_product(request1, product1))
+            self.assertIsNone(cartutils.get_item_for_product(request1, product2))
+
+            # add some of the items back again
+            cartutils.add_to_cart(self._makeRequestMock(c1, {'product_slug': product1.slug, 'quantity': 2}))
+            self.assertEqual(1, cartutils.cart_distinct_item_count(request1))
+            cart_item = cartutils.get_cart_items(request1)[0]
+            self.assertEqual(product1, cart_item.product)
+            self.assertEqual(2, cart_item.quantity)
+            cartutils.update_cart(self._makeRequestMock(c1, {'item_id': cart_item.id, 'quantity': 4}))
+            self.assertEqual(1, cartutils.cart_distinct_item_count(request1))
+            cart_item = cartutils.get_cart_items(request1)[0]
+            self.assertEqual(product1, cart_item.product)
+            self.assertEqual(4, cart_item.quantity)
+
+    def _makeRequestMock(self, client, postdata=None):
+        request = Mock()
+        request.cart_id = get_cart_id(client)
+        request.POST.copy.side_effect = lambda: postdata
+        return request
 
 
 def get_cart_id(client):
