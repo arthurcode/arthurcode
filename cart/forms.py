@@ -42,14 +42,7 @@ class ProductAddToCartForm(forms.Form):
                     del(cleaned_data['quantity'])
         return cleaned_data
 
-    @classmethod
-    def get_insufficient_stock_msg(cls, in_stock):
-        if in_stock <= 0:
-            return u"Sorry, this product is now out of stock."
-        elif in_stock == 1:
-            return u"Sorry, there is only 1 left in stock."
-        else:
-            return u"Sorry, there are only %d left in stock." % in_stock
+
 
 
 class UpdateCartItemForm(forms.Form):
@@ -96,19 +89,27 @@ def check_stock(product, request, final_quantity=None, quantity_to_add=0):
 
     if final_quantity:
         if final_quantity > in_stock:
-            return ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+            return _get_insufficient_stock_msg(in_stock)
     elif quantity_to_add > 0:
         total = quantity_to_add + in_cart
         if total > in_stock:
-            msg = ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+            msg = _get_insufficient_stock_msg(in_stock)
             if in_cart > 0:
                 msg += " You already have %d of these in your cart." % in_cart
             return msg
     else:
         # just sanity check the cart
         if in_cart > in_stock:
-            return "%s Please adjust your cart." % ProductAddToCartForm.get_insufficient_stock_msg(in_stock)
+            return "%s Please adjust your cart." % _get_insufficient_stock_msg(in_stock)
     return None
 
+
+def _get_insufficient_stock_msg(in_stock):
+    if in_stock <= 0:
+        return u"Sorry, this product is now out of stock."
+    elif in_stock == 1:
+        return u"Sorry, there is only 1 left in stock."
+    else:
+        return u"Sorry, there are only %d left in stock." % in_stock
 
 
