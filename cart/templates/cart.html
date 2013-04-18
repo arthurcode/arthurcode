@@ -12,6 +12,7 @@
         <tr>
             <th scope="col">Product</th>
             <th scope="col">Price</th>
+            <th scope="col">Quantity</th>
             <th></th>
             <th></th>
             <th scope="col" class="right">Total</th>
@@ -19,7 +20,7 @@
         </thead>
         <tfoot>
         <tr>
-            <th class="right" colspan="4">
+            <th class="right" colspan="5">
                 Cart Subtotal:
             </th>
             <th class="right">
@@ -28,7 +29,7 @@
         </tr>
         {% if cart_items %}
             <tr>
-                <th class="right" colspan="5">
+                <th class="right" colspan="6">
                     Checkout Now
                 </th>
             </tr>
@@ -44,6 +45,9 @@
                     </td>
                     <td>
                         {{ item.price|currency }}
+                    </td>
+                    <td class="right">
+                        {{ item.quantity }}
                     </td>
                     <td class="right">
                         <form method="post" action="." class="update-cart">
@@ -67,7 +71,7 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="5">
+                <td colspan="6">
                     Your cart is empty
                 </td>
             </tr>
