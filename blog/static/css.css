@@ -461,6 +461,10 @@ form.add-to-cart span.required-text, form.update-cart span.required-text {
     display: none;  /* it's obvious that the quantity is required */
 }
 
+form.update-cart span.label {
+    display: none !important;
+}
+
 /* shopping cart styles */
 
 table.shopping-cart img {

@@ -33,7 +33,6 @@ def show_cart(request):
             # create an unbound form
             form = UpdateCartItemForm(request)
             form.fields['item_id'].widget.attrs['value'] = cart_item.id
-            form.fields['quantity'].widget.attrs['value'] = cart_item.quantity
         setattr(cart_item, 'update_form', form)
     cart_subtotal = cartutils.cart_subtotal(request)
     continue_shopping_url = get_continue_shopping_url(request)
