@@ -47,6 +47,13 @@
                         {{ item.price|currency }}
                     </td>
                     <td class="right">
+                        {% with item.check_stock as error %}
+                            {% if error %}
+                                <div class=error-list>
+                                    {{ error }}
+                                </div>
+                            {% endif %}
+                        {% endwith %}
                         {{ item.quantity }}
                     </td>
                     <td class="right">

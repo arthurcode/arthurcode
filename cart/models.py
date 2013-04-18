@@ -37,6 +37,14 @@ class CartItem(models.Model):
         self.quantity += int(quantity)
         self.save()
 
+    def check_stock(self):
+        """
+        Checks if there is enough stock to satisfy this cart-item request.
+        """
+        if self.quantity > self.product.quantity:
+            return "%s Please adjust your cart." % CartItem.get_insufficient_stock_msg(self.product.quantity)
+        return None
+
     def __unicode__(self):
         return self.product.name
 
@@ -47,3 +55,12 @@ class CartItem(models.Model):
         for y in range(cart_id_length):
             cart_id += CartItem.CART_ID_CHARS[random.randint(0, len(CartItem.CART_ID_CHARS) - 1)]
         return cart_id
+
+    @classmethod
+    def get_insufficient_stock_msg(cls, in_stock):
+        if in_stock <= 0:
+            return u"Sorry, this product is now out of stock."
+        elif in_stock == 1:
+            return u"Sorry, there is only 1 left in stock."
+        else:
+            return u"Sorry, there are only %d left in stock." % in_stock
