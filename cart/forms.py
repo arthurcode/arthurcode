@@ -95,7 +95,7 @@ def check_stock(product, request, final_quantity=None, quantity_to_add=0):
         if total > in_stock:
             msg = CartItem.get_insufficient_stock_msg(in_stock)
             if in_cart > 0:
-                msg += " You already have %d of these in your cart." % in_cart
+                msg += " You already have %d in your cart." % in_cart
             return msg
     return None
 

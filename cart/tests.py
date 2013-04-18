@@ -188,6 +188,31 @@ class AddToCartFormTest(TestCase):
         error_list = soup.find('div', 'error-list')
         self.assertIn('Sorry, this product is now out of stock', error_list.text)
 
+    def testInsufficientStockItemAlreadyInCart(self):
+        product = create_product(quantity=4)
+        response = add_to_cart(self.c, product, 3)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'cart.html')
+
+        self.assertQuantityFormError(product, 2, 'Sorry, there are only 4 left in stock. You already have 3 in your cart.')
+        self.assertQuantityFormError(product, 10, 'Sorry, there are only 4 left in stock. You already have 3 in your cart.')
+
+        product.quantity = 1
+        product.save()
+        self.assertQuantityFormError(product, 1, 'Sorry, there is only 1 left in stock. You already have 3 in your cart.')
+
+        product.quantity = 0
+        product.save()
+        # the form will not be rendered so we can't use the convenience method to do this test
+        response = add_to_cart(self.c, product, 1)
+        self.assertEqual(200, response.status_code)
+        self.assertTemplateUsed(response, 'product_detail.html')
+        self.assertContains(response, product.name)
+        soup = BeautifulSoup(response.content)
+        error_list = soup.find('div', 'error-list')
+        self.assertIn('Sorry, this product is now out of stock. You already have 3 in your cart.', error_list.text)
+
+
     def testCookiesNotEnabled(self):
         # the test cookie hasn't been set, so the cookie test should fail
         product = create_product()
