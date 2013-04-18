@@ -107,6 +107,26 @@ class CartItemTest(TestCase):
             self.assertIsNotNone(cart_id)
             self.assertEqual(50, len(cart_id))
 
+    def testCheckStock(self):
+        product = create_product(quantity=5)
+        ci = create_cart_item(product=product, quantity=6)
+        self.assertIn("Sorry, there are only 5 left in stock", ci.check_stock())
+
+        product.quantity = 0
+        product.save()
+        ci = CartItem.objects.get(id=ci.id)
+        self.assertIn("Sorry, this product is now out of stock", ci.check_stock())
+
+        product.quantity = 1
+        product.save()
+        ci = CartItem.objects.get(id=ci.id)
+        self.assertIn("Sorry, there is only 1 left in stock", ci.check_stock())
+
+        product.quantity = 6
+        product.save()
+        ci = CartItem.objects.get(id=ci.id)
+        self.assertIsNone(ci.check_stock())
+
 
 class AddToCartFormTest(TestCase):
 
