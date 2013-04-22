@@ -11,6 +11,14 @@ class CustomerProfile(models.Model):
     user = models.ForeignKey(User, unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
 
+    @property
+    def first_name(self):
+        return self.user.first_name
+
+    @property
+    def last_name(self):
+        return self.user.last_name
+
 
 class CustomerShippingAddress(AbstractAddress):
     # a customer can have several shipping addresses associated with their profile
