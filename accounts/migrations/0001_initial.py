@@ -26,6 +26,7 @@ class Migration(SchemaMigration):
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
+            ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerShippingAddress'])
 
@@ -39,6 +40,7 @@ class Migration(SchemaMigration):
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
+            ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerBillingAddress'])
 
@@ -60,6 +62,7 @@ class Migration(SchemaMigration):
             'country': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_used': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
@@ -77,6 +80,7 @@ class Migration(SchemaMigration):
             'country': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_used': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

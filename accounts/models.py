@@ -23,9 +23,11 @@ class CustomerProfile(models.Model):
 class CustomerShippingAddress(AbstractAddress):
     # a customer can have several shipping addresses associated with their profile
     customer = models.ForeignKey(CustomerProfile)
+    last_used = models.DateTimeField(auto_now_add=True)
 
 
 class CustomerBillingAddress(AbstractAddress):
     # a customer can have several billing addresses associated with their profile
     customer = models.ForeignKey(CustomerProfile)
+    last_used = models.DateTimeField(auto_now_add=True)
 
