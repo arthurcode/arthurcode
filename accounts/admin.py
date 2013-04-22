@@ -15,7 +15,8 @@ class ShippingAddressInline(admin.StackedInline):
 
 
 class CustomerProfileAdmin(admin.ModelAdmin):
-    list_display = ('last_name', 'first_name',)
+    list_display = ('__unicode__', 'last_name', 'first_name', 'date_added')
     inlines = [ShippingAddressInline, BillingAddressInline]
+    readonly_fields = ('date_added',)
 
 admin.site.register(CustomerProfile, CustomerProfileAdmin)

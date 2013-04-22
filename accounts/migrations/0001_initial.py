@@ -13,6 +13,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True)),
             ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerProfile'])
 
@@ -23,9 +24,9 @@ class Migration(SchemaMigration):
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
@@ -38,9 +39,9 @@ class Migration(SchemaMigration):
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
@@ -74,6 +75,7 @@ class Migration(SchemaMigration):
         },
         'accounts.customerprofile': {
             'Meta': {'object_name': 'CustomerProfile'},
+            'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})

@@ -12,6 +12,7 @@ class CustomerProfile(models.Model):
     """
     user = models.ForeignKey(User, unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
+    date_added = models.DateField(auto_now_add=True)
 
     @property
     def first_name(self):
@@ -28,7 +29,6 @@ class CustomerProfile(models.Model):
         # verify that the user model has a non-null first and last name field
         if self.user_id and (is_blank(self.user.first_name) or is_blank(self.user.last_name)):
             raise ValidationError(u"The associated user's first and/or last name cannot be blank")
-
 
 
 class CustomerShippingAddress(AbstractAddress):
