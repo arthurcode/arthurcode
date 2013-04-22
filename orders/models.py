@@ -43,12 +43,27 @@ class Order(models.Model):
 
     is_pickup = models.BooleanField(default=False)
 
+    shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, default=0.00,
+                                          validators=[MinValueValidator(0.0)])
+    sales_tax = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
+
     @property
-    def total(self):
+    def merchandise_total(self):
+        """
+        The total cost of all products in this order, not including tax or shipping.
+        """
         total = decimal.Decimal('0.00')
         for item in self.orderitem_set.all():
             total += item.total
         return total
+
+    @property
+    def total(self):
+        """
+        The total amount that will be charged to the customer, including tax and shipping changes.  Apparently
+        shipping and handling charges are subject to sales tax!
+        """
+        return self.merchandise_total + self.shipping_charge + self.sales_tax
 
     def get_shipping_address(self):
         try:

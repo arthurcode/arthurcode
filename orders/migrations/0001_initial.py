@@ -21,6 +21,8 @@ class Migration(SchemaMigration):
             ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('shipping_charge', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=9, decimal_places=2)),
+            ('sales_tax', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
         ))
         db.send_create_signal('orders', ['Order'])
 
@@ -41,9 +43,9 @@ class Migration(SchemaMigration):
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='billing_address', unique=True, to=orm['orders.Order'])),
         ))
         db.send_create_signal('orders', ['OrderBillingAddress'])
@@ -55,9 +57,9 @@ class Migration(SchemaMigration):
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='shipping_address', unique=True, to=orm['orders.Order'])),
         ))
         db.send_create_signal('orders', ['OrderShippingAddress'])
@@ -80,6 +82,7 @@ class Migration(SchemaMigration):
     models = {
         'accounts.customerprofile': {
             'Meta': {'object_name': 'CustomerProfile'},
+            'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
@@ -165,6 +168,8 @@ class Migration(SchemaMigration):
             'is_pickup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'sales_tax': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
+            'shipping_charge': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '9', 'decimal_places': '2'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
