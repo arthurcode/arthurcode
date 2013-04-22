@@ -53,7 +53,7 @@ class Order(models.Model):
     last_updated = models.DateTimeField(auto_now=True)
     status = models.SmallIntegerField(choices=ORDER_STATUSES, default=SUBMITTED)
     transaction_id = models.CharField(max_length=20)
-    ip_address = models.IPAddressField(null=True, blank=True)
+    ip_address = models.IPAddressField(default="0.0.0.0")  # https://code.djangoproject.com/ticket/5622
 
     is_pickup = models.BooleanField(default=False)
     shipping_address = models.OneToOneField(OrderShippingAddress, null=True, blank=True)
