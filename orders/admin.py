@@ -16,7 +16,24 @@ class ShippingAddressInline(StackedInline):
 class OrderAdmin(ModelAdmin):
     list_display = ('__unicode__', 'customer', 'date', 'status', 'total')
     inlines = [BillingAddressInline, ShippingAddressInline, OrderItemInline]
-    readonly_fields = ('date', 'last_updated')
+    readonly_fields = ('date', 'last_updated', 'sales_tax', 'shipping_charge', 'transaction_id', 'ip_address',
+                       'merchandise_total', 'total')
+
+    fieldsets = (
+        ('Order Status', {
+            'fields': ('status', 'date', 'last_updated')
+        }),
+        ('Shipping', {
+            'fields': ('is_pickup',)
+        }),
+        ('Payment Details', {
+            'fields': ('merchandise_total', 'sales_tax', 'shipping_charge', 'total', 'transaction_id',)
+        }),
+        ('Customer Info', {
+            'classes': ('collapse',),
+            'fields': ('customer', 'email', 'phone', 'contact_method', 'ip_address')
+        })
+    )
 
 
 site.register(Order, OrderAdmin)

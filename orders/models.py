@@ -45,7 +45,7 @@ class Order(models.Model):
 
     shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, default=0.00,
                                           validators=[MinValueValidator(0.0)])
-    sales_tax = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
+    sales_tax = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)], default=0.00)
 
     @property
     def merchandise_total(self):
