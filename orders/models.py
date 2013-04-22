@@ -23,6 +23,16 @@ class Order(models.Model):
                       (SHIPPED, 'Shipped'),
                       (CANCELLED, 'Cancelled'))
 
+    NEEDS_PAYMENT = 1       # no cash has been received, no credit card transaction has been authorized
+    FUNDS_AUTHORIZED = 2    # a credit card transaction has been authorized
+    PAID = 3                # funds have been captured or cash has been recieved
+    CANCELLED = 4           # the order was cancelled before any money changed hands
+
+    PAYMENT_STATUSES = ((NEEDS_PAYMENT, 'Payment Required'),
+                        (FUNDS_AUTHORIZED, 'Authorized'),
+                        (PAID, 'Paid in full'),
+                        (CANCELLED, 'Cancelled'))
+
     PHONE = 1
     EMAIL = 2
 
@@ -38,6 +48,7 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     status = models.SmallIntegerField(choices=ORDER_STATUSES, default=SUBMITTED)
+    payment_status = models.IntegerField(choices=PAYMENT_STATUSES, default=NEEDS_PAYMENT)
     transaction_id = models.CharField(max_length=20)
     ip_address = models.IPAddressField(default="0.0.0.0")  # https://code.djangoproject.com/ticket/5622
 

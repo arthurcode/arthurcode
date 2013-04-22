@@ -18,11 +18,12 @@ class Migration(SchemaMigration):
             ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('status', self.gf('django.db.models.fields.SmallIntegerField')(default=1)),
+            ('payment_status', self.gf('django.db.models.fields.IntegerField')(default=1)),
             ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('shipping_charge', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=9, decimal_places=2)),
-            ('sales_tax', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
+            ('sales_tax', self.gf('django.db.models.fields.DecimalField')(default=0.0, max_digits=9, decimal_places=2)),
         ))
         db.send_create_signal('orders', ['Order'])
 
@@ -167,8 +168,9 @@ class Migration(SchemaMigration):
             'ip_address': ('django.db.models.fields.IPAddressField', [], {'default': "'0.0.0.0'", 'max_length': '15'}),
             'is_pickup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
+            'payment_status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'sales_tax': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
+            'sales_tax': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '9', 'decimal_places': '2'}),
             'shipping_charge': ('django.db.models.fields.DecimalField', [], {'default': '0.0', 'max_digits': '9', 'decimal_places': '2'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
