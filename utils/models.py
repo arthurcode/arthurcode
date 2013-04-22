@@ -12,6 +12,7 @@ class AbstractAddress(models.Model):
     name = models.CharField(max_length=100, verbose_name="Addressee", validators=[not_blank])
     line1 = models.CharField(max_length=200, verbose_name="Address Line 1", validators=[not_blank])
     line2 = models.CharField(max_length=200, verbose_name="Address Line 2", null=True, blank=True)
+    city = models.CharField(max_length=50, verbose_name="City/Town", null=True, blank=True)
     country = models.CharField(max_length=50, validators=[not_blank])
     post_code = models.CharField(max_length=20, verbose_name="Zip/Postal Code", null=True, blank=True)
     region = models.CharField(max_length=50, verbose_name="Province/State", null=True, blank=True)

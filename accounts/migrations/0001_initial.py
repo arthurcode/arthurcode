@@ -22,6 +22,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
@@ -36,6 +37,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
@@ -59,6 +61,7 @@ class Migration(SchemaMigration):
     models = {
         'accounts.customerbillingaddress': {
             'Meta': {'object_name': 'CustomerBillingAddress'},
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -77,6 +80,7 @@ class Migration(SchemaMigration):
         },
         'accounts.customershippingaddress': {
             'Meta': {'object_name': 'CustomerShippingAddress'},
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'country': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
