@@ -1,5 +1,5 @@
 {% load comment i18n %}
-{% load blog_extras %}
+{% load form_tags %}
 
 <form class="comment" action="{% comment_form_target %}" method="post">{% csrf_token %}
     {% if next %}<div><input type="hidden" name="next" value="{{ next }}" /></div>{% endif %}
