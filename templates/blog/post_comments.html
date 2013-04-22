@@ -1,6 +1,5 @@
 {% load comment %}
 {% load mptt_tags %}
-{% load blog_extras %}
 
 <div id="comments">
     {% get_comment_list for post as comments %}
@@ -11,9 +10,9 @@
         <ul class="comments">
             {% recursetree comments %}
                 <li class="comment">
-                    <a name="{% comment_anchor node %}"></a>
+                    <a name="c{{ node.id }}"></a>
                     <span class="user">{{ node.user_name }}</span>
-                    <a class="date" href="{% comment_permalink node %}">{{ node.submit_date|timesince }} ago</a>
+                    <a class="date" href="{% get_comment_permalink node %}">{{ node.submit_date|timesince }} ago</a>
                     <div class="text">
                         {% if not node.is_removed %}
                             {{ node.comment }}

@@ -10,21 +10,6 @@ REQUIRED_TEXT = "(required)"
 OPTIONAL_TEXT = "(optional)"
 LABEL_PATTERN = re.compile(r"^<label(?P<attrs>[^>]*)>(?P<text>[^<]*)</label>$")
 
-def comment_anchor(comment):
-    """
-    Returns the anchor text for the blog comment in the form c<comment-id>
-    """
-    return "c%d" % comment.id
-
-
-def comment_permalink(comment):
-    """
-    Returns a permanent link to the given blog comment.  The permanent link is assumed to be the absolute url of the
-    post, plus the comment anchor text.
-    """
-    parent_url = comment.content_object.get_absolute_url()
-    return "%s/#%s" % (parent_url, comment_anchor(comment))
-
 
 def field_label_tag(field):
     """
@@ -83,8 +68,6 @@ def field_class(field):
 def is_checkbox(field):
     return field_class(field) == "checkbox"
 
-register.simple_tag(comment_anchor)
-register.simple_tag(comment_permalink)
 register.simple_tag(field_label_tag)
 register.simple_tag(aria_required_field)
 register.simple_tag(field_class)

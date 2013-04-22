@@ -143,6 +143,10 @@ class Comment(BaseCommentAbstractModel):
     url = property(_get_url, _set_url, doc="The URL given by the user who posted this comment")
 
     def get_absolute_url(self, anchor_pattern="#c%(id)s"):
+        #return self.get_content_object_url() + (anchor_pattern % self.__dict__)
+        # try something a little bit different ...
+        if hasattr(self.content_object, 'get_absolute_url'):
+            return self.content_object.get_absolute_url() + (anchor_pattern % self.__dict__)
         return self.get_content_object_url() + (anchor_pattern % self.__dict__)
 
     def get_as_text(self):
