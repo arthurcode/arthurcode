@@ -9,6 +9,7 @@ from cart.forms import UpdateCartItemForm
 def show_cart(request):
     bound_form = None
     bound_form_id = None
+    cart_items = None
     if request.method == "POST":
         postdata = request.POST.copy()
         if 'Remove' in postdata:
@@ -24,8 +25,20 @@ def show_cart(request):
                 except ValueError:
                     bound_form_id = -1
         if 'Checkout' in postdata:
-            pass
-    cart_items = cartutils.get_cart_items(request)
+            # do a stock check before allowing the user to start the checkout process
+            cart_items = cartutils.get_cart_items(request)
+            checkout_errors = []
+            for cart_item in cart_items:
+                error = cart_item.check_stock()
+                if error:
+                    checkout_errors.append("%s: %s" % (unicode(cart_item), error))
+            if not checkout_errors:
+                # continue to checkout url
+                pass
+
+    if not cart_items:
+        cart_items = cartutils.get_cart_items(request)
+
     for cart_item in cart_items:
         if bound_form_id == cart_item.id:
             form = bound_form

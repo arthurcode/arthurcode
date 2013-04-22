@@ -6,6 +6,18 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block body %}
+
+    {% if checkout_errors %}
+        <div class="error-list">
+            <h2>You cannot checkout until you correct the following problems:</h2>
+            <ul>
+                {% for error in checkout_errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
     <table class="shopping-cart">
         <caption>Your Shopping Cart</caption>
         <thead>
@@ -30,7 +42,10 @@
         {% if cart_items %}
             <tr>
                 <th class="right" colspan="6">
-                    Checkout Now
+                    <form method="post" action="." class="checkout">
+                        {% csrf_token %}
+                        <button type="submit" name="Checkout" class="yui3-button">Checkout Now</button>
+                    </form>
                 </th>
             </tr>
         {% endif %}
