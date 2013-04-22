@@ -5,21 +5,7 @@ from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
 import decimal
 from utils.validators import is_blank
-from django.core.exceptions import ValidationError
-
-
-class OrderBillingAddress(AbstractAddress):
-    """
-    The billing address associated with an order.  There can be one per order.
-    """
-    pass
-
-
-class OrderShippingAddress(AbstractAddress):
-    """
-    The shipping address associated with an order.  There can only be one per order.
-    """
-    pass
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 class Order(models.Model):
@@ -56,8 +42,6 @@ class Order(models.Model):
     ip_address = models.IPAddressField(default="0.0.0.0")  # https://code.djangoproject.com/ticket/5622
 
     is_pickup = models.BooleanField(default=False)
-    shipping_address = models.OneToOneField(OrderShippingAddress, null=True, blank=True)
-    billing_address = models.OneToOneField(OrderBillingAddress, null=True, blank=True)
 
     @property
     def total(self):
@@ -65,6 +49,18 @@ class Order(models.Model):
         for item in self.orderitem_set.all():
             total += item.total
         return total
+
+    def get_shipping_address(self):
+        try:
+            return self.shipping_address
+        except ObjectDoesNotExist:
+            return None
+
+    def get_billing_address(self):
+        try:
+            return self.billing_address
+        except ObjectDoesNotExist:
+            return None
 
     def __unicode__(self):
         return 'Order #%s' % self.id
@@ -74,10 +70,10 @@ class Order(models.Model):
         # if the order is not being picked up, we need the shipping and billing addresses, the email, and possibly
         # the phone field
 
-        if self.is_pickup:
-            if self.shipping_address:
+        if not self.is_pickup:
+            if not self.get_shipping_address():
                 raise ValidationError(u"The shipping address is required for non-pickup orders.")
-            if self.billing_address:
+            if not self.get_billing_address():
                 raise ValidationError(u"The billing address is required for non-pickup orders.")
             if not self.email or is_blank(self.email):
                 raise ValidationError(u"The email address is required for non-pickup orders.")
@@ -107,6 +103,20 @@ class OrderItem(models.Model):
 
     def __unicode__(self):
         return self.product.name
+
+
+class OrderBillingAddress(AbstractAddress):
+    """
+    The billing address associated with an order.  There can be one per order.
+    """
+    order = models.OneToOneField(Order, related_name='billing_address')
+
+
+class OrderShippingAddress(AbstractAddress):
+    """
+    The shipping address associated with an order.  There can only be one per order.
+    """
+    order = models.OneToOneField(Order, related_name='shipping_address')
 
 
 

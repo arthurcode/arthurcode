@@ -8,30 +8,6 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
-        # Adding model 'OrderBillingAddress'
-        db.create_table('orders_orderbillingaddress', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-        ))
-        db.send_create_signal('orders', ['OrderBillingAddress'])
-
-        # Adding model 'OrderShippingAddress'
-        db.create_table('orders_ordershippingaddress', (
-            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
-            ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-        ))
-        db.send_create_signal('orders', ['OrderShippingAddress'])
-
         # Adding model 'Order'
         db.create_table('orders_order', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -45,8 +21,6 @@ class Migration(SchemaMigration):
             ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
-            ('shipping_address', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['orders.OrderShippingAddress'], unique=True, null=True, blank=True)),
-            ('billing_address', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['orders.OrderBillingAddress'], unique=True, null=True, blank=True)),
         ))
         db.send_create_signal('orders', ['Order'])
 
@@ -60,19 +34,45 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('orders', ['OrderItem'])
 
+        # Adding model 'OrderBillingAddress'
+        db.create_table('orders_orderbillingaddress', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='billing_address', unique=True, to=orm['orders.Order'])),
+        ))
+        db.send_create_signal('orders', ['OrderBillingAddress'])
+
+        # Adding model 'OrderShippingAddress'
+        db.create_table('orders_ordershippingaddress', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
+            ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='shipping_address', unique=True, to=orm['orders.Order'])),
+        ))
+        db.send_create_signal('orders', ['OrderShippingAddress'])
+
 
     def backwards(self, orm):
-        # Deleting model 'OrderBillingAddress'
-        db.delete_table('orders_orderbillingaddress')
-
-        # Deleting model 'OrderShippingAddress'
-        db.delete_table('orders_ordershippingaddress')
-
         # Deleting model 'Order'
         db.delete_table('orders_order')
 
         # Deleting model 'OrderItem'
         db.delete_table('orders_orderitem')
+
+        # Deleting model 'OrderBillingAddress'
+        db.delete_table('orders_orderbillingaddress')
+
+        # Deleting model 'OrderShippingAddress'
+        db.delete_table('orders_ordershippingaddress')
 
 
     models = {
@@ -154,7 +154,6 @@ class Migration(SchemaMigration):
         },
         'orders.order': {
             'Meta': {'object_name': 'Order'},
-            'billing_address': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['orders.OrderBillingAddress']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']", 'null': 'True', 'blank': 'True'}),
             'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -164,7 +163,6 @@ class Migration(SchemaMigration):
             'is_pickup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'shipping_address': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['orders.OrderShippingAddress']", 'unique': 'True', 'null': 'True', 'blank': 'True'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
@@ -175,6 +173,7 @@ class Migration(SchemaMigration):
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'order': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'billing_address'", 'unique': 'True', 'to': "orm['orders.Order']"}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         },
@@ -193,6 +192,7 @@ class Migration(SchemaMigration):
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'order': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'shipping_address'", 'unique': 'True', 'to': "orm['orders.Order']"}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         }
