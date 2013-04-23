@@ -497,3 +497,11 @@ div.error-list {
     color: red;
     border: 1px solid red;
 }
+
+/* account login styles */
+
+div.create-account, div.login {
+    float: left;
+    display: inline-block;
+    width: 45%;
+}
