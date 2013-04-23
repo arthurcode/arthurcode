@@ -4,6 +4,7 @@ from cart import cartutils
 from django.core.urlresolvers import reverse
 from urlparse import urlparse
 from cart.forms import UpdateCartItemForm
+from django.utils.http import is_safe_url
 
 
 def show_cart(request):
@@ -26,6 +27,7 @@ def show_cart(request):
                     bound_form_id = -1
         if 'Checkout' in postdata:
             # do a stock check before allowing the user to start the checkout process
+            # TODO: do this stock check everytime in the view
             cart_items = cartutils.get_cart_items(request)
             checkout_errors = []
             for cart_item in cart_items:
@@ -60,6 +62,9 @@ def get_continue_shopping_url(request):
     """
     continue_shopping_url = reverse('catalogue_category', kwargs={'category_slug': ''})
     last_url = request.META.get('HTTP_REFERER', None)  # (sic)
+    # Ensure the user-originating redirection url is safe.
+    if not is_safe_url(url=last_url, host=request.get_host()):
+        return continue_shopping_url
 
     if last_url:
         pr = urlparse(last_url)
