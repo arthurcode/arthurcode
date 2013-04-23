@@ -3,6 +3,7 @@ import blog.urls
 import catalogue.urls
 import cart.urls
 from catalogue.views import home_view
+import checkout.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -25,4 +26,6 @@ urlpatterns = patterns('',
     url(r'^$', home_view, name="home"),
 
     url(r'^cart/', include(cart.urls)),
+
+    url(r'^checkout/', include(checkout.urls)),
 )

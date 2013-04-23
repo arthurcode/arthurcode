@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from urlparse import urlparse
 from cart.forms import UpdateCartItemForm
 from django.utils.http import is_safe_url
+from django.http import HttpResponseRedirect
 
 
 def show_cart(request):
@@ -35,8 +36,7 @@ def show_cart(request):
                 if error:
                     checkout_errors.append("%s: %s" % (unicode(cart_item), error))
             if not checkout_errors:
-                # continue to checkout url
-                pass
+                return HttpResponseRedirect(reverse('checkout_home'))
 
     if not cart_items:
         cart_items = cartutils.get_cart_items(request)
