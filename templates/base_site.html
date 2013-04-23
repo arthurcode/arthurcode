@@ -13,7 +13,8 @@
 
     <div class="account-summary">
         {% if user.is_authenticated %}
-            Welcome, {{ user.username }} | <a href="{% url logout %}">Log Out</a>
+            Welcome, {{ user.username }} | <a href="{% url show_account %}">My Account</a> | <a href="{% url logout %}">Log Out</a>
+
         {% else %}
             <a href="{% url login_or_create_account %}">Log In or Create Account</a>
         {% endif %}
