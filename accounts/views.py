@@ -1,7 +1,7 @@
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
 from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from arthurcode import settings
@@ -11,7 +11,6 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.core.urlresolvers import reverse
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -19,23 +18,19 @@ from django.core.urlresolvers import reverse
 def login_or_create_account(request,
           template_name='login_or_create_account.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
-          authentication_form=AuthenticationForm,
           current_app=None, extra_context=None):
     """
     Displays the login form and handles the login action.  Largely copied from the built-in auth login/ view.
     """
-    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    redirect_to = _get_redirect_url(request, redirect_field_name)
     auth_form = None
+    create_form = None
 
     if request.method == "POST":
         postdata = request.POST.copy()
         if u'login' in postdata:
-            auth_form = authentication_form(data=postdata)
+            auth_form = AuthenticationForm(data=postdata)
             if auth_form.is_valid():
-                # Ensure the user-originating redirection url is safe.
-                if not is_safe_url(url=redirect_to, host=request.get_host()):
-                    redirect_to = settings.LOGIN_REDIRECT_URL
-
                 # Okay, security check complete. Log the user in.
                 auth_login(request, auth_form.get_user())
 
@@ -43,8 +38,23 @@ def login_or_create_account(request,
                     request.session.delete_test_cookie()
 
                 return HttpResponseRedirect(redirect_to)
+        elif u'create' in postdata:
+            create_form = UserCreationForm(data=postdata)
+            if create_form.is_valid():
+                # Okay, security check complete. Create the new user and log them in.
+                username = create_form.clean_username()
+                password = create_form.clean_password2()
+                create_form.save()
+                user = authenticate(username=username, password=password)
+                auth_login(request, user)
 
-    auth_form = auth_form or authentication_form(request)
+                if request.session.test_cookie_worked():
+                    request.session.delete_test_cookie()
+
+                return HttpResponseRedirect(redirect_to)
+
+    auth_form = auth_form or AuthenticationForm(request)
+    create_form = create_form or UserCreationForm()
 
     request.session.set_test_cookie()
 
@@ -52,6 +62,7 @@ def login_or_create_account(request,
 
     context = {
         'auth_form': auth_form,
+        'create_form': create_form,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
@@ -67,3 +78,14 @@ def show_account(request):
     Shows a user's account settings.  In this context the user is a customer
     """
     return render_to_response('my_account.html', locals(), context_instance=RequestContext(request))
+
+
+def _get_redirect_url(request, redirect_field_name=REDIRECT_FIELD_NAME):
+    """
+    If the user supplied redirection is either not present or unsafe the default LOGIN_REDIRECT_URL is returned.
+    """
+    redirect_to = request.REQUEST.get(redirect_field_name, '')
+    # Ensure the user-originating redirection url is safe.
+    if not is_safe_url(url=redirect_to, host=request.get_host()):
+        redirect_to = settings.LOGIN_REDIRECT_URL
+    return redirect_to

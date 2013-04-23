@@ -15,9 +15,12 @@
     </div>
     <div class='create-account'>
         <h2>New User? Create an Account</h2>
-        <form>
+        <form method="post" action=".">
             {% csrf_token %}
-
+            {% field_label_tag create_form.username %}{% aria_required_field create_form.username %}
+            {% field_label_tag create_form.password1 %}{% aria_required_field create_form.password1 %}
+            {% field_label_tag create_form.password2 %}{% aria_required_field create_form.password2 %}
+            <button type="submit" name="create" class="yui3-button">Create Account</button>
         </form>
     </div>
 {% endblock %}
