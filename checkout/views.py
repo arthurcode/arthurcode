@@ -11,7 +11,7 @@ def choose_checkout_method(request):
     if request.user.is_authenticated():
         # since they are logged in already, we just check them out as a customer.  I'll have to revisit this if and
         # when I incorporate alternative checkout gateways (such as google checkout)
-        return HttpResponseRedirect(reverse('checkout_account'))
+        return HttpResponseRedirect(reverse('account_checkout'))
 
     # display a standard login or create account form, but with a giant 'checkout-as-guest' escape link
     pass
