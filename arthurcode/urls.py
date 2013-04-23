@@ -4,6 +4,7 @@ import catalogue.urls
 import cart.urls
 from catalogue.views import home_view
 import checkout.urls
+import accounts.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -28,4 +29,6 @@ urlpatterns = patterns('',
     url(r'^cart/', include(cart.urls)),
 
     url(r'^checkout/', include(checkout.urls)),
+
+    url(r'^accounts/', include(accounts.urls))
 )

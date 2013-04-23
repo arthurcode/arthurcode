@@ -13,7 +13,7 @@ from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 @csrf_protect
 @never_cache
 def login_or_create_account(request,
-          template_name='accounts/login_or_create_account.html',
+          template_name='login_or_create_account.html',
           redirect_field_name=REDIRECT_FIELD_NAME,
           authentication_form=AuthenticationForm,
           current_app=None, extra_context=None):

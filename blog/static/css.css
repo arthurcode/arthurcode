@@ -111,6 +111,19 @@ body.home #primary-navigation .home a {
     border: 2px solid black;
 }
 
+div.cart-summary {
+    display: inline-block;
+    float: left;
+    font-size: 80%;
+    margin-right: 1em;
+}
+
+div.account-summary {
+    float: left;
+    display: inline-block;
+    font-size: 80%;
+}
+
 #hd .rss {
     display: inline-block;
     float: left;

@@ -133,6 +133,7 @@ INSTALLED_APPS = (
     'cart',
     'accounts',
     'orders',
+    'checkout',
 )
 
 # A sample logging configuration. The only tangible logging

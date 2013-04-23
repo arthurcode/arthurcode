@@ -11,6 +11,14 @@
         {% cart_summary request %}
     </div>
 
+    <div class="account-summary">
+        {% if user.is_authenticated %}
+            Welcome, {{ user.username }} | <a href="{% url logout %}">Log Out</a>
+        {% else %}
+            <a href="{% url login_or_create_account %}">Log In or Create Account</a>
+        {% endif %}
+    </div>
+
     {% block navigation %}
         <ul id="primary-navigation">
             <li class="home"><a href="{% url home %}">Home</a></li>
