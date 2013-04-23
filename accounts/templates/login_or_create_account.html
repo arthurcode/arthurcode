@@ -1,5 +1,23 @@
 {% extends 'base_hd_ft.html' %}
+{% load form_tags %}
+
+{% block title %}Log In or Create Account{% endblock %}
 
 {% block body %}
-    Log-in form
+    <div class='login'>
+        <h2>Returning Users</h2>
+        <form method="post" action=".">
+            {% csrf_token %}
+            {% field_label_tag auth_form.username %}{% aria_required_field auth_form.username %}
+            {% field_label_tag auth_form.password %}{% aria_required_field auth_form.password %}
+            <button type="submit" name="login" class="yui3-button">Log In</button>
+        </form>
+    </div>
+    <div class='create-account'>
+        <h2>New User? Create an Account</h2>
+        <form>
+            {% csrf_token %}
+
+        </form>
+    </div>
 {% endblock %}
