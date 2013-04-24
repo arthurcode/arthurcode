@@ -19,13 +19,13 @@
     {# render the visible fields #}
     {% if not user.is_authenticated %}
         {# render name and email fields #}
-        {% with form.name as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.email as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% field form.name %}
+        {% field form.comment %}
+        {% field form.email_on_reply %}
+        {% field form.email %}
     {% else %}
-        {% with form.comment as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
-        {% with form.email_on_reply as field %}{% include 'comments/field_snippet.html' %}{% endwith %}
+        {% field form.comment %}
+        {% field form.email_on_reply %}
     {% endif %}
 
     {% comment %} The parent field was added to support threaded comments {% endcomment %}

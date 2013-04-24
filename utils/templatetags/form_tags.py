@@ -68,6 +68,11 @@ def field_class(field):
 def is_checkbox(field):
     return field_class(field) == "checkbox"
 
+
+@register.inclusion_tag("_field.html")
+def field(field):
+    return {'field': field}
+
 register.simple_tag(field_label_tag)
 register.simple_tag(aria_required_field)
 register.simple_tag(field_class)
