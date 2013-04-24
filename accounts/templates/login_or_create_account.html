@@ -6,21 +6,25 @@
 {% block body %}
     <div class='login'>
         <h2>Returning Users</h2>
-        <form method="post" action=".">
+        <form method="post" action="." class="stacked">
             {% csrf_token %}
             {% field auth_form.username %}
             {% field auth_form.password %}
-            <button type="submit" name="login" class="yui3-button">Log In</button>
+            <div class="controls">
+                <button type="submit" name="login" class="yui3-button">Log In</button>
+            </div>
         </form>
     </div>
     <div class='create-account'>
         <h2>New User? Create an Account</h2>
-        <form method="post" action=".">
+        <form method="post" action="." class="stacked">
             {% csrf_token %}
             {% field create_form.username %}
             {% field create_form.password1 %}
             {% field create_form.password2 %}
-            <button type="submit" name="create" class="yui3-button">Create Account</button>
+            <div class="controls">
+                <button type="submit" name="create" class="yui3-button">Create Account</button>
+            </div>
         </form>
     </div>
 {% endblock %}

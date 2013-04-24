@@ -219,15 +219,7 @@ div#comments > ul {
  *  FORM STYLES
  ************************************/
 
-/* debug */
-/*input, textarea, button, span, form, .field {*/
-    /*border: 1px solid red;*/
-    /*outline: 1px solid red;*/
-/*}*/
-
-/*label {*/
-    /*border: 1px solid yellow;*/
-/*}*/
+/* General form styles */
 
 form input.quantity {
     width: 1.5em; /* large enough for 2 digits */
@@ -251,24 +243,6 @@ form span.error {
 
 .field.error input[type='checkbox'] {
     outline: 1px solid red;  /* border doesn't seem to work for checkboxes */
-}
-
-/* Horizontal form layout.  Each field is two columns.  In the first column is the field label followed by
-   the (required) or (optional) string.  In the second column is the input area. Field errors are displayed in
-   the second column, directly above the input area.  Note that the column widths will need to be tuned individually
-   for each form. 25% and 75% seem to work well for the comment form.  In addition, when absolutely positioning the
-   elements in the first column the top coordinates will vary with relative font sizes. Experiment with it.
-
-   The form width is fixed at 30em and each sub-field consumes 100% of its parent's width.  At 30em the form's labels
-   consume as much as possible of the smaller right column.  Any smaller and the label text would break into two lines
-   and cause problems with absolutely positioned elements.
-   */
-
-form.comment {
-    width: 40em;
-    overflow: auto;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
 }
 
 .field {
@@ -302,15 +276,42 @@ label {
     float: left;
 }
 
+/* Align the controls with the form input fields. */
+form .controls {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
+/* Styles for HORIZONTAL forms */
+
+/* Horizontal form layout.  Each field is two columns.  In the first column is the field label followed by
+   the (required) or (optional) string.  In the second column is the input area. Field errors are displayed in
+   the second column, directly above the input area.  Note that the column widths will need to be tuned individually
+   for each form. 25% and 75% seem to work well for the comment form.  In addition, when absolutely positioning the
+   elements in the first column the top coordinates will vary with relative font sizes. Experiment with it.
+
+   The form width is fixed at 30em and each sub-field consumes 100% of its parent's width.  At 30em the form's labels
+   consume as much as possible of the smaller right column.  Any smaller and the label text would break into two lines
+   and cause problems with absolutely positioned elements.
+   */
+
+form.comment {
+    width: 40em;
+    overflow: auto;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+}
+
 /* Styles for text fields */
 /* style the second, larger column within a field */
-.field.text input, .field.text textarea {
+form.comment .field.text input, form.comment .field.text textarea {
     margin-left: 20%;
     float: left;
     clear: left;
 }
 
-.field.text span.error {
+form.comment .field.text span.error {
     margin-left: 20%;
     float: left;
     clear: left;
@@ -335,28 +336,19 @@ label {
 }
 
 /* Leave a 3% margin between columns */
-.field.text span.label {
+form.comment .field.text span.label {
     position: absolute;
     text-align: right;
     right: 83%;
     top: 0;
 }
 
-.field.text span.required-text, .field.text span.optional-text {
+form.comment .field.text span.required-text, form.comment .field.text span.optional-text {
     text-align: right;
     display: block;
 }
 
-
-
-/* Align the controls with the form input fields. */
-form .controls {
-    float: left;
-    clear: both;
-    width: 100%;
-}
-
-form .controls .submit-post {
+form.comment .controls .submit-post {
     margin-left: 20%;
 }
 
@@ -371,6 +363,12 @@ form.comment input {
 
 form.comment textarea {
     width: 79%;
+}
+
+/* Styles for 'stacked' forms.  In a stacked form the label is directly above the input.  This alignment works well
+   for short, simple forms */
+form.stacked span.error {
+    display: block;
 }
 
 /* catalogue styles */
