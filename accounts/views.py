@@ -7,7 +7,8 @@ from django.utils.http import is_safe_url
 from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm
+from accounts.forms import CustomerCreationForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -39,11 +40,11 @@ def login_or_create_account(request,
 
                 return HttpResponseRedirect(redirect_to)
         elif u'create' in postdata:
-            create_form = UserCreationForm(data=postdata)
+            create_form = CustomerCreationForm(data=postdata)
             if create_form.is_valid():
                 # Okay, security check complete. Create the new user and log them in.
-                username = create_form.clean_username()
-                password = create_form.clean_password2()
+                username = create_form.cleaned_data['username']
+                password = create_form.cleaned_data['password2']
                 create_form.save()
                 user = authenticate(username=username, password=password)
                 auth_login(request, user)
@@ -54,7 +55,7 @@ def login_or_create_account(request,
                 return HttpResponseRedirect(redirect_to)
 
     auth_form = auth_form or AuthenticationForm(request)
-    create_form = create_form or UserCreationForm()
+    create_form = create_form or CustomerCreationForm()
 
     request.session.set_test_cookie()
 

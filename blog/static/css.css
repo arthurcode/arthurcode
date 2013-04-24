@@ -499,5 +499,10 @@ div.error-list {
 div.create-account, div.login {
     float: left;
     display: inline-block;
-    width: 45%;
+    width: 20em;
+}
+
+div.create-account .required-text, div.create-account .optional-text,
+div.login .required-text, div.login .optional-text {
+    display: none;
 }

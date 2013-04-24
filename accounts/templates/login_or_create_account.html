@@ -19,7 +19,9 @@
         <h2>New User? Create an Account</h2>
         <form method="post" action="." class="stacked">
             {% csrf_token %}
-            {% field create_form.username %}
+            {% field create_form.first_name %}
+            {% field create_form.last_name %}
+            {% field create_form.email %}
             {% field create_form.password1 %}
             {% field create_form.password2 %}
             <div class="controls">
