@@ -11,6 +11,7 @@ OPTIONAL_TEXT = "(optional)"
 LABEL_PATTERN = re.compile(r"^<label(?P<attrs>[^>]*)>(?P<text>[^<]*)</label>$")
 
 
+@register.simple_tag
 def field_label_tag(field):
     """
      Returns a label tag for the given form field.  The label tag will include the original label text wrapped in a
@@ -42,6 +43,7 @@ def field_label_tag(field):
     return "<label%s>%s</label>" % (match.group('attrs'), text)
 
 
+@register.simple_tag
 def aria_required_field(field):
     """
      Add 'required' and 'aria-required' attributes to the html of required fields.
@@ -55,6 +57,8 @@ def aria_required_field(field):
     element.attrs.update({'required': '', 'aria-required': 'true'})
     return unicode(soup)
 
+
+@register.simple_tag
 def field_class(field):
     """
     Returns "checkbox" for checkbox fields and "text" for all other fields.
@@ -72,7 +76,3 @@ def is_checkbox(field):
 @register.inclusion_tag("_field.html")
 def field(field):
     return {'field': field}
-
-register.simple_tag(field_label_tag)
-register.simple_tag(aria_required_field)
-register.simple_tag(field_class)
