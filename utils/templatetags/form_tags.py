@@ -38,6 +38,8 @@ def field_label_tag(field):
     # not the field is required or optional
     text = "<span class='label'>%s %s</span>" % (text, marker_text)
 
+    if field.field.help_text:
+        text += " <span class='help-text'>%s</span>" % unicode(field.field.help_text)
 
     if field._errors():
         text += " <span class='error'>%s</span>" % field._errors().as_text()

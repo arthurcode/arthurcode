@@ -226,7 +226,7 @@ form input.quantity {
 }
 
 /* display form metadata in italics and slightly smaller text */
-form span.error, form span.required-text, form span.optional-text {
+form span.error, form span.required-text, form span.optional-text, form span.help-text {
     font-style: italic;
     font-size: 80%;
 }
@@ -367,7 +367,7 @@ form.comment textarea {
 
 /* Styles for 'stacked' forms.  In a stacked form the label is directly above the input.  This alignment works well
    for short, simple forms */
-form.stacked span.error {
+form.stacked span.error, form.stacked span.help-text {
     display: block;
 }
 
