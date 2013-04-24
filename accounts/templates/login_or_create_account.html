@@ -8,8 +8,8 @@
         <h2>Returning Users</h2>
         <form method="post" action=".">
             {% csrf_token %}
-            {% field_label_tag auth_form.username %}{% aria_required_field auth_form.username %}
-            {% field_label_tag auth_form.password %}{% aria_required_field auth_form.password %}
+            {% field auth_form.username %}
+            {% field auth_form.password %}
             <button type="submit" name="login" class="yui3-button">Log In</button>
         </form>
     </div>
@@ -17,9 +17,9 @@
         <h2>New User? Create an Account</h2>
         <form method="post" action=".">
             {% csrf_token %}
-            {% field_label_tag create_form.username %}{% aria_required_field create_form.username %}
-            {% field_label_tag create_form.password1 %}{% aria_required_field create_form.password1 %}
-            {% field_label_tag create_form.password2 %}{% aria_required_field create_form.password2 %}
+            {% field create_form.username %}
+            {% field create_form.password1 %}
+            {% field create_form.password2 %}
             <button type="submit" name="create" class="yui3-button">Create Account</button>
         </form>
     </div>
