@@ -231,8 +231,13 @@ form span.error, form span.required-text, form span.optional-text, form span.hel
     font-size: 80%;
 }
 
+.errorlist {
+    font-style: italic;
+    font-size: 80%;
+}
+
 /* display form errors in red */
-form span.error {
+form span.error, .errorlist {
     color: red;
 }
 

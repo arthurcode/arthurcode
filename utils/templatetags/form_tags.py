@@ -2,6 +2,7 @@ from django import template
 from django.forms import CheckboxInput
 import re
 from bs4 import BeautifulSoup
+from django.forms.util import ErrorList
 
 register = template.Library()
 
@@ -80,3 +81,33 @@ def is_checkbox(field):
 @register.inclusion_tag("_field.html")
 def field(field):
     return {'field': field}
+
+
+@register.inclusion_tag("_form_errors.html")
+def form_errors(form):
+    """
+    Outputs any errors in this form as an unordered list.  The general errors are found at the beginning of the list,
+    followed by the errors for individual fields.  Individual field errors are prefixed with the field label.
+    """
+    error_list = []
+    # put the most general errors at the beginning of the list
+    if form.errors:
+        if '__all__' in form.errors:
+            general_errors = form.errors['__all__']
+            if isinstance(general_errors, ErrorList):
+                for e in general_errors:
+                    error_list.append(unicode(e))
+            else:
+                error_list.append(unicode(general_errors))
+        for k,v in form.errors.items():
+            if k == '__all__':
+                continue
+            label = form.fields[k].label
+            if not label:
+                label = k
+            if isinstance(v, ErrorList):
+                for e in v:
+                    error_list.append("%s: %s" % (unicode(label), unicode(e)))
+            else:
+                error_list.append("%s: %s" % (unicode(label), unicode(v)))
+    return {'error_list': error_list}
