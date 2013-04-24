@@ -507,6 +507,10 @@ div.create-account, div.login {
     width: 20em;
 }
 
+div.create-account {
+    margin-left: 2em;
+}
+
 div.create-account .required-text, div.login .required-text {
     display: none;
 }

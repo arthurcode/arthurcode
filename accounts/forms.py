@@ -62,6 +62,7 @@ class CustomerAuthenticationForm(AuthenticationForm):
         super(CustomerAuthenticationForm, self).__init__(*args, **kwargs)
         self.fields['username'].required = False
         self.fields.keyOrder = ['email', 'password', 'username']
+        self.error_messages['invalid_login'] = u'Incorrect email/password combination. Note that both fields are case sensitive.'
 
     def clean_username(self):
         email = self.cleaned_data.get('email', '')
