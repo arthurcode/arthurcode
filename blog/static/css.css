@@ -343,10 +343,8 @@ label {
 }
 
 .field.text span.required-text, .field.text span.optional-text {
-    position: absolute;
     text-align: right;
-    right: 83%;
-    top: 1.6em;
+    display: block;
 }
 
 

@@ -17,8 +17,8 @@ def field_label_tag(field):
      Returns a label tag for the given form field.  The label tag will include the original label text wrapped in a
      span with class='label'.
      If there are errors on the field they will be included in the label wrapped in a span with class='error'.
-     If the field is required a span with class='required-text' and text=(required) will be added to the label.
-     If the field is not required a span with class='optional-text' and text=(optional) will be added to the label.
+     If the field is required a span with class='required-text' and text=(required) will be added to the label span.
+     If the field is not required a span with class='optional-text' and text=(optional) will be added to the label span.
      These spans function as css styling hooks.
     """
     base_label = field.label_tag()
@@ -28,14 +28,16 @@ def field_label_tag(field):
         return base_label
     text = match.group('text')
 
-    # wrap the base label in a 'label' span
-    text = "<span class='label'>%s</span>" % text
-
-    # add in the (required) or (optional) string
+    # calculate the (required) or (optional) string
     if field.field.required:
-        text += " <span class='required-text'>%s</span>" % REQUIRED_TEXT
+        marker_text = " <span class='required-text'>%s</span>" % REQUIRED_TEXT
     else:
-        text += " <span class='optional-text'>%s</span>" % OPTIONAL_TEXT
+        marker_text = " <span class='optional-text'>%s</span>" % OPTIONAL_TEXT
+
+    # wrap the base label in a 'label' span.  Inside the label span add a bit of marker text to indicate whether or
+    # not the field is required or optional
+    text = "<span class='label'>%s %s</span>" % (text, marker_text)
+
 
     if field._errors():
         text += " <span class='error'>%s</span>" % field._errors().as_text()
