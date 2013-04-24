@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
 from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
@@ -14,15 +14,12 @@ class CustomerCreationForm(UserCreationForm):
     last_name = forms.CharField(max_length=30, required=False)
     email = forms.EmailField(required=True)
 
-    class Meta:
-        model = User
-        # make sure the username field is the last to be cleaned
-        fields = ('email', 'password1', 'password2', 'first_name', 'last_name', 'username')
-
     def __init__(self, *args, **kwargs):
         super(CustomerCreationForm, self).__init__(*args, **kwargs)
         # the username field won't be displayed on the form, it will be given a default (generated) value
         self.fields['username'].required = False
+        # make sure the username is cleaned last, since it depends on email
+        self.fields.keyOrder = ['email', 'password1', 'password2', 'first_name', 'last_name', 'username']
 
     def clean_username(self):
         """
@@ -55,3 +52,21 @@ class CustomerCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class CustomerAuthenticationForm(AuthenticationForm):
+
+    email = forms.EmailField(required=True)
+
+    def __init__(self, *args, **kwargs):
+        super(CustomerAuthenticationForm, self).__init__(*args, **kwargs)
+        self.fields['username'].required = False
+        self.fields.keyOrder = ['email', 'password', 'username']
+
+    def clean_username(self):
+        email = self.cleaned_data.get('email', '')
+        if email:
+            md5 = hashlib.md5(email.lower())
+            return md5.hexdigest()[:30]
+        return ''
+

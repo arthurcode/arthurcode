@@ -8,7 +8,7 @@
         <h2>Returning Users</h2>
         <form method="post" action="." class="stacked">
             {% csrf_token %}
-            {% field auth_form.username %}
+            {% field auth_form.email %}
             {% field auth_form.password %}
             <div class="controls">
                 <button type="submit" name="login" class="yui3-button">Log In</button>
