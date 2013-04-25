@@ -5,7 +5,7 @@
 
 {% block body %}
     <div class='login'>
-        <h2>Returning Users</h2>
+        <h2>Log In (existing users)</h2>
         {% form_errors auth_form %}
         <form method="post" action="." class="stacked">
             {% csrf_token %}
@@ -17,7 +17,7 @@
         </form>
     </div>
     <div class='create-account'>
-        <h2>New User? Create an Account</h2>
+        <h2>Create an Account (new users)</h2>
         {% form_errors create_form %}
         <form method="post" action="." class="stacked">
             {% csrf_token %}
