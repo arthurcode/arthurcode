@@ -86,8 +86,9 @@ def field(field):
 @register.inclusion_tag("_form_errors.html")
 def form_errors(form):
     """
-    Outputs any errors in this form as an unordered list.  The general errors are found at the beginning of the list,
-    followed by the errors for individual fields.  Individual field errors are prefixed with the field label.
+    Outputs any errors in this form as an unordered list.  The general errors are found at the beginning of the list.
+    At the moment the list only contains general errors since field specific errors will be repeated above the form
+    fields themselves.
     """
     error_list = []
     # put the most general errors at the beginning of the list
@@ -99,15 +100,4 @@ def form_errors(form):
                     error_list.append(unicode(e))
             else:
                 error_list.append(unicode(general_errors))
-        for k,v in form.errors.items():
-            if k == '__all__':
-                continue
-            label = form.fields[k].label
-            if not label:
-                label = k
-            if isinstance(v, ErrorList):
-                for e in v:
-                    error_list.append("%s: %s" % (unicode(label), unicode(e)))
-            else:
-                error_list.append("%s: %s" % (unicode(label), unicode(v)))
     return {'error_list': error_list}

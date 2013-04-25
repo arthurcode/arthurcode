@@ -35,6 +35,7 @@
                 <div class="text">{{ product.long_description }}</div>
             {% endautoescape %}
 
+            {% form_errors form %}
             {% if product.quantity > 0 %}
                 <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
                     {% csrf_token %}
@@ -42,10 +43,6 @@
                     {{ form.product_slug }}
                     <button type="submit" name="submit" class="yui3-button">Add to Cart</button>
                 </form>
-            {% elif form.errors %}
-                <div class=error-list>
-                    {{ form.errors }}
-                </div>
             {% endif %}
         </div>
     </div>
