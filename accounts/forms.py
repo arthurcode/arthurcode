@@ -3,6 +3,12 @@ from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from utils.validators import not_blank
+
+
+def username_from_email(email):
+    md5 = hashlib.md5(email.lower())
+    return md5.hexdigest()[:30]  # max 30 characters
 
 
 class CustomerCreationForm(UserCreationForm):
@@ -10,7 +16,7 @@ class CustomerCreationForm(UserCreationForm):
     A user creation form that requires an email instead of a username.  We attempt to generate a unique username
     from the email address using an md5 hash algorithm.
     """
-    first_name = forms.CharField(max_length=30, required=True)
+    first_name = forms.CharField(max_length=30, required=True, validators=[not_blank])
     last_name = forms.CharField(max_length=30, required=False)
     email = forms.EmailField(required=True)
 
@@ -28,15 +34,14 @@ class CustomerCreationForm(UserCreationForm):
         """
         email = self.cleaned_data.get('email', None)
         if email:
-            md5 = hashlib.md5(email.lower())
-            self.cleaned_data['username'] = md5.hexdigest()[:30]
+            self.cleaned_data['username'] = username_from_email(email)
         try:
             return super(CustomerCreationForm, self).clean_username()
         except ValidationError, e:
             if unicode(self.error_messages['duplicate_username']) in unicode(e):
                 # the generated username is not unique
                 try:
-                    User.objects.filter(email=email)
+                    User.objects.get(email=email)
                     self.errors['email'] = self.error_class([u'A user with this email address already exists.'])
                 except User.DoesNotExist:
                     # hmmm, this must be a hash algorithm collision
@@ -45,10 +50,21 @@ class CustomerCreationForm(UserCreationForm):
                                                              u' a different email address.'])
             raise e
 
+    def clean_last_name(self):
+        """
+        Strip whitespace from the beginning and end of the last name (to avoid putting blank strings in the database)
+        """
+        name = self.data.get('last_name', '')
+        if name:
+            # Don't store strings of pure whitespace in the database
+            name = name.strip()
+        return name
+
     def save(self, commit=True):
         user = super(CustomerCreationForm, self).save(commit=False)
         user.first_name = self.cleaned_data['first_name']
         user.last_name = self.cleaned_data['last_name']
+        user.email = self.cleaned_data['email']
         if commit:
             user.save()
         return user
@@ -67,7 +83,6 @@ class CustomerAuthenticationForm(AuthenticationForm):
     def clean_username(self):
         email = self.cleaned_data.get('email', '')
         if email:
-            md5 = hashlib.md5(email.lower())
-            return md5.hexdigest()[:30]
+            return username_from_email(email)
         return ''
 

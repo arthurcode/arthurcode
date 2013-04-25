@@ -31,9 +31,9 @@ def field_label_tag(field):
 
     # calculate the (required) or (optional) string
     if field.field.required:
-        marker_text = " <span class='required-text'>%s</span>" % REQUIRED_TEXT
+        marker_text = "<span class='required-text'>%s</span>" % REQUIRED_TEXT
     else:
-        marker_text = " <span class='optional-text'>%s</span>" % OPTIONAL_TEXT
+        marker_text = "<span class='optional-text'>%s</span>" % OPTIONAL_TEXT
 
     # wrap the base label in a 'label' span.  Inside the label span add a bit of marker text to indicate whether or
     # not the field is required or optional
