@@ -35,20 +35,22 @@ class CustomerCreationForm(UserCreationForm):
         email = self.cleaned_data.get('email', None)
         if email:
             self.cleaned_data['username'] = username_from_email(email)
-        try:
+            try:
+                return super(CustomerCreationForm, self).clean_username()
+            except ValidationError, e:
+                if unicode(self.error_messages['duplicate_username']) in unicode(e):
+                    # the generated username is not unique
+                    try:
+                        User.objects.get(email=email)
+                        self.errors['email'] = self.error_class([u'A user with this email address already exists.'])
+                    except User.DoesNotExist:
+                        # hmmm, this must be a hash algorithm collision
+                        self.errors['email'] = self.error_class([u'Sorry, we were unable to generate a unique username from '
+                                                                 u'this email address. You will need to register with'
+                                                                 u' a different email address.'])
+                raise e
+        else:
             return super(CustomerCreationForm, self).clean_username()
-        except ValidationError, e:
-            if unicode(self.error_messages['duplicate_username']) in unicode(e):
-                # the generated username is not unique
-                try:
-                    User.objects.get(email=email)
-                    self.errors['email'] = self.error_class([u'A user with this email address already exists.'])
-                except User.DoesNotExist:
-                    # hmmm, this must be a hash algorithm collision
-                    self.errors['email'] = self.error_class([u'Sorry, we were unable to generate a unique username from '
-                                                             u'this email address. You will need to register with'
-                                                             u' a different email address.'])
-            raise e
 
     def clean_last_name(self):
         """
