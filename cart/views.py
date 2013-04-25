@@ -36,7 +36,7 @@ def show_cart(request):
                 if error:
                     checkout_errors.append("%s: %s" % (unicode(cart_item), error))
             if not checkout_errors:
-                return HttpResponseRedirect(reverse('checkout_home'))
+                return HttpResponseRedirect(reverse('checkout'))
 
     if not cart_items:
         cart_items = cartutils.get_cart_items(request)
