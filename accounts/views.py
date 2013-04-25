@@ -11,6 +11,7 @@ from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -66,6 +67,7 @@ def login_or_create_account(request,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
+        'checking_out': redirect_to == reverse('checkout')
         }
     if extra_context is not None:
         context.update(extra_context)

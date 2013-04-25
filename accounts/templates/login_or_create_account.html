@@ -7,19 +7,19 @@
     <div class='login'>
         <h2>Log In (existing users)</h2>
         {% form_errors auth_form %}
-        <form method="post" action="." class="stacked">
+        <form method="post" action="{% url login_or_create_account %}?next={{ next }}" class="stacked">
             {% csrf_token %}
             {% field auth_form.email %}
             {% field auth_form.password %}
             <div class="controls">
-                <button type="submit" name="login" class="yui3-button">Log In</button>
+                <button type="submit" name="login" class="yui3-button">Log In{% if checking_out %} and Checkout{% endif %}</button>
             </div>
         </form>
     </div>
     <div class='create-account'>
         <h2>Create an Account (new users)</h2>
         {% form_errors create_form %}
-        <form method="post" action="." class="stacked">
+        <form method="post" action="{% url login_or_create_account %}?next={{ next }}" class="stacked">
             {% csrf_token %}
             {% field create_form.first_name %}
             {% field create_form.last_name %}
@@ -27,8 +27,11 @@
             {% field create_form.password1 %}
             {% field create_form.password2 %}
             <div class="controls">
-                <button type="submit" name="create" class="yui3-button">Create Account</button>
+                <button type="submit" name="create" class="yui3-button">Create Account{% if checking_out %} and Checkout{% endif %}</button>
             </div>
         </form>
     </div>
+    {% if checking_out %}
+        <a class="checkout-as-guest yui3-button" href="{% url guest_checkout %}">Checkout As Guest</a>
+    {% endif %}
 {% endblock %}
