@@ -33,19 +33,13 @@ class Order(models.Model):
                         (PAID, 'Paid in full'),
                         (CANCELLED, 'Cancelled'))
 
-    PHONE = 1
-    EMAIL = 2
-
-    CONTACT_METHOD = ((PHONE, 'Phone'),
-                      (EMAIL, 'Email'))
-
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
     customer = models.ForeignKey(CustomerProfile, null=True, blank=True)
     first_name = models.CharField('first name', max_length=30, blank=True, null=True, validators=[not_blank])
     last_name = models.CharField('last name', max_length=30, blank=True, null=True, validators=[not_blank])
     email = models.EmailField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
-    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)
+    contact_method = models.SmallIntegerField(choices=CustomerProfile.CONTACT_METHOD, default=CustomerProfile.EMAIL)
 
     date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
@@ -106,7 +100,7 @@ class Order(models.Model):
             if not self.email or is_blank(self.email):
                 raise ValidationError(u"The email address is required for non-pickup orders.")
 
-        if self.contact_method == Order.PHONE and (not self.phone or is_blank(self.phone)):
+        if self.contact_method == CustomerProfile.PHONE and (not self.phone or is_blank(self.phone)):
             raise ValidationError(u"The preferred contact method is phone, "
                                   u"therefore a valid phone number is required.")
 

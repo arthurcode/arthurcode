@@ -10,9 +10,16 @@ class CustomerProfile(models.Model):
     Collects customer-specific information, such as shipping and billing addresses and phone numbers.
     A user can only have one customer profile.
     """
+    PHONE = 1
+    EMAIL = 2
+
+    CONTACT_METHOD = ((PHONE, 'Phone'),
+                      (EMAIL, 'Email'))
+
     user = models.ForeignKey(User, unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
+    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)
 
     @property
     def first_name(self):

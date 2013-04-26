@@ -14,6 +14,7 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True)),
             ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
+            ('contact_method', self.gf('django.db.models.fields.SmallIntegerField')(default=2)),
         ))
         db.send_create_signal('accounts', ['CustomerProfile'])
 
@@ -75,6 +76,7 @@ class Migration(SchemaMigration):
         },
         'accounts.customerprofile': {
             'Meta': {'object_name': 'CustomerProfile'},
+            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
