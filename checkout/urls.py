@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
-from checkout.views import checkout_as_guest, checkout
+from checkout.views import checkout
+from checkout.forms import OrderWizard
 
 urlpatterns = patterns('',
                        url(r'^$', checkout, name="checkout"),
-                       url(r'^guest/$', checkout_as_guest, name="guest_checkout")
+                       url(r'^guest/$', OrderWizard.as_view(OrderWizard.FORMS), name="guest_checkout")
                        )

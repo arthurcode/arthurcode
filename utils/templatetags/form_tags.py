@@ -1,5 +1,5 @@
 from django import template
-from django.forms import CheckboxInput
+from django.forms import CheckboxInput, RadioSelect
 import re
 from bs4 import BeautifulSoup
 from django.forms.util import ErrorList
@@ -66,10 +66,13 @@ def aria_required_field(field):
 @register.simple_tag
 def field_class(field):
     """
-    Returns "checkbox" for checkbox fields and "text" for all other fields.
+    Returns "checkbox" for checkbox fields, "radio" for radio selects and "text" for all other fields.
     """
-    if field.field.widget.__class__.__name__ == CheckboxInput().__class__.__name__:
+    widget_class = field.field.widget.__class__.__name__
+    if widget_class == CheckboxInput().__class__.__name__:
         return "checkbox"
+    elif widget_class == RadioSelect().__class__.__name__:
+        return "radio"
     return "text"
 
 

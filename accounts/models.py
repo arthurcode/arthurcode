@@ -13,8 +13,8 @@ class CustomerProfile(models.Model):
     PHONE = 1
     EMAIL = 2
 
-    CONTACT_METHOD = ((PHONE, 'Phone'),
-                      (EMAIL, 'Email'))
+    CONTACT_METHOD = ((EMAIL, 'Email'),
+                      (PHONE, 'Phone'))
 
     user = models.ForeignKey(User, unique=True)
     phone_number = models.CharField(max_length=20, null=True, blank=True)

@@ -1,0 +1,34 @@
+{% extends 'base_hd_ft.html' %}
+{% load form_tags %}
+
+{% block body %}
+<p>
+Step {{ wizard.steps.step1 }} of {{ wizard.steps.count }}
+</p>
+<div class='contact-info'>
+    {% form_errors wizard.form %}
+    <form method="post" action="" class="stacked">
+        {% csrf_token %}
+        {{ wizard.management_form }}
+        {{ wizard.form.management_form }}
+        <fieldset>
+            <legend>
+                Contact Info
+            </legend>
+            {% field wizard.form.first_name %}
+            {% field wizard.form.last_name %}
+            {% field wizard.form.email %}
+            {% field wizard.form.contact_method %}
+            {% field wizard.form.phone %}
+        </fieldset>
+        <div class="controls">
+            <button class="yui3-button" name="submit">Submit</button>
+        </div>
+    </form>
+</div>
+
+{% if wizard.steps.prev %}
+    <button class="yui3-button" name="wizard_goto_step" type="submit" value="{{ wizard.steps.first }}">First Step</button>
+    <button class="yui3-button" name="wizard_goto_step" type="submit" value="{{ wizard.steps.prev }}">Previous Step</button>
+{% endif %}
+{% endblock %}
