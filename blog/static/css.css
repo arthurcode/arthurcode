@@ -242,7 +242,7 @@ form span.error, .errorlist {
 }
 
 /* when a field has an error but a red border around the input */
-.field.error textarea, .field.error input, .field.error.radio ul {
+.field.error textarea, .field.error input, .field.error.radio ul, .field.error select {
     border: 1px solid red;
 }
 
