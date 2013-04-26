@@ -58,7 +58,7 @@ class LoginViewTest(FormTest):
         self.assert_error_is(first_name_field, None)
 
         last_name_field = self.get_field(create_account_form, label='Last name')
-        self.assert_is_optional(last_name_field)
+        self.assert_is_required(last_name_field)
         self.assert_help_text_is(last_name_field, None)
         self.assert_error_is(last_name_field, None)
 
@@ -99,19 +99,9 @@ class CreateAccountTest(FormTest):
         user = User.objects.get(first_name="Mr. Kitty")
         self.assertIsNotNone(user)
 
-    def testLastNameOptional(self):
-        response = create_account(self.c, first_name="Foobar", email='rhyan@foobar.com', password='password')
-        self.assertEqual(200, response.status_code)
-        self.assertTemplateUsed(response, 'my_account.html')
-        user = User.objects.get(first_name="Foobar", email='rhyan@foobar.com')
-        self.assertTrue(not user.last_name)
-
-        response = create_account(self.c, first_name="Foobar", email='rhyan2@foobar.com', password='password',
-                                  last_name="  ")
-        self.assertEqual(200, response.status_code)
-        self.assertTemplateUsed(response, 'my_account.html')
-        user = User.objects.get(first_name="Foobar", email='rhyan2@foobar.com')
-        self.assertTrue(not user.last_name)  # the last-name = "  " should have been stripped to ""
+    def testLastNameErrors(self):
+        self.assert_form_error('id_last_name', '* This field is required.', self.c, last_name='')
+        self.assert_form_error('id_last_name', '* This field cannot be blank.', self.c, last_name='  ')
 
     def testLastNameWithSpaces(self):
         # crazy Dutch last names
@@ -235,18 +225,16 @@ def make_login_post_data(**kwargs):
 
 def make_create_post_data(**kwargs):
     first_name = kwargs.pop('first_name', 'Rhyan')
-    last_name = kwargs.pop('last_name', None)
+    last_name = kwargs.pop('last_name', 'Arthur')
     email = kwargs.pop('email', 'someone%d@fake.com' % COUNTER.next())
     password1 = kwargs.pop('password1', 'password')
     password2 = kwargs.pop('password2', 'password')
     data = {
         'first_name': first_name,
+        'last_name': last_name,
         'email': email,
         'password1': password1,
         'password2': password2,
         'create': ''
     }
-
-    if last_name:
-        data.update({'last_name': last_name})
     return data

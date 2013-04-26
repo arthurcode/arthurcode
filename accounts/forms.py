@@ -17,7 +17,7 @@ class CustomerCreationForm(UserCreationForm):
     from the email address using an md5 hash algorithm.
     """
     first_name = forms.CharField(max_length=30, required=True, validators=[not_blank])
-    last_name = forms.CharField(max_length=30, required=False)
+    last_name = forms.CharField(max_length=30, required=True, validators=[not_blank])
     email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -51,16 +51,6 @@ class CustomerCreationForm(UserCreationForm):
                 raise e
         else:
             return super(CustomerCreationForm, self).clean_username()
-
-    def clean_last_name(self):
-        """
-        Strip whitespace from the beginning and end of the last name (to avoid putting blank strings in the database)
-        """
-        name = self.data.get('last_name', '')
-        if name:
-            # Don't store strings of pure whitespace in the database
-            name = name.strip()
-        return name
 
     def save(self, commit=True):
         user = super(CustomerCreationForm, self).save(commit=False)
