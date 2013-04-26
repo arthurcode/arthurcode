@@ -487,6 +487,10 @@ table.shopping-cart img {
     display: block;
 }
 
+table.shopping-cart {
+    width: 100%;
+}
+
 /* product detail styles */
 span.out-of-stock {
     color: red;
