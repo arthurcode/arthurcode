@@ -4,6 +4,7 @@ from django.contrib.formtools.wizard.views import SessionWizardView
 from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
+from utils.forms import CanadaShippingForm
 
 
 class ContactInfoForm(forms.Form):
@@ -42,11 +43,13 @@ class ContactInfoForm(forms.Form):
 class OrderWizard(SessionWizardView):
 
     FORMS = [
-        ('contact', ContactInfoForm)
+        ('contact', ContactInfoForm),
+        ('shipping', CanadaShippingForm)
     ]
 
     TEMPLATES = {
-        'contact': 'contact_info.html'
+        'contact': 'contact_info.html',
+        'shipping': 'shipping_form.html'
     }
 
     def get_template_names(self):
