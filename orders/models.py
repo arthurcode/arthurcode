@@ -4,7 +4,7 @@ from django.core.validators import MinValueValidator
 from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
 import decimal
-from utils.validators import is_blank
+from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
@@ -41,6 +41,8 @@ class Order(models.Model):
 
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
     customer = models.ForeignKey(CustomerProfile, null=True, blank=True)
+    first_name = models.CharField('first name', max_length=30, blank=True, null=True, validators=[not_blank])
+    last_name = models.CharField('last name', max_length=30, blank=True, null=True, validators=[not_blank])
     email = models.EmailField(max_length=50, null=True, blank=True)
     phone = models.CharField(max_length=20, null=True, blank=True)
     contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)
