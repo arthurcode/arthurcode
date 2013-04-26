@@ -524,3 +524,8 @@ a.checkout-as-guest {
     clear: left;
     width: 30%;
 }
+
+/* checkout styles */
+div.contact-info .required-text, div.shipping-info .required-text {
+    display: None;
+}
