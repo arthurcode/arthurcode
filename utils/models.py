@@ -1,6 +1,7 @@
 from django.db import models
 from utils.validators import not_blank
 
+PHONE_NUMBER_LENGTH = 20
 
 class AbstractAddress(models.Model):
     """
@@ -16,7 +17,7 @@ class AbstractAddress(models.Model):
     region = models.CharField(max_length=50, verbose_name="Province/State", null=True, blank=True)
     country = models.CharField(max_length=50, validators=[not_blank])
     post_code = models.CharField(max_length=20, verbose_name="Zip/Postal Code", null=True, blank=True)
-
+    phone_number = models.CharField(max_length=PHONE_NUMBER_LENGTH, null=True, blank=True)
 
     class Meta:
         abstract = True

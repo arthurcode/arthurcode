@@ -28,6 +28,7 @@ class Migration(SchemaMigration):
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
@@ -43,6 +44,7 @@ class Migration(SchemaMigration):
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
@@ -71,6 +73,7 @@ class Migration(SchemaMigration):
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         },
@@ -92,6 +95,7 @@ class Migration(SchemaMigration):
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         },
