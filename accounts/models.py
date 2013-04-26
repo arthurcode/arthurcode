@@ -3,7 +3,6 @@ from django.contrib.auth.models import User
 from utils.models import AbstractAddress
 from utils.validators import is_blank
 from django.core.exceptions import ValidationError
-import utils.models
 
 
 class CustomerProfile(models.Model):
@@ -18,7 +17,7 @@ class CustomerProfile(models.Model):
                       (PHONE, 'Phone'))
 
     user = models.ForeignKey(User, unique=True)
-    phone_number = models.CharField(max_length=utils.models.PHONE_NUMBER_LENGTH, null=True, blank=True)
+    phone_number = models.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
     contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)
 
