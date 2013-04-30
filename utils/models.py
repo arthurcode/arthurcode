@@ -16,7 +16,6 @@ class AbstractAddress(models.Model):
     LINE_LENGTH = 200
     CITY_LENGTH = 50
     REGION_LENGTH = 50
-    COUNTRY_LENGTH = 50
     POST_CODE_LENGTH = 20
 
     name = models.CharField(max_length=ADDRESSEE_LENGTH, verbose_name="Addressee", validators=[not_blank])

@@ -23,7 +23,11 @@ class CanadaShippingForm(forms.Form):
     postal_code = CAPostalCodeField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Postal Code",
                                     help_text='(Example: T1B 2K9)')
 
+
 class BillingForm(forms.Form):
+    """
+    The DB requires that the name, address line1, and country fields be non-null.
+    """
     name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name",
                            help_text="Full name as it appears on your credit card.")
     line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1")
