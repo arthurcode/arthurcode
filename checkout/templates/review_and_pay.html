@@ -1,0 +1,36 @@
+{% extends 'base_checkout.html' %}
+
+{% load form_tags %}
+
+{% block forms %}
+    <div class="review-order">
+        REVIEW ORDER TBD
+    </div>
+
+    <div class='payment-info'>
+        {% form_errors wizard.form %}
+        <form method="post" action="" class="stacked">
+            {% csrf_token %}
+            {{ wizard.management_form }}
+            {{ wizard.form.management_form }}
+            <fieldset>
+                <legend>
+                    Payment Info
+                </legend>
+                {% field wizard.form.card_type %}
+                {% field wizard.form.card_number %}
+                {% field wizard.form.cvv %}
+                <fieldset>
+                    <legend>
+                        Expiry Date
+                    </legend>
+                    {% field wizard.form.expire_month %}
+                    {% field wizard.form.expire_year %}
+                </fieldset>
+            </fieldset>
+            <div class="controls">
+                <button class="yui3-button" name="submit">Submit</button>
+            </div>
+        </form>
+    </div>
+{% endblock %}

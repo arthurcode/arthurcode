@@ -5,6 +5,56 @@ from django.http import HttpResponseRedirect
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from utils.forms import CanadaShippingForm, BillingForm
+import datetime
+import re
+
+
+def cc_expire_years():
+    current_year = datetime.datetime.now().year
+    years = range(current_year, current_year + 12)
+    return [(str(x), str(x)) for x in years]
+
+
+def cc_expire_months():
+    months = []
+    for month in range(1,13):
+        if len(str(month)) == 1:
+            numeric = '0' + str(month)
+        else:
+            numeric = str(month)
+        months.append((numeric, datetime.date(2009, month, 1).strftime('%B')))
+    return months
+
+
+CARD_TYPES = (
+    ('Mastercard', 'Mastercard'),
+    ('VISA', 'VISA'),
+    ('AMEX', 'AMEX'),
+    ('Discover', 'Discover'),)
+
+
+NON_NUMBERS = re.compile('\D')
+
+
+def strip_non_numbers(data):
+    return NON_NUMBERS.sub('', data)
+
+
+def cardLuhnChecksumIsValid(card_number):
+    """
+    Checks to make sure the card passes a luhn mod-10 checksum
+    """
+    checksum = 0
+    num_digits = len(card_number)
+    oddeven = num_digits & 1
+    for count in range(0, num_digits):
+        digit = int(card_number[count])
+        if not ((count & 1) ^ oddeven):
+            digit *= 2
+        if digit > 9:
+            digit -= 9
+        checksum += digit
+    return (checksum % 10) == 0
 
 
 class ContactInfoForm(forms.Form):
@@ -40,18 +90,35 @@ class ContactInfoForm(forms.Form):
         return cleaned_data
 
 
+class PaymentInfoForm(forms.Form):
+    card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Card Type')
+    card_number = forms.CharField(label='Card Number')
+    expire_month = forms.ChoiceField(choices=cc_expire_months(), label='Month')
+    expire_year = forms.ChoiceField(choices=cc_expire_years(), label='Year')
+    cvv = forms.CharField(label='cvv')
+
+    def clean_card_number(self):
+        cc_number = self.cleaned_data.get('card_number', None)
+        if cc_number:
+            cc_number = strip_non_numbers(cc_number)
+            if not cardLuhnChecksumIsValid(cc_number):
+                raise forms.ValidationError('The credit card number you entered is invalid.')
+        return cc_number
+
 class OrderWizard(SessionWizardView):
 
     FORMS = [
         ('contact', ContactInfoForm),
         ('shipping', CanadaShippingForm),
         ('billing', BillingForm),
+        ('payment', PaymentInfoForm)
     ]
 
     TEMPLATES = {
         'contact': 'contact_info.html',
         'shipping': 'shipping_form.html',
-        'billing': 'billing_form.html'
+        'billing': 'billing_form.html',
+        'payment': 'review_and_pay.html'
     }
 
     def get_template_names(self):
@@ -60,6 +127,5 @@ class OrderWizard(SessionWizardView):
     def done(self, form_list, **kwargs):
         # TODO CHANGE THIS OF COURSE!
         return HttpResponseRedirect(reverse('show_account'))
-
 
 
