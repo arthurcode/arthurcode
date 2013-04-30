@@ -134,6 +134,7 @@ INSTALLED_APPS = (
     'accounts',
     'orders',
     'checkout',
+    'django_countries',
 )
 
 # A sample logging configuration. The only tangible logging
