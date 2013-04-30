@@ -526,6 +526,6 @@ a.checkout-as-guest {
 }
 
 /* checkout styles */
-div.contact-info .required-text, div.shipping-info .required-text {
+div.contact-info .required-text, div.shipping-info .required-text, div.billing-info .required-text {
     display: None;
 }

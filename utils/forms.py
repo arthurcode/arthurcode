@@ -13,3 +13,14 @@ class CanadaShippingForm(forms.Form):
     province = CAProvinceField(widget=CAProvinceSelect)
     postal_code = CAPostalCodeField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Postal Code",
                                     help_text='(Example: T1B 2K9)')
+
+
+class BillingForm(forms.Form):
+    name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name",
+                           help_text="Full name as it appears on your credit card.")
+    line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1")
+    line2 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 2", required=False)
+    city = forms.CharField(max_length=AbstractAddress.CITY_LENGTH, label="City/Town")
+    region = forms.CharField(max_length=AbstractAddress.REGION_LENGTH, label="State/Province")
+    postal_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code")
+    country = forms.CharField(max_length=AbstractAddress.COUNTRY_LENGTH, label="Country")
