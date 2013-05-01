@@ -60,18 +60,15 @@ def get_continue_shopping_url(request):
     will return the root products url: /products/.  The referrer url will be used iff it extends from /products/.  Any
     get query parameters in the referrer url will be preserved if it is used.
     """
-    continue_shopping_url = reverse('catalogue_category', kwargs={'category_slug': ''})
+    default_continue_shopping_url = reverse('catalogue_category', kwargs={'category_slug': ''})
     last_url = request.META.get('HTTP_REFERER', None)  # (sic)
     # Ensure the user-originating redirection url is safe.
     if not is_safe_url(url=last_url, host=request.get_host()):
-        return continue_shopping_url
+        return default_continue_shopping_url
 
     if last_url:
         pr = urlparse(last_url)
         path = pr[2]
-        if path.startswith(continue_shopping_url):
-            continue_shopping_url = path
-            query = pr[4]
-            if query:
-                continue_shopping_url += "?%s" % query
-    return continue_shopping_url
+        if path.startswith(default_continue_shopping_url):
+            return last_url
+    return default_continue_shopping_url
