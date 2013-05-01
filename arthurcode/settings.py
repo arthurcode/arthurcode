@@ -135,6 +135,7 @@ INSTALLED_APPS = (
     'orders',
     'checkout',
     'django_countries',
+    'lazysignup',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -183,6 +184,11 @@ def add_global_settings_to_request(request):
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
 TEMPLATE_CONTEXT_PROCESSORS = TCP + ('django.core.context_processors.request',
                                      'arthurcode.settings.add_global_settings_to_request')
+
+AUTHENTICATION_BACKENDS = (
+  'django.contrib.auth.backends.ModelBackend',
+  'lazysignup.backends.LazySignupBackend',
+)
 
 
 COMMENTS_HIDE_REMOVED = False

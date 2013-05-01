@@ -5,6 +5,7 @@ import cart.urls
 from catalogue.views import home_view
 import checkout.urls
 import accounts.urls
+import lazysignup.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -30,5 +31,7 @@ urlpatterns = patterns('',
 
     url(r'^checkout/', include(checkout.urls)),
 
-    url(r'^accounts/', include(accounts.urls))
+    url(r'^accounts/', include(accounts.urls)),
+
+    url(r'^convert/', include(lazysignup.urls)),
 )
