@@ -24,15 +24,7 @@ def show_cart(request):
         if 'Remove' in postdata:
             cartutils.remove_from_cart(request)
         if 'Update' in postdata:
-            update_form = UpdateCartItemForm(request, postdata)
-            if update_form.is_valid():
-                cartutils.update_cart(request)
-            else:
-                bound_form = update_form
-                try:
-                    bound_form_id = int(postdata.get('item_id', None))
-                except ValueError:
-                    bound_form_id = -1
+            bound_form, bound_form_id = _process_update_cart_form(request, postdata)
         if 'Checkout' in postdata:
             # do a stock check before allowing the user to start the checkout process
             # TODO: do this stock check everytime in the view
@@ -86,3 +78,21 @@ def get_continue_shopping_url(request):
         if path.startswith(default_continue_shopping_url):
             return last_url
     return default_continue_shopping_url
+
+
+def _process_update_cart_form(request, postdata):
+    """
+    Checks if the update cart item form is valid, and if so calls cartutils.update_cart().  If there are errors
+    the method returns the bound form instance and the id of the cart-item it is associated with.
+    """
+    update_form = UpdateCartItemForm(request, postdata)
+    if update_form.is_valid():
+        cartutils.update_cart(request)
+        return None, None
+    else:
+        bound_form = update_form
+        try:
+            bound_form_id = int(postdata.get('item_id', None))
+        except ValueError:
+            bound_form_id = -1
+        return bound_form, bound_form_id
