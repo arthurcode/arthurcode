@@ -9,9 +9,16 @@ from django.http import HttpResponseRedirect
 
 
 def show_cart(request):
+    """
+    Show the cart contents on a GET request.  On POST, check if the user is trying to update/remove items from their
+    cart, or if they are trying to checkout.
+    """
+
     bound_form = None
     bound_form_id = None
     cart_items = None
+    checkout_errors = []
+
     if request.method == "POST":
         postdata = request.POST.copy()
         if 'Remove' in postdata:
@@ -30,7 +37,6 @@ def show_cart(request):
             # do a stock check before allowing the user to start the checkout process
             # TODO: do this stock check everytime in the view
             cart_items = cartutils.get_cart_items(request)
-            checkout_errors = []
             for cart_item in cart_items:
                 error = cart_item.check_stock()
                 if error:
@@ -51,7 +57,15 @@ def show_cart(request):
         setattr(cart_item, 'update_form', form)
     cart_subtotal = cartutils.cart_subtotal(request)
     continue_shopping_url = get_continue_shopping_url(request)
-    return render_to_response('cart.html', locals(), context_instance=RequestContext(request))
+
+    context = {
+        'cart_subtotal': cart_subtotal,
+        'continue_shopping_url': continue_shopping_url,
+        'cart_items': cart_items,
+        'checkout_errors': checkout_errors
+    }
+
+    return render_to_response('cart.html', context, context_instance=RequestContext(request))
 
 
 def get_continue_shopping_url(request):
