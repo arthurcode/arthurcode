@@ -8,29 +8,26 @@
     </div>
 
     <div class='payment-info'>
-        {% form_errors wizard.form %}
+        {% form_errors form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
-            {{ wizard.management_form }}
-            {{ wizard.form.management_form }}
             <fieldset>
                 <legend>
                     Payment Info
                 </legend>
-                {% field wizard.form.card_type %}
-                {% field wizard.form.card_number %}
-                {% field wizard.form.cvv %}
+                {% field form.card_type %}
+                {% field form.card_number %}
+                {% field form.cvv %}
                 <fieldset>
                     <legend>
                         Expiry Date
                     </legend>
-                    {% field wizard.form.expire_month %}
-                    {% field wizard.form.expire_year %}
+                    {% field form.expire_month %}
+                    {% field form.expire_year %}
                 </fieldset>
             </fieldset>
             <div class="controls">
                 <button class="yui3-button" name="submit">Submit</button>
-                {% include '_wizard_steps.html' %}
             </div>
         </form>
     </div>

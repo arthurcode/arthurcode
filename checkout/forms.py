@@ -1,10 +1,6 @@
 from django import forms
 from accounts.models import CustomerProfile
-from django.contrib.formtools.wizard.views import SessionWizardView
-from django.http import HttpResponseRedirect
-from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-from utils.forms import CanadaShippingForm, BillingForm
 import datetime
 import re
 
@@ -104,28 +100,5 @@ class PaymentInfoForm(forms.Form):
             if not cardLuhnChecksumIsValid(cc_number):
                 raise forms.ValidationError('The credit card number you entered is invalid.')
         return cc_number
-
-class OrderWizard(SessionWizardView):
-
-    FORMS = [
-        ('contact', ContactInfoForm),
-        ('shipping', CanadaShippingForm),
-        ('billing', BillingForm),
-        ('payment', PaymentInfoForm)
-    ]
-
-    TEMPLATES = {
-        'contact': 'contact_info.html',
-        'shipping': 'shipping_form.html',
-        'billing': 'billing_form.html',
-        'payment': 'review_and_pay.html'
-    }
-
-    def get_template_names(self):
-        return [OrderWizard.TEMPLATES[self.steps.current]]
-
-    def done(self, form_list, **kwargs):
-        # TODO CHANGE THIS OF COURSE!
-        return HttpResponseRedirect(reverse('show_account'))
 
 

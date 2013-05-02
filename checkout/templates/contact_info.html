@@ -3,25 +3,22 @@
 
 {% block forms %}
 <div class='contact-info'>
-    {% form_errors wizard.form %}
+    {% form_errors form %}
     <form method="post" action="" class="stacked">
         {% csrf_token %}
-        {{ wizard.management_form }}
-        {{ wizard.form.management_form }}
         <fieldset>
             <legend>
                 Contact Info
             </legend>
-            {% field wizard.form.first_name %}
-            {% field wizard.form.last_name %}
-            {% field wizard.form.email %}
-            {% field wizard.form.email2 %}
-            {% field wizard.form.contact_method %}
-            {% field wizard.form.phone %}
+            {% field form.first_name %}
+            {% field form.last_name %}
+            {% field form.email %}
+            {% field form.email2 %}
+            {% field form.contact_method %}
+            {% field form.phone %}
         </fieldset>
         <div class="controls">
             <button class="yui3-button" name="submit">Submit</button>
-            {% include '_wizard_steps.html' %}
         </div>
     </form>
 </div>
