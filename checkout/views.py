@@ -224,7 +224,8 @@ class Checkout:
         self.extra_context = {
             'steps': STEPS,
             'current_step': step,
-            'completed_step': highest_completed_step
+            'completed_step': highest_completed_step,
+            'current_step_name': STEPS[step-1][2]
         }
 
         clazz, url, _ = STEPS[step-1]
