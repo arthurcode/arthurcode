@@ -127,11 +127,19 @@ class Checkout:
         The user has visited the root checkout url.  Initialize a checkout data dictionary.
         """
         data = self._get_data()
+
         if not data:
+            self._save_data({})
+
+        if self.is_finished():
+            # start a new checkout process
             self._save_data({})
 
     def is_started(self):
         return self._get_data() != None
+
+    def is_finished(self):
+        return self.get_completed_step() == len(STEPS)
 
     def get_completed_step(self):
         """
@@ -154,9 +162,6 @@ class Checkout:
 
         if step_num > self.get_completed_step():
             self.save('step', step_num)
-            if step_num == len(STEPS):
-                # last step
-                self._clear_data()
 
     def process_step(self, step):
         if not self.is_started():
@@ -211,7 +216,7 @@ class Checkout:
         checkout process.
         """
         if Checkout.DATA_KEY in self.request.session:
-            self.request.session.delete(Checkout.DATA_KEY)
+            del self.request.session[Checkout.DATA_KEY]
 
 
 # defines the step ordering and the associated step url or the entire checkout process
