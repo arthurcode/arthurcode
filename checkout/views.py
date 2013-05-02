@@ -1,9 +1,7 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import render_to_response
-from checkout.forms import ContactInfoForm
-from django.template import RequestContext
+from lazysignup.decorators import allow_lazy_user
 
-@login_required()
+@allow_lazy_user
 def checkout(request):
     """
     Checkout a logged-in user.

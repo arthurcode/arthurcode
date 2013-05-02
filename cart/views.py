@@ -26,10 +26,19 @@ def show_cart(request):
             bound_form, bound_form_id = _process_update_cart_form(request, postdata)
         if 'Checkout' in postdata:
             # do a stock check before allowing the user to start the checkout process
-            # TODO: do this stock check everytime in the view
             checkout_errors = _get_cart_errors(request)
             if not checkout_errors:
-                return HttpResponseRedirect(reverse('checkout'))
+                checkout_url = reverse('checkout')
+                if request.user.is_authenticated():
+                    # if the user is logged in, or if a lazy user has been created, redirect them to the checkout
+                    # process right away
+                    redirect_url = checkout_url
+                else:
+                    # ask the user to either login or checkout as a guest.  If they choose to checkout as a guest
+                    # a lazy_user account will be created for them.
+                    login_url = reverse('login_or_create_account')
+                    redirect_url = "%s?next=%s" % (login_url, checkout_url)
+                return HttpResponseRedirect(redirect_url)
 
     cart_items = cartutils.get_cart_items(request)
 
