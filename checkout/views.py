@@ -227,14 +227,14 @@ class Checkout:
             'completed_step': highest_completed_step
         }
 
-        clazz, url = STEPS[step-1]
+        clazz, url, _ = STEPS[step-1]
         return clazz(self).process()
 
     def get_next_url(self):
         step = self.get_completed_step() or 0
         next_step = step + 1
         if next_step <= len(STEPS):
-            _, url = STEPS[next_step-1]
+            _, url, _ = STEPS[next_step-1]
             return url
         # the step is outside of our expected url range.  We must be finished the checkout process
         # for now just return a dummy url
@@ -270,10 +270,10 @@ class Checkout:
 
 
 # defines the step ordering and the associated step url or the entire checkout process
-STEPS = [(ContactInfoStep, reverse_lazy('contact')),
-         (ShippingInfoStep, reverse_lazy('shipping')),
-         (BillingInfoStep, reverse_lazy('billing')),
-         (ReviewStep, reverse_lazy('review'))]
+STEPS = [(ContactInfoStep, reverse_lazy('contact'), 'Contact Info'),
+         (ShippingInfoStep, reverse_lazy('shipping'), 'Shipping Info'),
+         (BillingInfoStep, reverse_lazy('billing'), 'Billing Info'),
+         (ReviewStep, reverse_lazy('review'), 'Review & Pay')]
 
 
 @allow_lazy_user

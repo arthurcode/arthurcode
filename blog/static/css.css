@@ -530,3 +530,22 @@ div.contact-info .required-text, div.shipping-info .required-text, div.billing-i
 div.payment-info .required-text {
     display: None;
 }
+
+div.checkout-nav a {
+    text-decoration: none;
+    font-size: 120%;
+    background-color: lightblue;
+    padding: 0.75em;
+    display: inline-block;
+    border-radius: 10%;
+    margin-right: 7%;
+}
+
+div.checkout-nav a.current {
+    border: 2px solid black;
+}
+
+div.form-content {
+    margin-top: 1em;
+    margin-bottom: 4em;
+}

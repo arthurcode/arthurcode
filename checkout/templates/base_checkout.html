@@ -2,6 +2,8 @@
 
 {% block body %}
     {% include "_checkout_navigation.html" %}
-    {% block forms %}{% endblock forms %}
+    <div class='form-content'>
+        {% block forms %}{% endblock forms %}
+    </div>
     {% include "_checkout_navigation.html" %}
 {% endblock %}
