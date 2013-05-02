@@ -1,0 +1,11 @@
+<div class='checkout-nav'>
+    {% for step in steps %}
+        {% if forloop.counter == current_step %}
+            <a class="current disabled">Step {{ forloop.counter }}</a>
+        {% elif forloop.counter0 > completed_step %}
+            <a class="disabled">Step {{ forloop.counter }}</a>
+        {% else %}
+            <a href="{{ step.1 }}">Step {{ forloop.counter }}</a>
+        {% endif %}
+    {% endfor %}
+</div>

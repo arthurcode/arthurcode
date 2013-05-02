@@ -48,7 +48,6 @@ class Step:
         return self._get_data().get(key, default)
 
 
-
 class ContactInfoStep(Step):
 
     data_key = 'contact'
@@ -64,6 +63,8 @@ class ContactInfoStep(Step):
         context = {
             'form': form
         }
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
         return render_to_response('contact_info.html', context, context_instance=RequestContext(self.request))
 
     def _post(self):
@@ -90,6 +91,8 @@ class ShippingInfoStep(Step):
         context = {
             'form': form
         }
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
         return render_to_response('shipping_form.html', context, context_instance=RequestContext(self.request))
 
     def _post(self):
@@ -116,6 +119,8 @@ class BillingInfoStep(Step):
         context = {
             'form': form
         }
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
         return render_to_response('billing_form.html', context, context_instance=RequestContext(self.request))
 
     def _post(self):
@@ -140,6 +145,8 @@ class ReviewStep(Step):
         context = {
             'form': form
         }
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
         return render_to_response('review_and_pay.html', context, context_instance=RequestContext(self.request))
 
     def _post(self):
@@ -154,6 +161,7 @@ class ReviewStep(Step):
 class Checkout:
 
     DATA_KEY = 'checkout'
+    extra_context = {}
 
     def __init__(self, request):
         self.request = request
@@ -212,6 +220,12 @@ class Checkout:
         if not cartutils.cart_distinct_item_count(self.request):
             # there are no items in the customer's cart!  Redirect them to the cart page
             return HttpResponseRedirect(reverse('show_cart'))
+
+        self.extra_context = {
+            'steps': STEPS,
+            'current_step': step,
+            'completed_step': highest_completed_step
+        }
 
         clazz, url = STEPS[step-1]
         return clazz(self).process()
