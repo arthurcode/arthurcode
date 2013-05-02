@@ -10,8 +10,13 @@ from cart import cartutils
 
 class Step:
 
+    data_key = 'step'
+
     def __init__(self, checkout):
         self.checkout = checkout
+        data = self._get_data()
+        if not data:
+            self.checkout.save(self.data_key, {})
 
     @property
     def request(self):
@@ -31,11 +36,28 @@ class Step:
     def _post(self):
         raise Exception("Subclasses must override the _post method.")
 
+    def _get_data(self):
+        return self.checkout.get(self.data_key, None)
+
+    def save(self, key, value):
+        data = self._get_data()
+        data[key] = value
+        self.request.session.modified = True
+
+    def get(self, key, default=None):
+        return self._get_data().get(key, default)
+
+
 
 class ContactInfoStep(Step):
 
+    data_key = 'contact'
+    form_key = 'contact_form'
+
     def _get(self):
-        form = ContactInfoForm()
+        # reload any saved data
+        saved_data = self.get(self.form_key, None)
+        form = ContactInfoForm(data=saved_data)
         return self._render_form(form)
 
     def _render_form(self, form):
@@ -48,12 +70,15 @@ class ContactInfoStep(Step):
         data = self.request.POST.copy()
         form = ContactInfoForm(data)
         if form.is_valid():
+            self.save(self.form_key, self.request.POST.copy())
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
 
 class ShippingInfoStep(Step):
+
+    data_key = 'shipping'
 
     def _get(self):
         form = CanadaShippingForm()
@@ -76,6 +101,8 @@ class ShippingInfoStep(Step):
 
 class BillingInfoStep(Step):
 
+    data_key = 'billing'
+
     def _get(self):
         form = BillingForm()
         return self._render_form(form)
@@ -96,6 +123,9 @@ class BillingInfoStep(Step):
 
 
 class ReviewStep(Step):
+
+    data_key = 'review'
+
     def _get(self):
         form = PaymentInfoForm()
         return self._render_form(form)
