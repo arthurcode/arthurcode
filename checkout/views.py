@@ -79,9 +79,11 @@ class ContactInfoStep(Step):
 class ShippingInfoStep(Step):
 
     data_key = 'shipping'
+    form_key = 'shipping_form'
 
     def _get(self):
-        form = CanadaShippingForm()
+        saved_data = self.get(self.form_key, None)
+        form = CanadaShippingForm(data=saved_data)
         return self._render_form(form)
 
     def _render_form(self, form):
@@ -94,6 +96,7 @@ class ShippingInfoStep(Step):
         data = self.request.POST.copy()
         form = CanadaShippingForm(data)
         if form.is_valid():
+            self.save(self.form_key, self.request.POST.copy())
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
@@ -102,9 +105,11 @@ class ShippingInfoStep(Step):
 class BillingInfoStep(Step):
 
     data_key = 'billing'
+    form_key = 'billing_form'
 
     def _get(self):
-        form = BillingForm()
+        saved_data = self.get(self.form_key, None)
+        form = BillingForm(data=saved_data)
         return self._render_form(form)
 
     def _render_form(self, form):
@@ -117,6 +122,7 @@ class BillingInfoStep(Step):
         data = self.request.POST.copy()
         form = BillingForm(data)
         if form.is_valid():
+            self.save(self.form_key, self.request.POST.copy())
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
