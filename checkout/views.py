@@ -5,6 +5,7 @@ from checkout.forms import ContactInfoForm, PaymentInfoForm
 from utils.forms import CanadaShippingForm, BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from cart import cartutils
 
 
 class Step:
@@ -129,6 +130,9 @@ class Checkout:
         if not data:
             self._save_data({})
 
+    def is_started(self):
+        return self._get_data() != None
+
     def get_completed_step(self):
         """
         Returns the highest step that this user has completed, or None if no steps have been completed.
@@ -150,11 +154,26 @@ class Checkout:
 
         if step_num > self.get_completed_step():
             self.save('step', step_num)
+            if step_num == len(STEPS):
+                # last step
+                self._clear_data()
 
     def process_step(self, step):
-        if step <= len(STEPS):
-            clazz, url = STEPS[step-1]
-            return clazz(self).process()
+        if not self.is_started():
+            # redirect user to the 'starting' checkout url
+            return HttpResponseRedirect(reverse('checkout'))
+
+        highest_completed_step = self.get_completed_step() or 0
+        if step > highest_completed_step + 1:
+            # the user is not allowed to skip ahead like this.  Redirect them to the proper step
+            return HttpResponseRedirect(self.get_next_url())
+
+        if not cartutils.cart_distinct_item_count(self.request):
+            # there are no items in the customer's cart!  Redirect them to the cart page
+            return HttpResponseRedirect(reverse('show_cart'))
+
+        clazz, url = STEPS[step-1]
+        return clazz(self).process()
 
     def get_next_url(self):
         step = self.get_completed_step() or 0
@@ -185,6 +204,14 @@ class Checkout:
         Returns the checkout data associated with this session.  Wil return None if there is no checkout data stored.
         """
         return self.request.session.get(Checkout.DATA_KEY, None)
+
+    def _clear_data(self):
+        """
+        Removes all data associated with this checkout session.  This should be called after a user completes the
+        checkout process.
+        """
+        if Checkout.DATA_KEY in self.request.session:
+            self.request.session.delete(Checkout.DATA_KEY)
 
 
 # defines the step ordering and the associated step url or the entire checkout process
