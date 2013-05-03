@@ -323,6 +323,10 @@ class Checkout:
             item.product.quantity = max(0, in_stock - item.quantity)
             item.product.save()
 
+        for item in cartutils.get_cart_items(self.request):
+            # empty the customer's cart
+            item.delete()
+
         return True
 
     def _build_order(self):
