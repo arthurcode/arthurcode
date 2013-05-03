@@ -93,6 +93,7 @@ class PaymentInfoForm(forms.Form):
     expire_year = forms.ChoiceField(choices=cc_expire_years(), label='Year')
     cvv = forms.CharField(label='CVV', max_length=4,
                           help_text="<a href='http://www.cvvnumber.com/cvv.html' target='_blank' style='font-size:11px'>What is my CVV code?</a>")  # most are 3 digits, american-express is 4 digits
+    total = forms.DecimalField(decimal_places=2, max_digits=9, widget=forms.HiddenInput, min_value=0.00)
 
     def clean_card_number(self):
         cc_number = self.cleaned_data.get('card_number', None)

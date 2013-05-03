@@ -6,7 +6,9 @@ from utils.forms import CanadaShippingForm, BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
-
+from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem
+import decimal
+from utils.util import round_cents
 
 class Step:
 
@@ -54,9 +56,7 @@ class ContactInfoStep(Step):
     form_key = 'contact_form'
 
     def _get(self):
-        # reload any saved data
-        saved_data = self.get(self.form_key, None)
-        form = ContactInfoForm(data=saved_data)
+        form = self.get_saved_form()
         return self._render_form(form)
 
     def _render_form(self, form):
@@ -75,6 +75,10 @@ class ContactInfoStep(Step):
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
+
+    def get_saved_form(self):
+        saved_data = self.get(self.form_key, None)
+        return ContactInfoForm(data=saved_data)
 
 
 class ShippingInfoStep(Step):
@@ -104,6 +108,10 @@ class ShippingInfoStep(Step):
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
+    def get_saved_form(self):
+        saved_data = self.get(self.form_key, None)
+        return CanadaShippingForm(data=saved_data)
+
 
 class BillingInfoStep(Step):
 
@@ -132,6 +140,10 @@ class BillingInfoStep(Step):
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
+    def get_saved_form(self):
+        saved_data = self.get(self.form_key, None)
+        return BillingForm(data=saved_data)
+
 
 class ReviewStep(Step):
 
@@ -142,8 +154,16 @@ class ReviewStep(Step):
         return self._render_form(form)
 
     def _render_form(self, form):
+        order, shipping_address, billing_address, order_items = self.checkout._build_order()
+        if not form.is_bound:
+            form.fields['total'].initial = order.total
+
         context = {
-            'form': form
+            'form': form,
+            'order': order,
+            'shipping_address': shipping_address,
+            'billing_address': billing_address,
+            'order_items': order_items,
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -153,8 +173,10 @@ class ReviewStep(Step):
         data = self.request.POST.copy()
         form = PaymentInfoForm(data)
         if form.is_valid():
-            self.checkout._mark_step_complete(self)
-            return HttpResponseRedirect(self.checkout.get_next_url())
+            success = self.checkout.process_order(form)
+            if success:
+                self.checkout._mark_step_complete(self)
+                return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
 
@@ -268,6 +290,81 @@ class Checkout:
         """
         if Checkout.DATA_KEY in self.request.session:
             del self.request.session[Checkout.DATA_KEY]
+
+    def process_order(self, payment_form):
+        """
+        Takes the following steps:
+        1.  Locks the products in the cart, read-only access only (TBD, I have no idea how to do this ATM)
+        2.  Creates an Order instance from the form data in this checkout process, and validates it (it should checkout
+            ok, if it doesn't there was a bug in my forms.
+        3.  Authorize credit-card, payment information  (the payment form will have a hidden containing the amount to
+            put on the card.  This way the number the user sees and the number I charge are guaranteed to be the same.
+        4.  Submit the order (save it)
+        5.  Decrement product stock
+        6.  Unlock the products that were locked in step 1
+        7.  Redirect the user to a receipt page
+        """
+        order, shipping_address, billing_address, order_items = self._build_order()
+        if not payment_form.is_valid():
+            return False
+
+        order.transaction_id = 00000  # TODO: FIX THIS
+        order.payment_status = Order.FUNDS_AUTHORIZED
+        order.save()
+        shipping_address.order = order
+        shipping_address.save()
+        billing_address.order = order
+        billing_address.save()
+
+        for item in order_items:
+            item.order = order
+            item.save()
+            in_stock = item.product.quantity
+            item.product.quantity = max(0, in_stock - item.quantity)
+            item.product.save()
+
+        return True
+
+    def _build_order(self):
+        order = Order()
+        shipping_address = None
+        billing_address = None
+
+        # populate the contact information
+        contact_form = ContactInfoStep(self).get_saved_form()
+        if contact_form.is_valid():
+            cd = contact_form.cleaned_data
+            order.first_name = cd['first_name']
+            order.last_name = cd['last_name']
+            order.email = cd['email']
+            order.contact_method = cd['contact_method']
+            order.phone = cd['phone']
+
+        # populate the shipping information
+        order.shipping_charge = decimal.Decimal('0.00')
+        shipping_form = ShippingInfoStep(self).get_saved_form()
+        if shipping_form.is_valid():
+            shipping_address = shipping_form.save(OrderShippingAddress, commit=False)
+
+        # populate the billing information
+        billing_form = BillingInfoStep(self).get_saved_form()
+        if billing_form.is_valid():
+            billing_address = billing_form.save(OrderBillingAddress, commit=False)
+
+        order.merchandise_total = round_cents(cartutils.cart_subtotal(self.request))
+        order.sales_tax = round_cents((order.merchandise_total + order.shipping_charge) * decimal.Decimal('0.05'))
+        return order, shipping_address, billing_address, self.get_order_items()
+
+    def get_order_items(self):
+        order_items = []
+        for item in cartutils.get_cart_items(self.request):
+            order_item = OrderItem()
+            order_item.product = item.product
+            order_item.quantity = item.quantity
+            order_item.price = item.price
+            # don't save them yet
+            order_items.append(order_item)
+        return order_items
 
 
 # defines the step ordering and the associated step url or the entire checkout process

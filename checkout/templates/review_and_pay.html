@@ -11,6 +11,8 @@
         {% form_errors form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
+            {% comment %}Hidden form fields{% endcomment %}
+            {{ form.total }}
             <fieldset>
                 <legend>
                     Payment Info

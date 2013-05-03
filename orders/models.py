@@ -3,9 +3,9 @@ from catalogue.models import Product
 from django.core.validators import MinValueValidator
 from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
-import decimal
 from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from utils.util import round_cents
 
 
 class Order(models.Model):
@@ -54,23 +54,16 @@ class Order(models.Model):
                                           validators=[MinValueValidator(0.0)])
     sales_tax = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)], default=0.00)
 
-    @property
-    def merchandise_total(self):
-        """
-        The total cost of all products in this order, not including tax or shipping.
-        """
-        total = decimal.Decimal('0.00')
-        for item in self.orderitem_set.all():
-            total += item.total
-        return total
+    merchandise_total = models.DecimalField(max_digits=9, decimal_places=2, default=0.00,
+                                            validators=[MinValueValidator(0.0)])
 
     @property
     def total(self):
         """
         The total amount that will be charged to the customer, including tax and shipping changes.  Apparently
-        shipping and handling charges are subject to sales tax!
+        shipping and handling charges are subject to sales tax!  Returns a number rounded to two decimal places.
         """
-        return self.merchandise_total + self.shipping_charge + self.sales_tax
+        return round_cents(self.merchandise_total + self.shipping_charge + self.sales_tax)
 
     def get_shipping_address(self):
         try:
