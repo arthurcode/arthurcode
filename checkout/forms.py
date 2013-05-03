@@ -102,4 +102,16 @@ class PaymentInfoForm(forms.Form):
                 raise forms.ValidationError('The credit card number you entered is invalid.')
         return cc_number
 
+    def clean_cvv(self):
+        error = u'Please enter a valid CVV code.'
+        cvv = self.cleaned_data.get('cvv', None)
+        if cvv:
+            try:
+                code = int(cvv)
+                if code < 0:
+                    raise ValidationError(error)
+            except ValueError:
+                raise ValidationError(error)
+        return cvv
+
 
