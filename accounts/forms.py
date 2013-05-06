@@ -40,14 +40,14 @@ class CustomerCreationForm(UserCreationForm):
             except ValidationError, e:
                 if unicode(self.error_messages['duplicate_username']) in unicode(e):
                     # the generated username is not unique
-                    try:
-                        User.objects.get(email=email)
+                    same_email_count = User.objects.filter(email=email).count()
+                    if same_email_count > 0:
                         self.errors['email'] = self.error_class([u'A user with this email address already exists.'])
-                    except User.DoesNotExist:
+                    else:
                         # hmmm, this must be a hash algorithm collision
                         self.errors['email'] = self.error_class([u'Sorry, we were unable to generate a unique username from '
-                                                                 u'this email address. You will need to register with'
-                                                                 u' a different email address.'])
+                                                                u'this email address. You will need to register with'
+                                                                u' a different email address.'])
                 raise e
         else:
             return super(CustomerCreationForm, self).clean_username()
