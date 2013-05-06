@@ -85,6 +85,17 @@ class ContactInfoForm(forms.Form):
 
         return cleaned_data
 
+    def humanized_contact_method(self):
+        """
+        Return the human-readable contact-method string.  This must be called after the form has been validated otherwise
+        an exception will be thrown.
+        """
+        my_method = self.cleaned_data['contact_method']
+        for method in CustomerProfile.CONTACT_METHOD:
+            if method[0] == int(my_method):
+                return method[1]
+        return "Unknown"
+
 
 class PaymentInfoForm(forms.Form):
     card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Card Type')

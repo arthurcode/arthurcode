@@ -8,7 +8,7 @@
         <li>{{ form.first_name.value }} {{ form.last_name.value }}</li>
         <li>Email: {{ form.email.value }}
         <li>Phone: {% firstof form.phone.value '(Not on file)' %}</li>
-        <li>Preferred Contact Method: {{ form.contact_method.value }}</li>
+        <li>Preferred Contact Method: {{ form.humanized_contact_method }}</li>
     </ul>
 
     <form method="post" action="" class="stacked">
