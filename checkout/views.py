@@ -1,4 +1,5 @@
 from lazysignup.decorators import allow_lazy_user
+from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from checkout.forms import ContactInfoForm, PaymentInfoForm
@@ -9,6 +10,9 @@ from cart import cartutils
 from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem
 import decimal
 from utils.util import round_cents
+from accounts.models import CustomerProfile
+from utils.validators import is_blank
+
 
 class Step:
 
@@ -57,15 +61,26 @@ class ContactInfoStep(Step):
 
     def _get(self):
         form = self.get_saved_form()
+        if not form.is_bound:
+            # there was no saved data, this is the first time the user is seeing this form.
+            data = self.get_existing_contact_info()
+            test_form = ContactInfoForm(data=data)
+            if test_form.is_valid():
+                # we have all of the information we need, we just need the user to validate it.
+                return self._render_form(test_form, template='verify_contact_info.html')
+            else:
+                # we are missing some or all of the necessary data.  Render the Guest form, pre-filled with the data
+                # values we already have.
+                form = ContactInfoForm(initial=data)
         return self._render_form(form)
 
-    def _render_form(self, form):
+    def _render_form(self, form, template='contact_info.html'):
         context = {
             'form': form
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
-        return render_to_response('contact_info.html', context, context_instance=RequestContext(self.request))
+        return render_to_response(template, context, context_instance=RequestContext(self.request))
 
     def _post(self):
         data = self.request.POST.copy()
@@ -73,12 +88,52 @@ class ContactInfoStep(Step):
         if form.is_valid():
             self.save(self.form_key, self.request.POST.copy())
             self.checkout._mark_step_complete(self)
+            self._save_form_data_to_profile(form)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
     def get_saved_form(self):
         saved_data = self.get(self.form_key, None)
         return ContactInfoForm(data=saved_data)
+
+    def get_existing_contact_info(self):
+        """
+        Gets any existing contact info data that is stored in either the User object or the Customer Profile object.
+        """
+        data = {}
+        user = self.checkout.get_user()
+        if user:
+            profile = self.checkout.get_customer_profile()
+            self._add_to_data('first_name', user.first_name, data)
+            self._add_to_data('last_name', user.last_name, data)
+            self._add_to_data('email', user.email, data)
+            self._add_to_data('email2', user.email, data)
+            if profile:
+                self._add_to_data('phone', profile.phone_number, data)
+                self._add_to_data('contact_method', profile.contact_method, data)
+        return data
+
+    def _add_to_data(self, key, value, data):
+        if not is_blank(value):
+            data[key] = value
+
+    def _save_form_data_to_profile(self, form):
+        user = self.checkout.get_user()
+        if not user:
+            return
+        cd = form.cleaned_data
+        user.email = cd['email']
+        user.first_name = cd['first_name']
+        user.last_name = cd['last_name']
+        user.save()
+
+        profile = self.checkout.get_customer_profile()
+        if not profile:
+            profile = CustomerProfile(user=user)
+        profile.contact_method = cd['contact_method']
+        if 'phone' in cd:
+            profile.phone_number = cd['phone']
+        profile.save()
 
 
 class ShippingInfoStep(Step):
@@ -203,6 +258,12 @@ class Checkout:
 
     def is_started(self):
         return self._get_data() != None
+
+    def cancel(self):
+        """
+        Cancels any in-progress checkout steps
+        """
+        self._clear_data()
 
     def is_finished(self):
         return self.get_completed_step() == len(STEPS)
@@ -370,6 +431,26 @@ class Checkout:
             order_items.append(order_item)
         return order_items
 
+    def get_user(self):
+        """
+        Returns the logged-in user associated with this request.  Will return None if the user is not authenticated, or
+        if they are lazy
+        """
+        if self.request.user.is_authenticated() and not is_lazy_user(self.request.user):
+            return self.request.user
+        return None
+
+    def get_customer_profile(self):
+        """
+        Returns the customer profile associated with this user, if one exists.  Otherwise returns None.
+        """
+        user = self.get_user()
+        if user:
+            profiles = CustomerProfile.objects.filter(user=self.request.user)
+            if profiles.count() > 0:
+                return profiles[0]
+        return None
+
 
 # defines the step ordering and the associated step url or the entire checkout process
 STEPS = [(ContactInfoStep, reverse_lazy('contact'), 'Contact Info'),
@@ -420,3 +501,12 @@ def review(request):
     """
     co = Checkout(request)
     return co.process_step(4)
+
+
+def cancel(request):
+    """
+    Cancel this checkout.
+    """
+    co = Checkout(request)
+    co.cancel()
+    return HttpResponseRedirect(reverse('show_cart'))

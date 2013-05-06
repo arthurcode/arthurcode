@@ -4,6 +4,7 @@
 
 {% block body %}
     {% include "_checkout_navigation.html" %}
+    <a href="{% url cancel %}">Cancel</a>
     <div class='form-content'>
         {% block forms %}{% endblock forms %}
     </div>

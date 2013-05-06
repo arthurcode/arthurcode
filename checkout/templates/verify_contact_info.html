@@ -1,0 +1,72 @@
+{% extends 'base_checkout.html' %}
+{% load form_tags %}
+
+{% block forms %}
+<div class='verify-contact-info'>
+    <h2>Verify Contact Info</h2>
+    <ul>
+        <li>{{ form.first_name.value }} {{ form.last_name.value }}</li>
+        <li>Email: {{ form.email.value }}
+        <li>Phone: {% firstof form.phone.value '(Not on file)' %}</li>
+        <li>Preferred Contact Method: {{ form.contact_method.value }}</li>
+    </ul>
+
+    <form method="post" action="" class="stacked">
+        {% csrf_token %}
+        <fieldset>
+            {% field form.first_name %}
+            {% field form.last_name %}
+            {% field form.email %}
+            {% field form.email2 %}
+            {% field form.contact_method %}
+            {% field form.phone %}
+        </fieldset>
+        <div class="controls">
+            <button class="yui3-button" name="submit">OK</button>
+        </div>
+    </form>
+</div>
+    {% with "Edit Contact Info" as legend %}
+        {% include '_contact_info_form.html' %}
+    {% endwith %}
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', function(Y) {
+            // initially hide the edit-contact into form
+            Y.all('div.contact-info').each(function(f) {
+                f.addClass('hidden');
+            });
+
+            // add an extra button to each form, used to toggle the visibility of each form
+            Y.all('div.verify-contact-info form .controls').each(function(f) {
+                f.prepend("<button type='button' class='script edit yui3-button'>Edit</button>");
+            });
+
+            Y.all('div.contact-info form .controls').each(function(f) {
+                f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
+            });
+
+            // toggle form visibility when our custom script buttons are pressed
+            Y.delegate('click', function(e) {
+                var edit_div = Y.one('div.contact-info');
+                var verify_div = Y.one('div.verify-contact-info');
+                if (e.currentTarget.hasClass('edit')) {
+                    verify_div.all('button').each(function(f) {
+                        f.setAttribute("disabled", "");
+                    });
+                    edit_div.removeClass('hidden');
+                } else {
+                    // must be the cancel button
+                    edit_div.addClass('hidden');
+                    verify_div.all('button').each(function(f) {
+                        f.removeAttribute("disabled");
+                    });
+                }
+            }, document, 'button.script');
+        });
+    </script>
+
+{% endblock %}

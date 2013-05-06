@@ -531,7 +531,7 @@ a.checkout-as-guest {
 
 /* checkout styles */
 div.contact-info .required-text, div.shipping-info .required-text, div.billing-info .required-text,
-div.payment-info .required-text {
+div.payment-info .required-text, div.verify-contact-info .required-text {
     display: None;
 }
 
@@ -556,6 +556,12 @@ div.checkout-nav a.current {
 }
 
 div.form-content {
+    float: left;
+    clear: both;
+}
+
+div.form-content form {
+    float: left;
     clear: both;
 }
 
@@ -563,4 +569,12 @@ div.checkout-nav img {
     display: inline-block;
     float: left;
     margin-right: 6px;
+}
+
+div.verify-contact-info {
+    margin-bottom: 4em;
+}
+
+div.verify-contact-info form .field {
+    display: None;
 }
