@@ -97,11 +97,13 @@ class ContactInfoForm(forms.Form):
 
 
 class PaymentInfoForm(forms.Form):
+    first_name = forms.CharField(max_length=25, label="Cardholder's First Name")
+    last_name = forms.CharField(max_length=25, label="Cardholder's Last Name")
     card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Card Type')
     card_number = forms.CharField(label='Card Number')
     expire_month = forms.ChoiceField(choices=cc_expire_months(), label='Month')
     expire_year = forms.ChoiceField(choices=cc_expire_years(), label='Year')
-    cvv = forms.CharField(label='CVV', max_length=4,
+    cvv = forms.CharField(label='CVV', max_length=3,
                           help_text="<a href='http://www.cvvnumber.com/cvv.html' target='_blank' style='font-size:11px'>What is my CVV code?</a>")  # most are 3 digits, american-express is 4 digits
     total = forms.DecimalField(decimal_places=2, max_digits=9, widget=forms.HiddenInput, min_value=0.00)
 
@@ -124,6 +126,7 @@ class PaymentInfoForm(forms.Form):
             except ValueError:
                 raise ValidationError(error)
         return cvv
+
 
 
 class ChooseAddressForm(forms.Form):
