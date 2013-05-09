@@ -16,15 +16,15 @@ COUNTRY_CHOICES = [
 
 class AddressForm(forms.Form):
     """
-    The DB requires that the name, address line1, and country fields be non-null.
+    The DB requires that the address line1, city, region and country fields not be non-null.
     """
-    name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name")
+    name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name", required=False)
     phone = forms.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, label="Phone", required=False)
     line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1")
     line2 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 2", required=False)
     city = forms.CharField(max_length=AbstractAddress.CITY_LENGTH, label="City/Town")
     region = forms.CharField(max_length=AbstractAddress.REGION_LENGTH, label="State/Province")
-    post_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code")
+    post_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code", required=False)
     country = forms.ChoiceField(choices=COUNTRY_CHOICES, label="Country")
 
     def __init__(self, *args, **kwargs):
@@ -56,6 +56,7 @@ class AddressForm(forms.Form):
 class CanadaShippingForm(AddressForm):
 
     def customize_name(self, field):
+        field.required = True
         field.label = "Recipient's Full Name"
 
     def customize_phone(self, field):
@@ -66,8 +67,9 @@ class CanadaShippingForm(AddressForm):
         self.fields['region'] = CAProvinceField(widget=CAProvinceSelect, label="Province")
 
     def customize_post_code(self, field):
+
         self.fields['post_code'] = CAPostalCodeField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Postal Code",
-                                     help_text='(Example: T1B 2K9)')
+                                     help_text='(Example: T1B 2K9)', required=True)
 
     def customize_country(self, field):
         field.widget = forms.HiddenInput()
@@ -92,4 +94,7 @@ class CanadaShippingForm(AddressForm):
 
 class BillingForm(AddressForm):
     def customize_name(self, field):
-        field.help_text = "Full name as it appears on your credit card."
+        field.required = True
+
+    def customize_post_code(self, field):
+        field.required = True

@@ -43,14 +43,14 @@ class Migration(SchemaMigration):
         # Adding model 'OrderBillingAddress'
         db.create_table('orders_orderbillingaddress', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('line1', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('line2', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('country', self.gf('django_countries.fields.CountryField')(max_length=2)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='billing_address', unique=True, to=orm['orders.Order'])),
         ))
         db.send_create_signal('orders', ['OrderBillingAddress'])
@@ -58,14 +58,14 @@ class Migration(SchemaMigration):
         # Adding model 'OrderShippingAddress'
         db.create_table('orders_ordershippingaddress', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
-            ('line1', self.gf('django.db.models.fields.CharField')(max_length=200)),
-            ('line2', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('city', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
+            ('line1', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('line2', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('city', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('region', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('country', self.gf('django_countries.fields.CountryField')(max_length=2)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('order', self.gf('django.db.models.fields.related.OneToOneField')(related_name='shipping_address', unique=True, to=orm['orders.Order'])),
         ))
         db.send_create_signal('orders', ['OrderShippingAddress'])
@@ -91,7 +91,7 @@ class Migration(SchemaMigration):
             'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },
         'auth.group': {
@@ -186,16 +186,16 @@ class Migration(SchemaMigration):
         },
         'orders.orderbillingaddress': {
             'Meta': {'object_name': 'OrderBillingAddress'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'line1': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'line2': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'order': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'billing_address'", 'unique': 'True', 'to': "orm['orders.Order']"}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
+            'region': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
         'orders.orderitem': {
             'Meta': {'object_name': 'OrderItem'},
@@ -207,16 +207,16 @@ class Migration(SchemaMigration):
         },
         'orders.ordershippingaddress': {
             'Meta': {'object_name': 'OrderShippingAddress'},
-            'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
-            'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'line1': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'line2': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'order': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'shipping_address'", 'unique': 'True', 'to': "orm['orders.Order']"}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
+            'region': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         }
     }
 
