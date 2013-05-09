@@ -3,6 +3,7 @@ from models import AbstractAddress
 from django.contrib.localflavor.ca.forms import CAPhoneNumberField, CAPostalCodeField, CAProvinceSelect, CAProvinceField
 from django_countries import countries
 from utils.models import AbstractAddress
+from django.core.exceptions import ValidationError
 
 
 # display as an optgroup with commonly selected countries at the top
@@ -40,7 +41,7 @@ class AddressForm(forms.Form):
             raise Exception("The AddressForm meta class is not a subclass of " + AbstractAddress.__class__.__name___)
         address = clazz()
         address.name = cd['name']
-        address.phone = cd['phone']
+        address.phone_number = cd['phone']
         address.line1 = cd['line1']
         address.line2 = cd['line2']
         address.city = cd['city']
@@ -69,9 +70,19 @@ class CanadaShippingForm(AddressForm):
                                      help_text='(Example: T1B 2K9)')
 
     def customize_country(self, field):
-        field.required = False
+        field.widget = forms.HiddenInput()
+        field.initial = "CA"
+
+    def clean_country(self):
+        country = self.cleaned_data.get('country', None)
+        if country and not country == "CA":
+            raise ValidationError("Sorry, we can only ship to Canadian addresses.")
 
     def save(self, clazz, commit=True):
+        # it's a little unreliable to use cleaned_data to capture the value of the 'country' field.  Since it's hidden
+        # and has an initial value, it will not show up in the changed_data dict and thus won't have an entry in
+        # cleaned data.  If we're building an address from this form, and the form had been validated then we can assume
+        # that country is 'Canada'.
         address = super(CanadaShippingForm, self).save(clazz, commit=False)
         address.country = "CA"
         if commit:

@@ -2,7 +2,7 @@ from lazysignup.decorators import allow_lazy_user
 from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from checkout.forms import ContactInfoForm, PaymentInfoForm
+from checkout.forms import ContactInfoForm, PaymentInfoForm, ChooseAddressForm
 from utils.forms import CanadaShippingForm, BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -10,7 +10,7 @@ from cart import cartutils
 from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem
 import decimal
 from utils.util import round_cents
-from accounts.models import CustomerProfile
+from accounts.models import CustomerProfile, CustomerShippingAddress
 from utils.validators import is_blank
 
 
@@ -62,7 +62,7 @@ class ContactInfoStep(Step):
     def _get(self):
         form = self.get_saved_form()
         if not form.is_bound:
-            # there was no saved data, this is the first time the user is seeing this form.
+            # there was no saved data, this is the first time the user is seeing this form in this checkout.
             data = self.get_existing_contact_info()
             test_form = ContactInfoForm(data=data)
             if test_form.is_valid():
@@ -140,32 +140,105 @@ class ShippingInfoStep(Step):
 
     data_key = 'shipping'
     form_key = 'shipping_form'
+    using_address_key = 'using_address'
 
     def _get(self):
         saved_data = self.get(self.form_key, None)
         form = CanadaShippingForm(data=saved_data)
-        return self._render_form(form)
+        return self._render_form(form, self.get_customer_addresses())
 
-    def _render_form(self, form):
+    def _render_form(self, form, addresses):
+        using_address = None
+        using_address_id = self.get(self.using_address_key, None)
+        for address in addresses:
+            # don't overwrite an existing bound form
+            if not hasattr(address, 'form'):
+                setattr(address, 'form', ChooseAddressForm(address, CanadaShippingForm))
+            if address.id == using_address_id:
+                using_address = address
+
+        if not using_address and addresses.count() == 1:
+            using_address = addresses[0]
+
         context = {
-            'form': form
+            'form': form,
+            'addresses': addresses,
+            'using_address': using_address
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
         return render_to_response('shipping_form.html', context, context_instance=RequestContext(self.request))
 
     def _post(self):
+        form = CanadaShippingForm()
         data = self.request.POST.copy()
-        form = CanadaShippingForm(data)
-        if form.is_valid():
-            self.save(self.form_key, self.request.POST.copy())
-            self.checkout._mark_step_complete(self)
-            return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form)
+        addresses = None
 
-    def get_saved_form(self):
+        if 'submit' in data:
+            form = CanadaShippingForm(data)
+            if form.is_valid():
+                # the user is adding a new shipping address
+                self.save(self.form_key, self.request.POST.copy())
+                self.save(self.using_address_key, None)
+                self.checkout._mark_step_complete(self)
+                return HttpResponseRedirect(self.checkout.get_next_url())
+        else:
+            addresses = self.get_customer_addresses()
+            address_id = data.get('address_id', None)
+            for address in addresses:
+                if address_id and address.id == int(address_id):
+                    if 'delete' in data:
+                        address.delete()
+                        return HttpResponseRedirect(self.checkout.get_step_url(self))
+                    else:
+                        form = ChooseAddressForm(address, CanadaShippingForm, data=data)
+                        if form.is_valid():
+                            self.save(self.using_address_key, address.id)
+                            self.save(self.form_key, None)
+                            self.checkout._mark_step_complete(self)
+                            return HttpResponseRedirect(self.checkout.get_next_url())
+                        setattr(address, 'form', form)
+
+        if addresses is None:
+            addresses = self.get_customer_addresses()
+        return self._render_form(form, addresses)
+
+    def get_saved_form(self, verify=False):
         saved_data = self.get(self.form_key, None)
-        return CanadaShippingForm(data=saved_data)
+        form = CanadaShippingForm(data=saved_data)
+        if verify:
+            if not form.is_valid():
+                raise Exception("Unexpected error in saved shipping form: " + str(form))
+        return form
+
+    def get_customer_addresses(self):
+        """
+        Returns the shipping addresses associated with this user's profile, in order of most recently used.
+        """
+        profile = self.checkout.get_customer_profile()
+        if not profile:
+            return []
+        return profile.shipping_addresses.order_by('-last_used')
+
+    def get_address(self):
+        """
+        Returns the shipping address chosen during this step.  This method should only be called after the step has been
+        completed successfully.  Returns an instance of CustomerShippingAddress.  If this is a new address, or if the
+        requesting user does not have an associated customer profile, the 'customer' field of the address will be None.
+        """
+        address_id = self.get(self.using_address_key, None)
+        if not address_id:
+            return self.get_saved_form(verify=True).save(CustomerShippingAddress, commit=False)
+        return CustomerShippingAddress.objects.get(id=address_id)
+
+    def save_address_to_profile(self):
+        address_id = self.get(self.using_address_key, None)
+        if not address_id:
+            profile = self.checkout.get_customer_profile()
+            if profile:
+                address = self.get_saved_form(verify=True).save(CustomerShippingAddress, commit=False)
+                address.customer = profile
+                address.save()
 
 
 class BillingInfoStep(Step):
@@ -265,6 +338,17 @@ class Checkout:
         """
         self._clear_data()
 
+    def finish(self):
+        """
+        Should be called after the checkout successfully completes.
+        """
+        for item in cartutils.get_cart_items(self.request):
+            # empty the customer's cart
+            item.delete()
+
+        # save the shipping and billing addresses, if necessary
+        ShippingInfoStep(self).save_address_to_profile()
+
     def is_finished(self):
         return self.get_completed_step() == len(STEPS)
 
@@ -283,12 +367,19 @@ class Checkout:
         # assume we were given an integer
         return int(step)
 
+    def get_step_url(self, step):
+        num = self.get_step_number(step)
+        return STEPS[num-1][1]
+
     def _mark_step_complete(self, step):
         # only store the highest completed step
         step_num = self.get_step_number(step)
 
         if step_num > self.get_completed_step():
             self.save('step', step_num)
+        if self.is_finished():
+            # call the cleanup routine
+            self.finish()
 
     def process_step(self, step):
         if not self.is_started():
@@ -383,11 +474,6 @@ class Checkout:
             in_stock = item.product.quantity
             item.product.quantity = max(0, in_stock - item.quantity)
             item.product.save()
-
-        for item in cartutils.get_cart_items(self.request):
-            # empty the customer's cart
-            item.delete()
-
         return True
 
     def _build_order(self):
@@ -407,9 +493,8 @@ class Checkout:
 
         # populate the shipping information
         order.shipping_charge = decimal.Decimal('0.00')
-        shipping_form = ShippingInfoStep(self).get_saved_form()
-        if shipping_form.is_valid():
-            shipping_address = shipping_form.save(OrderShippingAddress, commit=False)
+        customer_shipping_address = ShippingInfoStep(self).get_address()
+        shipping_address = customer_shipping_address.as_address(OrderShippingAddress)
 
         # populate the billing information
         billing_form = BillingInfoStep(self).get_saved_form()

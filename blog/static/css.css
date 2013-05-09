@@ -530,7 +530,7 @@ a.checkout-as-guest {
 }
 
 /* checkout styles */
-div.contact-info .required-text, div.shipping-info .required-text, div.billing-info .required-text,
+div.contact-info .required-text, .shipping-info .required-text, div.billing-info .required-text,
 div.payment-info .required-text, div.verify-contact-info .required-text {
     display: None;
 }
@@ -577,4 +577,39 @@ div.verify-contact-info {
 
 div.verify-contact-info form .field {
     display: None;
+}
+
+div.chosen-address {
+    margin-bottom: 4em;
+}
+
+.address span {
+    display: block;
+    line-height: 100%;
+}
+
+.address span.region, .address span.city {
+    display: inline-block;
+}
+
+div.choose-address {
+    float: left;
+    margin-bottom: 2em;
+}
+
+div.choose-address li, div.chosen-address div.wrapper {
+    float: left;
+    margin-right: 2em;
+    border: 4px solid steelblue;
+    padding: 1em;
+    border-radius: 10%;
+}
+
+div.choose-address h2, div.chosen-address h2 {
+    margin-bottom: 1em;
+}
+
+div.choose-address .address {
+    height: 7em;
+    margin: 0 auto;
 }

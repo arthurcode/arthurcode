@@ -3,6 +3,7 @@ from accounts.models import CustomerProfile
 from django.core.exceptions import ValidationError
 import datetime
 import re
+from utils.forms import CanadaShippingForm
 
 
 def cc_expire_years():
@@ -127,3 +128,31 @@ class PaymentInfoForm(forms.Form):
         return cvv
 
 
+class ChooseAddressForm(forms.Form):
+    """
+    An address that can be chosen and validated against an existing AddressForm class.
+    """
+    address_id = forms.IntegerField(widget=forms.HiddenInput)
+
+    def __init__(self, address, form_clazz, *args, **kwargs):
+        super(ChooseAddressForm, self).__init__(*args, **kwargs)
+        self.address = address
+        self.form_clazz = form_clazz
+        self.fields['address_id'].initial = address.id
+
+    def clean(self):
+        data = {
+            'name': self.address.name,
+            'phone': self.address.phone_number,
+            'line1': self.address.line1,
+            'line2': self.address.line2,
+            'city': self.address.city,
+            'region': self.address.region,
+            'post_code': self.address.post_code,
+            'country': self.address.country
+        }
+        form = self.form_clazz(data=data)
+        if form.is_valid():
+            return
+        #TODO: transfer the errors from form to self
+        self._errors = form._errors

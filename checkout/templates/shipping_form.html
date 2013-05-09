@@ -2,25 +2,116 @@
 {% load form_tags %}
 
 {% block forms %}
-    <div class='shipping-info'>
-        {% form_errors form %}
-        <form method="post" action="" class="stacked">
-            {% csrf_token %}
-            <fieldset>
-                <legend>
-                    Shipping Address (Canada Only)
-                </legend>
-                {% field form.name %}
-                {% field form.phone %}
-                {% field form.line1 %}
-                {% field form.line2 %}
-                {% field form.city %}
-                {% field form.region %}
-                {% field form.post_code %}
-            </fieldset>
-            <div class="controls">
-                <button class="yui3-button" name="submit">Save and Continue</button>
+    {% if addresses %}
+        {% if using_address %}
+            {% with using_address as address %}
+                <div class="chosen-address{% if form.is_bound %} hide-initially{% endif %}">
+                    <h2>Confirm Shipping Address</h2>
+                    <div class="wrapper">
+                        {% include "_address.html" %}
+                        <form method="post" action="" class="stacked">
+                            {% csrf_token %}
+                            {{ address.form.address_id }}
+                            <div class="controls">
+                                <button type="submit" name="use" class="yui3-button">OK</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            {% endwith %}
+        {% endif %}
+
+        {% if addresses|length >= 1 %}
+            <div class="choose-address{% if using_address and not form.is_bound %} hide-initially{% endif %}">
+                <ul>
+                    <h2>Choose A Saved Address</h2>
+                    {% for address in addresses %}
+                        <li>
+                            {% form_errors address.form %}
+                            {% include "_address.html" %}
+                            <form method="post" action="" class="stacked">
+                                {% csrf_token %}
+                                {{ address.form.address_id }}
+                                <div class="controls">
+                                    <button type="submit" name="delete" class="yui3-button">Delete</button>
+                                    <button type="submit" name="use" class="yui3-button">Use</button>
+                                </div>
+                            </form>
+                        </li>
+                    {% endfor %}
+                </ul>
             </div>
-        </form>
-    </div>
+        {% endif %}
+    {% endif %}
+
+    {% form_errors form %}
+    <form method="post" action="" class="stacked shipping-info {% if using_address and not form.is_bound %} hide-initially{% endif %}">
+        {% csrf_token %}
+        {{ form.country }}
+        <fieldset>
+            <legend>
+                {% if addresses %}
+                    New Shipping Address (Canada Only)
+                {% else %}
+                    Shipping Address (Canada Only)
+                {% endif %}
+            </legend>
+            {% field form.name %}
+            {% field form.phone %}
+            {% field form.line1 %}
+            {% field form.line2 %}
+            {% field form.city %}
+            {% field form.region %}
+            {% field form.post_code %}
+        </fieldset>
+        <div class="controls">
+            <button class="yui3-button" name="submit">Save and Continue</button>
+        </div>
+    </form>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', function(Y) {
+            // initially hide the edit-contact into form
+            Y.all('.hide-initially').each(function(f) {
+                f.addClass('hidden');
+            });
+
+            var chosen_address_div = Y.one('div.chosen-address');
+            if (chosen_address_div != null) {
+                // only add the special 'edit' and 'cancel' buttons if there is a chosen address div
+                chosen_address_div.all('form .controls').each(function(f) {
+                    f.prepend("<button type='button' class='script edit yui3-button'>Change</button>");
+                });
+
+                Y.all('form.shipping-info .controls').each(function(f) {
+                    f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
+                });
+            }
+
+            // toggle form visibility when our custom script buttons are pressed
+            Y.delegate('click', function(e) {
+                var chosen_address_div = Y.one('div.chosen-address');
+                var choose_an_address = Y.one('div.choose-address');
+                var new_form = Y.one('form.shipping-info');
+
+                if (e.currentTarget.hasClass('edit')) {
+                    chosen_address_div.addClass('hidden')
+                    if (choose_an_address != null) {
+                        choose_an_address.removeClass('hidden');
+                    }
+                    new_form.removeClass('hidden');
+                } else {
+                    // must be the cancel button
+                    if (choose_an_address != null) {
+                        choose_an_address.addClass('hidden');
+                    }
+                    new_form.addClass('hidden');
+                    chosen_address_div.removeClass('hidden')
+                }
+            }, document, 'button.script');
+        });
+    </script>
 {% endblock %}
