@@ -88,7 +88,6 @@ class ContactInfoStep(Step):
         if form.is_valid():
             self.save(self.form_key, self.request.POST.copy())
             self.checkout._mark_step_complete(self)
-            self._save_form_data_to_profile(form)
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
@@ -117,7 +116,10 @@ class ContactInfoStep(Step):
         if not is_blank(value):
             data[key] = value
 
-    def _save_form_data_to_profile(self, form):
+    def save_data_to_profile(self):
+        form = self.get_saved_form()
+        if not form.is_valid():
+            return
         user = self.checkout.get_user()
         if not user:
             return
@@ -159,7 +161,7 @@ class ChooseAddressStep(Step):
             if address.id == using_address_id:
                 using_address = address
 
-        if not using_address and addresses.count() == 1:
+        if not using_address and len(addresses) == 1:
             using_address = addresses[0]
 
         context = {
@@ -359,6 +361,7 @@ class Checkout:
             item.delete()
 
         # save the shipping and billing addresses, if necessary
+        ContactInfoStep(self).save_data_to_profile()
         ShippingInfoStep(self).save_address_to_profile()
         BillingInfoStep(self).save_address_to_profile()
 
