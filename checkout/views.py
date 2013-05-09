@@ -10,7 +10,7 @@ from cart import cartutils
 from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem
 import decimal
 from utils.util import round_cents
-from accounts.models import CustomerProfile, CustomerShippingAddress
+from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBillingAddress
 from utils.validators import is_blank
 
 
@@ -136,15 +136,17 @@ class ContactInfoStep(Step):
         profile.save()
 
 
-class ShippingInfoStep(Step):
-
-    data_key = 'shipping'
-    form_key = 'shipping_form'
+class ChooseAddressStep(Step):
+    # The 4 properties initialized to 'None' should be overridden by the BaseClass.
     using_address_key = 'using_address'
+    form_key = None
+    form_clazz = None
+    template = None
+    addr_clazz = None
 
     def _get(self):
         saved_data = self.get(self.form_key, None)
-        form = CanadaShippingForm(data=saved_data)
+        form = self.form_clazz(data=saved_data)
         return self._render_form(form, self.get_customer_addresses())
 
     def _render_form(self, form, addresses):
@@ -153,7 +155,7 @@ class ShippingInfoStep(Step):
         for address in addresses:
             # don't overwrite an existing bound form
             if not hasattr(address, 'form'):
-                setattr(address, 'form', ChooseAddressForm(address, CanadaShippingForm))
+                setattr(address, 'form', ChooseAddressForm(address, self.form_clazz))
             if address.id == using_address_id:
                 using_address = address
 
@@ -163,19 +165,20 @@ class ShippingInfoStep(Step):
         context = {
             'form': form,
             'addresses': addresses,
-            'using_address': using_address
+            'using_address': using_address,
+            'address_type': self.get_address_type()
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
-        return render_to_response('shipping_form.html', context, context_instance=RequestContext(self.request))
+        return render_to_response(self.template, context, context_instance=RequestContext(self.request))
 
     def _post(self):
-        form = CanadaShippingForm()
+        form = self.form_clazz()
         data = self.request.POST.copy()
         addresses = None
 
         if 'submit' in data:
-            form = CanadaShippingForm(data)
+            form = self.form_clazz(data)
             if form.is_valid():
                 # the user is adding a new shipping address
                 self.save(self.form_key, self.request.POST.copy())
@@ -191,7 +194,7 @@ class ShippingInfoStep(Step):
                         address.delete()
                         return HttpResponseRedirect(self.checkout.get_step_url(self))
                     else:
-                        form = ChooseAddressForm(address, CanadaShippingForm, data=data)
+                        form = ChooseAddressForm(address, self.form_clazz, data=data)
                         if form.is_valid():
                             self.save(self.using_address_key, address.id)
                             self.save(self.form_key, None)
@@ -205,11 +208,48 @@ class ShippingInfoStep(Step):
 
     def get_saved_form(self, verify=False):
         saved_data = self.get(self.form_key, None)
-        form = CanadaShippingForm(data=saved_data)
+        form = self.form_clazz(data=saved_data)
         if verify:
             if not form.is_valid():
-                raise Exception("Unexpected error in saved shipping form: " + str(form))
+                raise Exception("Unexpected error in saved form: " + str(form))
         return form
+
+    def get_customer_addresses(self):
+        """
+        Subclasses should override.
+        """
+        return []
+
+    def get_address(self):
+        """
+        Returns the shipping address chosen during this step.  This method should only be called after the step has been
+        completed successfully.  Returns an instance of CustomerShippingAddress.  If this is a new address, or if the
+        requesting user does not have an associated customer profile, the 'customer' field of the address will be None.
+        """
+        address_id = self.get(self.using_address_key, None)
+        if not address_id:
+            return self.get_saved_form(verify=True).save(self.addr_clazz, commit=False)
+        return self.addr_clazz.objects.get(id=address_id)
+
+    def save_address_to_profile(self):
+        address_id = self.get(self.using_address_key, None)
+        if not address_id:
+            profile = self.checkout.get_customer_profile()
+            if profile:
+                address = self.get_saved_form(verify=True).save(self.addr_clazz, commit=False)
+                address.customer = profile
+                address.save()
+
+    def get_address_type(self):
+        raise Exception("Subclasses should override.")
+
+
+class ShippingInfoStep(ChooseAddressStep):
+    data_key = 'shipping'
+    form_key = 'shipping_form'
+    form_clazz = CanadaShippingForm
+    template = 'shipping_form.html'
+    addr_clazz = CustomerShippingAddress
 
     def get_customer_addresses(self):
         """
@@ -220,57 +260,29 @@ class ShippingInfoStep(Step):
             return []
         return profile.shipping_addresses.order_by('-last_used')
 
-    def get_address(self):
-        """
-        Returns the shipping address chosen during this step.  This method should only be called after the step has been
-        completed successfully.  Returns an instance of CustomerShippingAddress.  If this is a new address, or if the
-        requesting user does not have an associated customer profile, the 'customer' field of the address will be None.
-        """
-        address_id = self.get(self.using_address_key, None)
-        if not address_id:
-            return self.get_saved_form(verify=True).save(CustomerShippingAddress, commit=False)
-        return CustomerShippingAddress.objects.get(id=address_id)
-
-    def save_address_to_profile(self):
-        address_id = self.get(self.using_address_key, None)
-        if not address_id:
-            profile = self.checkout.get_customer_profile()
-            if profile:
-                address = self.get_saved_form(verify=True).save(CustomerShippingAddress, commit=False)
-                address.customer = profile
-                address.save()
+    def get_address_type(self):
+        return "shipping"
 
 
-class BillingInfoStep(Step):
+class BillingInfoStep(ChooseAddressStep):
 
     data_key = 'billing'
     form_key = 'billing_form'
+    form_clazz = BillingForm
+    addr_clazz = CustomerBillingAddress
+    template = 'billing_form.html'
 
-    def _get(self):
-        saved_data = self.get(self.form_key, None)
-        form = BillingForm(data=saved_data)
-        return self._render_form(form)
+    def get_customer_addresses(self):
+        """
+        Returns the billing addresses associated with this user's profile, in order of most recently used.
+        """
+        profile = self.checkout.get_customer_profile()
+        if not profile:
+            return []
+        return profile.billing_addresses.order_by('-last_used')
 
-    def _render_form(self, form):
-        context = {
-            'form': form
-        }
-        if self.checkout.extra_context:
-            context.update(self.checkout.extra_context)
-        return render_to_response('billing_form.html', context, context_instance=RequestContext(self.request))
-
-    def _post(self):
-        data = self.request.POST.copy()
-        form = BillingForm(data)
-        if form.is_valid():
-            self.save(self.form_key, self.request.POST.copy())
-            self.checkout._mark_step_complete(self)
-            return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form)
-
-    def get_saved_form(self):
-        saved_data = self.get(self.form_key, None)
-        return BillingForm(data=saved_data)
+    def get_address_type(self):
+        return "billing"
 
 
 class ReviewStep(Step):
@@ -348,6 +360,7 @@ class Checkout:
 
         # save the shipping and billing addresses, if necessary
         ShippingInfoStep(self).save_address_to_profile()
+        BillingInfoStep(self).save_address_to_profile()
 
     def is_finished(self):
         return self.get_completed_step() == len(STEPS)
@@ -478,8 +491,6 @@ class Checkout:
 
     def _build_order(self):
         order = Order()
-        shipping_address = None
-        billing_address = None
 
         # populate the contact information
         contact_form = ContactInfoStep(self).get_saved_form()
@@ -497,9 +508,8 @@ class Checkout:
         shipping_address = customer_shipping_address.as_address(OrderShippingAddress)
 
         # populate the billing information
-        billing_form = BillingInfoStep(self).get_saved_form()
-        if billing_form.is_valid():
-            billing_address = billing_form.save(OrderBillingAddress, commit=False)
+        customer_billing_address = BillingInfoStep(self).get_address()
+        billing_address = customer_billing_address.as_address(OrderBillingAddress)
 
         order.merchandise_total = round_cents(cartutils.cart_subtotal(self.request))
         order.sales_tax = round_cents((order.merchandise_total + order.shipping_charge) * decimal.Decimal('0.05'))

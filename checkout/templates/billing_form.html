@@ -1,27 +1,17 @@
-{% extends 'base_checkout.html' %}
+{% extends 'choose_address.html' %}
 
 {% load form_tags %}
-
-{% block forms %}
-<div class='billing-info'>
-    {% form_errors form %}
-    <form method="post" action="" class="stacked">
-        {% csrf_token %}
-        <fieldset>
-            <legend>
-                Billing Address
-            </legend>
-            {% field form.name %}
-            {% field form.line1 %}
-            {% field form.line2 %}
-            {% field form.city %}
-            {% field form.region %}
-            {% field form.post_code %}
-            {% field form.country %}
-        </fieldset>
-        <div class="controls">
-            <button class="yui3-button" name="submit">Save and Continue</button>
-        </div>
-    </form>
-</div>
+{% block form_fields %}
+    <fieldset>
+        <legend>
+            Billing Address
+        </legend>
+        {% field form.name %}
+        {% field form.line1 %}
+        {% field form.line2 %}
+        {% field form.city %}
+        {% field form.region %}
+        {% field form.post_code %}
+        {% field form.country %}
+    </fieldset>
 {% endblock %}
