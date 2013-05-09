@@ -41,7 +41,7 @@ class AddressForm(forms.Form):
             raise Exception("The AddressForm meta class is not a subclass of " + AbstractAddress.__class__.__name___)
         address = clazz()
         address.name = cd['name']
-        address.phone_number = cd['phone']
+        address.phone = cd['phone']
         address.line1 = cd['line1']
         address.line2 = cd['line2']
         address.city = cd['city']

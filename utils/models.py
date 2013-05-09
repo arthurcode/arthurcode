@@ -24,7 +24,7 @@ class AbstractAddress(models.Model):
     region = models.CharField(max_length=REGION_LENGTH, verbose_name="Province/State", null=True, blank=True)
     country = CountryField()
     post_code = models.CharField(max_length=POST_CODE_LENGTH, verbose_name="Zip/Postal Code", null=True, blank=True)
-    phone_number = models.CharField(max_length=PHONE_NUMBER_LENGTH, null=True, blank=True)
+    phone = models.CharField(max_length=PHONE_NUMBER_LENGTH, null=True, blank=True)
 
     class Meta:
         abstract = True
@@ -41,13 +41,13 @@ class AbstractAddress(models.Model):
         address.region = self.region
         address.country = self.country
         address.post_code = self.post_code
-        address.phone_number = self.phone_number
+        address.phone = self.phone
         return address
 
     def __unicode__(self):
         fields = [
             self.name or "-",
-            self.phone_number or "-",
+            self.phone or "-",
             self.line1 or "-",
             self.line2 or "-",
             self.city or "-",

@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table('accounts_customerprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True)),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('contact_method', self.gf('django.db.models.fields.SmallIntegerField')(default=2)),
         ))
@@ -28,8 +28,8 @@ class Migration(SchemaMigration):
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django_countries.fields.CountryField')(max_length=2)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shipping_addresses', to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerShippingAddress'])
@@ -44,8 +44,8 @@ class Migration(SchemaMigration):
             ('region', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('country', self.gf('django_countries.fields.CountryField')(max_length=2)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('phone_number', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
-            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'])),
+            ('phone', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
+            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='billing_addresses', to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerBillingAddress'])
@@ -67,13 +67,13 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'CustomerBillingAddress'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
-            'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
+            'customer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'billing_addresses'", 'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_used': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         },
@@ -82,20 +82,20 @@ class Migration(SchemaMigration):
             'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
         },
         'accounts.customershippingaddress': {
             'Meta': {'object_name': 'CustomerShippingAddress'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
-            'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']"}),
+            'customer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shipping_addresses'", 'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_used': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'phone_number': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
+            'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'})
         },

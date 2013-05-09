@@ -108,7 +108,7 @@ class ContactInfoStep(Step):
             self._add_to_data('email', user.email, data)
             self._add_to_data('email2', user.email, data)
             if profile:
-                self._add_to_data('phone', profile.phone_number, data)
+                self._add_to_data('phone', profile.phone, data)
                 self._add_to_data('contact_method', profile.contact_method, data)
         return data
 
@@ -134,7 +134,7 @@ class ContactInfoStep(Step):
             profile = CustomerProfile(user=user)
         profile.contact_method = cd['contact_method']
         if 'phone' in cd:
-            profile.phone_number = cd['phone']
+            profile.phone = cd['phone']
         profile.save()
 
 

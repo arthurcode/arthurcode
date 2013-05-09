@@ -143,7 +143,7 @@ class ChooseAddressForm(forms.Form):
     def clean(self):
         data = {
             'name': self.address.name,
-            'phone': self.address.phone_number,
+            'phone': self.address.phone,
             'line1': self.address.line1,
             'line2': self.address.line2,
             'city': self.address.city,
