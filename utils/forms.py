@@ -2,7 +2,6 @@ from django import forms
 from models import AbstractAddress
 from django.contrib.localflavor.ca.forms import CAPhoneNumberField, CAPostalCodeField, CAProvinceSelect, CAProvinceField
 from django_countries import countries
-from utils.models import AbstractAddress
 from django.core.exceptions import ValidationError
 
 

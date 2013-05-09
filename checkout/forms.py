@@ -3,7 +3,6 @@ from accounts.models import CustomerProfile
 from django.core.exceptions import ValidationError
 import datetime
 import re
-from utils.forms import CanadaShippingForm
 
 
 def cc_expire_years():
@@ -26,8 +25,7 @@ def cc_expire_months():
 CARD_TYPES = (
     ('Mastercard', 'Mastercard'),
     ('VISA', 'VISA'),
-    ('AMEX', 'AMEX'),
-    ('Discover', 'Discover'),)
+)
 
 
 NON_NUMBERS = re.compile('\D')
