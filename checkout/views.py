@@ -196,6 +196,11 @@ class ChooseAddressStep(Step):
             for address in addresses:
                 if address_id and address.id == int(address_id):
                     if 'delete' in data:
+                        using_address_id = self.get(self.using_address_key, None)
+                        if using_address_id == address.id:
+                            # the user has gone and deleted the address that they had previously selected to use
+                            # for this step, thus rendering the step incomplete.
+                            self.checkout._mark_step_incomplete(self)
                         address.delete()
                         return HttpResponseRedirect(self.checkout.get_step_url(self))
                     else:
@@ -405,6 +410,30 @@ class Checkout:
         if self.is_finished():
             # call the cleanup routine
             self.finish()
+
+    def _mark_step_incomplete(self, step):
+        highest_completed_step = self.get_completed_step()
+
+        if not highest_completed_step:
+            # the user hasn't completed any steps
+            return
+        step_num = self.get_step_number(step)
+
+        if step_num > highest_completed_step:
+            # nothing to do.  This really shouldn't happen but I guess it doesn't hurt to handle it.
+            return
+
+        new_highest_completed_step = step_num - 1
+
+        if new_highest_completed_step > 0:
+            # technically the user could have finished steps beyond this one, but we want to prevent them from moving
+            # forward until step_num is complete.  When they get to the steps that were previously completed we should
+            # pull out any saved data from the session to make it easier for them to move past the steps they finished
+            # previously.
+            self.save('step', new_highest_completed_step)
+        else:
+            # we effectively have to start over
+            self.save('step', None)
 
     def process_step(self, step):
         if not self.is_started():
