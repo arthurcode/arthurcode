@@ -312,6 +312,12 @@ class ShippingInfoStep(ChooseAddressStep):
     def get_address_type(self):
         return "shipping"
 
+    def visit(self, order):
+        customer_shipping_address = self.get_address()
+        setattr(order, 'pending_shipping_address', customer_shipping_address.as_address(OrderShippingAddress))
+        # this is only a temporary hack
+        order.shipping_charge = decimal.Decimal('0.00')
+
 
 class BillingInfoStep(ChooseAddressStep):
 
@@ -339,6 +345,10 @@ class BillingInfoStep(ChooseAddressStep):
     def get_address_type(self):
         return "billing"
 
+    def visit(self, order):
+        customer_billing_address = self.get_address()
+        setattr(order, 'pending_billing_address', customer_billing_address.as_address(OrderBillingAddress))
+
 
 class ReviewStep(Step):
 
@@ -349,16 +359,13 @@ class ReviewStep(Step):
         return self._render_form(form)
 
     def _render_form(self, form):
-        order, shipping_address, billing_address, order_items = self.checkout._build_order()
+        order = self.checkout.build_order()
         if not form.is_bound:
             form.fields['total'].initial = order.total
 
         context = {
             'form': form,
             'order': order,
-            'shipping_address': shipping_address,
-            'billing_address': billing_address,
-            'order_items': order_items,
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -549,7 +556,7 @@ class Checkout:
         6.  Unlock the products that were locked in step 1
         7.  Redirect the user to a receipt page
         """
-        order, shipping_address, billing_address, order_items = self._build_order()
+        order = self.build_order()
         if not payment_form.is_valid():
             return False
 
@@ -558,12 +565,15 @@ class Checkout:
         order.transaction_id = 00000  # TODO: FIX THIS
         order.payment_status = Order.FUNDS_AUTHORIZED
         order.save()
+        shipping_address = getattr(order, 'pending_shipping_address')
         shipping_address.order = order
         shipping_address.save()
+
+        billing_address = getattr(order, 'pending_billing_address')
         billing_address.order = order
         billing_address.save()
 
-        for item in order_items:
+        for item in getattr(order, 'pending_items'):
             item.order = order
             item.save()
             in_stock = item.product.quantity
@@ -571,24 +581,24 @@ class Checkout:
             item.product.save()
         return True
 
-    def _build_order(self):
+    def build_order(self):
+        """
+        Build's an order object using the data that has been collected from this checkout process.
+        Only the steps that have been completed will be used to collect the data.  This order is NOT saved to the
+        database at this point.
+        """
         order = Order()
-
-        # populate the contact information
-        ContactInfoStep(self).visit(order)
-
-        # populate the shipping information
-        order.shipping_charge = decimal.Decimal('0.00')
-        customer_shipping_address = ShippingInfoStep(self).get_address()
-        shipping_address = customer_shipping_address.as_address(OrderShippingAddress)
-
-        # populate the billing information
-        customer_billing_address = BillingInfoStep(self).get_address()
-        billing_address = customer_billing_address.as_address(OrderBillingAddress)
-
+        # if I try to set order.items directly the database will implicitly try to save
+        setattr(order, 'pending_items', self.get_order_items())
         order.merchandise_total = round_cents(cartutils.cart_subtotal(self.request))
-        order.sales_tax = round_cents((order.merchandise_total + order.shipping_charge) * decimal.Decimal('0.05'))
-        return order, shipping_address, billing_address, self.get_order_items()
+
+        completed_step = self.get_completed_step()
+        for i in range(1, completed_step + 1):
+            STEPS[i][0](self).visit(order)
+
+        if order.shipping_charge is not None:
+            order.sales_tax = round_cents((order.merchandise_total + order.shipping_charge) * decimal.Decimal('0.05'))
+        return order
 
     def get_order_items(self):
         order_items = []

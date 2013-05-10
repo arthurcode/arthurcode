@@ -33,7 +33,7 @@ class Migration(SchemaMigration):
         # Adding model 'OrderItem'
         db.create_table('orders_orderitem', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['orders.Order'])),
+            ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['orders.Order'])),
             ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Product'])),
             ('quantity', self.gf('django.db.models.fields.IntegerField')()),
             ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
@@ -200,7 +200,7 @@ class Migration(SchemaMigration):
         'orders.orderitem': {
             'Meta': {'object_name': 'OrderItem'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['orders.Order']"}),
+            'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['orders.Order']"}),
             'price': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Product']"}),
             'quantity': ('django.db.models.fields.IntegerField', [], {})

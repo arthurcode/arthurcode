@@ -99,7 +99,7 @@ class Order(models.Model):
 
 
 class OrderItem(models.Model):
-    order = models.ForeignKey(Order)
+    order = models.ForeignKey(Order, related_name="items")
     product = models.ForeignKey(Product)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     # I suppose the item could technically be free
