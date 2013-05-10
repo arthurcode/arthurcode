@@ -1,4 +1,5 @@
 {% extends 'base_hd_ft.html' %}
+{% load checkout_tags %}
 
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
 
@@ -6,6 +7,7 @@
     {% include "_checkout_navigation.html" %}
     <a href="{% url cancel %}">Cancel</a>
     <div class='form-content'>
+        {% block order_summary %}{% order_summary order %}{% endblock %}
         {% block forms %}{% endblock forms %}
     </div>
 {% endblock %}

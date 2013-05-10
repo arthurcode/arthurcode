@@ -1,0 +1,26 @@
+{% load extras %}
+
+<div class="order-summary shadow-box">
+    <h2>Order Summary</h2>
+    <dl>
+        <dt>Items in Cart:</dt>
+        <dd>{{ item_count }}</dd>
+        <dt>Subtotal:</dt>
+        <dd>{{ subtotal|currency }}</dd>
+        {% if order.shipping_charge != None %}
+            <dt>Shipping:</dt>
+            <dd>{% if order.shipping_charge > 0 %}
+                    {{ order.shipping_charge|currency }}
+                {% else %}
+                    FREE
+                {% endif %}
+            </dd>
+        {% endif %}
+        {% if order.sales_tax != None %}
+            <dt>Taxes:</dt>
+            <dd>{{ order.sales_tax|currency }}</dd>
+            <dt class="total">Estimated Total:</dt>
+            <dd class="total">{{ order.total|currency }}</dd>
+        {% endif %}
+    </dl>
+</div>

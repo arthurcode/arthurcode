@@ -365,7 +365,6 @@ class ReviewStep(Step):
 
         context = {
             'form': form,
-            'order': order,
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -499,7 +498,8 @@ class Checkout:
             'steps': STEPS,
             'current_step': step,
             'completed_step': highest_completed_step,
-            'current_step_name': STEPS[step-1][2]
+            'current_step_name': STEPS[step-1][2],
+            'order': self.build_order(),
         }
 
         clazz, url, _ = STEPS[step-1]
@@ -588,12 +588,16 @@ class Checkout:
         database at this point.
         """
         order = Order()
+        setattr(order, 'request', self.request)
         # if I try to set order.items directly the database will implicitly try to save
         setattr(order, 'pending_items', self.get_order_items())
         order.merchandise_total = round_cents(cartutils.cart_subtotal(self.request))
 
         completed_step = self.get_completed_step()
-        for i in range(1, completed_step + 1):
+        if completed_step is None:
+            return order
+
+        for i in range(completed_step):
             STEPS[i][0](self).visit(order)
 
         if order.shipping_charge is not None:

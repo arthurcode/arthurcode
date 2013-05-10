@@ -655,3 +655,20 @@ div.choose-address h2, div.chosen-address h2, div.verify-contact-info h2 {
 .contact-preview dt {
     font-weight: bolder;
 }
+
+.form-content {
+    width: 100%;
+}
+
+.order-summary {
+    background-color: aliceblue;border: 2px solid lightgray;
+    clear: both;
+    float: right;
+    padding: 1em;
+    font-size: smaller;
+}
+
+.order-summary .total {
+    font-weight: bold;
+    font-size: larger;
+}
