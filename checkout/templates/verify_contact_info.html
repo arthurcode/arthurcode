@@ -2,18 +2,43 @@
 {% load form_tags %}
 
 {% block forms %}
-<div class='verify-contact-info'>
-    <h2>Confirm Contact Info</h2>
-    <ul>
-        <li>{{ form.first_name.value }} {{ form.last_name.value }}</li>
-        <li>Email: {{ form.email.value }}
-        <li>Phone: {% firstof form.phone.value '(Not on file)' %}</li>
-        <li>Preferred Contact Method: {{ form.humanized_contact_method }}</li>
-    </ul>
+    {% if using_profile_data %}
+        <div class='verify-contact-info{% if form.is_bound %} hide-initially{% endif %}'>
+            <h2>Confirm Contact Info</h2>
+            <div class='contact-preview shadow-box'>
+                <dl>
+                    <dt>Name:</dt>
+                    <dd>{{ user.first_name }} {{ user.last_name }}</dd>
+                    <dt>Email:</dt>
+                    <dd>{{ user.email }}</dd>
+                    <dt>Phone:</dt>
+                    <dd>{% firstof profile.phone '(Not on file)' %}</dd>
+                    <dt>Preferred Contact Method:</dt>
+                    <dd>{{ profile.humanized_contact_method }}</dd>
+                </dl>
 
+                <form method="post" action="" class="stacked">
+                    {% csrf_token %}
+                    <div class="controls">
+                        <button class="yui3-button" name="use-profile-data">OK</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    {% endif %}
+
+<div class='contact-info{% if using_profile_data and not form.is_bound %} hide-initially{% endif %}'>
+    {% form_errors form %}
     <form method="post" action="" class="stacked">
         {% csrf_token %}
         <fieldset>
+            <legend>
+                {% if using_profile_data %}
+                    Edit Contact Info
+                {% else %}
+                    Contact Info
+                {% endif %}
+            </legend>
             {% field form.first_name %}
             {% field form.last_name %}
             {% field form.email %}
@@ -22,48 +47,40 @@
             {% field form.phone %}
         </fieldset>
         <div class="controls">
-            <button class="yui3-button" name="submit">OK</button>
+            <button class="yui3-button" name="edit">Save and Continue</button>
         </div>
     </form>
 </div>
-    {% with "Edit Contact Info" as legend %}
-        {% include '_contact_info_form.html' %}
-    {% endwith %}
 {% endblock %}
 
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
         YUI().use('node', function(Y) {
-            // initially hide the edit-contact into form
-            Y.all('div.contact-info').each(function(f) {
-                f.addClass('hidden');
-            });
+            var verify_div = Y.one('div.verify-contact-info');
 
-            // add an extra button to each form, used to toggle the visibility of each form
-            Y.all('div.verify-contact-info form .controls').each(function(f) {
-                f.prepend("<button type='button' class='script edit yui3-button'>Edit</button>");
-            });
+            if (verify_div != null) {
+                // add an extra button to each form, used to toggle the visibility of each form
+                verify_div.all('form .controls').each(function(f) {
+                    f.prepend("<button type='button' class='script edit yui3-button'>Edit</button>");
+                });
 
-            Y.all('div.contact-info form .controls').each(function(f) {
-                f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
-            });
+                Y.all('div.contact-info form .controls').each(function(f) {
+                    f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
+                });
+            }
 
             // toggle form visibility when our custom script buttons are pressed
             Y.delegate('click', function(e) {
                 var edit_div = Y.one('div.contact-info');
                 var verify_div = Y.one('div.verify-contact-info');
                 if (e.currentTarget.hasClass('edit')) {
-                    verify_div.all('button').each(function(f) {
-                        f.setAttribute("disabled", "");
-                    });
+                    verify_div.addClass('hidden');
                     edit_div.removeClass('hidden');
                 } else {
                     // must be the cancel button
                     edit_div.addClass('hidden');
-                    verify_div.all('button').each(function(f) {
-                        f.removeAttribute("disabled");
-                    });
+                    verify_div.removeClass('hidden');
                 }
             }, document, 'button.script');
         });

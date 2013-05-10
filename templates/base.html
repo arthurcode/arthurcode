@@ -15,6 +15,15 @@
 </head>
 <body class="{% block body_class %}blog{% endblock %}">
 {% block site_wrapper %} {% endblock %}
-{% block javascript %} {% endblock %}
+{% block javascript %}
+    <script type="text/javascript">
+        YUI().use('node', function(Y) {
+            // initially hide elements with the 'hide-initially' class
+            Y.all('.hide-initially').each(function(f) {
+                f.addClass('hidden');
+            });
+        });
+    </script>
+{% endblock %}
 </body>
 </html>

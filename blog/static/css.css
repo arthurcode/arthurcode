@@ -15,6 +15,11 @@ button.link {
     cursor: pointer;
 }
 
+.shadow-box {
+    border-radius: 3%;
+    box-shadow: 5px 5px 5px darkgray;
+}
+
 ul {
     list-style-type: none;
     padding: 0;
@@ -588,6 +593,12 @@ div.verify-contact-info {
     margin-bottom: 4em;
 }
 
+div.contact-preview {
+    border: 2px solid lightgray;
+    padding: 1em;
+    float: left;
+}
+
 div.verify-contact-info form .field {
     display: None;
 }
@@ -615,15 +626,13 @@ div.choose-address {
     margin-right: 2em;
     border: 2px solid lightgray;
     padding: 1em;
-    border-radius: 3%;
-    box-shadow: 5px 5px 5px darkgray;
 }
 
 .address-preview form {
     width: 100%;
 }
 
-div.choose-address h2, div.chosen-address h2 {
+div.choose-address h2, div.chosen-address h2, div.verify-contact-info h2 {
     margin-bottom: 1em;
 }
 
@@ -636,4 +645,13 @@ div.choose-address h2, div.chosen-address h2 {
 
 .address-preview p.address {
     margin-right: 4em;
+}
+
+.contact-preview dl {
+    margin: 0 0 1em 0;
+    padding: 0;
+}
+
+.contact-preview dt {
+    font-weight: bolder;
 }

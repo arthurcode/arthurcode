@@ -54,30 +54,41 @@ class Step(object):
     def get(self, key, default=None):
         return self._get_data().get(key, default)
 
+    def visit(self, order):
+        """
+        Transfer the data collected in this step to the order object.
+        Subclasses should override.
+        """
+        return
+
 
 class ContactInfoStep(Step):
 
     data_key = 'contact'
     form_key = 'contact_form'
+    using_profile_data_key = 'using_profile_data'
 
     def _get(self):
         form = self.get_saved_form()
+        if self.is_using_profile_data():
+            return self._render_form(form)
+
         if not form.is_bound:
             # there was no saved data, this is the first time the user is seeing this form in this checkout.
             data = self.get_existing_contact_info()
             test_form = ContactInfoForm(data=data)
             if test_form.is_valid():
                 # we have all of the information we need, we just need the user to validate it.
-                return self._render_form(test_form, template='verify_contact_info.html')
-            else:
-                # we are missing some or all of the necessary data.  Render the Guest form, pre-filled with the data
-                # values we already have.
-                form = ContactInfoForm(initial=data)
+                self.save(self.using_profile_data_key, True)
+            form = ContactInfoForm(initial=data)
         return self._render_form(form)
 
-    def _render_form(self, form, template='contact_info.html'):
+    def _render_form(self, form, template='verify_contact_info.html'):
         context = {
-            'form': form
+            'form': form,
+            'user': self.checkout.get_user(),
+            'profile': self.checkout.get_customer_profile(),
+            'using_profile_data': self.is_using_profile_data(),
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -85,11 +96,17 @@ class ContactInfoStep(Step):
 
     def _post(self):
         data = self.request.POST.copy()
-        form = ContactInfoForm(data)
-        if form.is_valid():
-            self.save(self.form_key, self.request.POST.copy())
+        if 'use-profile-data' in data:
+            self.save(self.using_profile_data_key, True)
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
+        else:
+            form = ContactInfoForm(data)
+            if form.is_valid():
+                self.save(self.form_key, self.request.POST.copy())
+                self.save(self.using_profile_data_key, False)
+                self.checkout._mark_step_complete(self)
+                return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
     def get_saved_form(self):
@@ -138,6 +155,28 @@ class ContactInfoStep(Step):
             profile.phone = cd['phone']
         profile.save()
 
+    def is_using_profile_data(self):
+        answer = self.get(self.using_profile_data_key, False)
+        if answer is None:
+            return False
+        return answer
+
+    def visit(self, order):
+        """
+        Transfer contact information to the order object.
+        """
+        if self.is_using_profile_data():
+            data = self.get_existing_contact_info()
+            form = ContactInfoForm(data=data)
+        else:
+            form = self.get_saved_form()
+        if form.is_valid():
+            cd = form.cleaned_data
+            order.first_name = cd['first_name']
+            order.last_name = cd['last_name']
+            order.email = cd['email']
+            order.contact_method = cd['contact_method']
+            order.phone = cd['phone']
 
 class ChooseAddressStep(Step):
     # The 4 properties initialized to 'None' should be overridden by the BaseClass.
@@ -536,14 +575,7 @@ class Checkout:
         order = Order()
 
         # populate the contact information
-        contact_form = ContactInfoStep(self).get_saved_form()
-        if contact_form.is_valid():
-            cd = contact_form.cleaned_data
-            order.first_name = cd['first_name']
-            order.last_name = cd['last_name']
-            order.email = cd['email']
-            order.contact_method = cd['contact_method']
-            order.phone = cd['phone']
+        ContactInfoStep(self).visit(order)
 
         # populate the shipping information
         order.shipping_charge = decimal.Decimal('0.00')

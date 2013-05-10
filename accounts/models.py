@@ -37,6 +37,15 @@ class CustomerProfile(models.Model):
         if self.user_id and (is_blank(self.user.first_name) or is_blank(self.user.last_name)):
             raise ValidationError(u"The associated user's first and/or last name cannot be blank")
 
+    def humanized_contact_method(self):
+        """
+        Return the human-readable contact-method string.
+        """
+        for method in CustomerProfile.CONTACT_METHOD:
+            if method[0] == self.contact_method:
+                return method[1]
+        return "Unknown"
+
 
 class CustomerShippingAddress(AbstractAddress):
     # a customer can have several shipping addresses associated with their profile
