@@ -7,13 +7,14 @@
             {% with using_address as address %}
                 <div class="chosen-address{% if form.is_bound %} hide-initially{% endif %}">
                     <h2>Confirm {{ address_type|capfirst }} Address</h2>
-                    <div class="wrapper">
+                    <div class="address-preview">
                         {% include "_address.html" %}
                         <form method="post" action="" class="stacked">
                             {% csrf_token %}
                             {{ address.form.address_id }}
                             <div class="controls">
                                 <button type="submit" name="use" class="yui3-button">OK</button>
+                                <button type="submit" name="delete" class="link">delete</button>
                             </div>
                         </form>
                     </div>
@@ -26,15 +27,15 @@
                 <ul>
                     <h2>Choose A Saved Address</h2>
                     {% for address in addresses %}
-                        <li>
+                        <li class="address-preview">
                             {% form_errors address.form %}
                             {% include "_address.html" %}
                             <form method="post" action="" class="stacked">
                                 {% csrf_token %}
                                 {{ address.form.address_id }}
                                 <div class="controls">
-                                    <button type="submit" name="delete" class="yui3-button">Delete</button>
                                     <button type="submit" name="use" class="yui3-button">Use</button>
+                                    <button type="submit" name="delete" class="link">delete</button>
                                 </div>
                             </form>
                         </li>
