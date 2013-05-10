@@ -672,3 +672,13 @@ div.choose-address h2, div.chosen-address h2, div.verify-contact-info h2 {
     font-weight: bold;
     font-size: larger;
 }
+
+.checkout-utils {
+    float: right;
+    clear: both;
+    font-size: smaller;
+}
+
+.checkout-utils a {
+    margin-left: 0.5em;
+}

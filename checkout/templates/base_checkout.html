@@ -5,7 +5,10 @@
 
 {% block body %}
     {% include "_checkout_navigation.html" %}
-    <a href="{% url cancel %}">Cancel</a>
+    <ul class="checkout-utils">
+        <a href="{% url cancel %}">cancel checkout</a>
+        <a href="{% url show_cart %}">edit shopping cart</a>
+    </ul>
     <div class='form-content'>
         {% block order_summary %}{% order_summary order %}{% endblock %}
         {% block forms %}{% endblock forms %}
