@@ -70,7 +70,7 @@
                     f.prepend("<button type='button' class='script edit yui3-button'>Change</button>");
                 });
 
-                Y.all('form.shipping-info .controls').each(function(f) {
+                Y.all('form.address-form .controls').each(function(f) {
                     f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
                 });
             }
@@ -79,7 +79,7 @@
             Y.delegate('click', function(e) {
                 var chosen_address_div = Y.one('div.chosen-address');
                 var choose_an_address = Y.one('div.choose-address');
-                var new_form = Y.one('form.shipping-info');
+                var new_form = Y.one('form.address-form');
 
                 if (e.currentTarget.hasClass('edit')) {
                     chosen_address_div.addClass('hidden')
