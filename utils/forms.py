@@ -92,6 +92,9 @@ class CanadaShippingForm(AddressForm):
 
 
 class BillingForm(AddressForm):
+
+    same_as_shipping = forms.BooleanField(required=False, label="Same as shipping address", initial=False)
+
     def customize_name(self, field):
         field.required = True
 

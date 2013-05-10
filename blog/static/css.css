@@ -281,6 +281,10 @@ label {
     clear: left;
 }
 
+form.stacked .field.checkbox input {
+    margin-left: 0;
+}
+
 .field.checkbox label {
     float: left;
 }
@@ -530,9 +534,9 @@ a.checkout-as-guest {
 }
 
 /* checkout styles */
-div.contact-info .required-text, .shipping-info .required-text, div.billing-info .required-text,
+div.contact-info .required-text, form.address-form .required-text, div.billing-info .required-text,
 div.payment-info .required-text, div.verify-contact-info .required-text {
-    display: None;
+    display: none;
 }
 
 div.checkout-nav {
@@ -588,7 +592,7 @@ div.chosen-address {
     line-height: 100%;
 }
 
-.address span.region, .address span.city {
+p.address span.region, p.address span.city {
     display: inline-block;
 }
 

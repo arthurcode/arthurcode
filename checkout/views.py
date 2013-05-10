@@ -14,9 +14,10 @@ from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBi
 from utils.validators import is_blank
 
 
-class Step:
+class Step(object):
 
     data_key = 'step'
+    extra_context = {}
 
     def __init__(self, checkout):
         self.checkout = checkout
@@ -172,6 +173,8 @@ class ChooseAddressStep(Step):
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
+        if self.extra_context:
+            context.update(self.extra_context)
         return render_to_response(self.template, context, context_instance=RequestContext(self.request))
 
     def _post(self):
@@ -273,6 +276,12 @@ class BillingInfoStep(ChooseAddressStep):
     form_clazz = BillingForm
     addr_clazz = CustomerBillingAddress
     template = 'billing_form.html'
+
+    def __init__(self, *args, **kwargs):
+        super(BillingInfoStep, self).__init__(*args, **kwargs)
+        self.extra_context = {
+            'shipping_address': ShippingInfoStep(self.checkout).get_address()
+        }
 
     def get_customer_addresses(self):
         """
@@ -475,6 +484,8 @@ class Checkout:
         order, shipping_address, billing_address, order_items = self._build_order()
         if not payment_form.is_valid():
             return False
+
+        # contact paypal to authorize the transfer of funds
 
         order.transaction_id = 00000  # TODO: FIX THIS
         order.payment_status = Order.FUNDS_AUTHORIZED
