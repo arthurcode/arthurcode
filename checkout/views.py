@@ -12,7 +12,63 @@ import decimal
 from utils.util import round_cents
 from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBillingAddress
 from utils.validators import is_blank
+import checkoututils
+from decimal import Decimal
 
+
+class PyOrder(object):
+    """
+    Represents an Order that is in the process of being created through the checkout process.
+    This closely mirrors the Order DB model but because of all the foreign keys associated with the
+    model it is difficult to work with before it has been saved.  This class is meant to make it easier to build an
+    Order step-by-step.
+    """
+
+    def __init__(self, request):
+        self.request = request
+        self.items = None              # Order items
+        self.shipping_address = None   # CustomerShippingAddress
+        self.billing_address = None    # CustomerBillingAddress
+        self.customer = None           # CustomerProfile
+        self.first_name = None
+        self.last_name = None
+        self.email = None
+        self.phone = None
+        self.contact_method = None
+        self.shipping_charge = None
+
+    def tax_breakdown(self):
+        """
+        Returns a list of tupples in the following format:
+        [ (tax name, tax rate, total), ...] eg. [(GST, 5, 10.00), (PST, 5, 10.00)]
+        The totals are rounded to two decimal places.
+        """
+        if not self.shipping_address:
+            return None
+
+        taxes = checkoututils.sales_taxes(self.shipping_address.region)
+        subtotal = self._taxable_total()
+        breakdown = []
+
+        for tax in taxes:
+            breakdown.append((tax.description, tax.rate, round_cents((tax.rate/100) * subtotal)))
+        return breakdown
+
+    def merchandise_total(self):
+        total = Decimal('0.00')
+        for item in self.items:
+            total += item.price
+        return total
+
+    def _taxable_total(self):
+        return self.merchandise_total() + self.shipping_charge
+
+    def total(self):
+        total = self._taxable_total()
+        tax_breakdown = self.tax_breakdown()
+        for tax in tax_breakdown:
+            total += tax[2]
+        return total
 
 class Step(object):
 
@@ -177,6 +233,8 @@ class ContactInfoStep(Step):
             order.email = cd['email']
             order.contact_method = cd['contact_method']
             order.phone = cd['phone']
+        profile = self.checkout.get_customer_profile()
+        order.customer = profile
 
 class ChooseAddressStep(Step):
     # The 4 properties initialized to 'None' should be overridden by the BaseClass.
@@ -313,8 +371,7 @@ class ShippingInfoStep(ChooseAddressStep):
         return "shipping"
 
     def visit(self, order):
-        customer_shipping_address = self.get_address()
-        setattr(order, 'pending_shipping_address', customer_shipping_address.as_address(OrderShippingAddress))
+        order.shipping_address = self.get_address()
         # this is only a temporary hack
         order.shipping_charge = decimal.Decimal('0.00')
 
@@ -346,8 +403,7 @@ class BillingInfoStep(ChooseAddressStep):
         return "billing"
 
     def visit(self, order):
-        customer_billing_address = self.get_address()
-        setattr(order, 'pending_billing_address', customer_billing_address.as_address(OrderBillingAddress))
+        order.billing_address = self.get_address()
 
 
 class ReviewStep(Step):
@@ -556,24 +612,26 @@ class Checkout:
         6.  Unlock the products that were locked in step 1
         7.  Redirect the user to a receipt page
         """
-        order = self.build_order()
+        pyOrder = self.build_order()  # python class
+        order = Order()               # db class
+
         if not payment_form.is_valid():
             return False
 
         # contact paypal to authorize the transfer of funds
-
+        order.shipping_charge = pyOrder.shipping_charge
         order.transaction_id = 00000  # TODO: FIX THIS
         order.payment_status = Order.FUNDS_AUTHORIZED
         order.save()
-        shipping_address = getattr(order, 'pending_shipping_address')
+        shipping_address = pyOrder.shipping_address.as_address(OrderShippingAddress)
         shipping_address.order = order
         shipping_address.save()
 
-        billing_address = getattr(order, 'pending_billing_address')
+        billing_address = pyOrder.billing_address.as_address(OrderBillingAddress)
         billing_address.order = order
         billing_address.save()
 
-        for item in getattr(order, 'pending_items'):
+        for item in pyOrder.items:
             item.order = order
             item.save()
             in_stock = item.product.quantity
@@ -583,15 +641,12 @@ class Checkout:
 
     def build_order(self):
         """
-        Build's an order object using the data that has been collected from this checkout process.
+        Builds a PyOrder object using the data that has been collected from this checkout process.
         Only the steps that have been completed will be used to collect the data.  This order is NOT saved to the
         database at this point.
         """
-        order = Order()
-        setattr(order, 'request', self.request)
-        # if I try to set order.items directly the database will implicitly try to save
-        setattr(order, 'pending_items', self.get_order_items())
-        order.merchandise_total = round_cents(cartutils.cart_subtotal(self.request))
+        order = PyOrder(self.request)
+        order.items = self.get_order_items()
 
         completed_step = self.get_completed_step()
         if completed_step is None:
@@ -599,9 +654,6 @@ class Checkout:
 
         for i in range(completed_step):
             STEPS[i][0](self).visit(order)
-
-        if order.shipping_charge is not None:
-            order.sales_tax = round_cents((order.merchandise_total + order.shipping_charge) * decimal.Decimal('0.05'))
         return order
 
     def get_order_items(self):

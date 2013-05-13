@@ -6,7 +6,7 @@
         <dt>Items in Cart:</dt>
         <dd>{{ item_count }}</dd>
         <dt>Subtotal:</dt>
-        <dd>{{ subtotal|currency }}</dd>
+        <dd>{{ order.merchandise_total|currency }}</dd>
         {% if order.shipping_charge != None %}
             <dt>Shipping:</dt>
             <dd>{% if order.shipping_charge > 0 %}
@@ -15,12 +15,13 @@
                     FREE
                 {% endif %}
             </dd>
-        {% endif %}
-        {% if order.sales_tax != None %}
-            <dt>Taxes:</dt>
-            <dd>{{ order.sales_tax|currency }}</dd>
-            <dt class="total">Estimated Total:</dt>
-            <dd class="total">{{ order.total|currency }}</dd>
+
+            {% for tax in order.tax_breakdown %}
+                <dt>{{tax.0}} ({{tax.1}}%):</dt>
+                <dd>{{ tax.2|currency }}</dd>
+            {% endfor %}
+            <dt>Estimated Total:</dt>
+            <dd>{{ order.total|currency }}</dd>
         {% endif %}
     </dl>
 </div>
