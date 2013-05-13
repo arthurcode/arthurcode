@@ -81,14 +81,14 @@
                             {% csrf_token %}
                             {{ item.update_form.item_id }}
                             {% field_label_tag item.update_form.quantity %} {% aria_required_field item.update_form.quantity %}
-                            <button type="submit" name="Update" class="yui3-button">Update Quantity</button>
+                            <button type="submit" name="Update" class="link">Update Quantity</button>
                         </form>
                     </td>
                     <td>
                         <form method="post" action="." class="cart">
                             {% csrf_token %}
                             <input type="hidden" name="item_id" value="{{ item.id }}" />
-                            <button type="submit" name="Remove" class="yui3-button">Remove</button>
+                            <button type="submit" name="Remove" class="link">Remove</button>
                         </form>
                     </td>
                     <td class="right">
