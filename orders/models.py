@@ -51,7 +51,6 @@ class Order(models.Model):
     is_pickup = models.BooleanField(default=False)
 
     shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
-    sales_tax = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
 
     merchandise_total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
 
@@ -132,4 +131,11 @@ class OrderShippingAddress(AbstractAddress):
     order = models.OneToOneField(Order, related_name='shipping_address')
 
 
-
+class OrderTax(models.Model):
+    """
+    A tax (eg GST or PST) that has been applied to an order.
+    """
+    order = models.ForeignKey(Order)
+    name = models.CharField(max_length=20)
+    rate = models.DecimalField(max_digits=7, decimal_places=4, validators=[MinValueValidator(0.0)])
+    total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])

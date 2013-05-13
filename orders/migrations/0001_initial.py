@@ -25,7 +25,6 @@ class Migration(SchemaMigration):
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('shipping_charge', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
-            ('sales_tax', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
             ('merchandise_total', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
         ))
         db.send_create_signal('orders', ['Order'])
@@ -70,6 +69,16 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('orders', ['OrderShippingAddress'])
 
+        # Adding model 'OrderTax'
+        db.create_table('orders_ordertax', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['orders.Order'])),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('rate', self.gf('django.db.models.fields.DecimalField')(max_digits=7, decimal_places=4)),
+            ('total', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
+        ))
+        db.send_create_signal('orders', ['OrderTax'])
+
 
     def backwards(self, orm):
         # Deleting model 'Order'
@@ -83,6 +92,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'OrderShippingAddress'
         db.delete_table('orders_ordershippingaddress')
+
+        # Deleting model 'OrderTax'
+        db.delete_table('orders_ordertax')
 
 
     models = {
@@ -179,7 +191,6 @@ class Migration(SchemaMigration):
             'merchandise_total': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'payment_status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
-            'sales_tax': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'shipping_charge': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
             'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
@@ -217,6 +228,14 @@ class Migration(SchemaMigration):
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'orders.ordertax': {
+            'Meta': {'object_name': 'OrderTax'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['orders.Order']"}),
+            'rate': ('django.db.models.fields.DecimalField', [], {'max_digits': '7', 'decimal_places': '4'}),
+            'total': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'})
         }
     }
 

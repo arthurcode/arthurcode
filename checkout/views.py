@@ -7,7 +7,7 @@ from utils.forms import CanadaShippingForm, BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
-from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem
+from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem, OrderTax
 import decimal
 from utils.util import round_cents
 from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBillingAddress
@@ -623,6 +623,7 @@ class Checkout:
         order.transaction_id = 00000  # TODO: FIX THIS
         order.payment_status = Order.FUNDS_AUTHORIZED
         order.save()
+
         shipping_address = pyOrder.shipping_address.as_address(OrderShippingAddress)
         shipping_address.order = order
         shipping_address.save()
@@ -637,6 +638,10 @@ class Checkout:
             in_stock = item.product.quantity
             item.product.quantity = max(0, in_stock - item.quantity)
             item.product.save()
+
+        for (name, rate, total) in pyOrder.tax_breakdown():
+            orderTax = OrderTax(name=name, rate=rate, total=total, order=order)
+            orderTax.save()
         return True
 
     def build_order(self):
