@@ -25,7 +25,6 @@ class Migration(SchemaMigration):
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('shipping_charge', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
-            ('merchandise_total', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
         ))
         db.send_create_signal('orders', ['Order'])
 
@@ -188,7 +187,6 @@ class Migration(SchemaMigration):
             'is_pickup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
             'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'merchandise_total': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'payment_status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'shipping_charge': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),

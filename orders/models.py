@@ -5,8 +5,7 @@ from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
 from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
-from utils.util import round_cents
-
+from decimal import Decimal
 
 class Order(models.Model):
     """
@@ -49,18 +48,14 @@ class Order(models.Model):
     ip_address = models.IPAddressField(default="0.0.0.0")  # https://code.djangoproject.com/ticket/5622
 
     is_pickup = models.BooleanField(default=False)
-
     shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
 
-    merchandise_total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
-
     @property
-    def total(self):
-        """
-        The total amount that will be charged to the customer, including tax and shipping changes.  Apparently
-        shipping and handling charges are subject to sales tax!  Returns a number rounded to two decimal places.
-        """
-        return round_cents(self.merchandise_total + self.shipping_charge + self.sales_tax)
+    def merchandise_total(self):
+        total = Decimal('0.00')
+        for item in self.items:
+            total += item.price
+        return total
 
     def get_shipping_address(self):
         try:
@@ -137,5 +132,5 @@ class OrderTax(models.Model):
     """
     order = models.ForeignKey(Order)
     name = models.CharField(max_length=20)
-    rate = models.DecimalField(max_digits=7, decimal_places=4, validators=[MinValueValidator(0.0)])
+    rate = models.DecimalField(max_digits=7, decimal_places=4, validators=[MinValueValidator(0.0)])  # percentage
     total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
