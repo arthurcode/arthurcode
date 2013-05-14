@@ -128,7 +128,7 @@ h1 {
 #hd span.sitename {
     font-size: 350%;
     font-family: courier, monospace;
-    color: steelblue;
+    color: darkgreen;
     letter-spacing: 0.2em;
     padding-left: 20px;
     float: left;
@@ -139,7 +139,6 @@ h1 {
 #primary-navigation {
     margin-left: 0;
     margin-top: 1em;
-    border-radius: 10px;
     float: left;
     clear: both;
     padding-left: 20px;
@@ -151,24 +150,29 @@ h1 {
 }
 
 #primary-navigation a {
+    margin-right: 5px;
     float: left;
     font-size: 120%;
-    background-color: steelblue;
-    border-radius: 6px;
     padding: 0.25em 0.5em;
-    border: 2px solid white;
-    border-bottom: none;
+    border: 1px solid darkgreen;
     text-decoration: none;
     display: inline-block;
+    background: rgb(150,244,68); /* Old browsers */
+    background: -moz-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%, rgba(124,188,10,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(150,244,68,1)), color-stop(100%,rgba(124,188,10,1))); /* Chrome,Safari4+ */
+    background: -webkit-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* Opera 12+ */
+    background: -ms-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* IE10+ */
+    background: radial-gradient(ellipse at center,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#96f444', endColorstr='#7cbc0a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
 }
 
 #primary-navigation a:link, #primary-navigation a:visited {
-    color: white;
+    color: black;
 }
 
 #primary-navigation a:hover {
-    border: 2px solid black;
-    border-bottom: none;
+    box-shadow: 3px 3px 3px black;
 }
 
 /* show which navigation link is active */
@@ -177,7 +181,7 @@ body.about #primary-navigation .about a,
 body.contact #primary-navigation .contact a,
 body.products #primary-navigation .products a,
 body.home #primary-navigation .home a {
-    border: 2px solid black;
+    box-shadow: 3px 3px 3px black;
 }
 
 div.cart-summary {
