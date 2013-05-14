@@ -104,6 +104,12 @@ h1 {
     margin-left: 20px;
 }
 
+#hd #topbar img.flag {
+    float: left;
+    margin-left: 20px;
+    height: 25px;
+}
+
 #hd #topbar span.welcome {
     float: right;
     font-size: 14px;
@@ -116,7 +122,7 @@ h1 {
 
 #hd #topbar span.canadian {
     font-family: cursive;
-    margin-left: 20px;
+    margin-left: 10px;
     float: left;
 }
 
