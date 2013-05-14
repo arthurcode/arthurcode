@@ -31,14 +31,19 @@ h2 {
 }
 
 html {
-    background-color: #DCDCDC;
+    background: white; /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(98,109,101,1) 0%, rgba(0,0,0,1) 30px, rgba(255,255,255,1) 30px); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(98,109,101,1)), color-stop(30px,rgba(0,0,0,1)), color-stop(30px,rgba(255,255,255,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 30px,rgba(255,255,255,1) 30px); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 30px,rgba(255,255,255,1) 30px); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 30px,rgba(255,255,255,1) 30px); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 30px,rgba(255,255,255,1) 30px); /* W3C */
 }
 
 body {
     width: 960px;
     margin: auto;
     background-color: white;
-    border-radius: 10px;
     font-family: georgia, sans-serif;
     font-size: large;
     line-height: 1.5em;
@@ -76,6 +81,50 @@ h1 {
     list-style: disc;
 }
 
+#hd #topbar {
+    font-size: 16px;
+    color: white;
+    background-color: black;
+    height: 30px;                    /* fixed width because we want to 'extend' the bar into the flexible html part of the page */
+    width: 100%;
+    margin-bottom: 1em;  /* HACK to keep the sitename span from spilling into the div.  ARG! */
+    background: -moz-linear-gradient(top,  rgba(98,109,101,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(98,109,101,1)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#626d65', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+}
+
+#hd #topbar a {
+    color: white;
+    font-size: 14px;
+    float: right;
+    margin-left: 20px;
+}
+
+#hd #topbar span.welcome {
+    float: right;
+    font-size: 14px;
+}
+
+#hd #topbar a.account {
+    margin-right: 20px;
+    margin-left: 15px;
+}
+
+#hd #topbar span.canadian {
+    font-family: cursive;
+    margin-left: 20px;
+    float: left;
+}
+
+#hd #topbar span.contact {
+    float: left;
+    margin-left: 20px;
+}
+
 #hd span.sitename {
     font-size: 350%;
     font-family: courier, monospace;
@@ -83,6 +132,8 @@ h1 {
     letter-spacing: 0.2em;
     padding-left: 20px;
     float: left;
+    display: inline-block;
+    overflow: visible;
 }
 
 #primary-navigation {
@@ -134,12 +185,6 @@ div.cart-summary {
     float: left;
     font-size: 80%;
     margin-right: 1em;
-}
-
-div.account-summary {
-    float: left;
-    display: inline-block;
-    font-size: 80%;
 }
 
 #hd .rss {

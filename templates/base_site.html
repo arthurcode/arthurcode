@@ -4,21 +4,29 @@
 {% load cart_tags %}
 
 {% block header %}
+    <div id="topbar">
+        {% block topbar %}
+            <span class="canadian">Proudly Canadian</span>
+            <span class="contact">1-800-664-9741</span>
+            <a class="account" href="{% url show_account %}">my account</a>
+            {% if user.is_authenticated and not user|is_lazy_user %}
+                <a class="logout" href="{% url logout %}">log out</a>
+                <span class="welcome">Welcome, {{ user.first_name }}</span>
+            {% else %}
+                <a class="login" href="{% url login_or_create_account %}">log in</a>
+            {% endif %}
+        {% endblock %}
+    </div>
+
     {% block banner %}
         <span class="sitename">arthurcode</span>
     {% endblock %}
 
-    <div class="cart-summary">
-        {% cart_summary request %}
-    </div>
-
-    <div class="account-summary">
-        {% if user.is_authenticated and not user|is_lazy_user %}
-            Welcome, {{ user.first_name }} | <a href="{% url show_account %}">My Account</a> | <a href="{% url logout %}">Log Out</a>
-        {% else %}
-            <a href="{% url login_or_create_account %}">Log In or Create Account</a>
-        {% endif %}
-    </div>
+    {% block cart-summary %}
+        <div class="cart-summary">
+            {% cart_summary request %}
+        </div>
+    {% endblock %}
 
     {% block navigation %}
         <ul id="primary-navigation">

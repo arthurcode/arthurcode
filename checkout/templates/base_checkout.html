@@ -1,10 +1,15 @@
-{% extends 'base_hd_ft.html' %}
+{% extends 'base_site.html' %}
 {% load checkout_tags %}
 
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
 
-{% block body %}
+{% block navigation %}
     {% include "_checkout_navigation.html" %}
+{% endblock %}
+
+{% block cart-summary %}{% endblock %}
+
+{% block body %}
     <ul class="checkout-utils">
         <a href="{% url cancel %}">cancel checkout</a>
         <a href="{% url show_cart %}">edit shopping cart</a>
