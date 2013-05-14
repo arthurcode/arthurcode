@@ -20,7 +20,8 @@
     </div>
 
     {% block banner %}
-        <span class="sitename">arthurcode</span>
+        <img class="logo" src="{{ STATIC_URL }}icons/green_tree_icon.jpg">
+        <span class="sitename">The Toy Tree</span>
     {% endblock %}
 
     {% block cart-summary %}
@@ -41,6 +42,6 @@
 {% endblock %}
 
 {% block footer %}
-    copyright &copy 2013 www.arthurcode.com
+    copyright &copy 2013 www.thetoytree.com
     {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}

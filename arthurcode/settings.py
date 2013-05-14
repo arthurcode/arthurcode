@@ -168,7 +168,7 @@ LOGGING = {
 }
 
 # local (non-generated) settings
-SITE_NAME = 'Arthurcode'
+SITE_NAME = 'The Toy Tree'
 
 # TODO: tweak this description
 SITE_DESCRIPTION = 'A blog focused on web-technologies, such as django and css.'

@@ -537,7 +537,7 @@ class ViewTests(TestCase):
         self.assert_contains_link(response, url, count=0)
 
     def assert_page_title_is(self, response, title):
-        self.assertContains(response, "<title>%s | Arthurcode</title>" % title, html=True)
+        self.assertContains(response, "<title>%s | The Toy Tree</title>" % title, html=True)
 
     def assert_meta_desc_is(self, response, desc):
         meta = '<meta name="description" content="%s"/>' % desc

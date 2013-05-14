@@ -87,7 +87,6 @@ h1 {
     background-color: black;
     height: 30px;                    /* fixed width because we want to 'extend' the bar into the flexible html part of the page */
     width: 100%;
-    margin-bottom: 1em;  /* HACK to keep the sitename span from spilling into the div.  ARG! */
     background: -moz-linear-gradient(top,  rgba(98,109,101,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(98,109,101,1)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
@@ -131,20 +130,24 @@ h1 {
     margin-left: 20px;
 }
 
+#hd img.logo {
+    display: inline-block;
+    float: left;
+    height: 100px;
+    margin: 0 0 0 10px;
+}
+
 #hd span.sitename {
-    font-size: 350%;
-    font-family: courier, monospace;
-    color: darkgreen;
-    letter-spacing: 0.2em;
-    padding-left: 20px;
+    margin-top: 40px;
+    font-size: 250%;
+    font-family: 'Cinzel Decorative', cursive;
+    color: black;
     float: left;
     display: inline-block;
-    overflow: visible;
 }
 
 #primary-navigation {
     margin-left: 0;
-    margin-top: 1em;
     float: left;
     clear: both;
     padding-left: 20px;

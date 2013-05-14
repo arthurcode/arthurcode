@@ -25,14 +25,14 @@ Atom1Feed.add_item_elements = atom1feed_add_item_elements_patched
 class LatestPostsFeed(Feed):
     NUM_POSTS = 4
 
-    title = "Arthurcode.com Latest Blog Postings"
+    title = "The Toy Tree Latest Blog Postings"
     author_name = "Rhyan Arthur"
     author_email = "rhyan.arthur@gmail.com"
-    feed_copyright = "Copyright (c) 2013, arthurcode.com"
+    feed_copyright = "Copyright (c) 2013, thetoytree.com"
     categories = ("web development", "django")
     feed_type = Rss201rev2Feed  # RSS 2.01
     feed_version = "RSS 2.01"
-    description = "The latest in django web-development from Rhyan Arthur, founder of arthurcode.com."
+    description = "The latest in django web-development from Rhyan Arthur, founder of thetoytree.com."
 
     def link(self):
         return reverse('index')
