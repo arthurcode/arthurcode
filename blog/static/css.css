@@ -108,18 +108,17 @@ h1 {
     float: left;
     clear: both;
     width: 100%;
+    font-size: 1em;
 }
 
 #hd #topbar a {
     color: white;
     font-size: 14px;
     float: right;
-    margin-left: 20px;
 }
 
 #hd #topbar img.flag {
     float: left;
-    margin-left: 20px;
     height: 25px;
 }
 
@@ -129,7 +128,6 @@ h1 {
 }
 
 #hd #topbar a.account {
-    margin-right: 20px;
     margin-left: 15px;
 }
 
@@ -141,7 +139,6 @@ h1 {
 
 #hd #topbar span.contact {
     float: left;
-    margin-left: 20px;
 }
 
 #hd img.logo {
@@ -149,7 +146,7 @@ h1 {
     float: left;
     clear: both;
     height: 100px;
-    margin: 0 0 0 10px;
+    margin: 0;
 }
 
 #hd span.sitename {
@@ -212,11 +209,11 @@ body.products #primary-navigation .products a {
 
 form#search {
     float: left;
-    margin: 0 0 0 20px;
+    margin: 0;
 }
 
 form#search fieldset {
-    font-size: 1em;
+    font-size: inherit;
     border-radius: 1em;
     border-width: 0;
 }
@@ -244,7 +241,6 @@ div.cart-summary {
     display: inline-block;
     float: right;
     font-size: 80%;
-    margin-right: 20px;
 }
 
 .action {
@@ -256,11 +252,10 @@ div.cart-summary {
     background: -ms-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
-    outline: 1px solid rgba(254,182,69,1);
 }
 
 div.cart-summary a {
-    padding: 0.3em 0.4em;
+    padding: 0.2em 0.4em;
     display: inline-block;
     text-decoration: none;
 }
