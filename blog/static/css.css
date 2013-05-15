@@ -137,6 +137,7 @@ h1 {
 #hd img.logo {
     display: inline-block;
     float: left;
+    clear: both;
     height: 100px;
     margin: 0 0 0 10px;
 }
@@ -151,10 +152,9 @@ h1 {
 }
 
 #primary-navigation {
-    margin-left: 0;
+    margin-top: 30px;
+    margin-left: 20px;
     float: left;
-    clear: both;
-    padding-left: 20px;
     display: inline-block;
 }
 
@@ -168,6 +168,7 @@ h1 {
     font-size: 120%;
     padding: 0.25em 0.5em;
     border: 1px solid darkgreen;
+    border-radius: 3px;
     text-decoration: none;
     display: inline-block;
     background: rgb(150,244,68); /* Old browsers */
@@ -190,10 +191,8 @@ h1 {
 
 /* show which navigation link is active */
 body.blog #primary-navigation .blog a,
-body.about #primary-navigation .about a,
 body.contact #primary-navigation .contact a,
-body.products #primary-navigation .products a,
-body.home #primary-navigation .home a {
+body.products #primary-navigation .products a {
     box-shadow: 3px 3px 3px black;
 }
 

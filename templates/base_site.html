@@ -24,12 +24,6 @@
         <span class="sitename">The Toy Tree</span>
     {% endblock %}
 
-    {% block cart-summary %}
-        <div class="cart-summary">
-            {% cart_summary request %}
-        </div>
-    {% endblock %}
-
     {% block navigation %}
         <ul id="primary-navigation">
             <li class="products"><a href="{% url catalogue_category '' %}">Shop</a></li>
@@ -38,6 +32,13 @@
             <li class="blog"><a href="{% url index %}">Blog</a></li>
         </ul>
     {% endblock %}
+
+    {% block cart-summary %}
+        <div class="cart-summary">
+            {% cart_summary request %}
+        </div>
+    {% endblock %}
+
 {% endblock %}
 
 {% block footer %}
