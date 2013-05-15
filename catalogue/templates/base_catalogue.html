@@ -1,0 +1,16 @@
+{% extends "base_site.html" %}
+
+{% block header %}
+    {{ block.super }}
+    {% spaceless %}
+        <ul id="secondary-navigation" class="tabrow">
+            <li class="selected"><a>Experiments</a></li>
+            <li><a>Pretend Play</a></li>
+            <li><a>Games</a></li>
+            <li><a>Puzzles</a></li>
+            <li><a>Building Sets</a></li>
+            <li><a>Books</a></li>
+            <li><a>Outdoor</a></li>
+        </ul>
+    {% endspaceless %}
+{% endblock %}
