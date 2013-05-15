@@ -32,9 +32,8 @@
 
     {% block navigation %}
         <ul id="primary-navigation">
-            <li class="home"><a href="{% url home %}">Home</a></li>
-            <li class="products"><a href="{% url catalogue_category '' %}">Products</a></li>
-            <li class="about"><a href="{% url about %}">About Me</a></li>
+            <li class="products"><a href="{% url catalogue_category '' %}">Shop</a></li>
+            <li class="help"><a>FAQ</a></li>
             <li class="contact"><a href="{% url contact %}">Contact</a></li>
             <li class="blog"><a href="{% url index %}">Blog</a></li>
         </ul>
@@ -42,6 +41,8 @@
 {% endblock %}
 
 {% block footer %}
-    copyright &copy 2013 www.thetoytree.com
+    <a href="{% url home %}">home</a>
+    <a href="{% url about %}">about us</a>
+    <span class='copyright'>copyright &copy 2013 www.thetoytree.com</span>
     {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}

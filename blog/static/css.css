@@ -77,6 +77,10 @@ h1 {
     font-style: italic;
 }
 
+#ft .copyright {
+    display: block;
+}
+
 .text li {
     list-style: disc;
 }
