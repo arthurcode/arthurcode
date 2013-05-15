@@ -33,12 +33,15 @@
         </ul>
     {% endblock %}
 
-    {% block cart-summary %}
-        <div class="cart-summary">
-            {% cart_summary request %}
-        </div>
-    {% endblock %}
-
+    <div class="header-bar">
+        {% block search-bar %}
+            {% block cart-summary %}
+                <div class="cart-summary">
+                    {% cart_summary request %}
+                </div>
+            {% endblock %}
+        {% endblock %}
+    </div>
 {% endblock %}
 
 {% block footer %}
