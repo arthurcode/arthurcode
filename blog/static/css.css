@@ -272,8 +272,8 @@ body.products #primary-navigation .products a {
 */
 
 form#search {
-    float: left;
-    margin: 0;
+    float: right;
+    margin-right: 10px;
 }
 
 form#search fieldset {
@@ -304,6 +304,7 @@ form#search fieldset button {
 div.cart-summary {
     display: inline-block;
     float: right;
+    clear: both;
     font-size: 80%;
 }
 
