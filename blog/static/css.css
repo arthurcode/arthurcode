@@ -101,10 +101,10 @@ h1 {
 }
 
 .header-bar {
-    height: 1.5em;
+    float: left;
     clear: both;
-    padding-left: 20px;
-    padding-right: 20px;
+    border: 1px solid darkgray;
+    width: 100%;
 }
 
 #hd #topbar a {
@@ -207,6 +207,29 @@ div.cart-summary {
     display: inline-block;
     float: right;
     font-size: 80%;
+}
+
+.action {
+    background: rgb(241,231,103); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(241,231,103,1) 0%, rgba(254,182,69,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(241,231,103,1)), color-stop(100%,rgba(254,182,69,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
+    padding: 0.25em 0.5em;
+}
+
+div.cart-summary a {
+    display: inline-block;
+    text-decoration: none;
+}
+
+div.cart-summary img {
+    height: 20px;
+    margin-right: 5px;
+    vertical-align: text-bottom;
 }
 
 #hd .rss {
