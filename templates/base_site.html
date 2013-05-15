@@ -35,11 +35,19 @@
 
     <div class="header-bar">
         {% block search-bar %}
-            {% block cart-summary %}
-                <div class="cart-summary">
-                    {% cart_summary request %}
-                </div>
-            {% endblock %}
+            <form id="search">
+                <fieldset>
+                    <label class="hidden" for="search-text">Search Text</label>
+                    <input type="text" name="search-text" id="search-text">
+                    <button type="submit" name="search" class="action">Search</button>
+                </fieldset>
+            </form>
+        {% endblock %}
+
+        {% block cart-summary %}
+            <div class="cart-summary">
+                {% cart_summary request %}
+            </div>
         {% endblock %}
     </div>
 {% endblock %}

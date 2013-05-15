@@ -6,6 +6,10 @@
     visibility: hidden;
 }
 
+button {
+    cursor: pointer;
+}
+
 /* a button that looks like a link */
 button.link {
     background:none;
@@ -103,7 +107,6 @@ h1 {
 .header-bar {
     float: left;
     clear: both;
-    border: 1px solid darkgray;
     width: 100%;
 }
 
@@ -203,10 +206,45 @@ body.products #primary-navigation .products a {
     box-shadow: 3px 3px 3px black;
 }
 
+/* Search box styles.  Solution taken from this page:
+   http://stackoverflow.com/questions/6726135/css-exact-same-height-and-alignment-of-button-and-input-text-box
+*/
+
+form#search {
+    float: left;
+    margin: 0 0 0 20px;
+}
+
+form#search fieldset {
+    font-size: 1em;
+    border-radius: 1em;
+    border-width: 0;
+}
+
+form#search fieldset input, form#search fieldset button {
+    font-size: inherit;
+    padding: 0.3em 0.4em;
+    margin: 0;
+    -moz-box-sizing: content-box;
+    -webkit-box-sizing: content-box;
+    box-sizing: content-box;
+}
+
+form#search fieldset button {
+    border: none;
+}
+
+form#search fieldset input {
+    border-radius: 0;
+    border-right: none;
+    width: 10em;
+}
+
 div.cart-summary {
     display: inline-block;
     float: right;
     font-size: 80%;
+    margin-right: 20px;
 }
 
 .action {
@@ -218,10 +256,11 @@ div.cart-summary {
     background: -ms-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
-    padding: 0.25em 0.5em;
+    outline: 1px solid rgba(254,182,69,1);
 }
 
 div.cart-summary a {
+    padding: 0.3em 0.4em;
     display: inline-block;
     text-decoration: none;
 }
