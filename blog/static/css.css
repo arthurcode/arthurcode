@@ -92,23 +92,25 @@ h1 {
 #hd #topbar {
     font-size: 16px;
     color: white;
-    background-color: black;
     height: 30px;                    /* fixed width because we want to 'extend' the bar into the flexible html part of the page */
     width: 100%;
-    background: -moz-linear-gradient(top,  rgba(98,109,101,1) 0%, rgba(0,0,0,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(98,109,101,1)), color-stop(100%,rgba(0,0,0,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(98,109,101,1) 0%,rgba(0,0,0,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#626d65', endColorstr='#000000',GradientType=0 ); /* IE6-9 */
+    background: rgb(63,76,107); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(63,76,107,1) 0%, rgba(63,76,107,1) 36%, rgba(36,36,61,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(63,76,107,1)), color-stop(36%,rgba(63,76,107,1)), color-stop(100%,rgba(36,36,61,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f4c6b', endColorstr='#24243d',GradientType=0 ); /* IE6-9 */
 }
 
 .header-bar {
+    padding-bottom: 3px;
     float: left;
     clear: both;
     width: 100%;
     font-size: 1em;
+    box-shadow: 0 4px 4px -2px gray;  /* underline shadow */
 }
 
 #hd #topbar a {
@@ -133,7 +135,7 @@ h1 {
 
 #hd #topbar span.canadian {
     font-family: cursive;
-    margin-left: 10px;
+    margin: 0 10px;
     float: left;
 }
 
@@ -153,7 +155,7 @@ h1 {
     margin-top: 40px;
     font-size: 250%;
     font-family: 'Cinzel Decorative', cursive;
-    color: darkred;
+    color: black;
     float: left;
     display: inline-block;
 }
@@ -161,7 +163,7 @@ h1 {
 #primary-navigation {
     margin-top: 30px;
     margin-left: 20px;
-    float: left;
+    float: right;
     display: inline-block;
 }
 
@@ -173,19 +175,19 @@ h1 {
     margin-right: 5px;
     float: left;
     font-size: 120%;
-    padding: 0.25em 0.5em;
-    border: 1px solid darkgreen;
+    padding: 0.5em 0.5em;
+    border: 1px solid rgba(165,201,86,1);
     border-radius: 3px;
     text-decoration: none;
     display: inline-block;
-    background: rgb(150,244,68); /* Old browsers */
-    background: -moz-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%, rgba(124,188,10,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(radial, center center, 0px, center center, 100%, color-stop(0%,rgba(150,244,68,1)), color-stop(100%,rgba(124,188,10,1))); /* Chrome,Safari4+ */
-    background: -webkit-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* Opera 12+ */
-    background: -ms-radial-gradient(center, ellipse cover,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* IE10+ */
-    background: radial-gradient(ellipse at center,  rgba(150,244,68,1) 0%,rgba(124,188,10,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#96f444', endColorstr='#7cbc0a',GradientType=1 ); /* IE6-9 fallback on horizontal gradient */
+    background: rgb(205,235,142); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(205,235,142,1) 0%, rgba(165,201,86,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,235,142,1)), color-stop(100%,rgba(165,201,86,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
 }
 
 #primary-navigation a:link, #primary-navigation a:visited {
@@ -227,14 +229,14 @@ form#search fieldset input, form#search fieldset button {
     box-sizing: content-box;
 }
 
-form#search fieldset button {
-    border: none;
-}
-
 form#search fieldset input {
     border-radius: 0;
     border-right: none;
     width: 10em;
+}
+
+form#search fieldset button {
+    border: none;
 }
 
 div.cart-summary {
@@ -252,6 +254,7 @@ div.cart-summary {
     background: -ms-linear-gradient(top,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
+    outline: 1px solid gray;
 }
 
 div.cart-summary a {
