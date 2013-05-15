@@ -164,6 +164,13 @@ h1 {
     font-size: 0.8em;
 }
 
+.header-bar h2 {
+    margin: 0;
+    padding: 0;
+    float: left;
+    display: inline-block;
+}
+
 #hd {
     float: left;
     width: 100%;
@@ -274,6 +281,7 @@ body.products #primary-navigation .products a {
 form#search {
     float: right;
     margin-right: 10px;
+    display: inline-block;
 }
 
 form#search fieldset {
@@ -304,7 +312,6 @@ form#search fieldset button {
 div.cart-summary {
     display: inline-block;
     float: right;
-    clear: both;
     font-size: 80%;
 }
 

@@ -4,6 +4,7 @@
     {{ block.super }}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow">
+            <li><a>Featured</a></li>
             <li class="selected"><a>Experiments</a></li>
             <li><a>Pretend Play</a></li>
             <li><a>Games</a></li>
@@ -14,3 +15,5 @@
         </ul>
     {% endspaceless %}
 {% endblock %}
+
+{% block secondary-nav-title %}<h2>Product Categories</h2>{% endblock %}
