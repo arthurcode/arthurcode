@@ -4,14 +4,14 @@
     {{ block.super }}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow">
-            <li><a>Featured</a></li>
-            <li class="selected"><a>Experiments</a></li>
-            <li><a>Pretend Play</a></li>
-            <li><a>Games</a></li>
-            <li><a>Puzzles</a></li>
-            <li><a>Building Sets</a></li>
-            <li><a>Books</a></li>
-            <li><a>Outdoor</a></li>
+            <li><a href="does-not-exist">Featured</a></li>
+            <li class="selected"><a href="{% url catalogue_category experiments %}">Experiments</a></li>
+            <li><a href="{% url catalogue_category pretend_play %}">Pretend Play</a></li>
+            <li><a href="{% url catalogue_category games %}">Games</a></li>
+            <li><a href="{% url catalogue_category puzzles %}">Puzzles</a></li>
+            <li><a href="{% url catalogue_category building_sets %}">Building Sets</a></li>
+            <li><a href="{% url catalogue_category books %}">Books</a></li>
+            <li><a href="{% url catalogue_category outdoor %}">Outdoor</a></li>
         </ul>
     {% endspaceless %}
 {% endblock %}
