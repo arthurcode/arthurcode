@@ -694,10 +694,10 @@ class Checkout:
 
 
 # defines the step ordering and the associated step url or the entire checkout process
-STEPS = [(ContactInfoStep, reverse_lazy('contact'), 'Contact Info'),
-         (ShippingInfoStep, reverse_lazy('shipping'), 'Shipping Info'),
-         (BillingInfoStep, reverse_lazy('billing'), 'Billing Info'),
-         (ReviewStep, reverse_lazy('review'), 'Review & Pay')]
+STEPS = [(ContactInfoStep, reverse_lazy('checkout_contact'), 'Contact Info'),
+         (ShippingInfoStep, reverse_lazy('checkout_shipping'), 'Shipping Info'),
+         (BillingInfoStep, reverse_lazy('checkout_billing'), 'Billing Info'),
+         (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay')]
 
 
 @allow_lazy_user
