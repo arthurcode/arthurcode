@@ -68,13 +68,6 @@ h2 {
     border-top-right-radius: 7px;
 }
 
-.tabrow li.selected {
-    background: #FFF;
-    color: #000;
-    z-index: 2;
-    border-bottom-color: #FFF;
-}
-
 .tabrow a {
     text-decoration: none;
     display: inline-block;
@@ -272,6 +265,31 @@ h1 {
     width: 100%
 }
 
+#secondary-navigation li {
+    background: rgb(252,255,244); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(252,255,244,1) 0%, rgba(233,233,206,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(252,255,244,1)), color-stop(100%,rgba(233,233,206,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(252,255,244,1) 0%,rgba(233,233,206,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fcfff4', endColorstr='#e9e9ce',GradientType=0 ); /* IE6-9 */
+}
+
+ul#secondary-navigation.featured li.featured,
+ul#secondary-navigation.experiments li.experiments,
+ul#secondary-navigation.pretend-play li.pretend-play,
+ul#secondary-navigation.games li.games,
+ul#secondary-navigation.puzzles li.puzzles,
+ul#secondary-navigation.building-sets li.building-sets,
+ul#secondary-navigation.books li.books,
+ul#secondary-navigation.outdoor li.outdoor {
+    /* make the selected tab pop out */
+    background: none;
+    background-color: white;
+    z-index: 2;
+    border-bottom-color: #FFF;
+}
 /* show which navigation link is active */
 body.blog #primary-navigation .blog a,
 body.contact #primary-navigation .contact a,

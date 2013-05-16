@@ -3,15 +3,15 @@
 {% block header %}
     {{ block.super }}
     {% spaceless %}
-        <ul id="secondary-navigation" class="tabrow">
-            <li><a href="does-not-exist">Featured</a></li>
-            <li class="selected"><a href="{% url catalogue_category experiments %}">Experiments</a></li>
-            <li><a href="{% url catalogue_category pretend_play %}">Pretend Play</a></li>
-            <li><a href="{% url catalogue_category games %}">Games</a></li>
-            <li><a href="{% url catalogue_category puzzles %}">Puzzles</a></li>
-            <li><a href="{% url catalogue_category building_sets %}">Building Sets</a></li>
-            <li><a href="{% url catalogue_category books %}">Books</a></li>
-            <li><a href="{% url catalogue_category outdoor %}">Outdoor</a></li>
+        <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}none-selected{% endblock %}{% endspaceless %}">
+            <li class="featured"><a href="does-not-exist">Featured</a></li>
+            <li class="experiments"><a href="{% url catalogue_category "experiments" %}">Experiments</a></li>
+            <li class="pretend-play"><a href="{% url catalogue_category "pretend-play" %}">Pretend Play</a></li>
+            <li class="games"><a href="{% url catalogue_category "games" %}">Games</a></li>
+            <li class="puzzles"><a href="{% url catalogue_category "puzzles" %}">Puzzles</a></li>
+            <li class="building-sets"><a href="{% url catalogue_category "building-sets" %}">Building Sets</a></li>
+            <li class="books"><a href="{% url catalogue_category "books" %}">Books</a></li>
+            <li class="outdoor"><a href="{% url catalogue_category "outdoor" %}">Outdoor</a></li>
         </ul>
     {% endspaceless %}
 {% endblock %}
