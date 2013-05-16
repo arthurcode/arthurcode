@@ -16,6 +16,10 @@ def home_view(request):
     return render_to_response("home.html", locals(), context_instance=RequestContext(request))
 
 
+def featured_view(request):
+    return render_to_response("featured.html", {}, context_instance=RequestContext(request))
+
+
 def product_detail_view(request, slug=""):
     if request.method == 'POST':
         # add to cart, create the bound form

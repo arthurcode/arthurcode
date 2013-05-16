@@ -4,7 +4,7 @@
     {{ block.super }}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}none-selected{% endblock %}{% endspaceless %}">
-            <li class="featured"><a href="does-not-exist">Featured</a></li>
+            <li class="featured"><a href="{% url catalogue_featured %}">Featured</a></li>
             <li class="experiments"><a href="{% url catalogue_category "experiments" %}">Experiments</a></li>
             <li class="pretend-play"><a href="{% url catalogue_category "pretend-play" %}">Pretend Play</a></li>
             <li class="games"><a href="{% url catalogue_category "games" %}">Games</a></li>
