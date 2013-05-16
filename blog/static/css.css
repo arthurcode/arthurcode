@@ -68,6 +68,13 @@ h2 {
     border-top-right-radius: 7px;
 }
 
+.tabrow li.selected {
+    background: none !important;
+    background-color: white !important;
+    z-index: 2 !important;
+    border-bottom-color: white !important;
+}
+
 .tabrow a {
     text-decoration: none;
     display: inline-block;
@@ -768,6 +775,20 @@ a.checkout-as-guest {
 }
 
 /* checkout styles */
+ul#secondary-navigation.checkout li {
+    position: relative;
+    padding-right: 2.2em;
+}
+
+ul#secondary-navigation.checkout img {
+    position: absolute;
+    height: 2em;
+    top: 0;
+    right: 0;
+    z-index: -999;
+}
+
+
 div.contact-info .required-text, form.address-form .required-text, div.billing-info .required-text,
 div.payment-info .required-text, div.verify-contact-info .required-text {
     display: none;

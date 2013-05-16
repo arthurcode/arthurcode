@@ -1,14 +1,16 @@
-<div class='checkout-nav'>
-    {% for step in steps %}
-        {% if forloop.counter == current_step %}
-            <a class="current disabled">{{ step.2 }}</a>
-        {% elif forloop.counter0 > completed_step %}
-            <a class="disabled">{{ step.2 }}</a>
-        {% else %}
-            <a href="{{ step.1 }}">{{ step.2 }}</a>
-        {% endif %}
-        {% if forloop.counter < steps|length %}
-            <img src="{{ STATIC_URL }}icons/tick.png" width="64" height="64" {% if forloop.counter > completed_step %}class="invisible"{% endif %}/>
-        {% endif %}
-    {% endfor %}
-</div>
+{% spaceless %}
+    <ul id="secondary-navigation" class='checkout tabrow'>
+        {% for step in steps %}
+            <li {% if forloop.counter == current_step %}class="selected"{% endif %}>
+                {% if forloop.counter0 > completed_step %}
+                    <a class="disabled">{{ forloop.counter }}. {{ step.2 }}</a>
+                {% else %}
+                    <a href="{{ step.1 }}">{{ forloop.counter }}. {{ step.2 }}</a>
+                {% endif %}
+                {% if forloop.counter < steps|length %}
+                    <img src="{{ STATIC_URL }}icons/tick.png" {% if forloop.counter > completed_step %}class="invisible"{% endif %}/>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+{% endspaceless %}
