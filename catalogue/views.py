@@ -1,5 +1,5 @@
 # Create your views here.
-from django.shortcuts import get_object_or_404, render_to_response
+from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
 from catalogue.models import Product, Category
 from arthurcode import settings
@@ -11,9 +11,9 @@ from cart import cartutils
 
 DEFAULT_PAGE_SIZE = 16
 
+
 def home_view(request):
-    root_categories = Category.objects.root_nodes().filter(is_active=True).order_by('name')
-    return render_to_response("home.html", locals(), context_instance=RequestContext(request))
+    return redirect('catalogue_featured')
 
 
 def featured_view(request):
