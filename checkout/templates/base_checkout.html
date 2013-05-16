@@ -1,22 +1,26 @@
 {% extends 'base_site.html' %}
 {% load checkout_tags %}
+{% load lazysignup_tags %}
 
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
-
+{% block banner %}{{ block.super }} <span class="checkout">{% if not request.user.is_authenticated or request.user|is_lazy_user %}guest {% endif %}checkout</span>{% endblock %}
 {% block navigation %}{% endblock %}
 {% block secondary-nav-title %}<h2>Step {{ current_step }} of {{ steps|length }}{% endblock %}</h2>
 {% block secondary-navigation %}
     {% include "_checkout_navigation.html" %}
 {% endblock %}
 
-{% block search-bar %}{% endblock %}
-{% block cart-summary %}{% endblock %}
-
-{% block body %}
+{% block extra-utilities %}
     <ul class="checkout-utils">
         <a href="{% url checkout_cancel %}">cancel checkout</a>
         <a href="{% url show_cart %}">edit shopping cart</a>
     </ul>
+{% endblock %}
+
+{% block search-bar %}{% endblock %}
+{% block cart-summary %}{% endblock %}
+
+{% block body %}
     <div class='form-content'>
         {% block order_summary %}{% order_summary order %}{% endblock %}
         {% block forms %}{% endblock forms %}
