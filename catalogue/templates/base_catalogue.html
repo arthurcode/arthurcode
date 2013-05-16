@@ -1,7 +1,6 @@
 {% extends "base_site.html" %}
 
-{% block header %}
-    {{ block.super }}
+{% block secondary-navigation %}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}none-selected{% endblock %}{% endspaceless %}">
             <li class="featured"><a href="{% url catalogue_featured %}">Featured</a></li>

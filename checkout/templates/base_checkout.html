@@ -3,10 +3,12 @@
 
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
 
-{% block navigation %}
+{% block navigation %}{% endblock %}
+{% block secondary-navigation %}
     {% include "_checkout_navigation.html" %}
 {% endblock %}
 
+{% block search-bar %}{% endblock %}
 {% block cart-summary %}{% endblock %}
 
 {% block body %}
