@@ -5,7 +5,7 @@
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
 {% block banner %}{{ block.super }} <span class="checkout">{% if not request.user.is_authenticated or request.user|is_lazy_user %}guest {% endif %}checkout</span>{% endblock %}
 {% block navigation %}{% endblock %}
-{% block secondary-nav-title %}<h2>Step {{ current_step }} of {{ steps|length }}{% endblock %}</h2>
+{% block secondary-nav-title %}<h2>Step {{ current_step }} of {{ steps|length }}</h2>{% endblock %}
 {% block secondary-navigation %}
     {% include "_checkout_navigation.html" %}
 {% endblock %}

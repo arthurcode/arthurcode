@@ -47,14 +47,16 @@
         {% endif %}
     {% endif %}
 
-    {% form_errors form %}
-    <form method="post" action="" class="stacked address-form{% if using_address and not form.is_bound %} hide-initially{% endif %}">
-        {% csrf_token %}
-        {% block form_fields %}{% endblock %}
-        <div class="controls">
-            <button class="yui3-button" name="submit">Save and Continue</button>
-        </div>
-    </form>
+    <div class="new-address-form">
+        {% form_errors form %}
+        <form method="post" action="" class="stacked address-form{% if using_address and not form.is_bound %} hide-initially{% endif %}">
+            {% csrf_token %}
+            {% block form_fields %}{% endblock %}
+            <div class="controls">
+                <button class="yui3-button" name="submit">Save and Continue</button>
+            </div>
+        </form>
+    </div>
 {% endblock %}
 
 {% block javascript %}

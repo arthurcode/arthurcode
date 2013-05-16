@@ -888,6 +888,12 @@ div.choose-address h2, div.chosen-address h2, div.verify-contact-info h2 {
     margin-bottom: 1em;
 }
 
+div.contact-info, div.new-address-form {
+    display: inline-block;
+    float: left;
+    clear: left;
+}
+
 .address-preview button.link {
     position: relative;
     float: right;
