@@ -2,6 +2,8 @@
 {% load checkout_tags %}
 {% load lazysignup_tags %}
 
+{% block body_class %}checkout{% endblock %}
+
 {% block title %}{{ current_step_name }} | Checkout{% endblock %}
 {% block banner %}{{ block.super }} <span class="checkout">{% if not request.user.is_authenticated or request.user|is_lazy_user %}guest {% endif %}checkout</span>{% endblock %}
 {% block navigation %}{% endblock %}
