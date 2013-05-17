@@ -1,11 +1,14 @@
 {% extends "base.html" %}
 
 {% block site_wrapper %}
-    <div id="hd">
-        {% block header %}{% endblock %}
-    </div>
-    <div id="bd">
-        {% block body %}{% endblock %}
+    <div class="wrapper">
+        <div id="hd">
+            {% block header %}{% endblock %}
+        </div>
+        <div id="bd">
+            {% block body %}{% endblock %}
+        </div>
+        <div class="push"></div>
     </div>
     <div id="ft">
         {% block footer %}{% endblock %}
