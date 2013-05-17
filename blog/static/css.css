@@ -122,10 +122,10 @@ a:link, a:visited {
 }
 
 #bd {
-    padding: 2%;
     float: left;
     clear: both;
-    width: 96%;
+    width: 100%;
+    padding: 10px 0 20px 0;
 }
 
 #ft {
