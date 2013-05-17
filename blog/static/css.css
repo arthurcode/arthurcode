@@ -826,16 +826,6 @@ div.checkout-nav a.current {
     border: 2px solid darkgray;
 }
 
-div.form-content {
-    float: left;
-    clear: both;
-}
-
-div.form-content form {
-    float: left;
-    clear: both;
-}
-
 div.checkout-nav img {
     display: inline-block;
     float: left;
@@ -913,10 +903,6 @@ div.contact-info, div.new-address-form {
 
 .contact-preview dt {
     font-weight: bolder;
-}
-
-.form-content {
-    width: 100%;
 }
 
 .order-summary h2 {

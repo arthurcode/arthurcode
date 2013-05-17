@@ -21,8 +21,6 @@
 {% block cart-summary %}{% endblock %}
 
 {% block body %}
-    <div class='form-content'>
-        {% block order_summary %}{% order_summary order %}{% endblock %}
-        {% block forms %}{% endblock forms %}
-    </div>
+    {% block order_summary %}{% order_summary order %}{% endblock %}
+    {% block forms %}{% endblock forms %}
 {% endblock %}
