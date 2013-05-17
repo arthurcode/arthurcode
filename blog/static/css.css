@@ -17,6 +17,33 @@ html, body {
 }
 /* end sticky footer */
 
+table {
+    border-collapse: collapse;
+}
+
+h2 {
+    font-family: 'Droid Serif', serif;
+    font-size: 130%;
+    font-weight: bolder;
+    color: midnightblue;
+}
+
+.title-bar {
+    color: white;
+    background: rgb(63,76,107); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(63,76,107,1) 0%, rgba(63,76,107,1) 36%, rgba(36,36,61,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(63,76,107,1)), color-stop(36%,rgba(63,76,107,1)), color-stop(100%,rgba(36,36,61,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f4c6b', endColorstr='#24243d',GradientType=0 ); /* IE6-9 */
+}
+
+.title-bar a {
+    color: white;
+}
+
 
 .hidden {
     display: none !important;
@@ -108,7 +135,7 @@ body {
     width: 960px;
     margin: 0 auto;
     background-color: white;
-    font-family: georgia, sans-serif;
+    font-family: 'Droid Sans', sans-serif;
     font-size: large;
     line-height: 1.5em;
 }
@@ -125,7 +152,7 @@ a:link, a:visited {
     float: left;
     clear: both;
     width: 100%;
-    padding: 10px 0 20px 0;
+    padding: 20px 0 20px 0;
 }
 
 #ft {
@@ -289,6 +316,8 @@ a:link, a:visited {
     float: left;
     clear: both;
     width: 100%;
+    font-family: 'Droid Serif', serif;
+
 }
 
 #secondary-navigation li {
@@ -355,6 +384,10 @@ form#search fieldset input {
 
 form#search fieldset button {
     border: none;
+}
+
+body.cart div.cart-summary {
+    box-shadow: 3px 3px 3px black;
 }
 
 div.cart-summary {
@@ -748,15 +781,55 @@ form.update-cart span.label {
 }
 
 /* shopping cart styles */
+body.cart #bd {
+    border-top: 1px solid lightgray;
+}
+
+body.cart #bd h2 {
+    padding-bottom: 10px;
+}
+
+table .right {
+    text-align: right !important;
+}
+
+table .left {
+    text-align: left !important;
+}
+
+table.shopping-cart {
+    width: 80%;
+}
+
+table.shopping-cart tbody {
+    font-size: 80%;
+}
+
+table.shopping-cart tfoot th {
+    padding-top: 5px;
+    badding-bottom: 5px;
+    font-weight: bolder;
+}
+
+table.shopping-cart button.action {
+    font-size: 120%;
+}
+
+table.shopping-cart th {
+    padding: 0 5px;
+    text-align: center;
+}
+
+table.shopping-cart td {
+    border: 2px solid lightgray;
+    padding: 5px;
+    text-align: center;
+}
 
 table.shopping-cart img {
     width: 4em;    /* TODO: add a max width as well */
     margin: 0 auto;
     display: block;
-}
-
-table.shopping-cart {
-    width: 100%;
 }
 
 /* product detail styles */

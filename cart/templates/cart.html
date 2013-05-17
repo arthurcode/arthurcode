@@ -1,11 +1,15 @@
-{% extends "base_catalogue.html" %}
+{% extends "base_site.html" %}
 
 {% load extras %}
 {% load form_tags %}
 
 {% block title %}Shopping Cart{% endblock %}
 
+{% block body_class %}cart{% endblock %}
+
 {% block body %}
+
+    <h2>Your Shopping Cart</h2>
 
     {% if checkout_errors %}
         <div class="error-list">
@@ -19,15 +23,15 @@
     {% endif %}
 
     <table class="shopping-cart">
-        <caption>Your Shopping Cart</caption>
-        <thead>
+        <caption class="hidden">Your Shopping Cart</caption>
+        <thead class="title-bar">
         <tr>
             <th scope="col">Product</th>
-            <th scope="col">Price</th>
-            <th scope="col">Quantity</th>
+            <th class="right" scope="col">Item Price</th>
+            <th class="right" scope="col">Quantity</th>
             <th></th>
             <th></th>
-            <th scope="col" class="right">Total</th>
+            <th class="right" scope="col">Item Total</th>
         </tr>
         </thead>
         <tfoot>
@@ -58,7 +62,7 @@
                         <a href="{{ item.get_absolute_url }}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="{{ item.name }}"/></a>
                         <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
                     </td>
-                    <td>
+                    <td class="right">
                         {% if item.sale_price %}
                             <span class="sale-price">Sale: {{ item.sale_price|currency }}</span><br>
                             <span class="old-price">Was: <del>{{ item.price }}</del></span>
@@ -76,19 +80,19 @@
                         {% endwith %}
                         {{ item.quantity }}
                     </td>
-                    <td class="right">
+                    <td>
                         <form method="post" action="." class="update-cart">
                             {% csrf_token %}
                             {{ item.update_form.item_id }}
                             {% field_label_tag item.update_form.quantity %} {% aria_required_field item.update_form.quantity %}
-                            <button type="submit" name="Update" class="link">Update Quantity</button>
+                            <button type="submit" name="Update" class="link">update quantity</button>
                         </form>
                     </td>
                     <td>
                         <form method="post" action="." class="cart">
                             {% csrf_token %}
                             <input type="hidden" name="item_id" value="{{ item.id }}" />
-                            <button type="submit" name="Remove" class="link">Remove</button>
+                            <button type="submit" name="Remove" class="link">remove</button>
                         </form>
                     </td>
                     <td class="right">
@@ -98,8 +102,8 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td colspan="6">
-                    Your cart is empty
+                <td class="left" colspan="6">
+                    your cart is empty
                 </td>
             </tr>
         {% endif %}
