@@ -195,6 +195,7 @@ h1 {
 #hd #topbar span.welcome {
     float: right;
     font-size: 14px;
+    margin-right: 15px;
 }
 
 #hd #topbar a.account {
@@ -918,17 +919,40 @@ div.contact-info, div.new-address-form {
     width: 100%;
 }
 
+.order-summary h2 {
+    text-align: center;
+}
+
 .order-summary {
     background-color: aliceblue;border: 2px solid lightgray;
     clear: both;
     float: right;
-    padding: 1em;
     font-size: smaller;
+    padding: 10px 0;
+}
+
+.order-summary .hr {
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid black;
+    float: left;
+    clear: left;
+}
+
+.order-summary dt {
+    font-weight: bolder;
+    float: left;
+    clear: left;
+    width: 9em;
+    text-align: right;
+}
+
+.order-summary dd {
+    float: left;
 }
 
 .order-summary .total {
-    font-weight: bold;
-    font-size: larger;
+    font-weight: bolder;
 }
 
 .checkout-utils {
