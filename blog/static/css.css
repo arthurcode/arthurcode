@@ -366,6 +366,8 @@ div.cart-summary {
     background: linear-gradient(to bottom,  rgba(241,231,103,1) 0%,rgba(254,182,69,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#f1e767', endColorstr='#feb645',GradientType=0 ); /* IE6-9 */
     outline: 1px solid gray;
+    border: none;
+    padding: 0.25em 0.5em;
 }
 
 div.cart-summary a {

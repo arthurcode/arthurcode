@@ -20,7 +20,7 @@
                 <form method="post" action="" class="stacked">
                     {% csrf_token %}
                     <div class="controls">
-                        <button class="yui3-button" name="use-profile-data">OK</button>
+                        <button class="action" name="use-profile-data">OK</button>
                     </div>
                 </form>
             </div>
@@ -47,7 +47,7 @@
             {% field form.phone %}
         </fieldset>
         <div class="controls">
-            <button class="yui3-button" name="edit">Save and Continue</button>
+            <button class="action" name="edit">Save and Continue</button>
         </div>
     </form>
 </div>
@@ -62,11 +62,11 @@
             if (verify_div != null) {
                 // add an extra button to each form, used to toggle the visibility of each form
                 verify_div.all('form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script edit yui3-button'>Edit</button>");
+                    f.prepend("<button type='button' class='script edit action'>Edit</button>");
                 });
 
                 Y.all('div.contact-info form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
+                    f.prepend("<button type='button' class='script cancel action'>Cancel</button>");
                 });
             }
 

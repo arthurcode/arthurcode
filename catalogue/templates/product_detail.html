@@ -42,7 +42,7 @@
                     {% csrf_token %}
                     {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
                     {{ form.product_slug }}
-                    <button type="submit" name="submit" class="yui3-button">Add to Cart</button>
+                    <button type="submit" name="submit" class="action">Add to Cart</button>
                 </form>
             {% endif %}
         </div>

@@ -13,7 +13,7 @@
                             {% csrf_token %}
                             {{ address.form.address_id }}
                             <div class="controls">
-                                <button type="submit" name="use" class="yui3-button">OK</button>
+                                <button type="submit" name="use" class="action">OK</button>
                                 <button type="submit" name="delete" class="link">delete</button>
                             </div>
                         </form>
@@ -35,7 +35,7 @@
                                     {% csrf_token %}
                                     {{ address.form.address_id }}
                                     <div class="controls">
-                                        <button type="submit" name="use" class="yui3-button">Use</button>
+                                        <button type="submit" name="use" class="action">Use</button>
                                         <button type="submit" name="delete" class="link">delete</button>
                                     </div>
                                 </form>
@@ -53,7 +53,7 @@
             {% csrf_token %}
             {% block form_fields %}{% endblock %}
             <div class="controls">
-                <button class="yui3-button" name="submit">Save and Continue</button>
+                <button class="action" name="submit">Save and Continue</button>
             </div>
         </form>
     </div>
@@ -67,11 +67,11 @@
             if (chosen_address_div != null) {
                 // only add the special 'edit' and 'cancel' buttons if there is a chosen address div
                 chosen_address_div.all('form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script edit yui3-button'>Change</button>");
+                    f.prepend("<button type='button' class='script edit action'>Change</button>");
                 });
 
                 Y.all('form.address-form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script cancel yui3-button'>Cancel</button>");
+                    f.prepend("<button type='button' class='script cancel action'>Cancel</button>");
                 });
             }
 
