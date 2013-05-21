@@ -141,7 +141,16 @@ body {
 }
 
 .breadcrumbs {
-    font-size: 80%;
+    color: gray;
+    font-size: 70%;
+    font-style: italic;
+    padding: 0;
+    margin: 0;
+    height: 30px;  /* effecively 'slips' in the padding between 'hd' and 'bd' */
+}
+
+.breadcrumbs a:link, .breadcrumbs a:visited {
+    color: inherit;
 }
 
 a:link, a:visited {
@@ -153,6 +162,10 @@ a:link, a:visited {
     clear: both;
     width: 100%;
     padding: 20px 0 20px 0;
+}
+
+body.products #bd {
+    padding: 0 0 20px 0;
 }
 
 #ft {
@@ -690,6 +703,7 @@ div.refine {
     position: absolute;
     top: 0;
     left: 0;
+    font-size: 80%;
 }
 
 div.products {
