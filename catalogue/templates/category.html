@@ -73,12 +73,13 @@
                     {% endfor %}
                     <label>Sort by:
                         <select onchange="this.form.submit()" name="sortBy">
-                            <option>Most Popular</option>
-                            <option>Price (High to Low)</option>
-                            <option>Price (Low to High)</option>
-                            <option>Rating (High to Low)</option>
-                            <option>Name (A to Z)</option>
-                            <option>Name (Z to A)</option>
+                            <option value="bestselling">Bestselling</option>
+                            <option value="priceMax">Price (High to Low)</option>
+                            <option value="priceMin">Price (Low to High)</option>
+                            <option value="ratingHigh">Rating (High to Low)</option>
+                            <option value="nameA">Name (A to Z)</option>
+                            <option value="nameZ">Name (Z to A)</option>
+                            <option value="new">Recently Added</option>
                         </select>
                     </label>
                 </form>
