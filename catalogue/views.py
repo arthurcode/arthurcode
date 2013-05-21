@@ -66,6 +66,7 @@ def category_view(request, category_slug=""):
 
     if pageSize == "All":
         pageSize = max(product_list.count(), 1)
+        showing_all_products = True
 
     # make sure pageSize is an integer.  If it isn't, fall back to the default size
     try:
@@ -83,6 +84,8 @@ def category_view(request, category_slug=""):
         products = paginator.page(1)
     except EmptyPage:
         products = paginator.page(paginator._num_pages)
+
+    page_sizes = [DEFAULT_PAGE_SIZE, 32, 64, 96]
 
     return render_to_response("category.html", locals(), context_instance=RequestContext(request))
 

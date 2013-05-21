@@ -49,32 +49,16 @@
                 {% endif %}
                 <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
 
-            <span class="page-size">
-                Items per page:
-                {% if request.GET.pageSize != '16' and products.paginator.per_page != 16 %}
-                    <a href="{% add_get pageSize=16 %}">16</a>
-                {% else %}
-                    16
-                {% endif %}
-
-                {% if request.GET.pageSize != '32' and products.paginator.per_page != 32 %}
-                    <a href="{% add_get pageSize=32 %}">32</a>
-                {% else %}
-                    32
-                {% endif %}
-
-                {% if request.GET.pageSize != '64' and products.paginator.per_page != 64 %}
-                    <a href="{% add_get pageSize=64 %}">64</a>
-                {% else %}
-                    64
-                {% endif %}
-
-                {% if request.GET.pageSize != 'All' %}
-                    <a href="{% add_get pageSize='All' %}">All</a>
-                {% else %}
-                    All
-                {% endif %}
-            </span>
+                <form class="page-size">
+                    <label>Items per page:
+                        <select onchange="this.form.submit()" name="pageSize">
+                            {% for size in page_sizes %}
+                                <option{% if size == products.paginator.per_page %} selected{% endif %}>{{ size }}</option>
+                            {% endfor %}
+                            <option{% if showing_all_products %} selected{% endif %}>All</option>
+                        </select>
+                    </label>
+                </form>
             </div>
 
             {% with products as objects %}{% include "_pagination.html" %}{% endwith %}

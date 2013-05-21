@@ -735,6 +735,11 @@ div.products .title-bar .page-size {
     float: right;
 }
 
+div.products .title-bar .page-size select {
+    padding: 0;
+    width: 3em;
+}
+
 /* pagination styles */
 .pagination {
     float: left;
