@@ -73,13 +73,9 @@
                     {% endfor %}
                     <label>Sort by:
                         <select onchange="this.form.submit()" name="sortBy">
-                            <option value="bestselling">Bestselling</option>
-                            <option value="priceMax">Price (High to Low)</option>
-                            <option value="priceMin">Price (Low to High)</option>
-                            <option value="ratingHigh">Rating (High to Low)</option>
-                            <option value="nameA">Name (A to Z)</option>
-                            <option value="nameZ">Name (Z to A)</option>
-                            <option value="new">Recently Added</option>
+                            {% for key,value in sorts %}
+                                <option value="{{ key }}"{% if key == sort_key %} selected{% endif %}>{{ value }}</option>
+                            {% endfor %}
                         </select>
                     </label>
                 </form>

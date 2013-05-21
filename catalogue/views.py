@@ -61,6 +61,8 @@ def category_view(request, category_slug=""):
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = add_product_count(Category.objects.root_nodes())
 
+    product_list, sort_key = _sort(request, product_list)
+
     # paginate the product listing
     pageSize = request.GET.get('pageSize') or DEFAULT_PAGE_SIZE
 
@@ -94,9 +96,44 @@ def category_view(request, category_slug=""):
         'parent_categories': parent_categories,
         'meta_description': meta_description,
         'child_categories': child_categories,
-
+        'sort_key': sort_key,
+        'sorts': [
+            ('bestselling', 'Bestselling'),
+            ('priceMin', 'Price (Low to high)'),
+            ('priceMax', 'Price (High to Low)'),
+            ('nameA', 'Name (A to Z)'),
+            ('nameZ', 'Name (Z to A)'),
+            ('rating', 'Rating'),
+            ('new', 'Newest')
+        ]
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
+
+PRODUCT_SORTS = {
+    'bestselling': lambda q: q, # TODO
+    # http://stackoverflow.com/questions/981375/using-a-django-custom-model-method-property-in-order-by
+    'priceMin': lambda q: q.extra(
+        select={"current_price": "COALESCE(sale_price, price)"},
+        order_by=["current_price"]),
+    'priceMax': lambda q: q.extra(
+        select={"current_price": "COALESCE(sale_price, price)"},
+        order_by=["-current_price"]),
+    'nameA': lambda q: q.order_by('name'),
+    'nameZ': lambda q: q.order_by('-name'),
+    'rating': lambda q: q, #TODO
+    'new': lambda q: q.order_by('-created_at'),
+}
+
+
+def _sort(request, queryset):
+    """
+    By default sort my bestselling products
+    """
+    sort_by = request.GET.get('sortBy', 'bestselling')
+    sort_func = PRODUCT_SORTS['bestselling']
+    if sort_by in PRODUCT_SORTS:
+        sort_func = PRODUCT_SORTS[sort_by]
+    return sort_func(queryset), sort_by
 
 
 def add_product_count(category_queryset):
