@@ -50,6 +50,11 @@
                 <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
 
                 <form class="page-size" action="">
+                    {% for key, value in request.GET.items %}
+                        {% if key != "pageSize" %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
                     <label>Items per page:
                         <select onchange="this.form.submit()" name="pageSize">
                             {% for size in page_sizes %}
@@ -61,6 +66,11 @@
                 </form>
 
                 <form class="sort-by" action="">
+                    {% for key, value in request.GET.items %}
+                        {% if key != "sortBy" %}
+                            <input type="hidden" name="{{ key }}" value="{{ value }}">
+                        {% endif %}
+                    {% endfor %}
                     <label>Sort by:
                         <select onchange="this.form.submit()" name="sortBy">
                             <option>Most Popular</option>
