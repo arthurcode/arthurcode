@@ -38,9 +38,14 @@ h2 {
     background: -ms-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* IE10+ */
     background: linear-gradient(to bottom,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 36%,rgba(36,36,61,1) 100%); /* W3C */
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3f4c6b', endColorstr='#24243d',GradientType=0 ); /* IE6-9 */
+    padding: 3px;
 }
 
-.title-bar a {
+.title-bar a:link, .title-bar a:visited {
+    color: white;
+}
+
+.title-bar h2 {
     color: white;
 }
 
@@ -699,7 +704,7 @@ div.positioning {
 
 
 div.refine {
-    width: 10em;
+    width: 17%;
     position: absolute;
     top: 0;
     left: 0;
@@ -707,8 +712,27 @@ div.refine {
 }
 
 div.products {
-    margin-left: 11em;
+    margin-left: 20%;
     float: left;
+    border-right: 1px solid lightgray;
+    width: 80%;
+
+}
+
+div.products .title-bar h2 {
+    display: inline-block;
+    margin-right: 5px;
+    margin-left: 5px;
+}
+
+div.products .title-bar span.now-showing {
+    font-style: italic;
+    font-size: 80%;
+}
+
+div.products .title-bar .page-size {
+    font-size: 80%;
+    float: right;
 }
 
 /* pagination styles */
@@ -722,10 +746,6 @@ div.products {
 
 .pagination .current {
     margin: 0 5%;
-}
-
-.pagination .page-size {
-    float: right;
 }
 
 /* thumbnail styles */

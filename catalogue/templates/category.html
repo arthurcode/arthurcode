@@ -1,4 +1,5 @@
 {% extends "base_catalogue.html" %}
+{% load extras %}
 
 {% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
@@ -24,33 +25,63 @@
     </div>
 
     <div class="positioning">
-    <div class="refine">
-    {% if child_categories %}
-        {% if category %}
-            <h2>Sub Categories</h2>
-        {% else %}
-            <h2>Categories</h2>
-        {% endif %}
-        <ul>
-            {% for category in child_categories %}
-                <li><a href="{% url catalogue_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
+        <div class="refine">
+            {% if child_categories %}
+                {% if category %}
+                    <h2>Sub Categories</h2>
+                {% else %}
+                    <h2>Categories</h2>
+                {% endif %}
+                <ul>
+                    {% for category in child_categories %}
+                        <li><a href="{% url catalogue_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
+        </div>
+
+        <div class="products">
+            <div class="title-bar">
+                {% if category %}
+                    <h2>{{ category.name }}</h2>
+                {% else %}
+                    <h2>All Products</h2>
+                {% endif %}
+                <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
+
+            <span class="page-size">
+                Items per page:
+                {% if request.GET.pageSize != '16' and products.paginator.per_page != 16 %}
+                    <a href="{% add_get pageSize=16 %}">16</a>
+                {% else %}
+                    16
+                {% endif %}
+
+                {% if request.GET.pageSize != '32' and products.paginator.per_page != 32 %}
+                    <a href="{% add_get pageSize=32 %}">32</a>
+                {% else %}
+                    32
+                {% endif %}
+
+                {% if request.GET.pageSize != '64' and products.paginator.per_page != 64 %}
+                    <a href="{% add_get pageSize=64 %}">64</a>
+                {% else %}
+                    64
+                {% endif %}
+
+                {% if request.GET.pageSize != 'All' %}
+                    <a href="{% add_get pageSize='All' %}">All</a>
+                {% else %}
+                    All
+                {% endif %}
+            </span>
+            </div>
+
+            {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+            {% for product in products %}
+                {% include "_thumbnail.html" %}
             {% endfor %}
-        </ul>
-    {% endif %}
-    </div>
-
-    <div class="products">
-        {% if category %}
-            <h2>{{ category.name }}</h2>
-        {% else %}
-            <h2>All Products</h2>
-        {% endif %}
-
-        {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
-        {% for product in products %}
-            {% include "_thumbnail.html" %}
-        {% endfor %}
-        {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
-    </div>
+            {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+        </div>
     </div>
 {% endblock %}

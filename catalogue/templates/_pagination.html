@@ -18,31 +18,6 @@
             next
         {% endif %}
 
-        <span class="page-size">
-            Items per page:
-            {% if request.GET.pageSize != '16' and objects.paginator.per_page != 16 %}
-                <a href="{% add_get pageSize=16 %}">16</a>
-            {% else %}
-                16
-            {% endif %}
 
-            {% if request.GET.pageSize != '32' and objects.paginator.per_page != 32 %}
-                <a href="{% add_get pageSize=32 %}">32</a>
-            {% else %}
-                32
-            {% endif %}
-
-            {% if request.GET.pageSize != '64' and objects.paginator.per_page != 64 %}
-                <a href="{% add_get pageSize=64 %}">64</a>
-            {% else %}
-                64
-            {% endif %}
-
-            {% if request.GET.pageSize != 'All' %}
-                <a href="{% add_get pageSize='All' %}">All</a>
-            {% else %}
-                All
-            {% endif %}
-        </span>
     </span>
 </div>
