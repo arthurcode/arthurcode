@@ -1,23 +1,23 @@
 {% load extras %}
 
 <div class="pagination">
-    <span class="step-links">
+    {% if objects.paginator.num_pages > 1 %}
+        <span class="step-links">
         {% if objects.has_previous %}
             <a href="{% add_get page=objects.previous_page_number %}">previous</a>
         {% else %}
             previous
         {% endif %}
 
-        <span class="current">
+            <span class="current">
             Page {{ objects.number }} of {{ objects.paginator.num_pages }}
         </span>
 
-        {% if objects.has_next %}
-            <a href="{% add_get page=objects.next_page_number %}">next</a>
-        {% else %}
-            next
-        {% endif %}
-
-
-    </span>
+            {% if objects.has_next %}
+                <a href="{% add_get page=objects.next_page_number %}">next</a>
+            {% else %}
+                next
+            {% endif %}
+        </span>
+    {% endif %}
 </div>
