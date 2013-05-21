@@ -736,8 +736,21 @@ div.products .title-bar .page-size {
 }
 
 div.products .title-bar .page-size select {
-    padding: 0;
     width: 3em;
+}
+
+div.products .title-bar .sort-by {
+    font-size: 80%;
+    float: right;
+    margin-right: 5px;
+}
+
+div.products .title-bar .sort-by select {
+    width: 11em;
+}
+
+div.products .title-bar select {
+    padding: 0;
 }
 
 /* pagination styles */

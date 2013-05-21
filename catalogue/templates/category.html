@@ -49,13 +49,26 @@
                 {% endif %}
                 <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
 
-                <form class="page-size">
+                <form class="page-size" action="">
                     <label>Items per page:
                         <select onchange="this.form.submit()" name="pageSize">
                             {% for size in page_sizes %}
                                 <option{% if size == products.paginator.per_page %} selected{% endif %}>{{ size }}</option>
                             {% endfor %}
                             <option{% if showing_all_products %} selected{% endif %}>All</option>
+                        </select>
+                    </label>
+                </form>
+
+                <form class="sort-by" action="">
+                    <label>Sort by:
+                        <select onchange="this.form.submit()" name="sortBy">
+                            <option>Most Popular</option>
+                            <option>Price (High to Low)</option>
+                            <option>Price (Low to High)</option>
+                            <option>Rating (High to Low)</option>
+                            <option>Name (A to Z)</option>
+                            <option>Name (Z to A)</option>
                         </select>
                     </label>
                 </form>
