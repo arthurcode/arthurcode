@@ -64,6 +64,7 @@ def category_view(request, category_slug=""):
     # paginate the product listing
     pageSize = request.GET.get('pageSize') or DEFAULT_PAGE_SIZE
 
+    showing_all_products = False
     if pageSize == "All":
         pageSize = max(product_list.count(), 1)
         showing_all_products = True
@@ -85,9 +86,17 @@ def category_view(request, category_slug=""):
     except EmptyPage:
         products = paginator.page(paginator._num_pages)
 
-    page_sizes = [DEFAULT_PAGE_SIZE, 32, 64, 96]
+    context = {
+        'page_sizes': [DEFAULT_PAGE_SIZE, 32, 64, 96],
+        'products': products,
+        'showing_all_products': showing_all_products,
+        'category': category,
+        'parent_categories': parent_categories,
+        'meta_description': meta_description,
+        'child_categories': child_categories,
 
-    return render_to_response("category.html", locals(), context_instance=RequestContext(request))
+    }
+    return render_to_response("category.html", context, context_instance=RequestContext(request))
 
 
 def add_product_count(category_queryset):
