@@ -17,7 +17,11 @@ def home_view(request):
 
 
 def featured_view(request):
-    return render_to_response("featured.html", {}, context_instance=RequestContext(request))
+    featured_products = Product.active.filter(is_featured=True)
+    context = {
+        'featured_products': featured_products
+    }
+    return render_to_response("featured.html", context, context_instance=RequestContext(request))
 
 
 def product_detail_view(request, slug=""):

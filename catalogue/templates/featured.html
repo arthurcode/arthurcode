@@ -4,5 +4,29 @@
 {% block title %}Featured Products{% endblock %}
 
 {% block body %}
-    THIS IS WHERE ALL OF MY FEATURED PRODUCTS GO!
+    <div class="quick-links">
+        {% comment %}Shopping links that may be more interesting to customers than the main category links.{% endcomment %}
+        <h2>Quick Links</h2>
+        <ul class="quick-links">
+            <li>New Products</li>
+            <li>Gift Finder</li>
+            <li>Gift Cards</li>
+            <li>Award Winning Toys</li>
+            <li>Shop By Theme</li>
+            <li>Box Stuffers</li>
+            <li>Eco Friendly Toys</li>
+        </ul>
+    </div>
+
+    <div class="promotions">
+        {% comment %}Sliding group of 2 or more advertisements {% endcomment %}
+    </div>
+
+    {% if featured_products %}
+        <div class="featured">
+            {% for product in featured_products %}
+                {% include "_thumbnail.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
 {% endblock %}
