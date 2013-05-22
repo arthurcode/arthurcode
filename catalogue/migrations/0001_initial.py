@@ -25,6 +25,24 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['Category'])
 
+        # Adding model 'Award'
+        db.create_table('catalogue_award', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
+            ('short_description', self.gf('django.db.models.fields.CharField')(max_length=500)),
+            ('long_description', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal('catalogue', ['Award'])
+
+        # Adding model 'AwardInstance'
+        db.create_table('catalogue_awardinstance', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('award', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Award'])),
+            ('date', self.gf('django.db.models.fields.DateField')()),
+        ))
+        db.send_create_signal('catalogue', ['AwardInstance'])
+
         # Adding model 'Product'
         db.create_table('catalogue_product', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -47,16 +65,47 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['Product'])
 
+        # Adding M2M table for field awards on 'Product'
+        db.create_table('catalogue_product_awards', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('product', models.ForeignKey(orm['catalogue.product'], null=False)),
+            ('awardinstance', models.ForeignKey(orm['catalogue.awardinstance'], null=False))
+        ))
+        db.create_unique('catalogue_product_awards', ['product_id', 'awardinstance_id'])
+
 
     def backwards(self, orm):
         # Deleting model 'Category'
         db.delete_table('catalogue_category')
 
+        # Deleting model 'Award'
+        db.delete_table('catalogue_award')
+
+        # Deleting model 'AwardInstance'
+        db.delete_table('catalogue_awardinstance')
+
         # Deleting model 'Product'
         db.delete_table('catalogue_product')
 
+        # Removing M2M table for field awards on 'Product'
+        db.delete_table('catalogue_product_awards')
+
 
     models = {
+        'catalogue.award': {
+            'Meta': {'object_name': 'Award'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'long_description': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
+        },
+        'catalogue.awardinstance': {
+            'Meta': {'object_name': 'AwardInstance'},
+            'award': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Award']"}),
+            'date': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
         'catalogue.category': {
             'Meta': {'ordering': "['tree_id', 'lft']", 'object_name': 'Category'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -74,6 +123,7 @@ class Migration(SchemaMigration):
         },
         'catalogue.product': {
             'Meta': {'object_name': 'Product'},
+            'awards': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.AwardInstance']"}),
             'brand': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Category']"}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),

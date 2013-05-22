@@ -72,6 +72,26 @@ class ActiveProductsManager(models.Manager):
         return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)
 
 
+class Award(models.Model):
+
+    name = models.CharField(max_length=50, validators=[not_blank])
+    slug = models.SlugField(max_length=50, unique=True, help_text='Unique value for award page URL, created from name.',
+                            validators=[not_blank])
+    short_description = models.CharField(max_length=500)
+    long_description = models.TextField(help_text='May contain html')
+
+    def __unicode__(self):
+        return self.name
+
+
+class AwardInstance(models.Model):
+    award = models.ForeignKey(Award)
+    date = models.DateField(help_text='The date (or year) the award was given out.')
+
+    def __unicode__(self):
+        return unicode(self.award) + " (" + str(self.date.year) + ")"
+
+
 class Product(models.Model):
 
     ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
@@ -105,6 +125,8 @@ class Product(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)
 
+    awards = models.ManyToManyField(AwardInstance, related_name="products", blank=True, null=False)
+
     def clean(self):
         if not self.is_active and self.category_id and self.category.is_active:
             raise ValidationError(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY)
@@ -131,6 +153,10 @@ class Product(models.Model):
         if self.sale_price:
             return (self.price - self.sale_price) * 100 / self.price
         return 0
+
+    @property
+    def is_award_winner(self):
+        return self.awards and self.awards.count() > 0
 
 
 def get_inactive_category():
