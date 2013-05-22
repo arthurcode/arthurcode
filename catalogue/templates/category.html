@@ -48,7 +48,7 @@
                     <h2>All Products</h2>
                 {% endif %}
                 {% if products %}
-                    <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
+                    <span class="now-showing">({% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }})</span>
                 {% endif %}
 
                 <form class="page-size" action="">
