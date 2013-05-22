@@ -3,6 +3,7 @@ Contains filters for filtering catalogue queries.
 """
 from django.db.models import Count
 from catalogue.models import Award
+from utils.util import to_bool
 
 WILDCARD = "any"
 
@@ -47,9 +48,7 @@ class OnSaleFilter(Filter):
     filter_key = "filterOnSale"
 
     def __init__(self, on_sale=True):
-        if isinstance(on_sale, (str, unicode)):
-            on_sale = on_sale == 'True'
-        self.on_sale = on_sale
+        self.on_sale = to_bool(on_sale)
 
     def apply(self, queryset):
         if self.on_sale:
@@ -64,9 +63,34 @@ class OnSaleFilter(Filter):
             return u'on sale'
         return u'not on sale'
 
+
+class BooleanFieldFilter(Filter):
+    """
+    filters on a boolean field on the product model
+    """
+    def __init__(self, value):
+        self.value = to_bool(value)
+
+
+class IsBoxStufferFilter(BooleanFieldFilter):
+
+    filter_key = "filterBoxStuffer"
+
+    def apply(self, queryset):
+        return queryset.filter(is_box_stuffer=self.value)
+
+    def __unicode__(self):
+        if self.value:
+            return u'box-stuffers'
+        return u'non box-stuffers'
+
+
+
+
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,
+    IsBoxStufferFilter.filter_key: IsBoxStufferFilter,
 }
 
 
