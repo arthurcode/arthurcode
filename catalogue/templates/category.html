@@ -21,7 +21,17 @@
                 <a href="{% url catalogue_category category.slug %}">{{ category.name }}</a> >
             {% endfor %}
             {{ category.name }}
+        {% elif filters %}
+            {% if category %}
+                {{ category.name }}
+            {% else %}
+                All Products
+            {% endif %}
         {% endif %}
+
+        {% for filter in filters %}
+            > {{ filter }}
+        {% endfor %}
     </div>
 
     <div class="positioning">

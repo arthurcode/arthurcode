@@ -8,6 +8,7 @@ from cart.forms import ProductAddToCartForm
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from cart import cartutils
+from catalogue import filters
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -65,6 +66,7 @@ def category_view(request, category_slug=""):
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = add_product_count(Category.objects.root_nodes())
 
+    product_list, applied_filters = filters.filter_products(request, product_list)
     product_list, sort_key = _sort(request, product_list)
 
     # paginate the product listing
@@ -109,7 +111,8 @@ def category_view(request, category_slug=""):
             ('nameZ', 'Name (Z to A)'),
             ('rating', 'Rating'),
             ('new', 'Newest')
-        ]
+        ],
+        'filters': applied_filters,
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
