@@ -41,8 +41,32 @@ class AwardFilter(Filter):
             else:
                 return u'award = %s' % self.award_slug
 
+
+class OnSaleFilter(Filter):
+
+    filter_key = "filterOnSale"
+
+    def __init__(self, on_sale=True):
+        if isinstance(on_sale, (str, unicode)):
+            on_sale = on_sale == 'True'
+        self.on_sale = on_sale
+
+    def apply(self, queryset):
+        if self.on_sale:
+            # return products that are on sale
+            return queryset.exclude(sale_price=None)
+        else:
+            # return products that are not on sale
+            return queryset.filter(sale_price=None)
+
+    def __unicode__(self):
+        if self.on_sale:
+            return u'on sale'
+        return u'not on sale'
+
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
+    OnSaleFilter.filter_key: OnSaleFilter,
 }
 
 
