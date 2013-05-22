@@ -47,7 +47,9 @@
                 {% else %}
                     <h2>All Products</h2>
                 {% endif %}
-                <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
+                {% if products %}
+                    <span class="now-showing">({{ products.start_index }}-{{ products.end_index }} of {{ products.paginator.count }})</span>
+                {% endif %}
 
                 <form class="page-size" action="">
                     {% for key, value in request.GET.items %}
@@ -81,11 +83,15 @@
                 </form>
             </div>
 
-            {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
-            {% for product in products %}
-                {% include "_thumbnail.html" %}
-            {% endfor %}
-            {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+            {% if products %}
+                {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+                {% for product in products %}
+                    {% include "_thumbnail.html" %}
+                {% endfor %}
+                {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
+            {% else %}
+                <p>No products to display</p>
+            {% endif %}
         </div>
     </div>
 {% endblock %}
