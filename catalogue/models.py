@@ -118,6 +118,8 @@ class Product(models.Model):
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
     is_box_stuffer = models.BooleanField(default=False)
+    is_green = models.BooleanField(default=False, help_text='Indicates if this is an eco-friendly product.')
+
     short_description = models.CharField(max_length=500)
     long_description = models.TextField()
     quantity = models.PositiveIntegerField()

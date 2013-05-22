@@ -85,12 +85,25 @@ class IsBoxStufferFilter(BooleanFieldFilter):
         return u'non box-stuffers'
 
 
+class IsEcoFriendlyFilter(BooleanFieldFilter):
+
+    filter_key = "filterGreen"
+
+    def apply(self, queryset):
+        return queryset.filter(is_green=self.value)
+
+    def __unicode__(self):
+        if self.value:
+            return 'eco-friendly'
+        else:
+            return 'non eco-friendly'
 
 
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,
     IsBoxStufferFilter.filter_key: IsBoxStufferFilter,
+    IsEcoFriendlyFilter.filter_key: IsEcoFriendlyFilter,
 }
 
 
