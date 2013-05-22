@@ -714,9 +714,14 @@ div.refine {
 div.products {
     margin-left: 20%;
     float: left;
-    border-right: 1px solid lightgray;
     width: 80%;
+    box-shadow: 3px 3px 3px lightgray;
 
+}
+
+div.products .title-bar {
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
 }
 
 div.products .title-bar h2 {
@@ -746,7 +751,7 @@ div.products .title-bar .sort-by {
 }
 
 div.products .title-bar .sort-by select {
-    width: 11em;
+    width: 10em;
 }
 
 div.products .title-bar select {
@@ -784,6 +789,10 @@ div.products .title-bar select {
 .pagination li.current {
     background-color: aliceblue;
     border: 1px solid midnightblue;
+}
+
+.pagination .next {
+    padding-right: 5px;
 }
 
 
