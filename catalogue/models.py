@@ -97,6 +97,7 @@ class Product(models.Model):
     is_active = models.BooleanField(default=True)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
+    is_box_stuffer = models.BooleanField(default=False)
     short_description = models.CharField(max_length=500)
     long_description = models.TextField()
     quantity = models.PositiveIntegerField()
