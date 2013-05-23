@@ -50,7 +50,7 @@
                 <h2>Brands</h2>
                 <ul>
                     {% for brand in brands %}
-                        <li>{{ brand.name }} ({{ brand.product_count }})</li>
+                        <li><a href="{% add_get filterBrand=brand.slug %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
