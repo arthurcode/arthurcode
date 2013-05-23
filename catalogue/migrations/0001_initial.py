@@ -53,6 +53,15 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['Brand'])
 
+        # Adding model 'Theme'
+        db.create_table('catalogue_theme', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
+            ('short_description', self.gf('django.db.models.fields.CharField')(max_length=500)),
+        ))
+        db.send_create_signal('catalogue', ['Theme'])
+
         # Adding model 'Product'
         db.create_table('catalogue_product', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -84,6 +93,14 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('catalogue_product_awards', ['product_id', 'awardinstance_id'])
 
+        # Adding M2M table for field themes on 'Product'
+        db.create_table('catalogue_product_themes', (
+            ('id', models.AutoField(verbose_name='ID', primary_key=True, auto_created=True)),
+            ('product', models.ForeignKey(orm['catalogue.product'], null=False)),
+            ('theme', models.ForeignKey(orm['catalogue.theme'], null=False))
+        ))
+        db.create_unique('catalogue_product_themes', ['product_id', 'theme_id'])
+
 
     def backwards(self, orm):
         # Deleting model 'Category'
@@ -98,11 +115,17 @@ class Migration(SchemaMigration):
         # Deleting model 'Brand'
         db.delete_table('catalogue_brand')
 
+        # Deleting model 'Theme'
+        db.delete_table('catalogue_theme')
+
         # Deleting model 'Product'
         db.delete_table('catalogue_product')
 
         # Removing M2M table for field awards on 'Product'
         db.delete_table('catalogue_product_awards')
+
+        # Removing M2M table for field themes on 'Product'
+        db.delete_table('catalogue_product_themes')
 
 
     models = {
@@ -162,8 +185,16 @@ class Migration(SchemaMigration):
             'sale_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '9', 'decimal_places': '2', 'blank': 'True'}),
             'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
+            'themes': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.Theme']"}),
             'upc': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
+        },
+        'catalogue.theme': {
+            'Meta': {'object_name': 'Theme'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
         }
     }
 

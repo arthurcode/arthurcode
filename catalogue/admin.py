@@ -1,5 +1,5 @@
 from django.contrib import admin
-from catalogue.models import Product, Category, Award, AwardInstance, Brand
+from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme
 from mptt.admin import MPTTModelAdmin
 
 
@@ -22,6 +22,11 @@ class BrandAdmin(admin.ModelAdmin):
 
 admin.site.register(Brand, BrandAdmin)
 
+
+class ThemeAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+admin.site.register(Theme, ThemeAdmin)
 
 class ProductAdmin(admin.ModelAdmin):
     list_display = ('name', 'category', 'price', 'sale_price', 'created_at', 'updated_at', 'is_award_winner')

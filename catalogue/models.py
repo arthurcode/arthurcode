@@ -104,6 +104,16 @@ class Brand(models.Model):
         return self.name
 
 
+class Theme(models.Model):
+
+    name = models.CharField(max_length=50, validators=[not_blank])
+    slug = models.SlugField(max_length=50, unique=True, validators=[not_blank])
+    short_description = models.CharField(max_length=500)
+
+    def __unicode__(self):
+        return self.name
+
+
 class Product(models.Model):
 
     ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
@@ -140,6 +150,7 @@ class Product(models.Model):
     category = models.ForeignKey(Category)
 
     awards = models.ManyToManyField(AwardInstance, related_name="products", blank=True, null=False)
+    themes = models.ManyToManyField(Theme, related_name="products", blank=True, null=False)
 
     def clean(self):
         if not self.is_active and self.category_id and self.category.is_active:
