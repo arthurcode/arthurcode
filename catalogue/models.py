@@ -118,7 +118,7 @@ class Product(models.Model):
                             unique=True,
                             help_text='Unique value for product page URL, created from name.',
                             validators=[not_blank])
-    brand = models.ForeignKey(Brand)
+    brand = models.ForeignKey(Brand, related_name="products")
     upc = models.CharField(max_length=12, validators=[valid_upc])
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
     sale_price = models.DecimalField(max_digits=9,

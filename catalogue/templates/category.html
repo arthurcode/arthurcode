@@ -46,6 +46,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if brands %}
+                <h2>Brands</h2>
+                <ul>
+                    {% for brand in brands %}
+                        <li>{{ brand.name }} ({{ brand.product_count }})</li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
 
         <div class="products">

@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
-from catalogue.models import Product, Category
+from catalogue.models import Product, Category, Brand
 from arthurcode import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from cart.forms import ProductAddToCartForm
@@ -9,6 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
+from django.db.models import Count
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -113,6 +114,7 @@ def category_view(request, category_slug=""):
             ('new', 'Newest')
         ],
         'filters': applied_filters,
+        'brands': get_brands(products),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
@@ -149,3 +151,13 @@ def add_product_count(category_queryset):
     of a category's subcategories.
     """
     return Category.objects.add_related_count(category_queryset, Product, 'category', 'product_count', cumulative=True)
+
+
+def get_brands(product_queryset):
+    """
+    Returns the set of brands that are linked to the products in the given queryset.  A product_count attribute will
+    be annotated to each brand.  This works because the filter on products constrains the products that are included
+    in product_count.  See https://docs.djangoproject.com/en/dev/topics/db/aggregation/ for more details.  Sweet!
+    The brands will be in alphabetical order.
+    """
+    return Brand.objects.filter(products__in=product_queryset).annotate(product_count=Count('products')).order_by('name')
