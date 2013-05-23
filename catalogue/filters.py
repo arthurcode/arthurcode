@@ -2,7 +2,7 @@
 Contains filters for filtering catalogue queries.
 """
 from django.db.models import Count
-from catalogue.models import Award
+from catalogue.models import Award, Brand
 from utils.util import to_bool
 
 WILDCARD = "any"
@@ -99,11 +99,30 @@ class IsEcoFriendlyFilter(BooleanFieldFilter):
             return 'non eco-friendly'
 
 
+class BrandFilter(Filter):
+
+    filter_key = "filterBrand"
+
+    def __init__(self, brand_slug):
+        self.brand_slug = brand_slug
+
+    def apply(self, queryset):
+        return queryset.filter(brand__slug=self.brand_slug)
+
+    def __unicode__(self):
+        brand = Brand.objects.filter(slug=self.brand_slug)
+        brand_name = self.brand_slug
+        if brand.count() > 0:
+            brand_name = brand[0].name
+        return brand_name + " brand"
+
+
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,
     IsBoxStufferFilter.filter_key: IsBoxStufferFilter,
     IsEcoFriendlyFilter.filter_key: IsEcoFriendlyFilter,
+    BrandFilter.filter_key: BrandFilter,
 }
 
 
