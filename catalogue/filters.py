@@ -2,7 +2,7 @@
 Contains filters for filtering catalogue queries.
 """
 from django.db.models import Count
-from catalogue.models import Award, Brand
+from catalogue.models import Award, Brand, Theme
 from utils.util import to_bool
 
 WILDCARD = "any"
@@ -117,12 +117,31 @@ class BrandFilter(Filter):
         return brand_name + " brand"
 
 
+class ThemeFilter(Filter):
+
+    filter_key = "filterTheme"
+
+    def __init__(self, theme_slug):
+        self.theme_slug = theme_slug
+
+    def apply(self, queryset):
+        return queryset.filter(themes__slug=self.theme_slug)
+
+    def __unicode__(self):
+        theme = Theme.objects.filter(slug=self.theme_slug)
+        theme_name = self.theme_slug
+        if theme.count() > 0:
+            theme_name = theme[0].name
+        return theme_name + " theme"
+
+
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,
     IsBoxStufferFilter.filter_key: IsBoxStufferFilter,
     IsEcoFriendlyFilter.filter_key: IsEcoFriendlyFilter,
     BrandFilter.filter_key: BrandFilter,
+    ThemeFilter.filter_key: ThemeFilter,
 }
 
 

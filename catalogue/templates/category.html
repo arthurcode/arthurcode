@@ -54,6 +54,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if themes %}
+                <h2>Themes</h2>
+                <ul>
+                    {% for theme in themes %}
+                        <li><a href="{% add_get filterTheme=theme.slug %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
         </div>
 
         <div class="products">
