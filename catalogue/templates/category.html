@@ -3,8 +3,6 @@
 
 {% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
-{% block body_class %}products{% endblock %}
-
 {% block root-category %}
     {% if parent_categories %}
         {{ parent_categories.0.slug }}
