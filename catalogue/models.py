@@ -92,6 +92,18 @@ class AwardInstance(models.Model):
         return unicode(self.award) + " (" + str(self.date.year) + ")"
 
 
+class Brand(models.Model):
+
+    name = models.CharField(max_length=50, validators=[not_blank])
+    slug = models.SlugField(max_length=50, unique=True, help_text='Unique value for brand page URL, created from name.',
+                            validators=[not_blank])
+    short_description = models.CharField(max_length=500)
+    long_description = models.TextField(help_text='May contain html')
+
+    def __unicode__(self):
+        return self.name
+
+
 class Product(models.Model):
 
     ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
@@ -106,7 +118,7 @@ class Product(models.Model):
                             unique=True,
                             help_text='Unique value for product page URL, created from name.',
                             validators=[not_blank])
-    brand = models.CharField(max_length=50, validators=[not_blank])
+    brand = models.ForeignKey(Brand)
     upc = models.CharField(max_length=12, validators=[valid_upc])
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
     sale_price = models.DecimalField(max_digits=9,

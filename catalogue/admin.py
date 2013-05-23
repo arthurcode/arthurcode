@@ -1,5 +1,5 @@
 from django.contrib import admin
-from catalogue.models import Product, Category, Award, AwardInstance
+from catalogue.models import Product, Category, Award, AwardInstance, Brand
 from mptt.admin import MPTTModelAdmin
 
 
@@ -15,6 +15,12 @@ class AwardInstanceAdmin(admin.ModelAdmin):
     pass
 
 admin.site.register(AwardInstance, AwardInstanceAdmin)
+
+
+class BrandAdmin(admin.ModelAdmin):
+    prepopulated_fields = {'slug': ('name',)}
+
+admin.site.register(Brand, BrandAdmin)
 
 
 class ProductAdmin(admin.ModelAdmin):

@@ -43,12 +43,22 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['AwardInstance'])
 
+        # Adding model 'Brand'
+        db.create_table('catalogue_brand', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=50)),
+            ('short_description', self.gf('django.db.models.fields.CharField')(max_length=500)),
+            ('long_description', self.gf('django.db.models.fields.TextField')()),
+        ))
+        db.send_create_signal('catalogue', ['Brand'])
+
         # Adding model 'Product'
         db.create_table('catalogue_product', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
             ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=255)),
-            ('brand', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('brand', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Brand'])),
             ('upc', self.gf('django.db.models.fields.CharField')(max_length=12)),
             ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
             ('sale_price', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=9, decimal_places=2, blank=True)),
@@ -85,6 +95,9 @@ class Migration(SchemaMigration):
         # Deleting model 'AwardInstance'
         db.delete_table('catalogue_awardinstance')
 
+        # Deleting model 'Brand'
+        db.delete_table('catalogue_brand')
+
         # Deleting model 'Product'
         db.delete_table('catalogue_product')
 
@@ -107,6 +120,14 @@ class Migration(SchemaMigration):
             'date': ('django.db.models.fields.DateField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
         },
+        'catalogue.brand': {
+            'Meta': {'object_name': 'Brand'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'long_description': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
+        },
         'catalogue.category': {
             'Meta': {'ordering': "['tree_id', 'lft']", 'object_name': 'Category'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -125,7 +146,7 @@ class Migration(SchemaMigration):
         'catalogue.product': {
             'Meta': {'object_name': 'Product'},
             'awards': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.AwardInstance']"}),
-            'brand': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'brand': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Brand']"}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Category']"}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
