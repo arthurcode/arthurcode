@@ -63,7 +63,7 @@
                 <h2>Prices</h2>
                 <ul>
                 {% for price, count in prices %}
-                    <li>Under ${{ price }} ({{ count }})</li>
+                    <li><a href="{% add_get filterMaxPrice=price sortBy="priceMax" %}">Under ${{ price }} ({{ count }})</a></li>
                 {% endfor %}
                 </ul>
             {% endif %}
