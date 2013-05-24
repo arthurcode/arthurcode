@@ -15,10 +15,10 @@
 {% block body %}
 
     <div class="breadcrumbs">
-        <a href="{% url catalogue_category '' %}">All Products</a>{% if parent_categories or category %} >{% endif %}
+        <a href="{% go_to_category "" %}">All Products</a>{% if parent_categories or category %} >{% endif %}
         {% if parent_categories %}
             {% for category in parent_categories %}
-                <a href="{% url catalogue_category category.slug %}">{{ category.name }}</a> >
+                <a href="{% go_to_category category.slug %}">{{ category.name }}</a> >
             {% endfor %}
         {% endif %}
         {% if category %}
@@ -40,7 +40,7 @@
                 {% endif %}
                 <ul>
                     {% for category in child_categories %}
-                        <li><a href="{% url catalogue_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
+                        <li><a href="{% go_to_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
