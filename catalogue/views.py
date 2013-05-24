@@ -56,29 +56,30 @@ def category_view(request, category_slug=""):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
         descendant_categories = category.get_descendants(include_self=True)
-        product_list = Product.active.filter(category__in=descendant_categories)
+        pre_filter_product_list = Product.active.filter(category__in=descendant_categories)
         meta_description = category.description
         child_categories = category.get_children()
         parent_categories = category.get_ancestors(ascending=False, include_self=False)
     else:
         category = None
         parent_categories = None
-        product_list = Product.active.all()
+        pre_filter_product_list = Product.active.all()
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = Category.objects.root_nodes()
 
-    product_list, applied_filters = filters.filter_products(request, product_list)
+    final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
+
     child_categories = child_categories.order_by('name')
     # only categories with > 0 products will be preserved in this list
-    child_categories = add_product_count(child_categories, product_list)
-    product_list, sort_key = _sort(request, product_list)
+    child_categories = add_product_count(child_categories, final_product_list)
+    final_product_list, sort_key = _sort(request, final_product_list)
 
     # paginate the product listing
     pageSize = request.GET.get('pageSize') or DEFAULT_PAGE_SIZE
 
     showing_all_products = False
     if pageSize == "All":
-        pageSize = max(product_list.count(), 1)
+        pageSize = max(final_product_list.count(), 1)
         showing_all_products = True
 
     # make sure pageSize is an integer.  If it isn't, fall back to the default size
@@ -88,7 +89,7 @@ def category_view(request, category_slug=""):
             pageSize = DEFAULT_PAGE_SIZE
     except:
         pageSize = DEFAULT_PAGE_SIZE
-    paginator = Paginator(product_list, per_page=pageSize, allow_empty_first_page=True)
+    paginator = Paginator(final_product_list, per_page=pageSize, allow_empty_first_page=True)
     page = request.GET.get('page')
 
     try:
@@ -117,9 +118,9 @@ def category_view(request, category_slug=""):
             ('new', 'Newest')
         ],
         'filters': applied_filters,
-        'brands': get_brands(product_list),
-        'themes': get_themes(product_list),
-        'prices': get_prices(product_list),
+        'brands': get_brands(pre_filter_product_list, applied_filters),
+        'themes': get_themes(pre_filter_product_list, applied_filters),
+        'prices': get_prices(pre_filter_product_list, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
@@ -161,21 +162,31 @@ def add_product_count(category_queryset, product_queryset):
     return categories
 
 
-def get_brands(product_queryset):
+def get_brands(product_queryset, request_filters):
     """
     Returns the set of brands that are linked to the products in the given queryset.  A product_count attribute will
     be annotated to each brand.  This works because the filter on products constrains the products that are included
     in product_count.  See https://docs.djangoproject.com/en/dev/topics/db/aggregation/ for more details.  Sweet!
     The brands will be in alphabetical order.
     """
-    return Brand.objects.filter(products__in=product_queryset).annotate(product_count=Count('products')).order_by('name')
+    queryset = product_queryset
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.BrandFilter):
+            continue
+        queryset = a_filter.apply(queryset)
+    return Brand.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
 
 
-def get_themes(product_queryset):
-    return Theme.objects.filter(products__in=product_queryset).annotate(product_count=Count('products')).order_by('name')
+def get_themes(product_queryset, request_filters):
+    queryset = product_queryset
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.ThemeFilter):
+            continue
+        queryset = a_filter.apply(queryset)
+    return Theme.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
 
 
-def get_prices(product_queryset):
+def get_prices(product_queryset, request_filters):
     """
     Returns a list of price bins for this queryset.  Bins without any counts will be removed.
     This hits the DB multiple times.  It should be possible to do this in a single query, but not without using
@@ -184,10 +195,16 @@ def get_prices(product_queryset):
     price_bins = ('10', '20', '30', '40', '50', '75', '100', '200')
     price_counts = []
     last_count = 0
+    queryset = product_queryset
+
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.MaxPriceFilter):
+            continue
+        queryset = a_filter.apply(queryset)
 
     for price in price_bins:
         price_filter = filters.MaxPriceFilter(price)
-        count = price_filter.apply(product_queryset).count()
+        count = price_filter.apply(queryset).count()
         if count > last_count:
             price_counts.append((price, count))
             last_count = count
