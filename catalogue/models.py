@@ -183,6 +183,10 @@ class Product(models.Model):
     def is_award_winner(self):
         return self.awards and self.awards.count() > 0
 
+    @classmethod
+    def select_current_price(cls, queryset):
+        return queryset.extra(select={"current_price": "COALESCE(sale_price, price)"})
+
 
 def get_inactive_category():
     """

@@ -125,12 +125,8 @@ def category_view(request, category_slug=""):
 PRODUCT_SORTS = {
     'bestselling': lambda q: q, # TODO
     # http://stackoverflow.com/questions/981375/using-a-django-custom-model-method-property-in-order-by
-    'priceMin': lambda q: q.extra(
-        select={"current_price": "COALESCE(sale_price, price)"},
-        order_by=["current_price"]),
-    'priceMax': lambda q: q.extra(
-        select={"current_price": "COALESCE(sale_price, price)"},
-        order_by=["-current_price"]),
+    'priceMin': lambda q: Product.select_current_price(q).order_by("current_price"),
+    'priceMax': lambda q: Product.select_current_price(q).order_by("-current_price"),
     'nameA': lambda q: q.order_by('name'),
     'nameZ': lambda q: q.order_by('-name'),
     'rating': lambda q: q, #TODO

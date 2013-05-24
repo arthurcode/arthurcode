@@ -4,6 +4,8 @@ Contains filters for filtering catalogue queries.
 from django.db.models import Count
 from catalogue.models import Award, Brand, Theme
 from utils.util import to_bool
+from decimal import Decimal
+from utils.templatetags.extras import currency
 
 WILDCARD = "any"
 
@@ -135,6 +137,23 @@ class ThemeFilter(Filter):
         return theme_name + " theme"
 
 
+class MaxPriceFilter(Filter):
+
+    filter_key = "filterMaxPrice"
+
+    def __init__(self, max_price):
+        if not isinstance(max_price, Decimal):
+            max_price = Decimal(max_price)
+        self.max_price = max_price
+
+    def apply(self, queryset):
+        where_clause = "COALESCE(sale_price, price) <= " + str(self.max_price)
+        return queryset.extra(where=[where_clause])
+
+    def __unicode__(self):
+        return "under " + currency(self.max_price)
+
+
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,
@@ -142,6 +161,7 @@ FILTERS = {
     IsEcoFriendlyFilter.filter_key: IsEcoFriendlyFilter,
     BrandFilter.filter_key: BrandFilter,
     ThemeFilter.filter_key: ThemeFilter,
+    MaxPriceFilter.filter_key: MaxPriceFilter,
 }
 
 
@@ -150,7 +170,11 @@ def parse_filters(request):
     for filter_key, value in request.GET.items():
         if filter_key in FILTERS:
             filter_clazz = FILTERS[filter_key]
-            filters.append(filter_clazz(value))
+            try:
+                filters.append(filter_clazz(value))
+            except:
+                # just ignore the filter, the value may be malformed
+                pass
     return filters
 
 
