@@ -229,7 +229,8 @@ def get_prices(product_queryset, request_filters):
     for price in price_bins:
         price_filter = filters.MaxPriceFilter(price)
         count = price_filter.apply(queryset).count()
-        if count > last_count:
-            price_counts.append((price, count, active_filter and active_filter.max_price == Decimal(price)))
+        is_active = active_filter and active_filter.max_price == Decimal(price)
+        if is_active or count > last_count:
+            price_counts.append((price, count, is_active))
             last_count = count
     return price_counts
