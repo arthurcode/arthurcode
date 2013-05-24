@@ -14,17 +14,14 @@
 {% block body %}
 
     <div class="breadcrumbs">
+        <a href="{% url catalogue_category '' %}">All Products</a> >
         {% if parent_categories %}
             {% for category in parent_categories %}
                 <a href="{% url catalogue_category category.slug %}">{{ category.name }}</a> >
             {% endfor %}
+        {% endif %}
+        {% if category %}
             {{ category.name }}
-        {% elif filters %}
-            {% if category %}
-                {{ category.name }}
-            {% else %}
-                All Products
-            {% endif %}
         {% endif %}
 
         {% for filter in filters %}
