@@ -183,11 +183,10 @@ def get_brands(product_queryset, request_filters):
     brand_filters = []
 
     for brand in brands:
-        brand_filter = filters.BrandFilter(brand.slug)
+        brand_filter = filters.BrandFilter(brand)
         is_active = active_filter and active_filter.brand_slug == brand.slug
         setattr(brand_filter, 'active_filter', is_active)
         setattr(brand_filter, 'product_count', brand.product_count)
-        setattr(brand_filter, 'name', brand.name)
         brand_filters.append(brand_filter)
     return brand_filters
 
@@ -206,11 +205,10 @@ def get_themes(product_queryset, request_filters):
     theme_filters = []
 
     for theme in themes:
-        theme_filter = filters.ThemeFilter(theme.slug)
+        theme_filter = filters.ThemeFilter(theme)
         is_active = active_filter and active_filter.theme_slug == theme.slug
         setattr(theme_filter, 'active_filter', is_active)
         setattr(theme_filter, 'product_count', theme.product_count)
-        setattr(theme_filter, 'name', theme.name)
         theme_filters.append(theme_filter)
     return theme_filters
 

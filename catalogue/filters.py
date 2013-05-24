@@ -122,20 +122,29 @@ class BrandFilter(Filter):
     filter_key = "filterBrand"
 
     def __init__(self, brand_slug):
-        self.brand_slug = brand_slug
+        if isinstance(brand_slug, Brand):
+            self.brand_slug = brand_slug.slug
+            self.name = brand_slug.name
+        else:
+            self.brand_slug = brand_slug
 
     def apply(self, queryset):
         return queryset.filter(brand__slug=self.brand_slug)
 
     def __unicode__(self):
-        brand = Brand.objects.filter(slug=self.brand_slug)
-        brand_name = self.brand_slug
-        if brand.count() > 0:
-            brand_name = brand[0].name
-        return brand_name + " brand"
+        return self.get_name() + " brand"
 
     def value_for_url(self):
         return self.brand_slug
+
+    def get_name(self):
+        if not hasattr(self, 'name'):
+            brand = Brand.objects.filter(slug=self.brand_slug)
+            if brand.count() > 0:
+                self.name = brand[0].name
+            else:
+                self.name = self.brand_slug
+        return self.name
 
 
 class ThemeFilter(Filter):
@@ -143,20 +152,29 @@ class ThemeFilter(Filter):
     filter_key = "filterTheme"
 
     def __init__(self, theme_slug):
-        self.theme_slug = theme_slug
+        if isinstance(theme_slug, Theme):
+            self.theme_slug = theme_slug.slug
+            self.name = theme_slug.name
+        else:
+            self.theme_slug = theme_slug
 
     def apply(self, queryset):
         return queryset.filter(themes__slug=self.theme_slug)
 
     def __unicode__(self):
-        theme = Theme.objects.filter(slug=self.theme_slug)
-        theme_name = self.theme_slug
-        if theme.count() > 0:
-            theme_name = theme[0].name
-        return theme_name + " theme"
+        return self.get_name() + " theme"
 
     def value_for_url(self):
         return self.theme_slug
+
+    def get_name(self):
+        if not hasattr(self, 'name'):
+            theme = Theme.objects.filter(slug=self.theme_slug)
+            if theme.count() > 0:
+                self.name = theme[0].name
+            else:
+                self.name = self.theme_slug
+        return self.name
 
 
 class MaxPriceFilter(Filter):
