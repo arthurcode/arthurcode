@@ -4,7 +4,7 @@
     <div class="pagination">
         <span class="previous">
         {% if objects.has_previous %}
-            <a href="{% add_get page=objects.previous_page_number %}"> < Previous</a>
+            <a href="{% query_string "page=objects.previous_page_number" %}"> < Previous</a>
         {% else %}
             < Previous
         {% endif %}
@@ -14,7 +14,7 @@
         <ul class="pages">
             {% for page in objects.paginator.page_range %}
                 <li{% if page == objects.number %} class="current"{% endif %}>
-                    <a{% if page != objects.number %} href="{% add_get page=page %}"{% endif %}>{{ page }}</a>
+                    <a{% if page != objects.number %} href="{% query_string "page=page" %}"{% endif %}>{{ page }}</a>
                 </li>
             {% endfor %}
         </ul>
@@ -22,7 +22,7 @@
         <span class="next">
             |
             {% if objects.has_next %}
-                <a href="{% add_get page=objects.next_page_number %}">next ></a>
+                <a href="{% query_string "page=objects.next_page_number" %}">next ></a>
             {% else %}
                 next >
             {% endif %}

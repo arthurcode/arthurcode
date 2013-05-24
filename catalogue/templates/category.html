@@ -1,5 +1,6 @@
 {% extends "base_catalogue.html" %}
 {% load extras %}
+{% load urls %}
 
 {% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
@@ -47,7 +48,7 @@
                 <h2>Brands</h2>
                 <ul>
                     {% for brand in brands %}
-                        <li{% if brand.active_filter %} class="selected"{% endif %}><a href="{% add_get filterBrand=brand.slug %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
+                        <li{% if brand.active_filter %} class="selected"{% endif %}><a href="{% if brand.active_filter %}{% remove_filter brand %}{% else %}{% add_filter brand %}{% endif %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -55,15 +56,15 @@
                 <h2>Themes</h2>
                 <ul>
                     {% for theme in themes %}
-                        <li{% if theme.active_filter %} class="selected"{% endif %}><a href="{% add_get filterTheme=theme.slug %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
+                        <li{% if theme.active_filter %} class="selected"{% endif %}><a href="{% if theme.active_filter %}{% remove_filter theme %}{% else %}{% add_filter theme %}{% endif %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
             {% if prices %}
                 <h2>Prices</h2>
                 <ul>
-                {% for price, count, is_active in prices %}
-                    <li{% if is_active %} class="selected"{% endif %}><a href="{% add_get filterMaxPrice=price sortBy="priceMax" %}">Under ${{ price }} ({{ count }})</a></li>
+                {% for price in prices %}
+                    <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
                 {% endfor %}
                 </ul>
             {% endif %}

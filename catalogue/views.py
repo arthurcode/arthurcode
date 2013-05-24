@@ -180,12 +180,16 @@ def get_brands(product_queryset, request_filters):
         queryset = a_filter.apply(queryset)
 
     brands = Brand.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+    brand_filters = []
 
-    if active_filter:
-        for brand in brands:
-            if brand.slug == active_filter.brand_slug:
-                setattr(brand, 'active_filter', True)
-    return brands
+    for brand in brands:
+        brand_filter = filters.BrandFilter(brand.slug)
+        is_active = active_filter and active_filter.brand_slug == brand.slug
+        setattr(brand_filter, 'active_filter', is_active)
+        setattr(brand_filter, 'product_count', brand.product_count)
+        setattr(brand_filter, 'name', brand.name)
+        brand_filters.append(brand_filter)
+    return brand_filters
 
 
 def get_themes(product_queryset, request_filters):
@@ -199,13 +203,16 @@ def get_themes(product_queryset, request_filters):
         queryset = a_filter.apply(queryset)
 
     themes = Theme.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+    theme_filters = []
 
-    if active_filter:
-        for theme in themes:
-            if active_filter.theme_slug == theme.slug:
-                setattr(theme, 'active_filter', True)
-    return themes
-
+    for theme in themes:
+        theme_filter = filters.ThemeFilter(theme.slug)
+        is_active = active_filter and active_filter.theme_slug == theme.slug
+        setattr(theme_filter, 'active_filter', is_active)
+        setattr(theme_filter, 'product_count', theme.product_count)
+        setattr(theme_filter, 'name', theme.name)
+        theme_filters.append(theme_filter)
+    return theme_filters
 
 
 def get_prices(product_queryset, request_filters):
@@ -215,7 +222,7 @@ def get_prices(product_queryset, request_filters):
     custom SQL.  This is TBD.
     """
     price_bins = ('10', '20', '30', '40', '50', '75', '100', '200')
-    price_counts = []
+    price_filters = []
     last_count = 0
     queryset = product_queryset
     active_filter = None
@@ -229,8 +236,10 @@ def get_prices(product_queryset, request_filters):
     for price in price_bins:
         price_filter = filters.MaxPriceFilter(price)
         count = price_filter.apply(queryset).count()
-        is_active = active_filter and active_filter.max_price == Decimal(price)
+        is_active = active_filter and active_filter.max_price == price_filter.max_price
         if is_active or count > last_count:
-            price_counts.append((price, count, is_active))
+            setattr(price_filter, 'active_filter', is_active)
+            setattr(price_filter, 'product_count', count)
+            price_filters.append(price_filter)
             last_count = count
-    return price_counts
+    return price_filters

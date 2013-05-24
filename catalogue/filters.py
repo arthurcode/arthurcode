@@ -12,12 +12,19 @@ WILDCARD = "any"
 
 class Filter(object):
 
+    filter_key = None # subclasses must define
+
     def apply(self, queryset):
         return queryset
 
     def __unicode__(self):
         raise Exception("Subclasses must override")
 
+    def as_param(self):
+        return self.filter_key + "=" + self.value_for_url()
+
+    def value_for_url(self):
+        raise Exception("Subclasses must override")
 
 class AwardFilter(Filter):
 
@@ -44,6 +51,9 @@ class AwardFilter(Filter):
             else:
                 return u'award = %s' % self.award_slug
 
+    def value_for_url(self):
+        return self.award_slug
+
 
 class OnSaleFilter(Filter):
 
@@ -65,6 +75,9 @@ class OnSaleFilter(Filter):
             return u'on sale'
         return u'not on sale'
 
+    def value_for_url(self):
+        return str(self.on_sale)
+
 
 class BooleanFieldFilter(Filter):
     """
@@ -72,6 +85,9 @@ class BooleanFieldFilter(Filter):
     """
     def __init__(self, value):
         self.value = to_bool(value)
+
+    def value_for_url(self):
+        return str(self.value)
 
 
 class IsBoxStufferFilter(BooleanFieldFilter):
@@ -118,6 +134,9 @@ class BrandFilter(Filter):
             brand_name = brand[0].name
         return brand_name + " brand"
 
+    def value_for_url(self):
+        return self.brand_slug
+
 
 class ThemeFilter(Filter):
 
@@ -136,6 +155,9 @@ class ThemeFilter(Filter):
             theme_name = theme[0].name
         return theme_name + " theme"
 
+    def value_for_url(self):
+        return self.theme_slug
+
 
 class MaxPriceFilter(Filter):
 
@@ -152,6 +174,9 @@ class MaxPriceFilter(Filter):
 
     def __unicode__(self):
         return "under " + currency(self.max_price)
+
+    def value_for_url(self):
+        return str(self.max_price)
 
 
 FILTERS = {
