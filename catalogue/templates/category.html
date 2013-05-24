@@ -14,7 +14,7 @@
 {% block body %}
 
     <div class="breadcrumbs">
-        <a href="{% url catalogue_category '' %}">All Products</a> >
+        <a href="{% url catalogue_category '' %}">All Products</a>{% if parent_categories or category %} >{% endif %}
         {% if parent_categories %}
             {% for category in parent_categories %}
                 <a href="{% url catalogue_category category.slug %}">{{ category.name }}</a> >
@@ -57,6 +57,14 @@
                     {% for theme in themes %}
                         <li><a href="{% add_get filterTheme=theme.slug %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
                     {% endfor %}
+                </ul>
+            {% endif %}
+            {% if prices %}
+                <h2>Prices</h2>
+                <ul>
+                {% for price, count in prices %}
+                    <li>Under ${{ price }} ({{ count }})</li>
+                {% endfor %}
                 </ul>
             {% endif %}
         </div>

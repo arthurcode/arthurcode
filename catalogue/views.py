@@ -117,8 +117,9 @@ def category_view(request, category_slug=""):
             ('new', 'Newest')
         ],
         'filters': applied_filters,
-        'brands': get_brands(products),
-        'themes': get_themes(products),
+        'brands': get_brands(product_list),
+        'themes': get_themes(product_list),
+        'prices': get_prices(product_list),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
@@ -172,3 +173,22 @@ def get_brands(product_queryset):
 
 def get_themes(product_queryset):
     return Theme.objects.filter(products__in=product_queryset).annotate(product_count=Count('products')).order_by('name')
+
+
+def get_prices(product_queryset):
+    """
+    Returns a list of price bins for this queryset.  Bins without any counts will be removed.
+    This hits the DB multiple times.  It should be possible to do this in a single query, but not without using
+    custom SQL.  This is TBD.
+    """
+    price_bins = ('10', '20', '30', '40', '50', '75', '100', '200')
+    price_counts = []
+    last_count = 0
+
+    for price in price_bins:
+        price_filter = filters.MaxPriceFilter(price)
+        count = price_filter.apply(product_queryset).count()
+        if count > last_count:
+            price_counts.append((price, count))
+            last_count = count
+    return price_counts
