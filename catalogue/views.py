@@ -10,6 +10,7 @@ from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
 from django.db.models import Count, Sum
+from decimal import Decimal
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -170,20 +171,41 @@ def get_brands(product_queryset, request_filters):
     The brands will be in alphabetical order.
     """
     queryset = product_queryset
+    active_filter = None
+
     for a_filter in request_filters:
         if isinstance(a_filter, filters.BrandFilter):
+            active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
-    return Brand.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+
+    brands = Brand.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+
+    if active_filter:
+        for brand in brands:
+            if brand.slug == active_filter.brand_slug:
+                setattr(brand, 'active_filter', True)
+    return brands
 
 
 def get_themes(product_queryset, request_filters):
     queryset = product_queryset
+    active_filter = None
+
     for a_filter in request_filters:
         if isinstance(a_filter, filters.ThemeFilter):
+            active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
-    return Theme.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+
+    themes = Theme.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
+
+    if active_filter:
+        for theme in themes:
+            if active_filter.theme_slug == theme.slug:
+                setattr(theme, 'active_filter', True)
+    return themes
+
 
 
 def get_prices(product_queryset, request_filters):
@@ -196,9 +218,11 @@ def get_prices(product_queryset, request_filters):
     price_counts = []
     last_count = 0
     queryset = product_queryset
+    active_filter = None
 
     for a_filter in request_filters:
         if isinstance(a_filter, filters.MaxPriceFilter):
+            active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
 
@@ -206,6 +230,6 @@ def get_prices(product_queryset, request_filters):
         price_filter = filters.MaxPriceFilter(price)
         count = price_filter.apply(queryset).count()
         if count > last_count:
-            price_counts.append((price, count))
+            price_counts.append((price, count, active_filter and active_filter.max_price == Decimal(price)))
             last_count = count
     return price_counts

@@ -706,11 +706,17 @@ div.refine {
 }
 
 div.refine a {
+    color: inherit;
     text-decoration: none;
 }
 
 div.refine a:hover {
     text-decoration: underline;
+}
+
+div.refine li.selected {
+    color: green;
+    font-weight: bolder;
 }
 
 div.products {
