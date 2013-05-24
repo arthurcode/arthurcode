@@ -695,17 +695,14 @@ form.stacked span.error, form.stacked span.help-text {
 }
 
 /* catalogue styles */
-div.positioning {
-    position: relative;
-}
 
 
 div.refine {
     width: 17%;
-    position: absolute;
-    top: 0;
-    left: 0;
     font-size: 80%;
+    display: inline-block;
+    float: left:
+    clear: both;
 }
 
 div.refine a {
@@ -717,8 +714,9 @@ div.refine a:hover {
 }
 
 div.products {
-    margin-left: 20%;
-    float: left;
+    display: inline-block;
+    float: right;
+    clear: right;
     width: 80%;
     box-shadow: 3px 3px 3px lightgray;
 
@@ -809,6 +807,7 @@ div.products .title-bar select {
     font-size: 80%;
     line-height: 1.2em;
     float: left;
+    clear: right;
     margin-right: 1%;
     margin-bottom: 1%;
     height: 18em;
