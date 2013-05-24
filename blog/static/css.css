@@ -708,6 +708,14 @@ div.refine {
     font-size: 80%;
 }
 
+div.refine a {
+    text-decoration: none;
+}
+
+div.refine a:hover {
+    text-decoration: underline;
+}
+
 div.products {
     margin-left: 20%;
     float: left;
