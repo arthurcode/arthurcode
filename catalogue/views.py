@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
-from django.db.models import Count
+from django.db.models import Count, Sum
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -58,16 +58,19 @@ def category_view(request, category_slug=""):
         descendant_categories = category.get_descendants(include_self=True)
         product_list = Product.active.filter(category__in=descendant_categories)
         meta_description = category.description
-        child_categories = add_product_count(category.get_children())
+        child_categories = category.get_children()
         parent_categories = category.get_ancestors(ascending=False, include_self=False)
     else:
         category = None
         parent_categories = None
         product_list = Product.active.all()
         meta_description = "All products for sale at %s." % settings.SITE_NAME
-        child_categories = add_product_count(Category.objects.root_nodes())
+        child_categories = Category.objects.root_nodes()
 
     product_list, applied_filters = filters.filter_products(request, product_list)
+    child_categories = child_categories.order_by('name')
+    # only categories with > 0 products will be preserved in this list
+    child_categories = add_product_count(child_categories, product_list)
     product_list, sort_key = _sort(request, product_list)
 
     # paginate the product listing
@@ -146,12 +149,19 @@ def _sort(request, queryset):
     return sort_func(queryset), sort_by
 
 
-def add_product_count(category_queryset):
+def add_product_count(category_queryset, product_queryset):
     """
-    Adds a 'product_count' attribute to the categories in the given queryset.  The count is cumulative over all
-    of a category's subcategories.
+    Returns the category queryset augmented with the number of matching products that fall within that category.  ATM
+    this is done with several DB calls.  THIS NEEDS TO BE IMPROVED!
+    Categories with zero matching products will be removed from the list.
     """
-    return Category.objects.add_related_count(category_queryset, Product, 'category', 'product_count', cumulative=True)
+    categories = []
+    for category in category_queryset:
+        num_products = category.get_leafnodes(include_self=True).filter(product__in=product_queryset).annotate(product_count=Count('product')).aggregate(Sum('product_count'))['product_count__sum']
+        if num_products > 0:
+            setattr(category, 'product_count', num_products)
+            categories.append(category)
+    return categories
 
 
 def get_brands(product_queryset):
