@@ -6,13 +6,14 @@ from catalogue.models import Award, Brand, Theme
 from utils.util import to_bool
 from decimal import Decimal
 from utils.templatetags.extras import currency
+from django.db.models import Model
 
 WILDCARD = "any"
 
 
 class Filter(object):
 
-    filter_key = None # subclasses must define
+    filter_key = None  # subclasses must define
 
     def apply(self, queryset):
         return queryset
@@ -26,33 +27,7 @@ class Filter(object):
     def value_for_url(self):
         raise Exception("Subclasses must override")
 
-class AwardFilter(Filter):
 
-    filter_key = "filterAward"
-
-    def __init__(self, award_slug=WILDCARD):
-        self.award_slug = award_slug
-
-    def apply(self, queryset):
-        if self.award_slug == WILDCARD:
-            # return products that have won one or more awards
-            return queryset.annotate(na=Count('awards')).filter(na__ge=1)
-        else:
-            # return products that have won this specific award
-            return queryset.filter(awards__award__slug=self.award_slug)
-
-    def __unicode__(self):
-        if self.award_slug == WILDCARD:
-            return u'award winners'
-        else:
-            award = Award.objects.filter(slug=self.award_slug)
-            if award.count() > 0:
-                return u'award = %s' % award[0].name
-            else:
-                return u'award = %s' % self.award_slug
-
-    def value_for_url(self):
-        return self.award_slug
 
 
 class OnSaleFilter(Filter):
@@ -117,64 +92,80 @@ class IsEcoFriendlyFilter(BooleanFieldFilter):
         return 'non eco-friendly'
 
 
-class BrandFilter(Filter):
+class RelatedModelFilter(Filter):
 
-    filter_key = "filterBrand"
+    slug_field = "slug"
+    name_field = "name"
+    related_name = None  # subclasses must define
+    model = None # subclasses must define
 
-    def __init__(self, brand_slug):
-        if isinstance(brand_slug, Brand):
-            self.brand_slug = brand_slug.slug
-            self.name = brand_slug.name
+    def __init__(self, instance):
+        if isinstance(instance, Model):
+            self.slug = getattr(instance, self.slug_field)
+            self.name = getattr(instance, self.name_field)
         else:
-            self.brand_slug = brand_slug
+            # assume that we've been given the model slug, the name will be derived if and when it is required
+            self.slug = str(instance)
 
     def apply(self, queryset):
-        return queryset.filter(brand__slug=self.brand_slug)
+        # return products that are related to the given model, identified by its slug
+        return queryset.filter(**{self.related_name + "__" + self.slug_field: self.slug})
+
+    def get_name(self):
+        # lookup up the instance name using the slug
+        if not hasattr(self, 'name'):
+            instance = getattr(self.model, 'objects').filter(**{self.slug_field: self.slug})
+            if instance.count() > 0:
+                self.name = instance[0].name
+            else:
+                self.name = self.slug
+        return self.name
+
+    def value_for_url(self):
+        return self.slug
+
+
+class AwardFilter(RelatedModelFilter):
+
+    filter_key = "filterAward"
+    model = Award
+
+    def __init__(self, instance=WILDCARD):
+        super(AwardFilter, self).__init__(instance)
+
+    def apply(self, queryset):
+        if self.slug == WILDCARD:
+            # return products that have won one or more awards
+            return queryset.annotate(na=Count('awards')).filter(na__ge=1)
+        else:
+            # return products that have won this specific award
+            return queryset.filter(awards__award__slug=self.slug)
+
+    def __unicode__(self):
+        if self.slug == WILDCARD:
+            return u'award winners'
+        else:
+            return self.get_name() + " award"
+
+
+class BrandFilter(RelatedModelFilter):
+
+    filter_key = "filterBrand"
+    related_name = "brand"
+    model = Brand
 
     def __unicode__(self):
         return self.get_name() + " brand"
 
-    def value_for_url(self):
-        return self.brand_slug
 
-    def get_name(self):
-        if not hasattr(self, 'name'):
-            brand = Brand.objects.filter(slug=self.brand_slug)
-            if brand.count() > 0:
-                self.name = brand[0].name
-            else:
-                self.name = self.brand_slug
-        return self.name
-
-
-class ThemeFilter(Filter):
+class ThemeFilter(RelatedModelFilter):
 
     filter_key = "filterTheme"
-
-    def __init__(self, theme_slug):
-        if isinstance(theme_slug, Theme):
-            self.theme_slug = theme_slug.slug
-            self.name = theme_slug.name
-        else:
-            self.theme_slug = theme_slug
-
-    def apply(self, queryset):
-        return queryset.filter(themes__slug=self.theme_slug)
+    related_name = "themes"
+    model = Theme
 
     def __unicode__(self):
         return self.get_name() + " theme"
-
-    def value_for_url(self):
-        return self.theme_slug
-
-    def get_name(self):
-        if not hasattr(self, 'name'):
-            theme = Theme.objects.filter(slug=self.theme_slug)
-            if theme.count() > 0:
-                self.name = theme[0].name
-            else:
-                self.name = self.theme_slug
-        return self.name
 
 
 class MaxPriceFilter(Filter):
