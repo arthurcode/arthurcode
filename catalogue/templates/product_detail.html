@@ -17,32 +17,34 @@
         {{ product.name }}
     </div>
 
-    <div class="visual">
-        <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
-    </div>
-    <div class="description">
-        <h1>{{ product.name }}</h1>
-        {% if product.quantity <= 0 %}
-            <span class="out-of-stock">Out Of Stock</span>
-        {% endif %}
-        {% if product.sale_price %}
-            Was: <span class="old-price">{{ product.price|currency }}</span>
-            Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
-        {% else %}
-            <span class="price">{{ product.price|currency }}</span>
-        {% endif %}
-        {% autoescape off %}
-            <div class="text">{{ product.long_description }}</div>
-        {% endautoescape %}
+    <div class="product-detail">
+        <div class="visual">
+            <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
+        </div>
+        <div class="description">
+            <h1>{{ product.name }}</h1>
+            {% if product.quantity <= 0 %}
+                <span class="out-of-stock">Out Of Stock</span>
+            {% endif %}
+            {% if product.sale_price %}
+                Was: <span class="old-price">{{ product.price|currency }}</span>
+                Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
+            {% else %}
+                <span class="price">{{ product.price|currency }}</span>
+            {% endif %}
+            {% autoescape off %}
+                <div class="text">{{ product.long_description }}</div>
+            {% endautoescape %}
 
-        {% form_errors form %}
-        {% if product.quantity > 0 %}
-            <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
-                {% csrf_token %}
-                {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
-                {{ form.product_slug }}
-                <button type="submit" name="submit" class="action">Add to Cart</button>
-            </form>
-        {% endif %}
+            {% form_errors form %}
+            {% if product.quantity > 0 %}
+                <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
+                    {% csrf_token %}
+                    {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
+                    {{ form.product_slug }}
+                    <button type="submit" name="submit" class="action">Add to Cart</button>
+                </form>
+            {% endif %}
+        </div>
     </div>
 {% endblock %}

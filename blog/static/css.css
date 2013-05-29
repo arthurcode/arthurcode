@@ -861,6 +861,19 @@ div.products .title-bar select {
     color: red;
 }
 
+div.product-detail .visual {
+    float: left;
+    clear: both;
+    width: 38%;
+    display: inline-block;
+}
+
+div.product-detail .description {
+    float: right;
+    width: 60%;
+    display: inline-block;
+}
+
 /* add-to-cart form styles */
 form.add-to-cart {
     width: 7em;
