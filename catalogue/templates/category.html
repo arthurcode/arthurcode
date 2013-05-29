@@ -25,7 +25,7 @@
             {{ category.name }}
         {% endif %}
 
-        <div class="filters{% if not filters %} invisible{% endif %}">
+        <div class="filters{% if not filters %} hidden{% endif %}">
             <h3>filters:</h3>
             <ul>
                 {% for filter in filters %}
