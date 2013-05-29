@@ -24,6 +24,18 @@
         {% if category %}
             {{ category.name }}
         {% endif %}
+
+        <div class="filters{% if not filters %} invisible{% endif %}">
+            <h3>filters:</h3>
+            <ul>
+                {% for filter in filters %}
+                    <li>| {{ filter }} <a href="{% remove_filter filter %}">(remove)</a></li>
+                {% endfor %}
+            </ul>
+            {% if filters|length > 1 %}
+                | <a href="TODO">(remove all filters)</a>
+            {% endif %}
+        </div>
     </div>
 
     <div class="positioning">

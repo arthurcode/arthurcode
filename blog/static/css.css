@@ -688,13 +688,22 @@ form.stacked span.error, form.stacked span.help-text {
 
 .breadcrumbs {
     font-size: 80%;
-    padding: 15px 0;
+    padding: 10px 0;
     margin: 0;
     display: inline-block;
 }
 
 .breadcrumbs a:link, .breadcrumbs a:visited {
     color: inherit;
+}
+
+.breadcrumbs li, .breadcrumbs h3, .breadcrumbs ul {
+    display: inline-block;
+}
+
+.breadcrumbs .filters a {
+    font-size: 70%;
+    color: gray;
 }
 
 div.refine {
