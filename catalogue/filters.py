@@ -7,6 +7,7 @@ from utils.util import to_bool
 from decimal import Decimal
 from utils.templatetags.extras import currency
 from django.db.models import Model
+from datetime import datetime, timedelta
 
 WILDCARD = "any"
 
@@ -188,6 +189,24 @@ class MaxPriceFilter(Filter):
         return str(self.max_price)
 
 
+class RecentlyAddedFilter(Filter):
+
+    filter_key = "filterNew"
+
+    def __init__(self, days):
+        self.days = int(days)
+
+    def apply(self, queryset):
+        return queryset.filter(created_at__gte=(datetime.now() - timedelta(days=self.days)))
+
+    def value_for_url(self):
+        return str(self.days)
+
+    def __unicode__(self):
+        return "new within the last %d days" % self.days
+
+
+
 # manually register our filters
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
@@ -197,6 +216,7 @@ FILTERS = {
     BrandFilter.filter_key: BrandFilter,
     ThemeFilter.filter_key: ThemeFilter,
     MaxPriceFilter.filter_key: MaxPriceFilter,
+    RecentlyAddedFilter.filter_key: RecentlyAddedFilter,
 }
 
 
