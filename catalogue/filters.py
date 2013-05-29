@@ -83,8 +83,13 @@ class BooleanFieldFilter(Filter):
     """
     filters on a boolean field on the product model
     """
-    def __init__(self, value):
+    field_name = None  # subclasses should override
+
+    def __init__(self, value=True):
         self.value = to_bool(value)
+
+    def apply(self, queryset):
+        return queryset.filter(**{self.field_name: self.value})
 
     def value_for_url(self):
         return str(self.value)
@@ -93,9 +98,7 @@ class BooleanFieldFilter(Filter):
 class IsBoxStufferFilter(BooleanFieldFilter):
 
     filter_key = "filterBoxStuffer"
-
-    def apply(self, queryset):
-        return queryset.filter(is_box_stuffer=self.value)
+    field_name = "is_box_stuffer"
 
     def __unicode__(self):
         if self.value:
@@ -106,15 +109,12 @@ class IsBoxStufferFilter(BooleanFieldFilter):
 class IsEcoFriendlyFilter(BooleanFieldFilter):
 
     filter_key = "filterGreen"
-
-    def apply(self, queryset):
-        return queryset.filter(is_green=self.value)
+    field_name = "is_green"
 
     def __unicode__(self):
         if self.value:
             return 'eco-friendly'
-        else:
-            return 'non eco-friendly'
+        return 'non eco-friendly'
 
 
 class BrandFilter(Filter):
@@ -197,6 +197,7 @@ class MaxPriceFilter(Filter):
         return str(self.max_price)
 
 
+# manually register our filters
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
     OnSaleFilter.filter_key: OnSaleFilter,

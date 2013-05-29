@@ -249,10 +249,10 @@ def get_features(product_queryset, applied_filters):
     Returns the feature filters that apply to this product set.  A feature filter applies to the product set
     if it is currently-active or if it's associated product_count is greater than zero.
     """
-    feature_filters = [filters.IsEcoFriendlyFilter(True),
+    feature_filters = [filters.IsEcoFriendlyFilter(),
                        filters.AwardFilter(),
                        filters.OnSaleFilter(),
-                       filters.IsBoxStufferFilter(True)]
+                       filters.IsBoxStufferFilter()]
 
     applied_filter_types = tuple([type(f) for f in applied_filters])
 
