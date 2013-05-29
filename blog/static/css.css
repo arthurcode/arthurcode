@@ -145,16 +145,6 @@ body {
     line-height: 1.5em;
 }
 
-.breadcrumbs {
-    font-size: 80%;
-    padding: 15px 0;
-    margin: 0;
-}
-
-.breadcrumbs a:link, .breadcrumbs a:visited {
-    color: inherit;
-}
-
 a:link, a:visited {
     color: black;
 }
@@ -696,6 +686,16 @@ form.stacked span.error, form.stacked span.help-text {
 
 /* catalogue styles */
 
+.breadcrumbs {
+    font-size: 80%;
+    padding: 15px 0;
+    margin: 0;
+    display: inline-block;
+}
+
+.breadcrumbs a:link, .breadcrumbs a:visited {
+    color: inherit;
+}
 
 div.refine {
     width: 17%;

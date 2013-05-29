@@ -24,20 +24,13 @@
         {% if category %}
             {{ category.name }}
         {% endif %}
-
-        {% for filter in filters %}
-            > {{ filter }}
-        {% endfor %}
     </div>
 
     <div class="positioning">
         <div class="refine">
+            <h2 class="title-bar">Filter Results</h2>
             {% if child_categories %}
-                {% if category %}
-                    <h2>Sub Categories</h2>
-                {% else %}
-                    <h2>Categories</h2>
-                {% endif %}
+                <h2>By Category</h2>
                 <ul>
                     {% for category in child_categories %}
                         <li><a href="{% go_to_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
@@ -45,7 +38,7 @@
                 </ul>
             {% endif %}
             {% if brands %}
-                <h2>Brands</h2>
+                <h2>By Brand</h2>
                 <ul>
                     {% for brand in brands %}
                         <li{% if brand.active_filter %} class="selected"{% endif %}><a href="{% if brand.active_filter %}{% remove_filter brand %}{% else %}{% add_filter brand %}{% endif %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
@@ -53,7 +46,7 @@
                 </ul>
             {% endif %}
             {% if themes %}
-                <h2>Themes</h2>
+                <h2>By Theme</h2>
                 <ul>
                     {% for theme in themes %}
                         <li{% if theme.active_filter %} class="selected"{% endif %}><a href="{% if theme.active_filter %}{% remove_filter theme %}{% else %}{% add_filter theme %}{% endif %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
@@ -61,7 +54,7 @@
                 </ul>
             {% endif %}
             {% if prices %}
-                <h2>Prices</h2>
+                <h2>By Price</h2>
                 <ul>
                 {% for price in prices %}
                     <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
