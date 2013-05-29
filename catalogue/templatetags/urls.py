@@ -1,6 +1,7 @@
 from utils.templatetags.extras import query_string, get_query_string
 from django.template import Library
 from django.core.urlresolvers import reverse
+from catalogue import filters
 
 register = Library()
 
@@ -24,6 +25,12 @@ def remove_filter(context, a_filter):
     to_add = ""
     to_remove = ",".join(["page", a_filter.filter_key])
     return query_string(context, to_add, to_remove)
+
+
+@register.inclusion_tag('_response.html', takes_context=True)
+def remove_all_filters(context):
+    to_remove = ",".join(filters.FILTERS.keys())
+    return query_string(context, "", to_remove)
 
 
 @register.inclusion_tag('_response.html', takes_context=True)
