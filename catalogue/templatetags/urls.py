@@ -32,13 +32,27 @@ def remove_all_filters(context):
     to_remove = ",".join(filters.FILTERS.keys())
     return query_string(context, "", to_remove)
 
+@register.inclusion_tag('_response.html', takes_context=True)
+def go_to_product(context, product):
+    url = product.get_absolute_url()
+    return preserve_params(context, url)
 
 @register.inclusion_tag('_response.html', takes_context=True)
 def go_to_category(context, category):
+    url = reverse('catalogue_category', kwargs={'category_slug': category})
+    return preserve_params(context, url)
+
+
+@register.inclusion_tag('_response.html', takes_context=True)
+def preserve_params(context, url):
+    """
+    Redirects the user to the given url, making sure to preserve any filter and/or sort query parameters.
+    The only query parameter that is not preserved is the current-page identifier.
+    """
     to_add = None
     to_remove = "page"
     params = dict(context['request'].GET.items())
     query_string = get_query_string(params, to_add, to_remove)
-    url = reverse('catalogue_category', kwargs={'category_slug': category}) + query_string
-    return {"response": url}
+    return {"response": url + query_string}
+
 

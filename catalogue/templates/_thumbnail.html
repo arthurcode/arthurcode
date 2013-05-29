@@ -1,10 +1,11 @@
 {% comment %} Displays a thumbnail view of a product {% endcomment %}
 
 {% load extras %}
+{% load urls %}
 
 <div class="thumbnail">
-    <a href="{{ product.get_absolute_url }}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
-    <a href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+    <a href="{% go_to_product product %}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
+    <a href="{% go_to_product product %}">{{ product.name }}</a>
     {% if product.sale_price %}
         <span class="sale-price">Sale: {{ product.sale_price|currency }}</span>
         <span class="sale">({{ product.percent_savings|floatformat:0 }}% off)</span>

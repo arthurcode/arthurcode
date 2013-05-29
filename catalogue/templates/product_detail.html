@@ -1,6 +1,7 @@
 {% extends "base_catalogue.html" %}
 
 {% load extras %}
+{% load urls %}
 {% load form_tags %}
 
 {% block title %}{{ product.name }}{% endblock %}
@@ -10,9 +11,9 @@
 {% block body %}
     <div class="yui3-g">
         <div class="breadcrumbs yui3-u-1">
-            <a href="{% url catalogue_category '' %}">All Products</a> >
+            <a href="{% go_to_category '' %}">All Products</a> >
             {% for crumb in breadcrumbs %}
-                <a href="{% url catalogue_category crumb.slug %}">{{ crumb.name }}</a> >
+                <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
             {% endfor %}
             {{ product.name }}
         </div>
