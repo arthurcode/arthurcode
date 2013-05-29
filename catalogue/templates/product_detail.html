@@ -9,42 +9,40 @@
 {% if breadcrumbs %}{% block root-category %}{{ breadcrumbs.0.slug }}{% endblock %}{% endif %}
 
 {% block body %}
-    <div class="yui3-g">
-        <div class="breadcrumbs yui3-u-1">
-            <a href="{% go_to_category '' %}">All Products</a> >
-            {% for crumb in breadcrumbs %}
-                <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
-            {% endfor %}
-            {{ product.name }}
-        </div>
+    <div class="breadcrumbs">
+        <a href="{% go_to_category '' %}">All Products</a> >
+        {% for crumb in breadcrumbs %}
+            <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
+        {% endfor %}
+        {{ product.name }}
+    </div>
 
-        <div class="visual yui3-u-1-2">
-            <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
-        </div>
-        <div class="description yui3-u-1-2">
-            <h1>{{ product.name }}</h1>
-            {% if product.quantity <= 0 %}
-                <span class="out-of-stock">Out Of Stock</span>
-            {% endif %}
-            {% if product.sale_price %}
-                Was: <span class="old-price">{{ product.price|currency }}</span>
-                Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
-            {% else %}
-                <span class="price">{{ product.price|currency }}</span>
-            {% endif %}
-            {% autoescape off %}
-                <div class="text">{{ product.long_description }}</div>
-            {% endautoescape %}
+    <div class="visual">
+        <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
+    </div>
+    <div class="description">
+        <h1>{{ product.name }}</h1>
+        {% if product.quantity <= 0 %}
+            <span class="out-of-stock">Out Of Stock</span>
+        {% endif %}
+        {% if product.sale_price %}
+            Was: <span class="old-price">{{ product.price|currency }}</span>
+            Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
+        {% else %}
+            <span class="price">{{ product.price|currency }}</span>
+        {% endif %}
+        {% autoescape off %}
+            <div class="text">{{ product.long_description }}</div>
+        {% endautoescape %}
 
-            {% form_errors form %}
-            {% if product.quantity > 0 %}
-                <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
-                    {% csrf_token %}
-                    {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
-                    {{ form.product_slug }}
-                    <button type="submit" name="submit" class="action">Add to Cart</button>
-                </form>
-            {% endif %}
-        </div>
+        {% form_errors form %}
+        {% if product.quantity > 0 %}
+            <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
+                {% csrf_token %}
+                {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
+                {{ form.product_slug }}
+                <button type="submit" name="submit" class="action">Add to Cart</button>
+            </form>
+        {% endif %}
     </div>
 {% endblock %}
