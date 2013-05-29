@@ -53,6 +53,8 @@ def preserve_params(context, url):
     to_remove = "page"
     params = dict(context['request'].GET.items())
     query_string = get_query_string(params, to_add, to_remove)
+    if query_string == "?":
+        query_string = ""
     return {"response": url + query_string}
 
 
