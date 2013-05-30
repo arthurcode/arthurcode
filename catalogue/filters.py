@@ -29,8 +29,6 @@ class Filter(object):
         raise Exception("Subclasses must override")
 
 
-
-
 class OnSaleFilter(Filter):
 
     filter_key = "filterOnSale"
@@ -204,7 +202,6 @@ class RecentlyAddedFilter(Filter):
 
     def __unicode__(self):
         return "new within the last %d days" % self.days
-
 
 
 # manually register our filters
