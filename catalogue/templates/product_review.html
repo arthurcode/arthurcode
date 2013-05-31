@@ -1,0 +1,15 @@
+{% extends "base_catalogue.html" %}
+{% load form_tags %}
+
+{% block body %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.product }}
+        {% field form.rating %}
+        {% field form.title %}
+        {% field form.review %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Submit Review</button>
+        </div>
+    </form>
+{% endblock %}

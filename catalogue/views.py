@@ -10,7 +10,8 @@ from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
 from django.db.models import Count, Sum
-from decimal import Decimal
+from catalogue.forms import ReviewForm
+from django.contrib.auth.decorators import login_required
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -125,6 +126,26 @@ def category_view(request, category_slug=""):
         'features': get_features(final_product_list, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
+
+
+@login_required
+def review_view(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = ReviewForm(request, data=post_data)
+        if form.is_valid():
+            review = form.create_review()
+            return HttpResponseRedirect(review.get_absolute_url())
+    else:
+        form = ReviewForm(request, initial={'product': product.id})
+
+    context = {
+        'product': product,
+        'form': form,
+    }
+    return render_to_response("product_review.html", context, context_instance=RequestContext(request))
 
 PRODUCT_SORTS = {
     'bestselling': lambda q: q, # TODO

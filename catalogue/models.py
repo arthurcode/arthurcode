@@ -198,11 +198,11 @@ class Product(models.Model):
 class Review(models.Model):
     TITLE_LENGTH = 100
     RATING_CHOICES = (
-        (1, '1 star'),
-        (2, '2 stars'),
-        (3, '3 stars'),
+        (5, '5 stars'),
         (4, '4 stars'),
-        (5, '5 stars')
+        (3, '3 stars'),
+        (2, '2 stars'),
+        (1, '1 star')
     )
 
     product = models.ForeignKey(Product, related_name="reviews")
@@ -210,6 +210,13 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES)
     title = models.CharField(max_length=TITLE_LENGTH, validators=[not_blank])
     review = models.TextField()
+
+    def get_absolute_url(self):
+        #TODO: add in the review anchor
+        return self.product.get_absolute_url()
+
+    def __unicode__(self):
+        return u"Review for %s written by %s" % (unicode(self.product), unicode(self.user))
 
 def get_inactive_category():
     """
