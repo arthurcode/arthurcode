@@ -197,6 +197,8 @@ class Product(models.Model):
 
 class Review(models.Model):
     TITLE_LENGTH = 100
+    NAME_LENGTH = 100
+
     RATING_CHOICES = (
         (5, '5 stars'),
         (4, '4 stars'),
@@ -207,6 +209,8 @@ class Review(models.Model):
 
     product = models.ForeignKey(Product, related_name="reviews")
     user = models.ForeignKey(User)
+    name = models.CharField(max_length=NAME_LENGTH, help_text="The name that will publicly be associated with this review",
+                            validators=[not_blank])
     rating = models.IntegerField(choices=RATING_CHOICES)
     title = models.CharField(max_length=TITLE_LENGTH, validators=[not_blank])
     review = models.TextField()

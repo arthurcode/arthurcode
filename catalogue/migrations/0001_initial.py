@@ -106,6 +106,7 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='reviews', to=orm['catalogue.Product'])),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'])),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('rating', self.gf('django.db.models.fields.IntegerField')()),
             ('title', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('review', self.gf('django.db.models.fields.TextField')()),
@@ -235,6 +236,7 @@ class Migration(SchemaMigration):
         'catalogue.review': {
             'Meta': {'object_name': 'Review'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reviews'", 'to': "orm['catalogue.Product']"}),
             'rating': ('django.db.models.fields.IntegerField', [], {}),
             'review': ('django.db.models.fields.TextField', [], {}),
