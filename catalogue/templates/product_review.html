@@ -1,7 +1,17 @@
 {% extends "base_catalogue.html" %}
 {% load form_tags %}
 
+{% block title %}Write A Review{% endblock %}
+
+{% block body_class %}review{% endblock %}
+
 {% block body %}
+    <h1>Write a Review</h1>
+    <h2>{{ product.name }}</h2>
+
+    <img src="{{ STATIC_URL }}products/example.jpg">
+
+    {% form_errors form %}
     <form method="post" action="">
         {% csrf_token %}
         {{ form.product }}

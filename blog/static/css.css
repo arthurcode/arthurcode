@@ -1205,3 +1205,18 @@ div.quick-links a {
     display: inline-block;
     text-decoration: none;
 }
+
+/* product review styles */
+body.review #bd h1 {
+    padding-top: 10px;
+}
+
+body.review #bd img {
+    width: 30%;
+}
+
+body.review #bd form {
+    width: 68%;
+    display: inline-block;
+    float: right;
+}
