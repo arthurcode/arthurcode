@@ -1216,7 +1216,25 @@ body.review #bd img {
 }
 
 body.review #bd form {
+    font-size: smaller;
     width: 68%;
     display: inline-block;
     float: right;
 }
+
+body.review #bd .required-text {
+    display: none;
+}
+
+body.review #bd form select {
+    width: 6em;
+}
+
+body.review #bd form input#id_summary {
+    width: 70%;
+}
+
+body.review #bd form textarea {
+    width: 73%;
+}
+
