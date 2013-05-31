@@ -5,6 +5,7 @@ from utils.validators import not_blank, valid_upc
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.contrib.auth.models import User
 
 
 class Category(MPTTModel, models.Model):
@@ -183,10 +184,32 @@ class Product(models.Model):
     def is_award_winner(self):
         return self.awards and self.awards.count() > 0
 
+    def get_rating(self):
+        """
+        Returns this product's average review rating.  Returns None if there are no reviews.
+        """
+        return self.reviews.aggregate(models.Avg('rating'))['rating__avg']
+
     @classmethod
     def select_current_price(cls, queryset):
         return queryset.extra(select={"current_price": "COALESCE(sale_price, price)"})
 
+
+class Review(models.Model):
+    TITLE_LENGTH = 100
+    RATING_CHOICES = (
+        (1, '1 star'),
+        (2, '2 stars'),
+        (3, '3 stars'),
+        (4, '4 stars'),
+        (5, '5 stars')
+    )
+
+    product = models.ForeignKey(Product, related_name="reviews")
+    user = models.ForeignKey(User)
+    rating = models.IntegerField(choices=RATING_CHOICES)
+    title = models.CharField(max_length=TITLE_LENGTH, validators=[not_blank])
+    review = models.TextField()
 
 def get_inactive_category():
     """
