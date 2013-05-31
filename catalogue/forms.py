@@ -9,9 +9,9 @@ class ReviewForm(forms.Form):
     name = forms.CharField(max_length=Review.NAME_LENGTH, validators=[not_blank], label="Your Name",
                            help_text="as you want it to appear on the public review")
     rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating")
-    title = forms.CharField(max_length=Review.TITLE_LENGTH, validators=[not_blank],
-                            help_text="summarize your review in %d characters or less" % Review.TITLE_LENGTH)
-    review = forms.CharField(widget=forms.Textarea, label="Full Review")
+    summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
+                            help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
+    review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
     product = forms.IntegerField(widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kwargs):
@@ -31,7 +31,7 @@ class ReviewForm(forms.Form):
         review = Review(product=product)
         review.name = self.data['name']
         review.rating = self.data['rating']
-        review.title = self.data['title']
+        review.summary = self.data['summary']
         review.review = self.data['review']
         review.user = self.request.user
         if commit:

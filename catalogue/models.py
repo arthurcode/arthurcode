@@ -196,7 +196,7 @@ class Product(models.Model):
 
 
 class Review(models.Model):
-    TITLE_LENGTH = 100
+    SUMMARY_LENGTH = 100
     NAME_LENGTH = 100
 
     RATING_CHOICES = (
@@ -212,8 +212,8 @@ class Review(models.Model):
     name = models.CharField(max_length=NAME_LENGTH, help_text="The name that will publicly be associated with this review",
                             validators=[not_blank])
     rating = models.IntegerField(choices=RATING_CHOICES)
-    title = models.CharField(max_length=TITLE_LENGTH, validators=[not_blank])
-    review = models.TextField()
+    summary = models.CharField(max_length=SUMMARY_LENGTH, validators=[not_blank])
+    review = models.TextField(blank=True)
 
     def get_absolute_url(self):
         #TODO: add in the review anchor
