@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
-from django.db.models import Count, Sum
+from django.db.models import Count, Sum, Avg
 from catalogue.forms import ReviewForm
 from django.contrib.auth.decorators import login_required
 
@@ -74,6 +74,7 @@ def category_view(request, category_slug=""):
     child_categories = child_categories.order_by('name')
     # only categories with > 0 products will be preserved in this list
     child_categories = add_product_count(child_categories, final_product_list)
+    final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
     final_product_list, sort_key = _sort(request, final_product_list)
 
     # paginate the product listing

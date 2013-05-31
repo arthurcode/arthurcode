@@ -6,6 +6,9 @@
 <div class="thumbnail">
     <a href="{% go_to_product product %}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
     <a href="{% go_to_product product %}">{{ product.name }}</a>
+    {% if product.rating %}
+        <span class="rating">rated {{ product.rating|floatformat }} out of 5</span>
+    {% endif %}
     {% if product.sale_price %}
         <span class="sale-price">Sale: {{ product.sale_price|currency }}</span>
         <span class="sale">({{ product.percent_savings|floatformat:0 }}% off)</span>
