@@ -1,0 +1,10 @@
+{% load static %}
+
+{% spaceless %}
+<div class="rating">
+    {% for star in stars %}
+        <img src="{% get_static_prefix %}icons/stars/star-{{ star }}.png">
+    {% endfor %}
+    <span>rated {{ rating|floatformat }} out of 5</span>
+</div>
+{% endspaceless %}

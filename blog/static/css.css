@@ -1270,3 +1270,17 @@ div.reviews li p {
     line-height: 1.2em;
     padding-top: 5px;
 }
+
+div.rating {
+    display: inline-block;
+}
+
+div.rating img {
+    height: 1em;
+}
+
+/* TODO: this text needs to be visible to screen readers */
+div.rating span {
+    display: none;
+}
+

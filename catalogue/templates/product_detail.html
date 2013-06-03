@@ -3,6 +3,7 @@
 {% load extras %}
 {% load urls %}
 {% load form_tags %}
+{% load ratings %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -25,7 +26,7 @@
             <h1>{{ product.name }}</h1>
             {% with product.get_rating as rating %}
                 {% if rating %}
-                    <span class="rating">rated {{ rating|floatformat }} out of 5</span>
+                    {% rating rating %}
                 {% endif %}
                 <a href="{% url product_review product.slug %}">{% if rating %}write a review{% else %}be the first to write a review{% endif %}</a>
             {% endwith %}

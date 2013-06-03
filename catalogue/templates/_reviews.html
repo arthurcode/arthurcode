@@ -1,11 +1,13 @@
+{% load ratings %}
+
 <div class="reviews">
     <h3>Reviews ({{ reviews.count }})</h3>
     <a href="{% url product_review product.slug %}">write a review</a>
     <ul class>
         {% for review in reviews %}
             <li>
-                <span class="rating">{{ review.rating }} out of 5 stars</span>
                 <a id="{{ review.anchor }}"></a>
+                {% rating review.rating %}
                 <h4><a href="{{ review.get_absolute_url }}">{{ review.summary }}</a></h4>
                 <span class="name">{{ review.name }}</span>
                 <span class="date">{{ review.date|timesince }} ago</span>
