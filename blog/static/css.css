@@ -1267,6 +1267,10 @@ div.reviews li span {
     font-size: small;
 }
 
+div.reviews span.name {
+    font-weight: bolder;
+}
+
 div.reviews li .metadata {
     position: absolute;
     top: 0;
