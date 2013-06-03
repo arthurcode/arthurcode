@@ -1258,7 +1258,11 @@ div.reviews li h4 {
     font-weight: bolder;
 }
 
-div.reviews li span, div.reviews a {
+div.reviews li h4 a {
+    text-decoration: none;
+}
+
+div.reviews li span {
     font-size: smaller;
 }
 

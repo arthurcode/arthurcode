@@ -217,8 +217,11 @@ class Review(models.Model):
     date = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
-        #TODO: add in the review anchor
-        return self.product.get_absolute_url()
+        return self.product.get_absolute_url() + '#' + self.anchor
+
+    @property
+    def anchor(self):
+        return "review%d" % self.id
 
     def __unicode__(self):
         return u"Review for %s written by %s" % (unicode(self.product), self.name)

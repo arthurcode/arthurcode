@@ -4,8 +4,9 @@
     <ul class>
         {% for review in reviews %}
             <li>
-                <h4>{{ review.summary }}</h4>
                 <span class="rating">{{ review.rating }} out of 5 stars</span>
+                <a id="{{ review.anchor }}"></a>
+                <h4><a href="{{ review.get_absolute_url }}">{{ review.summary }}</a></h4>
                 <span class="name">{{ review.name }}</span>
                 <span class="date">{{ review.date|timesince }} ago</span>
                 {% if review.review %}
