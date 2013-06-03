@@ -848,7 +848,7 @@ div.products .title-bar select {
     height: 18em;
 }
 
-.thumbnail img {
+.thumbnail a img {
     width: 95%;
     margin-top: 2%;
 }
