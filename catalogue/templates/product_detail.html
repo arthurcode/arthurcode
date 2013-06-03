@@ -52,9 +52,6 @@
                 </form>
             {% endif %}
         </div>
-
-        <div class="reviews">
-            <a href="{% url product_review product.slug %}">write a review</a>
-        </div>
+        {% include "_reviews.html" %}
     </div>
 {% endblock %}

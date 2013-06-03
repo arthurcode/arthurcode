@@ -1,0 +1,17 @@
+<div class="reviews">
+    <h3>Reviews ({{ product.reviews.count }})</h3>
+    <a href="{% url product_review product.slug %}">write a review</a>
+    <ul class>
+        {% for review in product.reviews.all %}
+            <li>
+                <h4>{{ review.summary }}</h4>
+                <span class="rating">{{ review.rating }} out of 5 stars</span>
+                <span class="name">{{ review.name }}</span>
+                <span class="date">{{ review.date|timesince }} ago</span>
+                {% if review.review %}
+                    <p>{{ review.review }}</p>
+                {% endif %}
+            </li>
+        {% endfor %}
+    </ul>
+</div>
