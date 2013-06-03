@@ -1,6 +1,7 @@
 {% load ratings %}
 
 <div class="reviews">
+    <a id=reviews></a>
     <h3>Reviews ({{ reviews.count }})</h3>
     <a href="{% url product_review product.slug %}">write a review</a>
     <ul class>
