@@ -1252,6 +1252,7 @@ div.reviews h3 {
 div.reviews li {
     padding: 10px;
     border: 1px solid lightgray;
+    position: relative;
 }
 
 div.reviews li h4 {
@@ -1263,7 +1264,13 @@ div.reviews li h4 a {
 }
 
 div.reviews li span {
-    font-size: smaller;
+    font-size: small;
+}
+
+div.reviews li .metadata {
+    position: absolute;
+    top: 0;
+    right: 10px;
 }
 
 div.reviews li p {

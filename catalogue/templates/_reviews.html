@@ -9,8 +9,9 @@
                 <a id="{{ review.anchor }}"></a>
                 {% rating review.rating %}
                 <h4><a href="{{ review.get_absolute_url }}">{{ review.summary }}</a></h4>
-                <span class="name">{{ review.name }}</span>
-                <span class="date">{{ review.date|timesince }} ago</span>
+                <span class="metadata">
+                    submitted by {{ review.name }} ({{ review.date|timesince }} ago)
+                </span>
                 {% if review.review %}
                     <p>{{ review.review }}</p>
                 {% endif %}
