@@ -1238,3 +1238,31 @@ body.review #bd form textarea {
     width: 73%;
 }
 
+div.reviews {
+    float: left;
+    clear: both;
+    width: 70%;
+}
+
+div.reviews h3 {
+    display: inline-block;
+    font-weight: bolder;
+}
+
+div.reviews li {
+    padding: 10px;
+    border: 1px solid lightgray;
+}
+
+div.reviews li h4 {
+    font-weight: bolder;
+}
+
+div.reviews li span, div.reviews a {
+    font-size: smaller;
+}
+
+div.reviews li p {
+    line-height: 1.2em;
+    padding-top: 5px;
+}
