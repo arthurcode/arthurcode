@@ -3,6 +3,7 @@
 <div class="reviews">
     <a id=reviews></a>
     <h3>Reviews ({{ reviews.count }})</h3>
+    {% rating rating %}
     <a href="{% url product_review product.slug %}">write a review</a>
     <ul class>
         {% for review in reviews %}

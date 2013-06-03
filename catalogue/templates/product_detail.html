@@ -10,6 +10,7 @@
 {% if breadcrumbs %}{% block root-category %}{{ breadcrumbs.0.slug }}{% endblock %}{% endif %}
 
 {% block body %}
+    {% with product.get_rating as rating %}
     <div class="breadcrumbs">
         <a href="{% go_to_category '' %}">All Products</a> >
         {% for crumb in breadcrumbs %}
@@ -24,14 +25,12 @@
         </div>
         <div class="description">
             <h1>{{ product.name }}</h1>
-            {% with product.get_rating as rating %}
-                {% rating rating %}
-                {% if rating %}
-                    ({{ reviews.count }} <a href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
-                {% else %}
-                    <a href="{% url product_review product.slug %}">(be the first to write a review)</a>
-                {% endif %}
-            {% endwith %}
+            {% rating rating %}
+            {% if rating %}
+                ({{ reviews.count }} <a href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
+            {% else %}
+                <a href="{% url product_review product.slug %}">(be the first to write a review)</a>
+            {% endif %}
             {% if product.quantity <= 0 %}
                 <span class="out-of-stock">Out Of Stock</span>
             {% endif %}
@@ -57,4 +56,5 @@
         </div>
         {% include "_reviews.html" %}
     </div>
+    {% endwith %}
 {% endblock %}

@@ -1273,7 +1273,7 @@ div.reviews span.name {
 
 div.reviews li .metadata {
     position: absolute;
-    top: 0;
+    top: 10px;
     right: 10px;
 }
 
@@ -1291,7 +1291,5 @@ div.rating img {
 }
 
 /* TODO: this text needs to be visible to screen readers */
-.thumbnail div.rating span, .reviews div.rating span {
-    display: none;
-}
+
 
