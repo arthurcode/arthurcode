@@ -1,8 +1,8 @@
 <div class="reviews">
-    <h3>Reviews ({{ product.reviews.count }})</h3>
+    <h3>Reviews ({{ reviews.count }})</h3>
     <a href="{% url product_review product.slug %}">write a review</a>
     <ul class>
-        {% for review in product.reviews.all %}
+        {% for review in reviews %}
             <li>
                 <h4>{{ review.summary }}</h4>
                 <span class="rating">{{ review.rating }} out of 5 stars</span>
