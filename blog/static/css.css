@@ -1280,7 +1280,7 @@ div.rating img {
 }
 
 /* TODO: this text needs to be visible to screen readers */
-div.rating span {
+.thumbnail div.rating span, .reviews div.rating span {
     display: none;
 }
 

@@ -11,6 +11,13 @@ def rating(rating):
     Given a rating between 1 and 5 (decimal values are allowed) returns a 'rating' html div containing the star
     representation of the number, together with some text for screen reader users.
     """
+    if not rating:
+        # the product has not been rated yet
+        return {
+            'rating': None,
+            'stars': ['0']*5
+        }
+
     full_stars = int(rating)
     stars = ['4']*full_stars
 

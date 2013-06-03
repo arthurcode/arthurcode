@@ -25,9 +25,7 @@
         <div class="description">
             <h1>{{ product.name }}</h1>
             {% with product.get_rating as rating %}
-                {% if rating %}
-                    {% rating rating %}
-                {% endif %}
+                {% rating rating %}
                 <a href="{% url product_review product.slug %}">{% if rating %}write a review{% else %}be the first to write a review{% endif %}</a>
             {% endwith %}
             {% if product.quantity <= 0 %}
