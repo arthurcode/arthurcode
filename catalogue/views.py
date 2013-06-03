@@ -51,7 +51,15 @@ def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     meta_description = product.short_description
-    return render_to_response("product_detail.html", locals(), context_instance=RequestContext(request))
+
+    context = {
+        'form': form,
+        'product': product,
+        'breadcrumbs': breadcrumbs,
+        'meta_description': meta_description
+    }
+
+    return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
 
 
 def category_view(request, category_slug=""):
