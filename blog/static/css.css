@@ -874,6 +874,11 @@ div.product-detail .description {
     display: inline-block;
 }
 
+div.product-detail .description h1 {
+    font-weight: bolder;
+    font-size: larger;
+}
+
 /* add-to-cart form styles */
 form.add-to-cart {
     width: 7em;
@@ -1242,11 +1247,12 @@ div.reviews {
     float: left;
     clear: both;
     width: 70%;
+    padding-top: 10px;
 }
 
 div.reviews h3 {
-    display: inline-block;
     font-weight: bolder;
+    font-size: larger;
 }
 
 div.reviews li {
