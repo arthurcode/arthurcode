@@ -1,5 +1,5 @@
 from django import forms
-from catalogue.models import Review, Product
+from catalogue.models import Review
 from utils.validators import not_blank
 from django.core.exceptions import ValidationError
 
@@ -12,7 +12,6 @@ class ReviewForm(forms.Form):
     summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
                             help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
     review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
-    product = forms.IntegerField(widget=forms.HiddenInput)
 
     def __init__(self, request, *args, **kwargs):
         super(ReviewForm, self).__init__(*args, **kwargs)
@@ -23,11 +22,8 @@ class ReviewForm(forms.Form):
     def clean(self):
         if not self.request.user.is_authenticated:
             raise ValidationError(u"Sorry, you must login before you are allowed to review products.")
-        if not Product.objects.filter(id=self.cleaned_data['product']).exists():
-            raise ValidationError(u"Unable to find the product linked to this review.")
 
-    def create_review(self, commit=True):
-        product = Product.objects.get(id=self.data['product'])
+    def create_review(self, product, commit=True):
         review = Review(product=product)
         review.name = self.data['name']
         review.rating = self.data['rating']
