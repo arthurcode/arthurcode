@@ -214,13 +214,14 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES)
     summary = models.CharField(max_length=SUMMARY_LENGTH, validators=[not_blank])
     review = models.TextField(blank=True)
+    date = models.DateTimeField(auto_now_add=True)
 
     def get_absolute_url(self):
         #TODO: add in the review anchor
         return self.product.get_absolute_url()
 
     def __unicode__(self):
-        return u"Review for %s written by %s" % (unicode(self.product), unicode(self.user))
+        return u"Review for %s written by %s" % (unicode(self.product), self.name)
 
 def get_inactive_category():
     """
