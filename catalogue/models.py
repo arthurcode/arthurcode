@@ -214,7 +214,8 @@ class Review(models.Model):
     rating = models.IntegerField(choices=RATING_CHOICES)
     summary = models.CharField(max_length=SUMMARY_LENGTH, validators=[not_blank])
     review = models.TextField(blank=True)
-    date = models.DateTimeField(auto_now_add=True)
+    date_added = models.DateTimeField(auto_now_add=True)
+    last_modified = models.DateTimeField(auto_now=True)
 
     def get_absolute_url(self):
         return self.product.get_absolute_url() + '#' + self.anchor

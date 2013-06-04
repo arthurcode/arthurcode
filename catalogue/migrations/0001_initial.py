@@ -110,7 +110,8 @@ class Migration(SchemaMigration):
             ('rating', self.gf('django.db.models.fields.IntegerField')()),
             ('summary', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('review', self.gf('django.db.models.fields.TextField')(blank=True)),
-            ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('date_added', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('last_modified', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
         ))
         db.send_create_signal('catalogue', ['Review'])
 
@@ -236,8 +237,9 @@ class Migration(SchemaMigration):
         },
         'catalogue.review': {
             'Meta': {'object_name': 'Review'},
-            'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'date_added': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'last_modified': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'reviews'", 'to': "orm['catalogue.Product']"}),
             'rating': ('django.db.models.fields.IntegerField', [], {}),
