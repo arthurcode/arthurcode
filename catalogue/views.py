@@ -57,7 +57,7 @@ def product_detail_view(request, slug=""):
         'product': product,
         'breadcrumbs': breadcrumbs,
         'meta_description': meta_description,
-        'reviews': product.reviews.order_by('-date')
+        'reviews': product.reviews.order_by('-last_modified')
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
