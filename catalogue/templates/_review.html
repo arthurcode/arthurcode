@@ -1,0 +1,11 @@
+{% load ratings %}
+
+<a id="{{ review.anchor }}"></a>
+{% rating review.rating %}
+<h4><a href="{{ review.get_absolute_url }}">{{ review.summary }}</a></h4>
+<span class="metadata">
+                    submitted by <span class="name">{{ review.name }}</span> on {{ review.date_added|date:"M j, Y" }}
+                </span>
+{% if review.review %}
+    <p>{{ review.review }}</p>
+{% endif %}

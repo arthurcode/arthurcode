@@ -1212,38 +1212,38 @@ div.quick-links a {
 }
 
 /* product review styles */
-body.review #bd h1 {
+body.reviewing #bd h1 {
     padding-top: 10px;
 }
 
-body.review .left-col {
+body.reviewing .left-col {
     width: 30%;
     display: inline-block;
 }
 
-body.review .right-col {
+body.reviewing .right-col {
     width: 68%;
     display: inline-block;
     float: right;
 }
 
-body.review .left-col img {
+body.reviewing .left-col img {
     width: 100%;
 }
 
-body.review #bd .required-text {
+body.reviewing #bd .required-text {
     display: none;
 }
 
-body.review #bd form select {
+body.reviewing #bd form select {
     width: 6em;
 }
 
-body.review #bd form input#id_summary {
+body.reviewing #bd form input#id_summary {
     width: 70%;
 }
 
-body.review #bd form textarea {
+body.reviewing #bd form textarea {
     width: 73%;
 }
 
@@ -1259,21 +1259,21 @@ div.reviews h3 {
     font-size: larger;
 }
 
-div.reviews li {
+.review {
     padding: 10px;
     border: 1px solid lightgray;
     position: relative;
 }
 
-div.reviews li h4 {
+.review h4 {
     font-weight: bolder;
 }
 
-div.reviews li h4 a {
+.review h4 a {
     text-decoration: none;
 }
 
-div.reviews li span {
+.review span {
     font-size: small;
 }
 
@@ -1281,13 +1281,13 @@ div.reviews span.name {
     font-weight: bolder;
 }
 
-div.reviews li .metadata {
+.review .metadata {
     position: absolute;
     top: 10px;
     right: 10px;
 }
 
-div.reviews li p {
+.review p {
     line-height: 1.2em;
     padding-top: 5px;
 }
