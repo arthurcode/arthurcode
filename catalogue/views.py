@@ -172,6 +172,9 @@ def _add_review(request, product):
 def _edit_review(request, review, product):
     if request.method == "POST":
         post_data = request.POST.copy()
+        if "delete" in post_data:
+            review.delete()
+            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             review = form.edit_review()
