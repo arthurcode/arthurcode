@@ -6,6 +6,14 @@
 
 {% block main-header %}Edit Your Review{% endblock %}
 
+{% block right-col %}
+    <h3>Your Current Review:</h3>
+    <div class="review">
+        {% include "_review.html" %}
+    </div>
+    {{ block.super }}
+{% endblock %}
+
 {% block form-controls %}
     <button class="action" type="submit" name="delete">Delete Review</button>
     <button class="action" type="submit" name="submit">Save Changes</button>

@@ -14,16 +14,18 @@
     </div>
 
     <div class="right-col">
-        {% form_errors form %}
-        <form method="post" action="">
-            {% csrf_token %}
-            {% field form.name %}
-            {% field form.rating %}
-            {% field form.summary %}
-            {% field form.review %}
-            <div class="controls">
-                {% block form-controls %}<button class="action" type="submit" name="submit">Submit Review</button>{% endblock %}
-            </div>
-        </form>
+        {% block right-col %}
+            {% form_errors form %}
+            <form method="post" action="">
+                {% csrf_token %}
+                {% field form.name %}
+                {% field form.rating %}
+                {% field form.summary %}
+                {% field form.review %}
+                <div class="controls">
+                    {% block form-controls %}<button class="action" type="submit" name="submit">Submit Review</button>{% endblock %}
+                </div>
+            </form>
+        {% endblock %}
     </div>
 {% endblock %}
