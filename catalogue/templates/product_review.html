@@ -6,20 +6,24 @@
 {% block body_class %}review{% endblock %}
 
 {% block body %}
-    <h1>Write a Review</h1>
+    <h1>{% block main-header %}Write a Review{% endblock %}</h1>
     <h2>{{ product.name }}</h2>
 
-    <img src="{{ STATIC_URL }}products/example.jpg">
+    <div class="left-col">
+        <img src="{{ STATIC_URL }}products/example.jpg">
+    </div>
 
-    {% form_errors form %}
-    <form method="post" action="">
-        {% csrf_token %}
-        {% field form.name %}
-        {% field form.rating %}
-        {% field form.summary %}
-        {% field form.review %}
-        <div class="controls">
-            <button class="action" type="submit" name="submit">Submit Review</button>
-        </div>
-    </form>
+    <div class="right-col">
+        {% form_errors form %}
+        <form method="post" action="">
+            {% csrf_token %}
+            {% field form.name %}
+            {% field form.rating %}
+            {% field form.summary %}
+            {% field form.review %}
+            <div class="controls">
+                {% block form-controls %}<button class="action" type="submit" name="submit">Submit Review</button>{% endblock %}
+            </div>
+        </form>
+    </div>
 {% endblock %}

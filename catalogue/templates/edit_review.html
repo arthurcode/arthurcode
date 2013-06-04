@@ -1,26 +1,12 @@
-{% extends "base_catalogue.html" %}
+{% extends "product_review.html" %}
 {% load form_tags %}
 
 {% block title %}Edit Review{% endblock %}
 
-{% block body_class %}review{% endblock %}
 
-{% block body %}
-    <h1>Edit your Review</h1>
-    <h2>{{ product.name }}</h2>
+{% block main-header %}Edit Your Review{% endblock %}
 
-    <img src="{{ STATIC_URL }}products/example.jpg">
-
-    {% form_errors form %}
-    <form method="post" action="">
-        {% csrf_token %}
-        {% field form.name %}
-        {% field form.rating %}
-        {% field form.summary %}
-        {% field form.review %}
-        <div class="controls">
-            <button class="action" type="submit" name="delete">Delete Review</button>
-            <button class="action" type="submit" name="submit">Save Changes</button>
-        </div>
-    </form>
+{% block form-controls %}
+    <button class="action" type="submit" name="delete">Delete Review</button>
+    <button class="action" type="submit" name="submit">Save Changes</button>
 {% endblock %}

@@ -1216,15 +1216,19 @@ body.review #bd h1 {
     padding-top: 10px;
 }
 
-body.review #bd img {
+body.review .left-col {
     width: 30%;
+    display: inline-block;
 }
 
-body.review #bd form {
-    font-size: smaller;
+body.review .right-col {
     width: 68%;
     display: inline-block;
     float: right;
+}
+
+body.review .left-col img {
+    width: 100%;
 }
 
 body.review #bd .required-text {
