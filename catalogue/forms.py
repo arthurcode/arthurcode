@@ -4,26 +4,34 @@ from utils.validators import not_blank
 from django.core.exceptions import ValidationError
 
 
-class AddReviewForm(forms.Form):
-
+class ReviewForm(forms.Form):
     name = forms.CharField(max_length=Review.NAME_LENGTH, validators=[not_blank], label="Your Name",
-                           help_text="as you want it to appear on the public review")
+                               help_text="as you want it to appear on the public review")
     rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating")
     summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
-                            help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
+                              help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
     review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
 
-    def __init__(self, request, product, *args, **kwargs):
-        super(AddReviewForm, self).__init__(*args, **kwargs)
+    def __init__(self, request, *args, **kwargs):
+        super(ReviewForm, self).__init__(*args, **kwargs)
         self.request = request
+
+    def clean(self):
+        super(ReviewForm, self).clean()
+        if not self.request.user.is_authenticated:
+            raise ValidationError(u"Sorry, you must login before you are allowed to review products.")
+
+
+class AddReviewForm(ReviewForm):
+
+    def __init__(self, request, product, *args, **kwargs):
+        super(AddReviewForm, self).__init__(request, *args, **kwargs)
         self.product = product
         if self.request.user.first_name:
             self.fields['name'].initial = self.request.user.first_name
 
     def clean(self):
         super(AddReviewForm, self).clean()
-        if not self.request.user.is_authenticated:
-            raise ValidationError(u"Sorry, you must login before you are allowed to review products.")
         if Review.objects.filter(user=self.request.user, product=self.product).exists():
             raise ValidationError(u"You have already reviewed this product. "
                                   u"Please edit or delete your original review.")
@@ -39,5 +47,6 @@ class AddReviewForm(forms.Form):
             review.full_clean()
             review.save()
         return review
+
 
 
