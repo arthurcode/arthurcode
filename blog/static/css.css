@@ -1227,7 +1227,7 @@ body.reviewing .right-col {
     float: right;
 }
 
-body.reviewing .left-col img {
+body.reviewing .left-col a img {
     width: 100%;
 }
 
