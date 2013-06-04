@@ -10,11 +10,12 @@
     <h2>{{ product.name }}</h2>
 
     <div class="left-col">
-        <img src="{{ STATIC_URL }}products/example.jpg">
+        <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
     </div>
 
     <div class="right-col">
         {% block right-col %}
+            <h3>{% block form-title %}Write Your Review{% endblock %}</h3>
             {% form_errors form %}
             <form method="post" action="">
                 {% csrf_token %}
