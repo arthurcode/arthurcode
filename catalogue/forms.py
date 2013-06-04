@@ -4,7 +4,7 @@ from utils.validators import not_blank
 from django.core.exceptions import ValidationError
 
 
-class ReviewForm(forms.Form):
+class AddReviewForm(forms.Form):
 
     name = forms.CharField(max_length=Review.NAME_LENGTH, validators=[not_blank], label="Your Name",
                            help_text="as you want it to appear on the public review")
@@ -14,7 +14,7 @@ class ReviewForm(forms.Form):
     review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
 
     def __init__(self, request, *args, **kwargs):
-        super(ReviewForm, self).__init__(*args, **kwargs)
+        super(AddReviewForm, self).__init__(*args, **kwargs)
         self.request = request
         if self.request.user.first_name:
             self.fields['name'].initial = self.request.user.first_name

@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
 from django.db.models import Count, Sum, Avg
-from catalogue.forms import ReviewForm
+from catalogue.forms import AddReviewForm
 from django.contrib.auth.decorators import login_required
 
 DEFAULT_PAGE_SIZE = 16
@@ -144,12 +144,12 @@ def review_view(request, slug):
 
     if request.method == "POST":
         post_data = request.POST.copy()
-        form = ReviewForm(request, data=post_data)
+        form = AddReviewForm(request, data=post_data)
         if form.is_valid():
             review = form.create_review(product)
             return HttpResponseRedirect(review.get_absolute_url())
     else:
-        form = ReviewForm(request)
+        form = AddReviewForm(request)
 
     context = {
         'product': product,
