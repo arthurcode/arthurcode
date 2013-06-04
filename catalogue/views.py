@@ -144,12 +144,12 @@ def review_view(request, slug):
 
     if request.method == "POST":
         post_data = request.POST.copy()
-        form = AddReviewForm(request, data=post_data)
+        form = AddReviewForm(request, product, data=post_data)
         if form.is_valid():
-            review = form.create_review(product)
+            review = form.create_review()
             return HttpResponseRedirect(review.get_absolute_url())
     else:
-        form = AddReviewForm(request)
+        form = AddReviewForm(request, product)
 
     context = {
         'product': product,

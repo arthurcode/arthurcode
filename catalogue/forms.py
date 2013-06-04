@@ -13,24 +13,30 @@ class AddReviewForm(forms.Form):
                             help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
     review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
 
-    def __init__(self, request, *args, **kwargs):
+    def __init__(self, request, product, *args, **kwargs):
         super(AddReviewForm, self).__init__(*args, **kwargs)
         self.request = request
+        self.product = product
         if self.request.user.first_name:
             self.fields['name'].initial = self.request.user.first_name
 
     def clean(self):
+        super(AddReviewForm, self).clean()
         if not self.request.user.is_authenticated:
             raise ValidationError(u"Sorry, you must login before you are allowed to review products.")
+        if Review.objects.filter(user=self.request.user, product=self.product).exists():
+            raise ValidationError(u"You have already reviewed this product. "
+                                  u"Please edit or delete your original review.")
 
-    def create_review(self, product, commit=True):
-        review = Review(product=product)
+    def create_review(self, commit=True):
+        review = Review(product=self.product)
         review.name = self.data['name']
         review.rating = self.data['rating']
         review.summary = self.data['summary']
         review.review = self.data['review']
         review.user = self.request.user
         if commit:
+            review.full_clean()
             review.save()
         return review
 

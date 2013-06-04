@@ -227,6 +227,11 @@ class Review(models.Model):
     def __unicode__(self):
         return u"Review for %s written by %s" % (unicode(self.product), self.name)
 
+    def clean(self):
+        super(Review, self).clean()
+        if Review.objects.filter(user=self.user, product=self.product).exclude(id=self.id).exists():
+            raise ValidationError("The user cannot review the same product more than once")
+
 def get_inactive_category():
     """
     Returns a special Category instance that can be used to store products that are no longer active.  We don't want
