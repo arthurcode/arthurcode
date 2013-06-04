@@ -1262,7 +1262,6 @@ div.reviews h3 {
 .review {
     padding: 10px;
     border: 1px solid lightgray;
-    position: relative;
     /* float to fix a float */
     float: left;
     width: 35em;
@@ -1280,14 +1279,12 @@ div.reviews h3 {
     font-size: small;
 }
 
-div.reviews span.name {
-    font-weight: bolder;
+.review .metadata {
+    display: block;
 }
 
-.review .metadata {
-    position: absolute;
-    top: 10px;
-    right: 10px;
+div.reviews span.name {
+    font-weight: bolder;
 }
 
 .review p {
