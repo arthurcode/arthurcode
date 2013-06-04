@@ -1,7 +1,7 @@
 # Create your views here.
 from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
-from catalogue.models import Product, Category, Brand, Theme
+from catalogue.models import Product, Category, Brand, Theme, Review
 from arthurcode import settings
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from cart.forms import ProductAddToCartForm
@@ -10,7 +10,7 @@ from django.http import HttpResponseRedirect
 from cart import cartutils
 from catalogue import filters
 from django.db.models import Count, Sum, Avg
-from catalogue.forms import AddReviewForm
+from catalogue.forms import AddReviewForm, EditReviewForm
 from django.contrib.auth.decorators import login_required
 
 DEFAULT_PAGE_SIZE = 16
@@ -141,7 +141,18 @@ def category_view(request, category_slug=""):
 @login_required
 def review_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
+    review = None
+    try:
+        review = Review.objects.get(product=product, user=request.user)
+    except Review.DoesNotExist:
+        pass
 
+    if not review:
+        return _add_review(request, product)
+    return _edit_review(request, review, product)
+
+
+def _add_review(request, product):
     if request.method == "POST":
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
@@ -156,6 +167,24 @@ def review_view(request, slug):
         'form': form,
     }
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
+
+
+def _edit_review(request, review, product):
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = EditReviewForm(request, review, data=post_data)
+        if form.is_valid():
+            review = form.edit_review()
+            return HttpResponseRedirect(review.get_absolute_url())
+    else:
+        form = EditReviewForm(request, review)
+
+    context = {
+        'product': product,
+        'review': review,
+        'form': form,
+    }
+    return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
 PRODUCT_SORTS = {
     'bestselling': lambda q: q, # TODO

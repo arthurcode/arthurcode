@@ -49,4 +49,30 @@ class AddReviewForm(ReviewForm):
         return review
 
 
+class EditReviewForm(ReviewForm):
 
+    def __init__(self, request, review, *args, **kwargs):
+        initial = {
+            'name': review.name,
+            'rating': review.rating,
+            'summary': review.summary,
+            'review': review.review
+        }
+        kwargs['initial'] = initial
+        super(EditReviewForm, self).__init__(request, *args, **kwargs)
+        self.review = review
+
+    def clean(self):
+        super(EditReviewForm, self).clean()
+        if not self.review.user == self.request.user:
+            raise ValidationError("This review was created under a different account and cannot be edited.")
+
+    def edit_review(self, commit=True):
+        self.review.name = self.data['name']
+        self.review.rating = self.data['rating']
+        self.review.summary = self.data['summary']
+        self.review.review = self.data['review']
+        if commit:
+            self.review.full_clean()
+            self.review.save()
+        return self.review
