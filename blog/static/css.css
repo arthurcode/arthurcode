@@ -1263,6 +1263,9 @@ div.reviews h3 {
     padding: 10px;
     border: 1px solid lightgray;
     position: relative;
+    /* float to fix a float */
+    float: left;
+    width: 35em;
 }
 
 .review h4 {
@@ -1300,6 +1303,14 @@ div.rating img {
     height: 1em;
 }
 
-/* TODO: this text needs to be visible to screen readers */
+.review .moderation {
+    font-size: small;
+    float: right;
+    color: steelblue;
+}
+
+.review .moderation a {
+    color: inherit;
+}
 
 

@@ -9,3 +9,10 @@ submitted by <span class="name">{{ review.name }}</span> on {{ review.last_modif
 {% if review.review %}
     <p>{{ review.review }}</p>
 {% endif %}
+<div class="moderation">
+    {% if request.user == review.user %}
+        <a href="{% url product_review product.slug %}">edit</a>
+    {% else %}
+        <a>report as inappropriate</a>
+    {% endif %}
+</div>
