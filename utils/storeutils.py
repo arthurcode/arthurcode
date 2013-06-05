@@ -8,7 +8,7 @@ def get_products_needing_review(request):
     Returns the products that the logged-in user has purchased, but hasn't reviewed yet.
     """
     if not request.user.is_authenticated():
-        return []
+        return Product.objects.none()
 
     try:
         profile = request.user.customer_profile
@@ -17,5 +17,5 @@ def get_products_needing_review(request):
         return Product.objects.filter(id__in=ids)
     except CustomerProfile.DoesNotExist:
         # if they don't have a customer profile they haven't ordered anything!
-        return []
+        return Product.objects.none()
 
