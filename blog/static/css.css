@@ -1310,4 +1310,8 @@ div.rating img {
     color: inherit;
 }
 
+.review form {
+    display: inline-block;
+}
+
 
