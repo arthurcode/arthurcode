@@ -13,6 +13,7 @@ from django.db.models import Count, Sum, Avg
 from catalogue.forms import AddReviewForm, EditReviewForm
 from django.contrib.auth.decorators import login_required
 from utils.storeutils import get_products_needing_review
+from django.http import HttpResponseForbidden
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -178,6 +179,8 @@ def _edit_review(request, review, product, context):
     if request.method == "POST":
         post_data = request.POST.copy()
         if "delete" in post_data:
+            if not request.user == review.user:
+                return HttpResponseForbidden(u'You do not have permission to delete this review.')
             review.delete()
             return HttpResponseRedirect(review.after_delete_url())
         if "cancel" in post_data:
