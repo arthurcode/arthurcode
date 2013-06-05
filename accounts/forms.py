@@ -4,6 +4,7 @@ import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from utils.validators import not_blank
+from accounts.models import PublicProfile
 
 
 def username_from_email(email):
@@ -77,4 +78,41 @@ class CustomerAuthenticationForm(AuthenticationForm):
         if email:
             return username_from_email(email)
         return ''
+
+
+class CreatePublicProfileForm(forms.Form):
+    username = forms.CharField(max_length=PublicProfile.NAME_LENGTH, validators=[not_blank],
+                               help_text="will be displayed publicly on your reviews and comments.")
+    description = forms.CharField(max_length=PublicProfile.DESCRIPTION_LENGTH, required=False,
+                                  help_text="describe yourself in %d characters or less.  "
+                                            "Example: 'artist and mother of 2'" % PublicProfile.DESCRIPTION_LENGTH)
+    location = forms.CharField(max_length=PublicProfile.LOCATION_LENGTH, required=False,
+                               help_text="Examples: 'Edmonton, AB', 'Saskatchewan'")
+
+    def __init__(self, request, *args, **kwargs):
+        super(CreatePublicProfileForm, self).__init__(*args, **kwargs)
+        self.request = request
+
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        if username and PublicProfile.objects.filter(username=username).exists():
+            raise ValidationError(u"A customer with this username already exists.")
+        return username
+
+    def clean(self):
+        super(CreatePublicProfileForm, self).clean()
+        if not self.request.user.is_authenticated():
+            raise ValidationError(u"You must be logged-in to create a public profile.")
+
+    def create_profile(self, commit=True):
+        profile = PublicProfile(user=self.request.user)
+        profile.username = self.data['username']
+        profile.description = self.data['description']
+        profile.location = self.data['location']
+
+        if commit:
+            profile.full_clean()
+            profile.save()
+        return profile
+
 

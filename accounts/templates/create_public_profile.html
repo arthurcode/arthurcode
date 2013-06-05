@@ -1,0 +1,22 @@
+{% extends "base_site.html" %}
+{% load form_tags %}
+
+{% block title %}Create Your Public Profile{% endblock %}
+
+{% block body %}
+    <h2>Create Your Public Profile</h2>
+    <p>
+        This is the information that will appear alongside any public content you contribute to our site.  Examples
+        include product reviews and blog comments.  Only a username is required.
+    </p>
+    {% form_errors form %}
+    <form method=post action="{% if next %}?next={{ next }}{% endif %}">
+        {% csrf_token %}
+        {% field form.username %}
+        {% field form.description %}
+        {% field form.location %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Create Profile</button>
+        </div>
+    </form>
+{% endblock %}

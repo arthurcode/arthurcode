@@ -14,6 +14,7 @@ from catalogue.forms import AddReviewForm, EditReviewForm
 from django.contrib.auth.decorators import login_required
 from utils.storeutils import get_products_needing_review
 from django.http import HttpResponseForbidden
+from accounts.models import PublicProfile
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -142,6 +143,15 @@ def category_view(request, category_slug=""):
 
 @login_required
 def review_view(request, slug):
+
+    if request.method == 'GET':
+        #TODO: turn this into a decorator
+        try:
+            request.user.public_profile
+        except PublicProfile.DoesNotExist:
+            return HttpResponseRedirect(reverse('create_public_profile') + "?next=" + request.path)
+
+
     product = get_object_or_404(Product, slug=slug)
     review = None
     try:

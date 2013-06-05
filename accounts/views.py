@@ -7,7 +7,7 @@ from django.utils.http import is_safe_url
 from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
-from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm
+from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -91,3 +91,24 @@ def _get_redirect_url(request, redirect_field_name=REDIRECT_FIELD_NAME):
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
     return redirect_to
+
+@login_required
+def create_public_profile(request):
+    next = request.GET.get('next', None)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = CreatePublicProfileForm(request, data=post_data)
+        if form.is_valid():
+            form.create_profile()
+            redirect_to = next or reverse('show_account')
+            return HttpResponseRedirect(redirect_to)
+    else:
+        form = CreatePublicProfileForm(request)
+
+    context = {
+        'form': form,
+        'next': next
+    }
+    return render_to_response('create_public_profile.html', context, context_instance=RequestContext(request))
+

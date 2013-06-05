@@ -1,8 +1,24 @@
 from django.db import models
 from django.contrib.auth.models import User
 from utils.models import AbstractAddress
-from utils.validators import is_blank
+from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError
+
+
+class PublicProfile(models.Model):
+    """
+    Collects aspects of a user's public profile.  This is the information that will be displayed when the user
+    places a product review, or comments on a blog post or product review.  Most of this information is optional.
+    The only thing required is the name (public handle).
+    """
+    NAME_LENGTH = 50
+    DESCRIPTION_LENGTH = 100
+    LOCATION_LENGTH = 100
+
+    user = models.OneToOneField(User, related_name="public_profile")
+    username = models.CharField(max_length=NAME_LENGTH, unique=True, validators=[not_blank])
+    description = models.CharField(max_length=DESCRIPTION_LENGTH, null=True, blank=True)
+    location = models.CharField(max_length=LOCATION_LENGTH, null=True, blank=True)
 
 
 class CustomerProfile(models.Model):

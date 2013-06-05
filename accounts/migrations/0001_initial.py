@@ -8,6 +8,16 @@ from django.db import models
 class Migration(SchemaMigration):
 
     def forwards(self, orm):
+        # Adding model 'PublicProfile'
+        db.create_table('accounts_publicprofile', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='public_profile', unique=True, to=orm['auth.User'])),
+            ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
+            ('description', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+            ('location', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
+        ))
+        db.send_create_signal('accounts', ['PublicProfile'])
+
         # Adding model 'CustomerProfile'
         db.create_table('accounts_customerprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -52,6 +62,9 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Deleting model 'PublicProfile'
+        db.delete_table('accounts_publicprofile')
+
         # Deleting model 'CustomerProfile'
         db.delete_table('accounts_customerprofile')
 
@@ -98,6 +111,14 @@ class Migration(SchemaMigration):
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '100'})
+        },
+        'accounts.publicprofile': {
+            'Meta': {'object_name': 'PublicProfile'},
+            'description': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'public_profile'", 'unique': 'True', 'to': "orm['auth.User']"}),
+            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
