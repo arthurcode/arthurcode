@@ -43,4 +43,21 @@
             </form>
         {% endblock %}
     </div>
+
+    {% if needing_review %}
+        <div class="needing-review">
+            <h3>Other Products Awaiting Your Review</h3>
+            <ul>
+                {% for to_review in needing_review %}
+                    <li>
+                        <div>
+                            <img src="{{ STATIC_URL }}products/example.jpg"/>
+                            <a href="{% url product_review product.slug %}">{{ product.name }}</a>
+                            <a class="action" href="{% url product_review product.slug %}">Review</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
 {% endblock %}

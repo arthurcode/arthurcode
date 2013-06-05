@@ -618,6 +618,9 @@ class Checkout:
         if not payment_form.is_valid():
             return False
 
+        # link customer information
+        order.customer = pyOrder.customer
+
         # contact paypal to authorize the transfer of funds
         order.shipping_charge = pyOrder.shipping_charge
         order.transaction_id = 00000  # TODO: FIX THIS

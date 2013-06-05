@@ -417,6 +417,10 @@ div.cart-summary {
     padding: 0.25em 0.5em;
 }
 
+a.action {
+    text-decoration: none;
+}
+
 div.cart-summary a {
     padding: 0.2em 0.4em;
     display: inline-block;
@@ -1314,4 +1318,19 @@ div.rating img {
     display: inline-block;
 }
 
+.needing-review {
+    padding-top: 20px;
+    float: left;
+    clear: both;
+    font-size: smaller;
+}
+
+.needing-review li {
+    width: 11em;
+    text-align: center;
+}
+
+.needing-review img {
+    width: 100%;
+}
 

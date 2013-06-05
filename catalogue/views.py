@@ -12,6 +12,7 @@ from catalogue import filters
 from django.db.models import Count, Sum, Avg
 from catalogue.forms import AddReviewForm, EditReviewForm
 from django.contrib.auth.decorators import login_required
+from utils.storeutils import get_products_needing_review
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -147,13 +148,18 @@ def review_view(request, slug):
     except Review.DoesNotExist:
         pass
 
+    context = {
+        'product': product,
+        'review': review,
+        'needing_review': get_products_needing_review(request).exclude(id=product.id)
+    }
+
     if not review:
-        return _add_review(request, product)
-    return _edit_review(request, review, product)
+        return _add_review(request, product, context)
+    return _edit_review(request, review, product, context)
 
 
-def _add_review(request, product):
-    extra_params = {}
+def _add_review(request, product, context):
     if request.method == "POST":
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
@@ -161,21 +167,14 @@ def _add_review(request, product):
             review = form.create_review()
             return HttpResponseRedirect(review.after_create_url())
     else:
-        extra_params = request.GET.copy()
+        context.update(request.GET.copy())
         form = AddReviewForm(request, product)
 
-    context = {
-        'product': product,
-        'form': form,
-    }
-    if extra_params:
-        context.update(extra_params)
-
+    context['form'] = form
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
 
 
-def _edit_review(request, review, product):
-    extra_params = {}
+def _edit_review(request, review, product, context):
     if request.method == "POST":
         post_data = request.POST.copy()
         if "delete" in post_data:
@@ -189,16 +188,9 @@ def _edit_review(request, review, product):
             return HttpResponseRedirect(review.after_edit_url())
     else:
         form = EditReviewForm(request, review)
-        extra_params = request.GET.copy()
+        context.update(request.GET.copy())
 
-    context = {
-        'product': product,
-        'review': review,
-        'form': form,
-    }
-
-    if extra_params:
-        context.update(extra_params)
+    context['form'] = form
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
 PRODUCT_SORTS = {

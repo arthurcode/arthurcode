@@ -16,7 +16,7 @@ class CustomerProfile(models.Model):
     CONTACT_METHOD = ((EMAIL, 'Email'),
                       (PHONE, 'Phone'))
 
-    user = models.ForeignKey(User, unique=True)
+    user = models.OneToOneField(User, related_name="customer_profile")
     phone = models.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
     contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)

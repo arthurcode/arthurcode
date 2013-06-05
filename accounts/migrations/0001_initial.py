@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Adding model 'CustomerProfile'
         db.create_table('accounts_customerprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], unique=True)),
+            ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='customer_profile', unique=True, to=orm['auth.User'])),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
             ('contact_method', self.gf('django.db.models.fields.SmallIntegerField')(default=2)),
@@ -83,7 +83,7 @@ class Migration(SchemaMigration):
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'customer_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'accounts.customershippingaddress': {
             'Meta': {'object_name': 'CustomerShippingAddress'},
