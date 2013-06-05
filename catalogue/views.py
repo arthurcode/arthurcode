@@ -181,6 +181,8 @@ def _edit_review(request, review, product):
         if "delete" in post_data:
             review.delete()
             return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?deleted=True")
+        if "cancel" in post_data:
+            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             form.edit_review()
