@@ -220,6 +220,9 @@ class Review(models.Model):
     def get_absolute_url(self):
         return self.product.get_absolute_url() + '#' + self.anchor
 
+    def get_edit_url(self):
+        return reverse('product_review', kwargs={'slug': self.product.slug}) + "?edit=True"
+
     @property
     def anchor(self):
         return "review%d" % self.id

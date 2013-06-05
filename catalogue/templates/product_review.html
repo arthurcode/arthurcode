@@ -30,7 +30,7 @@
             {% block review-preview %}{% endblock %}
 
             {% form_errors form %}
-            <form method="post" action="">
+            <form class="{% block form-class %}{% endblock %}" method="post" action="">
                 <legend>{% block form-title %}{% if deleted %}Add a New Review{% else %}Write Your Review{% endif %}{% endblock %}</legend>
                 {% csrf_token %}
                 {% field form.name %}

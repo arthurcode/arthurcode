@@ -12,7 +12,7 @@ submitted by <span class="name">{{ review.name }}</span> on {{ review.last_modif
 {% endif %}
 <div class="moderation">
     {% if request.user == review.user %}
-        <a href="{% url product_review product.slug %}">edit</a>
+        <a href="{{ review.get_edit_url }}">edit</a>
     {% else %}
         <a>report as inappropriate</a>
     {% endif %}
