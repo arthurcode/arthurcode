@@ -6,12 +6,19 @@
 
 {% block main-header %}Edit Your Review{% endblock %}
 
-{% block right-col %}
+{% block action-message %}
+    <p>
+        {% if edited %}
+            Your review was successfully edited.
+        {% endif %}
+    </p>
+{% endblock %}
+
+{% block review-preview %}
     <h3>Your Current Review:</h3>
     <div class="review">
         {% include "_review.html" %}
     </div>
-    {{ block.super }}
 {% endblock %}
 
 {% block form-title %}Edit Your Review:{% endblock %}

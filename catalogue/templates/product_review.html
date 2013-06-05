@@ -23,9 +23,11 @@
 
     <div class="right-col">
         {% block right-col %}
-            {% if deleted %}
-                <p>Your review was successfully deleted.</p>
-            {% endif %}
+            {% block action-message %}
+                <p>{% if deleted %}Your review was successfully deleted.{% endif %}</p>
+            {% endblock %}
+
+            {% block review-preview %}{% endblock %}
 
             {% form_errors form %}
             <form method="post" action="">

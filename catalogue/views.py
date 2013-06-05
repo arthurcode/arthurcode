@@ -175,6 +175,7 @@ def _add_review(request, product):
 
 
 def _edit_review(request, review, product):
+    extra_params = {}
     if request.method == "POST":
         post_data = request.POST.copy()
         if "delete" in post_data:
@@ -182,16 +183,20 @@ def _edit_review(request, review, product):
             return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?deleted=True")
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
-            review = form.edit_review()
-            return HttpResponseRedirect(review.get_absolute_url())
+            form.edit_review()
+            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?edited=True")
     else:
         form = EditReviewForm(request, review)
+        extra_params = request.GET.copy()
 
     context = {
         'product': product,
         'review': review,
         'form': form,
     }
+
+    if extra_params:
+        context.update(extra_params)
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
 PRODUCT_SORTS = {
