@@ -158,8 +158,8 @@ def _add_review(request, product):
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
         if form.is_valid():
-            review = form.create_review()
-            return HttpResponseRedirect(review.get_absolute_url())
+            form.create_review()
+            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?created=True")
     else:
         extra_params = request.GET.copy()
         form = AddReviewForm(request, product)
