@@ -158,8 +158,8 @@ def _add_review(request, product):
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
         if form.is_valid():
-            form.create_review()
-            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?created=True")
+            review = form.create_review()
+            return HttpResponseRedirect(review.after_create_url())
     else:
         extra_params = request.GET.copy()
         form = AddReviewForm(request, product)
@@ -180,13 +180,13 @@ def _edit_review(request, review, product):
         post_data = request.POST.copy()
         if "delete" in post_data:
             review.delete()
-            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?deleted=True")
+            return HttpResponseRedirect(review.after_delete_url())
         if "cancel" in post_data:
             return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             form.edit_review()
-            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?edited=True")
+            return HttpResponseRedirect(review.after_edit_url())
     else:
         form = EditReviewForm(request, review)
         extra_params = request.GET.copy()
