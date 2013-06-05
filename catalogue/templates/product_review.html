@@ -23,6 +23,10 @@
 
     <div class="right-col">
         {% block right-col %}
+            {% if deleted %}
+                <p>Your review was successfully deleted.</p>
+            {% endif %}
+
             {% form_errors form %}
             <form method="post" action="">
                 <legend>{% block form-title %}Write Your Review{% endblock %}</legend>

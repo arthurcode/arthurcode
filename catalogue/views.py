@@ -153,6 +153,7 @@ def review_view(request, slug):
 
 
 def _add_review(request, product):
+    extra_params = {}
     if request.method == "POST":
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
@@ -160,12 +161,16 @@ def _add_review(request, product):
             review = form.create_review()
             return HttpResponseRedirect(review.get_absolute_url())
     else:
+        extra_params = request.GET.copy()
         form = AddReviewForm(request, product)
 
     context = {
         'product': product,
         'form': form,
     }
+    if extra_params:
+        context.update(extra_params)
+
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
 
 
@@ -174,7 +179,7 @@ def _edit_review(request, review, product):
         post_data = request.POST.copy()
         if "delete" in post_data:
             review.delete()
-            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))
+            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}) + "?deleted=True")
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             review = form.edit_review()
