@@ -151,7 +151,6 @@ def review_view(request, slug):
         except PublicProfile.DoesNotExist:
             return HttpResponseRedirect(reverse('create_public_profile') + "?next=" + request.path)
 
-
     product = get_object_or_404(Product, slug=slug)
     review = None
     try:

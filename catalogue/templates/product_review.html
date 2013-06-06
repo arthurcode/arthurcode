@@ -33,7 +33,6 @@
             <form class="{% block form-class %}{% endblock %}" method="post" action="">
                 <legend>{% block form-title %}{% if deleted %}Add a New Review{% else %}Write Your Review{% endif %}{% endblock %}</legend>
                 {% csrf_token %}
-                {% field form.name %}
                 {% field form.rating %}
                 {% field form.summary %}
                 {% field form.review %}

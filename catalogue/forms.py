@@ -5,8 +5,6 @@ from django.core.exceptions import ValidationError
 
 
 class ReviewForm(forms.Form):
-    name = forms.CharField(max_length=Review.NAME_LENGTH, validators=[not_blank], label="Your Name",
-                               help_text="as you want it to appear on the public review")
     rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating")
     summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
                               help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
@@ -27,8 +25,6 @@ class AddReviewForm(ReviewForm):
     def __init__(self, request, product, *args, **kwargs):
         super(AddReviewForm, self).__init__(request, *args, **kwargs)
         self.product = product
-        if self.request.user.first_name:
-            self.fields['name'].initial = self.request.user.first_name
 
     def clean(self):
         super(AddReviewForm, self).clean()
@@ -38,7 +34,6 @@ class AddReviewForm(ReviewForm):
 
     def create_review(self, commit=True):
         review = Review(product=self.product)
-        review.name = self.data['name']
         review.rating = self.data['rating']
         review.summary = self.data['summary']
         review.review = self.data['review']
@@ -53,7 +48,6 @@ class EditReviewForm(ReviewForm):
 
     def __init__(self, request, review, *args, **kwargs):
         initial = {
-            'name': review.name,
             'rating': review.rating,
             'summary': review.summary,
             'review': review.review
@@ -68,7 +62,6 @@ class EditReviewForm(ReviewForm):
             raise ValidationError("This review was created under a different account and cannot be edited.")
 
     def edit_review(self, commit=True):
-        self.review.name = self.data['name']
         self.review.rating = self.data['rating']
         self.review.summary = self.data['summary']
         self.review.review = self.data['review']

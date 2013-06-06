@@ -6,6 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib.auth.models import User
+from accounts.models import PublicProfile
 
 
 class Category(MPTTModel, models.Model):
@@ -197,7 +198,6 @@ class Product(models.Model):
 
 class Review(models.Model):
     SUMMARY_LENGTH = 100
-    NAME_LENGTH = 100
 
     RATING_CHOICES = (
         (5, '5 stars'),
@@ -209,8 +209,6 @@ class Review(models.Model):
 
     product = models.ForeignKey(Product, related_name="reviews")
     user = models.ForeignKey(User)
-    name = models.CharField(max_length=NAME_LENGTH, help_text="The name that will publicly be associated with this review",
-                            validators=[not_blank])
     rating = models.IntegerField(choices=RATING_CHOICES)
     summary = models.CharField(max_length=SUMMARY_LENGTH, validators=[not_blank])
     review = models.TextField(blank=True)
@@ -249,12 +247,22 @@ class Review(models.Model):
         return "review%d" % self.id
 
     def __unicode__(self):
-        return u"Review for %s written by %s" % (unicode(self.product), self.name)
+        return u"Review for %s written by %s" % (unicode(self.product), self.username or "anonymous user")
+
+    @property
+    def username(self):
+        try:
+            return self.user.public_profile.username
+        except PublicProfile.DoesNotExist:
+            return None
 
     def clean(self):
         super(Review, self).clean()
         if Review.objects.filter(user=self.user, product=self.product).exclude(id=self.id).exists():
             raise ValidationError("The user cannot review the same product more than once")
+        if not self.username:
+            raise ValidationError("The associated user does not have a public profile.")
+
 
 def get_inactive_category():
     """
