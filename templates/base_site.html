@@ -12,7 +12,7 @@
             <a class="account" href="{% url show_account %}">my account</a>
             {% if user.is_authenticated and not user|is_lazy_user %}
                 <a class="logout" href="{% url logout %}">log out</a>
-                <span class="welcome">Welcome, {{ user.first_name }}</span>
+                <span class="welcome">Welcome, {% firstof user.public_name user.first_name user.username %}</span>
             {% else %}
                 <a class="login" href="{% url login_or_create_account %}">log in</a>
             {% endif %}
