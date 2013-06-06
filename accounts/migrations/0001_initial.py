@@ -12,7 +12,7 @@ class Migration(SchemaMigration):
         db.create_table('accounts_publicprofile', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='public_profile', unique=True, to=orm['auth.User'])),
-            ('username', self.gf('django.db.models.fields.CharField')(unique=True, max_length=50)),
+            ('username', self.gf('django.db.models.fields.CharField')(max_length=50)),
             ('description', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
             ('location', self.gf('django.db.models.fields.CharField')(max_length=100, null=True, blank=True)),
         ))
@@ -118,7 +118,7 @@ class Migration(SchemaMigration):
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'location': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'public_profile'", 'unique': 'True', 'to': "orm['auth.User']"}),
-            'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '50'})
+            'username': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},

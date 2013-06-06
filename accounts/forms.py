@@ -93,12 +93,6 @@ class CreatePublicProfileForm(forms.Form):
         super(CreatePublicProfileForm, self).__init__(*args, **kwargs)
         self.request = request
 
-    def clean_username(self):
-        username = self.cleaned_data.get('username', None)
-        if username and PublicProfile.objects.filter(username=username).exists():
-            raise ValidationError(u"A customer with this username already exists.")
-        return username
-
     def clean(self):
         super(CreatePublicProfileForm, self).clean()
         if not self.request.user.is_authenticated():

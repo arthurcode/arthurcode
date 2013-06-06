@@ -16,7 +16,7 @@ class PublicProfile(models.Model):
     LOCATION_LENGTH = 100
 
     user = models.OneToOneField(User, related_name="public_profile")
-    username = models.CharField(max_length=NAME_LENGTH, unique=True, validators=[not_blank])
+    username = models.CharField(max_length=NAME_LENGTH, validators=[not_blank])
     description = models.CharField(max_length=DESCRIPTION_LENGTH, null=True, blank=True)
     location = models.CharField(max_length=LOCATION_LENGTH, null=True, blank=True)
 
