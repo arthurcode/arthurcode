@@ -3,7 +3,7 @@
 <a id="{{ review.anchor }}"></a>
 {% rating review.rating %}
 <span class="metadata">
-submitted by <span class="name">{{ review.username }}</span> on {{ review.last_modified|date:"M j, Y" }}
+submitted by <span class="name">{{ review.user.public_name }}</span> on {{ review.last_modified|date:"M j, Y" }}
 </span>
 <h4><a href="{{ review.get_absolute_url }}">{{ review.summary }}</a></h4>
 

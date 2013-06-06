@@ -74,3 +74,16 @@ class CustomerBillingAddress(AbstractAddress):
     customer = models.ForeignKey(CustomerProfile, related_name='billing_addresses')
     last_used = models.DateTimeField(auto_now_add=True)
 
+
+# add a new method to the builtin User class
+def patch_user(user_clazz):
+    def public_name(self):
+        try:
+            return self.public_profile.username
+        except PublicProfile.DoesNotExist:
+            return None
+    user_clazz.public_name = public_name
+
+# add custom methods to the built-in User class
+patch_user(User)
+

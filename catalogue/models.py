@@ -247,20 +247,13 @@ class Review(models.Model):
         return "review%d" % self.id
 
     def __unicode__(self):
-        return u"Review for %s written by %s" % (unicode(self.product), self.username or "anonymous user")
-
-    @property
-    def username(self):
-        try:
-            return self.user.public_profile.username
-        except PublicProfile.DoesNotExist:
-            return None
+        return u"Review for %s written by %s" % (unicode(self.product), self.user.public_name() or "anonymous user")
 
     def clean(self):
         super(Review, self).clean()
         if Review.objects.filter(user=self.user, product=self.product).exclude(id=self.id).exists():
             raise ValidationError("The user cannot review the same product more than once")
-        if not self.username:
+        if not self.user.public_name():
             raise ValidationError("The associated user does not have a public profile.")
 
 
