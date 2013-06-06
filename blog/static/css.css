@@ -1281,14 +1281,27 @@ div.reviews h3 {
 
 .review span {
     font-size: small;
+    display: block;
+    font-style: italic;
+}
+
+.review span.name {
+    font-style: normal;
+    font-weight: bolder;
+    font-size: 100%;
 }
 
 .review .metadata {
-    display: block;
+    float: left;
+    width: 30%;
+    line-height: 1.2em;
 }
 
-div.reviews span.name {
-    font-weight: bolder;
+.review .content {
+    float: left;
+    width: 67%;
+    padding-left: 2%;
+    border-left: 1px solid lightgray;
 }
 
 .review p {
