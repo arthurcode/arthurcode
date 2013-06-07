@@ -6,7 +6,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib.auth.models import User
-from accounts.models import PublicProfile
+import datetime
 
 
 class Category(MPTTModel, models.Model):
@@ -241,6 +241,13 @@ class Review(models.Model):
         The url to redirect users to after they have edited a review
         """
         return reverse('product_review', kwargs={'slug': self.product.slug}) + "?edited=True"
+
+    def was_edited(self):
+        """
+        Returns true if the 'date_added' and 'last_modified' fields differ by 1 day or more.
+        """
+        delta = datetime.timedelta(days=1)
+        return self.last_modified >= self.date_added + delta
 
     @property
     def anchor(self):
