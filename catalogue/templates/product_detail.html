@@ -40,19 +40,35 @@
             {% else %}
                 <span class="price">{{ product.price|currency }}</span>
             {% endif %}
-            {% autoescape off %}
-                <div class="text">{{ product.long_description }}</div>
-            {% endautoescape %}
 
-            {% form_errors form %}
-            {% if product.quantity > 0 %}
-                <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
-                    {% csrf_token %}
-                    {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
-                    {{ form.product_slug }}
-                    <button type="submit" name="submit" class="action">Add to Cart</button>
-                </form>
-            {% endif %}
+            <div class="tabview">
+                <ul class="tabrow">
+                    <li id="description" class="tab selected"><a class="tabview" href="#description">Description</a></li>
+                    <li id="specs" class="tab"><a class="tabview" href="#specs">Specifications</a></li>
+                </ul>
+                <div class="views">
+                    <div id="description">
+                        {% autoescape off %}
+                            <div class="text">{{ product.long_description }}</div>
+                        {% endautoescape %}
+                    </div>
+                    <div id="specs" class="hide-initially">
+                        TODO
+                    </div>
+                </div>
+            </div>
+
+            <div class="add-to-cart">
+                {% form_errors form %}
+                {% if product.quantity > 0 %}
+                    <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
+                        {% csrf_token %}
+                        {% field_label_tag form.quantity %}{% aria_required_field form.quantity %}
+                        {{ form.product_slug }}
+                        <button type="submit" name="submit" class="action">Add to Cart</button>
+                    </form>
+                {% endif %}
+            </div>
         </div>
     </div>
 
@@ -61,7 +77,7 @@
                 <li class="tab selected" id="reviews"><a class="tabview" href="#reviews">Reviews ({{ reviews.count }})</a></li>
                 <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>
             </ul>
-            <div>
+            <div class="views">
                 <div id="reviews">{% include "_reviews.html" %}</div>
                 <div class="hide-initially" id="qa">EVENTUALLY Q & A WILL GO IN HERE</div>
             </div>

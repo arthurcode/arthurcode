@@ -86,6 +86,7 @@ ul {
     list-style: none;
     padding: 0;
     position: relative;
+    float: left;
 }
 
 .tabrow:after {
@@ -884,22 +885,28 @@ div.product-detail .description h1 {
 }
 
 /* add-to-cart form styles */
-form.add-to-cart {
+
+div.add-to-cart {
+    float: left;
+    clear: both;
+}
+
+div.add-to-cart form {
     width: 7em;
     position: relative;
 }
 
-form.add-to-cart label {
+div.add-to-cart form label {
     float: left;
     margin-bottom: 0.5em;
 }
 
-form.add-to-cart label span.error {
+div.add-to-cart form label span.error {
     float: left;
     clear: left;
 }
 
-form.add-to-cart input {
+div.add-to-cart form input {
     position: absolute;
     top: 0;
     right: 0;
@@ -907,17 +914,17 @@ form.add-to-cart input {
     padding: 0 0.3em;  /* required for the input to resize properly with changes in font size */
 }
 
-form.add-to-cart button {
+div.add-to-cart form button {
     clear: both;
     display: block;
     width: 100%;
 }
 
-form.add-to-cart input, form.add-to-cart label {
+div.add-to-cart form input, div.add-to-cart form label {
     display: inline-block;
 }
 
-form.add-to-cart span.required-text, form.update-cart span.required-text {
+div.add-to-cart form span.required-text, form.update-cart span.required-text {
     display: none;  /* it's obvious that the quantity is required */
 }
 
@@ -1356,5 +1363,10 @@ div.rating img {
     float: left;
     clear: both;
     width: 100%;
+}
+
+.tabview .views {
+    float: left;
+    clear: both;
 }
 
