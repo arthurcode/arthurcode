@@ -1347,3 +1347,14 @@ div.rating img {
     width: 100%;
 }
 
+#feedback {
+    clear: both;
+    padding-top: 20px;
+}
+
+#feedback .tabrow {
+    float: left;
+    clear: both;
+    width: 100%;
+}
+
