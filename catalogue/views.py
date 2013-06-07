@@ -15,6 +15,7 @@ from django.contrib.auth.decorators import login_required
 from utils.storeutils import get_products_needing_review
 from django.http import HttpResponseForbidden
 from accounts.models import PublicProfile
+from catalogue.signals import review_deleted
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -191,6 +192,7 @@ def _edit_review(request, review, product, context):
             if not request.user == review.user:
                 return HttpResponseForbidden(u'You do not have permission to delete this review.')
             review.delete()
+            review_deleted.send(sender=review)
             return HttpResponseRedirect(review.after_delete_url())
         if "cancel" in post_data:
             return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))

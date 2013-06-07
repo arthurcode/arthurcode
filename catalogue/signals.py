@@ -6,6 +6,7 @@ import django.dispatch
 from difflib import Differ
 
 review_edited = django.dispatch.Signal(providing_args=['original'])
+review_deleted = django.dispatch.Signal()  # review deleted by user
 
 @receiver(post_save, sender=Review)
 def review_added(sender, **kwargs):
@@ -32,18 +33,30 @@ def handle_review_edited(sender, **kwargs):
     mail_managers(subject, "".join(diffs))
 
 
-def review_as_text(review):
-    return """
+@receiver(review_deleted)
+def handle_review_deleted(sender, **kwargs):
+    """
+    Notify site managers when a user deletes one of his/her reviews.
+    """
+    subject = "Review Deleted: " + sender.product.name
+    mail_managers(subject, review_as_text(sender, include_url=False))
+
+
+def review_as_text(review, include_url=True):
+    text = """
     name:    %s
     rating:  %d
     summary: %s
-    link:    %s
 
     %s
+
     """ % (review.user.public_name() or "anonymous user",
            review.rating,
            review.summary,
-           review.get_absolute_url(),
            review.review or "(reviewer did not provide details)")
+
+    if include_url:
+        text += "link: " + review.get_absolute_url()
+    return text
 
 
