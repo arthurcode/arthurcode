@@ -4,6 +4,7 @@ from catalogue.models import Review
 from django.core.mail import mail_managers
 import django.dispatch
 from difflib import Differ
+from utils.util import get_full_url
 
 review_edited = django.dispatch.Signal(providing_args=['original'])
 review_deleted = django.dispatch.Signal()  # review deleted by user
@@ -56,7 +57,7 @@ def review_as_text(review, include_url=True):
            review.review or "(reviewer did not provide details)")
 
     if include_url:
-        text += "link: " + review.get_absolute_url()
+        text += "link: " + get_full_url(review)
     return text
 
 
