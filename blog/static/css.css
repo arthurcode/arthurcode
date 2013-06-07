@@ -1251,14 +1251,14 @@ body.reviewing #bd form textarea {
     width: 73%;
 }
 
-div.reviews {
+div#reviews {
     float: left;
     clear: both;
     width: 70%;
     padding-top: 10px;
 }
 
-div.reviews h3 {
+div#reviews h3 {
     font-weight: bolder;
     font-size: larger;
 }

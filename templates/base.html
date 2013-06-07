@@ -17,11 +17,35 @@
 {% block site_wrapper %} {% endblock %}
 {% block javascript %}
     <script type="text/javascript">
-        YUI().use('node', function(Y) {
+        YUI().use('node', 'event', function(Y) {
             // initially hide elements with the 'hide-initially' class
             Y.all('.hide-initially').each(function(f) {
                 f.addClass('hidden');
             });
+
+            // Hook up tabview functionality.  When someone clicks on an a.tabview element, the tab with the matching
+            // id will become selected, and the content with the matching id will become visible.
+            Y.all('a.tabview').each(function(link) {
+                link.on("click", function (e) {
+                    var href = this.getAttribute('href');
+                    var tab = Y.one('.tab' + href);
+                    var parent = tab.ancestor('div', false);
+                    var content = parent.one('div' + href);
+
+                    tab.addClass('selected');
+                    content.removeClass('hidden');
+
+                    // deselect all sibling tabs
+                    tab.siblings('.tab').each(function (tab) {
+                        tab.removeClass('selected');
+                    });
+
+                    // hide all sibling divs
+                    content.siblings('div').each(function (div) {
+                        div.addClass('hidden');
+                    })
+                });
+            })
         });
     </script>
 {% endblock %}

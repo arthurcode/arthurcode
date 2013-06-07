@@ -1,19 +1,16 @@
 {% load ratings %}
 
-<div class="reviews">
-    <a id=reviews></a>
-    {% if rating %}
-        Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
-        <a href="{% url product_review product.slug %}">write a review</a>
-    {% else %}
-        <a href="{% url product_review product.slug %}">be the first to write a review</a>
-    {% endif %}
+{% if rating %}
+    Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
+    <a href="{% url product_review product.slug %}">write a review</a>
+{% else %}
+    <a href="{% url product_review product.slug %}">be the first to write a review</a>
+{% endif %}
 
-    <ul>
-        {% for review in reviews %}
-            <li class="review">
-                {% include "_review.html" %}
-            </li>
-        {% endfor %}
-    </ul>
-</div>
+<ul>
+    {% for review in reviews %}
+        <li class="review">
+            {% include "_review.html" %}
+        </li>
+    {% endfor %}
+</ul>
