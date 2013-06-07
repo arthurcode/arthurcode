@@ -4,7 +4,6 @@ from utils.validators import not_blank
 from django.core.exceptions import ValidationError
 import arthurcode.settings as settings
 from catalogue.signals import review_edited
-from catalogue import signals
 
 
 class ReviewForm(forms.Form):
@@ -60,7 +59,7 @@ class EditReviewForm(ReviewForm):
         kwargs['initial'] = initial
         super(EditReviewForm, self).__init__(request, *args, **kwargs)
         self.review = review
-        self.original_review = signals.review_as_text(self.review)
+        self.original_review = self.review.as_text()
 
     def clean(self):
         super(EditReviewForm, self).clean()

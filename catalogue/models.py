@@ -7,6 +7,7 @@ from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.contrib.auth.models import User
 import datetime
+from utils.util import get_full_url
 
 
 class Category(MPTTModel, models.Model):
@@ -253,8 +254,26 @@ class Review(models.Model):
     def anchor(self):
         return "review%d" % self.id
 
+    def as_text(self):
+        """
+        Returns a text version of this review suitable for inclusion in an email.
+        """
+        text = self.__unicode__()
+        if self.id:
+            text += "\n" + get_full_url(self)
+        return text
+
     def __unicode__(self):
-        return u"Review for %s written by %s" % (unicode(self.product), self.user.public_name() or "anonymous user")
+        return """
+        name:    %s
+        rating:  %d
+        summary: %s
+
+        %s
+        """ % (self.user.public_name() or "anonymous user",
+               self.rating,
+               self.summary,
+               self.review or "(reviewer did not provide details)")
 
     def clean(self):
         super(Review, self).clean()

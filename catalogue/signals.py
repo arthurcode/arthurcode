@@ -4,7 +4,6 @@ from catalogue.models import Review
 from django.core.mail import mail_managers
 import django.dispatch
 from difflib import Differ
-from utils.util import get_full_url
 
 review_edited = django.dispatch.Signal(providing_args=['original'])
 review_deleted = django.dispatch.Signal()  # review deleted by user
@@ -19,7 +18,7 @@ def review_added(sender, **kwargs):
         return
     review = kwargs.get('instance')
     subject = "New Review: " + review.product.name
-    mail_managers(subject, review_as_text(review))
+    mail_managers(subject, review.as_text())
 
 
 @receiver(review_edited)
@@ -30,7 +29,7 @@ def handle_review_edited(sender, **kwargs):
     original_review_text = kwargs.get('original')
 
     subject = "Review Edited: " + sender.product.name
-    diffs = list(Differ().compare(original_review_text.splitlines(1), review_as_text(sender).splitlines(1)))
+    diffs = list(Differ().compare(original_review_text.splitlines(1), sender.as_text().splitlines(1)))
     mail_managers(subject, "".join(diffs))
 
 
@@ -40,24 +39,6 @@ def handle_review_deleted(sender, **kwargs):
     Notify site managers when a user deletes one of his/her reviews.
     """
     subject = "Review Deleted: " + sender.product.name
-    mail_managers(subject, review_as_text(sender, include_url=False))
-
-
-def review_as_text(review, include_url=True):
-    text = """
-    name:    %s
-    rating:  %d
-    summary: %s
-
-    %s
-
-    """ % (review.user.public_name() or "anonymous user",
-           review.rating,
-           review.summary,
-           review.review or "(reviewer did not provide details)")
-
-    if include_url:
-        text += "link: " + get_full_url(review)
-    return text
+    mail_managers(subject, sender.as_text())
 
 
