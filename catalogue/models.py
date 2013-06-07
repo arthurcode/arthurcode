@@ -279,3 +279,6 @@ def get_inactive_category():
     }
     category, _ = Category.objects.get_or_create(**params)
     return category
+
+# register any signals for this app
+import catalogue.signals

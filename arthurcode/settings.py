@@ -193,3 +193,5 @@ AUTHENTICATION_BACKENDS = (
 
 COMMENTS_HIDE_REMOVED = False
 ALLOW_REVIEWS = True
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
