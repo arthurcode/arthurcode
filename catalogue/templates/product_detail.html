@@ -34,12 +34,14 @@
             {% if product.quantity <= 0 %}
                 <span class="out-of-stock">Out Of Stock</span>
             {% endif %}
-            {% if product.sale_price %}
-                Was: <span class="old-price">{{ product.price|currency }}</span>
-                Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
-            {% else %}
-                <span class="price">{{ product.price|currency }}</span>
-            {% endif %}
+            <div class="price">
+                {% if product.sale_price %}
+                    Was: <span class="old-price">{{ product.price|currency }}</span>
+                    Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
+                {% else %}
+                    <span class="price">{{ product.price|currency }}</span>
+                {% endif %}
+            </div>
 
             <div class="tabview">
                 <ul class="tabrow">
@@ -72,7 +74,7 @@
         </div>
     </div>
 
-        <div id="feedback">
+        <div id="feedback" class="tabview">
             <ul class="tabrow">
                 <li class="tab selected" id="reviews"><a class="tabview" href="#reviews">Reviews ({{ reviews.count }})</a></li>
                 <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>

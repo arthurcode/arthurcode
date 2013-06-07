@@ -879,6 +879,10 @@ div.product-detail .description {
     display: inline-block;
 }
 
+div.product-detail .tabrow {
+    padding-top: 15px;
+}
+
 div.product-detail .description h1 {
     font-weight: bolder;
     font-size: larger;
@@ -889,6 +893,7 @@ div.product-detail .description h1 {
 div.add-to-cart {
     float: left;
     clear: both;
+    padding-top: 10px;
 }
 
 div.add-to-cart form {
@@ -1368,5 +1373,7 @@ div.rating img {
 .tabview .views {
     float: left;
     clear: both;
+    padding: 15px;
+    border-left: 1px solid darkgray;
 }
 
