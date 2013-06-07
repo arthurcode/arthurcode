@@ -45,7 +45,24 @@
                         div.addClass('hidden');
                     })
                 });
-            })
+            });
+
+            Y.all('.tabview .views').each(function(f) {
+                // give each view within a tabview the same height
+                var views = f.all('> div');
+                var maxHeight = 0;
+
+                views.each(function(view) {
+                    var height = parseInt(view.getComputedStyle('height'));
+                    if (height > maxHeight) {
+                        maxHeight = height;
+                    }
+                });
+
+                views.each(function(view) {
+                    view.setStyle('height', maxHeight);
+                });
+            });
         });
     </script>
 {% endblock %}
