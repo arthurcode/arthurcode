@@ -2,6 +2,7 @@ from django import forms
 from catalogue.models import Review
 from utils.validators import not_blank
 from django.core.exceptions import ValidationError
+import arthurcode.settings as settings
 
 
 class ReviewForm(forms.Form):
@@ -18,6 +19,8 @@ class ReviewForm(forms.Form):
         super(ReviewForm, self).clean()
         if not self.request.user.is_authenticated:
             raise ValidationError(u"Sorry, you must login before you are allowed to review products.")
+        if not getattr(settings, 'ALLOW_REVIEWS', True):
+            raise ValidationError(u"Reviews are temporarily disabled.  Sorry for the inconvenience.")
 
 
 class AddReviewForm(ReviewForm):
