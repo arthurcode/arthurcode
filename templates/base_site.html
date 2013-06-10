@@ -42,10 +42,12 @@
             </div>
         {% endblock %}
         {% block search-bar %}
-            <form id="search">
+            <form id="search" method="post" action="{% url product_search %}">
+                {% csrf_token %}
+                <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
                 <fieldset>
-                    <label class="hidden" for="search-text">Search Text</label>
-                    <input type="text" name="search-text" id="search-text"><button type="submit" name="search" class="action">Search</button>
+                    <label class="hidden" for="id_q">Search Text</label>
+                    <input type="text" name="q" id="id_q"><button type="submit" name="search" class="action">Search</button>
                 </fieldset>
             </form>
         {% endblock %}

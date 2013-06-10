@@ -136,6 +136,7 @@ INSTALLED_APPS = (
     'checkout',
     'django_countries',
     'lazysignup',
+    'search',
 )
 
 # A sample logging configuration. The only tangible logging

@@ -2,7 +2,7 @@
 {% load extras %}
 {% load urls %}
 
-{% block title %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
+{% block title %}{% if search_text %}Search Results{% elif category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
 {% block root-category %}
     {% if parent_categories %}
@@ -85,7 +85,9 @@
 
         <div class="products">
             <div class="title-bar">
-                {% if category %}
+                {% if search_text %}
+                    <h2>Search Results: "{{ search_text }}"</h2>
+                {% elif category %}
                     <h2>{{ category.name }}</h2>
                 {% else %}
                     <h2>All Products</h2>

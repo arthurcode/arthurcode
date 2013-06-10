@@ -16,6 +16,7 @@ from utils.storeutils import get_products_needing_review
 from django.http import HttpResponseForbidden
 from accounts.models import PublicProfile
 from catalogue.signals import review_deleted
+from search import searchutils
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -82,6 +83,12 @@ def category_view(request, category_slug=""):
         meta_description = "All products for sale at %s." % settings.SITE_NAME
         child_categories = Category.objects.root_nodes()
 
+    # implement a product search
+    search_text = request.GET.get('search', None)
+    if search_text:
+        # always do the search before the filtering
+        pre_filter_product_list = searchutils.products(search_text, pre_filter_product_list)
+
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
 
     child_categories = child_categories.order_by('name')
@@ -133,6 +140,7 @@ def category_view(request, category_slug=""):
             ('rating', 'Rating'),
             ('new', 'Newest')
         ],
+        'search_text': search_text,
         'filters': applied_filters,
         'brands': get_brands(pre_filter_product_list, applied_filters),
         'themes': get_themes(pre_filter_product_list, applied_filters),
