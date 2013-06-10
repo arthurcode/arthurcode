@@ -44,6 +44,12 @@ def go_to_category(context, category):
 
 
 @register.inclusion_tag('_response.html', takes_context=True)
+def remove_search(context):
+    to_remove = "search, page"
+    return query_string(context, "", to_remove)
+
+
+@register.inclusion_tag('_response.html', takes_context=True)
 def preserve_params(context, url):
     """
     Redirects the user to the given url, making sure to preserve any filter and/or sort query parameters.

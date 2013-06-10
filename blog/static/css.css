@@ -718,6 +718,16 @@ form.stacked span.error, form.stacked span.help-text {
     color: gray;
 }
 
+body.products #bd .search h2 {
+    padding-top: 10px;
+    display: inline-block;
+}
+
+body.products #bd .search a {
+    font-size: 80%;
+    color: gray;
+}
+
 div.refine {
     width: 17%;
     font-size: 80%;
