@@ -29,7 +29,7 @@ def _categories(search_words, categories=None):
         categories = Category.objects.filter(is_active=True)
     for word in search_words:
         categories = categories.filter(Q(name__icontains=word) |
-                                        Q(description__icontains=word))
+                                       Q(description__icontains=word))
     return categories
 
 
