@@ -99,6 +99,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',           # order is important, must come after middleware that encodes content, such as GZIP
 )
 
 ROOT_URLCONF = 'arthurcode.urls'
@@ -137,6 +138,7 @@ INSTALLED_APPS = (
     'django_countries',
     'lazysignup',
     'search',
+    'debug_toolbar',
 )
 
 # A sample logging configuration. The only tangible logging
@@ -196,3 +198,5 @@ COMMENTS_HIDE_REMOVED = False
 ALLOW_REVIEWS = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+INTERNAL_IPS = ('127.0.0.1',)   # required for the django-debug-toolbar
