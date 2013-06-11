@@ -275,6 +275,9 @@ def get_brands(product_queryset, request_filters):
     for brand in brands:
         brand_filter = filters.BrandFilter(brand)
         is_active = active_filter and active_filter.slug == brand.slug
+        # set the name to avoid a DB call in the template
+        if is_active:
+            active_filter.name = brand.name
         setattr(brand_filter, 'active_filter', is_active)
         setattr(brand_filter, 'product_count', brand.product_count)
         brand_filters.append(brand_filter)
@@ -297,6 +300,9 @@ def get_themes(product_queryset, request_filters):
     for theme in themes:
         theme_filter = filters.ThemeFilter(theme)
         is_active = active_filter and active_filter.slug == theme.slug
+        # set the name to avoid a DB call in the template
+        if is_active:
+            active_filter.name = theme.name
         setattr(theme_filter, 'active_filter', is_active)
         setattr(theme_filter, 'product_count', theme.product_count)
         theme_filters.append(theme_filter)
