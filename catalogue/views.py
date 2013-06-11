@@ -89,13 +89,21 @@ def category_view(request, category_slug=""):
         # always do the search before the filtering
         pre_filter_product_list = searchutils.products(search_text, pre_filter_product_list)
 
-    final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
+    # force the evaluation of the pre-filter product list queryset to
+    # avoid running expensive search sub-queries more than once
+    pre_filter_product_list = Product.objects.filter(id__in=[p.id for p in pre_filter_product_list])
 
-    child_categories = child_categories.order_by('name')
-    # only categories with > 0 products will be preserved in this list
-    child_categories = add_product_count(child_categories, final_product_list)
+    final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
     final_product_list, sort_key = _sort(request, final_product_list)
+    child_categories = child_categories.order_by('name')
+
+    # get a finalized list of products in the form of a subquery.  This also forces the final_product_list queryset
+    # to be evaluated which is fine, it would be evaluated in the template regardless.
+    final_product_subquery = Product.objects.filter(id__in=[p.id for p in final_product_list])
+
+    # only categories with > 0 products will be preserved in this list
+    child_categories = add_product_count(child_categories, final_product_subquery)
 
     # paginate the product listing
     pageSize = request.GET.get('pageSize') or DEFAULT_PAGE_SIZE
@@ -145,7 +153,7 @@ def category_view(request, category_slug=""):
         'brands': get_brands(pre_filter_product_list, applied_filters),
         'themes': get_themes(pre_filter_product_list, applied_filters),
         'prices': get_prices(pre_filter_product_list, applied_filters),
-        'features': get_features(final_product_list, applied_filters),
+        'features': get_features(final_product_subquery, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
