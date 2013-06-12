@@ -95,7 +95,7 @@ class BlogDraftPostDetailView(BlogPostDetailView):
 
 def index(request):
     try:
-        latest = Post.published.latest(POST_PUB_DATE_FIELD)
+        latest = Post.published.select_related().latest(POST_PUB_DATE_FIELD)
     except ObjectDoesNotExist:
         latest = None
     return render_to_response("blog/post_detail.html",

@@ -166,13 +166,24 @@ class Comment(BaseCommentAbstractModel):
         """
         Returns True if this comment has been flagged for removal and subsequently approved by a moderator.
         """
-        return self.flags.filter(flag=CommentFlag.MODERATOR_APPROVAL).count() > 0
+        return self.has_flag(CommentFlag.MODERATOR_APPROVAL)
 
     def is_flagged_for_removal(self):
         """
         Returns True if this comment has been flagged for removal.
         """
-        return self.flags.filter(flag=CommentFlag.SUGGEST_REMOVAL).count() > 0
+        return self.has_flag(CommentFlag.SUGGEST_REMOVAL)
+
+    def has_flag(self, flag_name):
+        """
+        Assumes that the 'flags' relation has been prefetched and thus the results of self.flags.all() has already
+        been cached.  See https://docs.djangoproject.com/en/dev/ref/models/querysets/#prefetch-related
+        """
+        for flag in self.flags.all():
+            if flag.flag == flag_name:
+                return True
+        return False
+
 
 class CommentFlag(models.Model):
     """

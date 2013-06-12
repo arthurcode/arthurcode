@@ -3,16 +3,15 @@
 
 <div id="comments">
     {% get_comment_list for post as comments %}
-    {% get_comment_count for post as comment_count %}
 
-    <h2>Comments ({{ comment_count }})</h2>
+    <h2>Comments ({{ comments|length }})</h2>
     {% if comments %}
         <ul class="comments">
             {% recursetree comments %}
                 <li class="comment">
                     <a name="c{{ node.id }}"></a>
                     <span class="user">{{ node.user_name }}</span>
-                    <a class="date" href="{% get_comment_permalink node %}">{{ node.submit_date|timesince }} ago</a>
+                    <a class="date" href="#c{{ node.id }}">{{ node.submit_date|timesince }} ago</a>
                     <div class="text">
                         {% if not node.is_removed %}
                             {{ node.comment }}

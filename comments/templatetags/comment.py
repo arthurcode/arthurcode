@@ -96,6 +96,8 @@ class BaseCommentNode(template.Node):
         if getattr(settings, 'COMMENTS_HIDE_REMOVED', True) and 'is_removed' in field_names:
             qs = qs.filter(is_removed=False)
 
+        qs = qs.prefetch_related('flags')   # assume we're going to want to look at this comment's flags
+
         return qs
 
     def get_target_ctype_pk(self, context):
