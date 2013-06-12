@@ -6,11 +6,12 @@ from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden
 
 from catalogue.models import Product
-from reviews.forms import AddReviewForm, EditReviewForm
+from reviews.forms import AddReviewForm, EditReviewForm, FlagReviewForm
 from reviews.models import Review
 from utils.storeutils import get_products_needing_review
 from accounts.models import PublicProfile
 from reviews.signals import review_deleted
+from lazysignup.decorators import allow_lazy_user
 
 @login_required
 def review_view(request, product_slug):
@@ -76,3 +77,30 @@ def _edit_review(request, review, product, context):
 
     context['form'] = form
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
+
+
+@allow_lazy_user
+def flag(request, id):
+    """
+    Flags the given review for removal.
+    """
+    review = get_object_or_404(Review, id=id)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        if 'yes' in post_data:
+            form = FlagReviewForm(request, review, data=post_data)
+            if form.is_valid():
+                form.do_flag()
+                return HttpResponseRedirect(review.get_absolute_url())
+        else:
+            return HttpResponseRedirect(review.get_absolute_url())
+    else:
+        form = FlagReviewForm(request, review)
+
+    context = {
+        'review': review,
+        'form': form,
+    }
+    return render_to_response("flag_review.html", context, context_instance=RequestContext(request))
+

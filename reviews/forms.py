@@ -1,7 +1,7 @@
 from django import forms
 from django.core.exceptions import ValidationError
 
-from reviews.models import Review
+from reviews.models import Review, ReviewFlag
 from utils.validators import not_blank
 import arthurcode.settings as settings
 from reviews.signals import review_edited
@@ -76,3 +76,26 @@ class EditReviewForm(ReviewForm):
             self.review.save()
             review_edited.send(sender=self.review, original=self.original_review)
         return self.review
+
+
+class FlagReviewForm(forms.Form):
+
+    def __init__(self, request, review, *args, **kwargs):
+        super(FlagReviewForm, self).__init__(*args, **kwargs)
+        self.request = request
+        self.review = review
+
+    def clean(self):
+        if not self.request.user.is_authenticated:
+            raise ValidationError("Sorry, you must be logged in to flag reviews.")  # shouldn't happen
+        if self.review.is_approved():
+            raise ValidationError("This review has already been reviewed and approved by a staff member.")
+        if self.review.is_flagged_for_removal():
+            raise ValidationError("This review has already been flagged for removal.")
+        if ReviewFlag.objects.filter(user=self.request.user, review=self.review, flag=ReviewFlag.SUGGEST_REMOVAL).exists():
+            raise ValidationError("Sorry, you have already flagged this review for removal.")
+
+    def do_flag(self):
+        flag = ReviewFlag(user=self.request.user, review=self.review, flag=ReviewFlag.SUGGEST_REMOVAL)
+        flag.full_clean()
+        flag.save()

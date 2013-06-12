@@ -1,0 +1,18 @@
+{% extends "base_catalogue.html" %}
+{% load form_tags %}
+
+{% block title %}Report an Inappropriate Review{% endblock %}
+
+{% block body %}
+    <p>Are you sure you want to report the following review as inappropriate?</p>
+    <div class="review">{% include "_review.html" %}</div>
+
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="controls">
+            <button type="submit" name="no" class="action">Cancel</button>
+            <button type="submit" name="yes" class="action">Yes</button>
+        </div>
+    </form>
+{% endblock %}
