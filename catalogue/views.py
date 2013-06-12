@@ -150,9 +150,9 @@ def category_view(request, category_slug=""):
         ],
         'search_text': search_text,
         'filters': applied_filters,
-        'brands': get_brands(pre_filter_product_list, applied_filters),
-        'themes': get_themes(pre_filter_product_list, applied_filters),
-        'prices': get_prices(pre_filter_product_list, applied_filters),
+        'brands': get_brands(pre_filter_product_list, final_product_subquery, applied_filters),
+        'themes': get_themes(pre_filter_product_list, final_product_subquery, applied_filters),
+        'prices': get_prices(pre_filter_product_list, final_product_subquery, applied_filters),
         'features': get_features(final_product_subquery, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
@@ -261,14 +261,14 @@ def add_product_count(category_queryset, product_queryset):
     return categories
 
 
-def get_brands(product_queryset, request_filters):
+def get_brands(pre_filter_queryset, final_queryset, request_filters):
     """
     Returns the set of brands that are linked to the products in the given queryset.  A product_count attribute will
     be annotated to each brand.  This works because the filter on products constrains the products that are included
     in product_count.  See https://docs.djangoproject.com/en/dev/topics/db/aggregation/ for more details.  Sweet!
     The brands will be in alphabetical order.
     """
-    queryset = product_queryset
+    queryset = pre_filter_queryset
     active_filter = None
 
     for a_filter in request_filters:
@@ -276,6 +276,10 @@ def get_brands(product_queryset, request_filters):
             active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
+
+    if not active_filter:
+        # there are no brand filters active, therefore we can go ahead and use final_queryset to simplify the subquery
+        queryset = final_queryset
 
     brands = Brand.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
     brand_filters = []
@@ -292,8 +296,8 @@ def get_brands(product_queryset, request_filters):
     return brand_filters
 
 
-def get_themes(product_queryset, request_filters):
-    queryset = product_queryset
+def get_themes(pre_filter_queryset, final_queryset, request_filters):
+    queryset = pre_filter_queryset
     active_filter = None
 
     for a_filter in request_filters:
@@ -301,6 +305,10 @@ def get_themes(product_queryset, request_filters):
             active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
+
+    if not active_filter:
+        # there are no theme filters active, therefore we can go ahead and use final_queryset and simplify the subquery
+        queryset = final_queryset
 
     themes = Theme.objects.filter(products__in=queryset).annotate(product_count=Count('products')).order_by('name')
     theme_filters = []
@@ -317,7 +325,7 @@ def get_themes(product_queryset, request_filters):
     return theme_filters
 
 
-def get_prices(product_queryset, request_filters):
+def get_prices(pre_filter_queryset, final_queryset, request_filters):
     """
     Returns a list of price bins for this queryset.  Bins without any counts will be removed.
     This hits the DB multiple times.  It should be possible to do this in a single query, but not without using
@@ -325,8 +333,7 @@ def get_prices(product_queryset, request_filters):
     """
     price_bins = ('10', '20', '30', '40', '50', '75', '100', '200')
     price_filters = []
-    last_count = 0
-    queryset = product_queryset
+    queryset = pre_filter_queryset
     active_filter = None
 
     for a_filter in request_filters:
@@ -335,9 +342,23 @@ def get_prices(product_queryset, request_filters):
             continue
         queryset = a_filter.apply(queryset)
 
+    if not active_filter:
+        # simplify the subquery when there is no currently active price filter
+        queryset = final_queryset
+
+    select = {}
+    fields = []
+    for price in price_bins:
+        field = "lt" + price
+        select[field] = "sum(case when COALESCE(sale_price, price) <= " + price + " then 1 else 0 end)"
+        fields.append(field)
+
+    breakdown = queryset.extra(select=select).values(*fields)[0]
+    last_count = 0
+
     for price in price_bins:
         price_filter = filters.MaxPriceFilter(price)
-        count = price_filter.apply(queryset).count()
+        count = breakdown["lt" + price]
         is_active = active_filter and active_filter.max_price == price_filter.max_price
         if is_active or count > last_count:
             setattr(price_filter, 'active_filter', is_active)
