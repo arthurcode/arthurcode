@@ -10,7 +10,6 @@
 {% if breadcrumbs %}{% block root-category %}{{ breadcrumbs.0.slug }}{% endblock %}{% endif %}
 
 {% block body %}
-    {% with product.get_rating as rating %}
     <div class="breadcrumbs">
         <a href="{% go_to_category '' %}">All Products</a> >
         {% for crumb in breadcrumbs %}
@@ -25,8 +24,8 @@
         </div>
         <div class="description">
             <h1>{{ product.name }}</h1>
-            {% rating rating %}
-            {% if rating %}
+            {% rating avg_rating %}
+            {% if avg_rating %}
                 ({{ reviews.count }} <a class="tabview" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
             {% else %}
                 <a href="{% url product_review product.slug %}">(be the first to write a review)</a>
@@ -74,15 +73,14 @@
         </div>
     </div>
 
-        <div id="feedback" class="tabview">
-            <ul class="tabrow">
-                <li class="tab selected" id="reviews"><a class="tabview" href="#reviews">Reviews ({{ reviews.count }})</a></li>
-                <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>
-            </ul>
-            <div class="views">
-                <div id="reviews">{% include "_reviews.html" %}</div>
-                <div class="hide-initially" id="qa">EVENTUALLY Q & A WILL GO IN HERE</div>
-            </div>
+    <div id="feedback" class="tabview">
+        <ul class="tabrow">
+            <li class="tab selected" id="reviews"><a class="tabview" href="#reviews">Reviews ({{ reviews.count }})</a></li>
+            <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>
+        </ul>
+        <div class="views">
+            <div id="reviews">{% include "_reviews.html" %}</div>
+            <div class="hide-initially" id="qa">EVENTUALLY Q & A WILL GO IN HERE</div>
         </div>
-    {% endwith %}
+    </div>
 {% endblock %}

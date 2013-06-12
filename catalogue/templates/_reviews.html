@@ -1,7 +1,7 @@
 {% load ratings %}
 
-{% if rating %}
-    Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
+{% if avg_rating %}
+    Average rating: {% rating avg_rating %} ({{ avg_rating|floatformat }} out of 5)
     <a href="{% url product_review product.slug %}">write a review</a>
 {% else %}
     <a href="{% url product_review product.slug %}">be the first to write a review</a>

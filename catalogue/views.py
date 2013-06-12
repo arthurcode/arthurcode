@@ -17,6 +17,7 @@ from django.http import HttpResponseForbidden
 from accounts.models import PublicProfile
 from catalogue.signals import review_deleted
 from search import searchutils
+from decimal import Decimal
 
 DEFAULT_PAGE_SIZE = 16
 
@@ -56,13 +57,23 @@ def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     meta_description = product.short_description
+    reviews = product.reviews.select_related('product', 'user__public_profile').order_by('-last_modified')
+
+    # manually calculate the average rating rather than hit the DB again
+    avg = None
+    if reviews:
+        avg = Decimal('0')
+        for review in reviews:
+            avg += review.rating
+        avg /= reviews.count()
 
     context = {
         'form': form,
         'product': product,
-        'breadcrumbs': breadcrumbs,
+        'breadcrumbs': list(breadcrumbs),                      # force evaluation to save a query in the template
         'meta_description': meta_description,
-        'reviews': product.reviews.order_by('-last_modified')
+        'reviews': reviews,
+        'avg_rating': avg,
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
