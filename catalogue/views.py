@@ -182,7 +182,7 @@ def review_view(request, slug):
     product = get_object_or_404(Product, slug=slug)
     review = None
     try:
-        review = Review.objects.get(product=product, user=request.user)
+        review = Review.objects.select_related('user__public_profile', 'product').get(product=product, user=request.user)
     except Review.DoesNotExist:
         pass
 
