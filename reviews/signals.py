@@ -1,9 +1,9 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from catalogue.models import Review
 from django.core.mail import mail_managers
 import django.dispatch
 from difflib import Differ
+from reviews.models import Review
 
 review_edited = django.dispatch.Signal(providing_args=['original'])
 review_deleted = django.dispatch.Signal()  # review deleted by user

@@ -1,7 +1,4 @@
-from utils.templatetags.extras import query_string, get_query_string
 from django.template import Library
-from django.core.urlresolvers import reverse
-from catalogue import filters
 
 register = Library()
 

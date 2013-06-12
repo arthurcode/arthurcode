@@ -1,9 +1,10 @@
 from django import forms
-from catalogue.models import Review
-from utils.validators import not_blank
 from django.core.exceptions import ValidationError
+
+from reviews.models import Review
+from utils.validators import not_blank
 import arthurcode.settings as settings
-from catalogue.signals import review_edited
+from reviews.signals import review_edited
 
 
 class ReviewForm(forms.Form):

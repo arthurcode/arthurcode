@@ -139,6 +139,7 @@ INSTALLED_APPS = (
     'lazysignup',
     'search',
     'debug_toolbar',
+    'reviews',
 )
 
 # A sample logging configuration. The only tangible logging
