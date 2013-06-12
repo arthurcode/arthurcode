@@ -57,7 +57,8 @@ def product_detail_view(request, slug=""):
     product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     meta_description = product.short_description
-    reviews = product.reviews.select_related('product', 'user__public_profile').order_by('-last_modified')
+    reviews = product.reviews.select_related('product', 'user__public_profile').\
+        prefetch_related('flags').order_by('-last_modified')
 
     # manually calculate the average rating rather than hit the DB again
     avg = None
@@ -364,7 +365,10 @@ def get_prices(pre_filter_queryset, final_queryset, request_filters):
         select[field] = "sum(case when COALESCE(sale_price, price) <= " + price + " then 1 else 0 end)"
         fields.append(field)
 
-    breakdown = queryset.extra(select=select).values(*fields)[0]
+    breakdown = queryset.extra(select=select).values(*fields)
+    if not breakdown: return []
+    breakdown = breakdown[0]
+
     last_count = 0
 
     for price in price_bins:

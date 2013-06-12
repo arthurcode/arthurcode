@@ -250,6 +250,20 @@ class Review(models.Model):
         delta = datetime.timedelta(days=1)
         return self.last_modified >= self.date_added + delta
 
+    def is_flagged_for_removal(self):
+        return self.has_flag(ReviewFlag.SUGGEST_REMOVAL)
+
+    def is_approved(self):
+        return self.has_flag(ReviewFlag.MODERATOR_APPROVAL)
+
+    def has_flag(self, flag_name):
+        # assume that self.flags.all() has been pre-fetched
+        for flag in self.flags.all():
+            if flag.flag == flag_name:
+                return True
+        return False
+
+
     @property
     def anchor(self):
         return "review%d" % self.id
@@ -281,6 +295,35 @@ class Review(models.Model):
             raise ValidationError("The user cannot review the same product more than once")
         if not self.user.public_name():
             raise ValidationError("The associated user does not have a public profile.")
+
+
+class ReviewFlag(models.Model):
+    """
+    Records a flag on a review. This is intentionally flexible; right now, a
+    flag could be:
+
+        * A "removal suggestion" -- where a user suggests a review for (potential) removal.
+
+        * A "moderator approval" -- used when a moderator approves a review after it's been flagged for removal
+
+    You can (ab)use this model to add other flags, if needed. However, by
+    design users are only allowed to flag a review with a given flag once.
+    """
+    user      = models.ForeignKey(User, related_name="review_flags")
+    review   = models.ForeignKey(Review, related_name="flags")
+    flag      = models.CharField(max_length=30, db_index=True)
+    flag_date = models.DateTimeField(auto_now_add=True)
+
+    # Constants for flag types
+    SUGGEST_REMOVAL = "removal suggestion"
+    MODERATOR_APPROVAL = "moderator approval"
+
+    class Meta:
+        unique_together = [('user', 'review', 'flag')]
+
+    def __unicode__(self):
+        return "%s flag of review ID %s by %s" % \
+               (self.flag, self.review_id, self.user.username)
 
 
 def get_inactive_category():

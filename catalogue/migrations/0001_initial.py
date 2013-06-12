@@ -114,8 +114,24 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['Review'])
 
+        # Adding model 'ReviewFlag'
+        db.create_table('catalogue_reviewflag', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(related_name='review_flags', to=orm['auth.User'])),
+            ('review', self.gf('django.db.models.fields.related.ForeignKey')(related_name='flags', to=orm['catalogue.Review'])),
+            ('flag', self.gf('django.db.models.fields.CharField')(max_length=30, db_index=True)),
+            ('flag_date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+        ))
+        db.send_create_signal('catalogue', ['ReviewFlag'])
+
+        # Adding unique constraint on 'ReviewFlag', fields ['user', 'review', 'flag']
+        db.create_unique('catalogue_reviewflag', ['user_id', 'review_id', 'flag'])
+
 
     def backwards(self, orm):
+        # Removing unique constraint on 'ReviewFlag', fields ['user', 'review', 'flag']
+        db.delete_unique('catalogue_reviewflag', ['user_id', 'review_id', 'flag'])
+
         # Deleting model 'Category'
         db.delete_table('catalogue_category')
 
@@ -142,6 +158,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'Review'
         db.delete_table('catalogue_review')
+
+        # Deleting model 'ReviewFlag'
+        db.delete_table('catalogue_reviewflag')
 
 
     models = {
@@ -244,6 +263,14 @@ class Migration(SchemaMigration):
             'review': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'summary': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']"})
+        },
+        'catalogue.reviewflag': {
+            'Meta': {'unique_together': "[('user', 'review', 'flag')]", 'object_name': 'ReviewFlag'},
+            'flag': ('django.db.models.fields.CharField', [], {'max_length': '30', 'db_index': 'True'}),
+            'flag_date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'review': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'flags'", 'to': "orm['catalogue.Review']"}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'review_flags'", 'to': "orm['auth.User']"})
         },
         'catalogue.theme': {
             'Meta': {'object_name': 'Theme'},
