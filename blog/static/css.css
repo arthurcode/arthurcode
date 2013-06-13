@@ -1393,3 +1393,19 @@ div.rating img {
     border-left: 1px solid darkgray;
 }
 
+body.flag-review h2 {
+    padding-bottom: 10px;
+}
+
+body.flag-review .review {
+    display: block;
+}
+
+body.flag-review .review .moderation {
+    display: none;
+}
+
+body.flag-review .controls {
+    padding-top: 10px;
+    font-size: 130%;
+}
