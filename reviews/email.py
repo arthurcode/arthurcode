@@ -6,6 +6,7 @@ from django.core.mail import EmailMessage, mail_managers, send_mail
 from arthurcode import settings
 from utils.util import get_full_url
 from django.core.urlresolvers import reverse
+from difflib import Differ
 
 EMAIL_AUTHOR_REVIEW_DELETED_BY_ADMIN = """
 Your review for product '%(product)s' has been deleted for the following reason(s):
@@ -39,6 +40,22 @@ def get_template_data():
     return {
         'site-name': settings.SITE_NAME
     }
+
+
+def notify_managers_new_review(review):
+    subject = "New Review: " + review.product.name
+    mail_managers(subject, review.as_text())
+
+
+def notify_managers_review_edited(review, original_text):
+    subject = "Review Edited: " + review.product.name
+    diffs = list(Differ().compare(original_text.splitlines(1), review.as_text().splitlines(1)))
+    mail_managers(subject, "".join(diffs))
+
+
+def notify_managers_review_deleted(review):
+    subject = "Review Deleted: " + review.product.name
+    mail_managers(subject, review.as_text())
 
 
 def notify_managers_review_deleted_by_admin(request, review, reason):
