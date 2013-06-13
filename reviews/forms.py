@@ -1,11 +1,10 @@
 from django import forms
 from django.core.exceptions import ValidationError
-
 from reviews.models import Review, ReviewFlag
 from utils.validators import not_blank
 import arthurcode.settings as settings
 from reviews.signals import review_edited
-
+from reviews.email import notify_managers_review_deleted_by_admin, notify_author_review_deleted_by_admin
 
 class ReviewForm(forms.Form):
     rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating")
@@ -99,3 +98,38 @@ class FlagReviewForm(forms.Form):
         flag = ReviewFlag(user=self.request.user, review=self.review, flag=ReviewFlag.SUGGEST_REMOVAL)
         flag.full_clean()
         flag.save()
+
+
+class AdminDeleteReviewForm(forms.Form):
+
+    email_author = forms.BooleanField(label="Send Email to Author?", initial=True, required=False)
+    reason = forms.CharField(max_length=1000, widget=forms.Textarea, validators=[not_blank])
+
+    def __init__(self, request, review, *args, **kwargs):
+        super(AdminDeleteReviewForm, self).__init__(*args, **kwargs)
+        self.request = request
+        self.review = review
+
+    def clean(self):
+        super(AdminDeleteReviewForm, self).clean()
+        if not self.request.user.is_staff:
+            raise ValidationError("Only staff members are allowed to delete reviews.")
+
+        email_author = self.cleaned_data.get('email_author', False)
+
+        if email_author:
+            if not self.review.user.email:
+                raise ValidationError("The reviewer does not have an email address on file.  "
+                                          "Please un-check the 'Email Author' box.")
+        return self.cleaned_data
+
+    def delete_review(self):
+        email_author = self.cleaned_data.get('email_author', False)
+        reason = self.cleaned_data.get('reason', '(reason not provided)')
+        self.review.delete()
+
+        if email_author:
+            notify_author_review_deleted_by_admin(self.request, self.review, reason)
+        notify_managers_review_deleted_by_admin(self.request, self.review, reason)
+
+

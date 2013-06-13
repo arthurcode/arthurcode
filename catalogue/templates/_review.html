@@ -29,7 +29,11 @@
             </form>
             <a href="{{ review.get_edit_url }}">edit</a>
         {% else %}
-            <a href="{% url flag_review review.id %}">report as inappropriate</a>
+            {% if request.user.is_staff %}
+                <a href="{% url admin_delete_review review.id %}">delete review</a>
+            {% else %}
+                <a href="{% url flag_review review.id %}">report as inappropriate</a>
+            {% endif %}
         {% endif %}
     </div>
 </div>
