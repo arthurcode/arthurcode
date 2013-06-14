@@ -17,8 +17,6 @@ class CustomerCreationForm(UserCreationForm):
     A user creation form that requires an email instead of a username.  We attempt to generate a unique username
     from the email address using an md5 hash algorithm.
     """
-    first_name = forms.CharField(max_length=30, required=True, validators=[not_blank])
-    last_name = forms.CharField(max_length=30, required=True, validators=[not_blank])
     email = forms.EmailField(required=True)
 
     def __init__(self, *args, **kwargs):
@@ -26,7 +24,7 @@ class CustomerCreationForm(UserCreationForm):
         # the username field won't be displayed on the form, it will be given a default (generated) value
         self.fields['username'].required = False
         # make sure the username is cleaned last, since it depends on email
-        self.fields.keyOrder = ['email', 'password1', 'password2', 'first_name', 'last_name', 'username']
+        self.fields.keyOrder = ['email', 'password1', 'password2', 'username']
 
     def clean_username(self):
         """
@@ -55,8 +53,6 @@ class CustomerCreationForm(UserCreationForm):
 
     def save(self, commit=True):
         user = super(CustomerCreationForm, self).save(commit=False)
-        user.first_name = self.cleaned_data['first_name']
-        user.last_name = self.cleaned_data['last_name']
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
@@ -66,30 +62,17 @@ class CustomerCreationForm(UserCreationForm):
 class ConvertLazyUserForm(CustomerCreationForm):
 
     def __init__(self, lazyUser, *args, **kwargs):
-        self._set_initial_data(lazyUser, **kwargs)
-        super(ConvertLazyUserForm, self).__init__(*args, **kwargs)
-        self.instance = lazyUser
-
-    def _set_initial_data(self, lazyUser, **kwargs):
-        data = kwargs.get('data', None)
-        initial = kwargs.get('initial', {})
-
-        first_name = lazyUser.first_name
-        last_name = lazyUser.last_name
         email = lazyUser.email
 
-        self._update_data('first_name', first_name, initial, data)
-        self._update_data('last_name', last_name, initial, data)
-        self._update_data('email', email, initial, data)
+        if not is_blank(email):
+            if 'data' in kwargs:
+                kwargs['data']['email'] = email
+            initial = kwargs.get('initial', {})
+            initial['email'] = email
+            kwargs['initial'] = initial
 
-        kwargs['initial'] = initial
-        kwargs['data'] = data
-
-    def _update_data(self, field_name, value, initial, data):
-        if not is_blank(value):
-            initial[field_name] = value
-            if data:
-                data[field_name] = value
+        super(ConvertLazyUserForm, self).__init__(*args, **kwargs)
+        self.instance = lazyUser
 
 
 class CustomerAuthenticationForm(AuthenticationForm):
