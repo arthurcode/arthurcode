@@ -2,10 +2,8 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
-from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.http import HttpResponseForbidden
-
 from catalogue.models import Product
 from reviews.forms import AddReviewForm, EditReviewForm, FlagReviewForm, AdminDeleteReviewForm
 from reviews.models import Review
@@ -13,8 +11,9 @@ from utils.storeutils import get_products_needing_review
 from accounts.models import PublicProfile
 from reviews.signals import review_deleted
 from lazysignup.decorators import allow_lazy_user
+from accounts.decorators import non_lazy_login_required
 
-@login_required
+@non_lazy_login_required()
 def review_view(request, product_slug):
 
     if request.method == 'GET':
