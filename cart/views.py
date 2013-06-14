@@ -29,16 +29,7 @@ def show_cart(request):
             checkout_errors = _get_cart_errors(request)
             if not checkout_errors:
                 checkout_url = reverse('checkout')
-                if request.user.is_authenticated():
-                    # if the user is logged in, or if a lazy user has been created, redirect them to the checkout
-                    # process right away
-                    redirect_url = checkout_url
-                else:
-                    # ask the user to either login or checkout as a guest.  If they choose to checkout as a guest
-                    # a lazy_user account will be created for them.
-                    login_url = reverse('login_or_create_account')
-                    redirect_url = "%s?next=%s" % (login_url, checkout_url)
-                return HttpResponseRedirect(redirect_url)
+                return HttpResponseRedirect(checkout_url)
 
     cart_items = cartutils.get_cart_items(request)
 

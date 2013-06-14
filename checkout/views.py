@@ -14,7 +14,7 @@ from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBi
 from utils.validators import is_blank
 import checkoututils
 from decimal import Decimal
-
+from django.views.decorators.http import require_GET
 
 class PyOrder(object):
     """
@@ -485,6 +485,9 @@ class Checkout:
     def is_finished(self):
         return self.get_completed_step() == len(STEPS)
 
+    def is_in_progress(self):
+        return self.is_started() and not self.is_finished()
+
     def get_completed_step(self):
         """
         Returns the highest step that this user has completed, or None if no steps have been completed.
@@ -704,12 +707,20 @@ STEPS = [(ContactInfoStep, reverse_lazy('checkout_contact'), 'Contact Info'),
          (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay')]
 
 
+@require_GET
 @allow_lazy_user
 def checkout(request):
     """
     Checkout a logged-in user.
     """
     co = Checkout(request)
+    if is_lazy_user(request.user) and not co.is_in_progress():
+        if not request.GET.get('guest', False):
+            # redirect to the login view where they can explicitly choose to login or checkout as a guest
+            login_url = reverse('login_or_create_account')
+            checkout_url = reverse('checkout')
+            redirect_url = "%s?next=%s" % (login_url, checkout_url)
+            return HttpResponseRedirect(redirect_url)
     co.start()
     # re-direct the user to the next applicable step in their checkout process.  This will always be the first step
     # for new checkouts.
@@ -755,3 +766,7 @@ def cancel(request):
     co = Checkout(request)
     co.cancel()
     return HttpResponseRedirect(reverse('show_cart'))
+
+
+def get_guest_checkout_url():
+    return reverse('checkout') + "?guest=True"
