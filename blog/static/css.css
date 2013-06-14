@@ -1034,7 +1034,7 @@ div.create-account .required-text, div.login .required-text {
     display: none;
 }
 
-a.checkout-as-guest {
+a.guest {
     float: left;
     clear: left;
     width: 30%;

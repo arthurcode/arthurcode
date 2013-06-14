@@ -38,7 +38,7 @@
             </div>
         </form>
     </div>
-    {% if checking_out %}
-        <a class="checkout-as-guest yui3-button" href="{{ guest_checkout_url }}">Checkout As Guest</a>
+    {% if allow_guests %}
+        <a class="guest action" href="{{ guest_url }}">{{ guest_action }}</a>
     {% endif %}
 {% endblock %}

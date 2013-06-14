@@ -67,6 +67,9 @@ def login_or_create_account(request,
 
     current_site = get_current_site(request)
     checkout_url = reverse('checkout')
+    allow_guests = checkout_url == redirect_to
+    guest_url = get_guest_checkout_url()
+    guest_action = "Checkout As Guest"
 
     context = {
         'auth_form': auth_form,
@@ -74,8 +77,9 @@ def login_or_create_account(request,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        'checking_out': redirect_to == checkout_url,
-        'guest_checkout_url': get_guest_checkout_url()
+        'allow_guests': allow_guests,
+        'guest_url': guest_url,
+        'guest_action': guest_action,
         }
     if extra_context is not None:
         context.update(extra_context)
