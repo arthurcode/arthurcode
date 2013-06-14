@@ -31,6 +31,7 @@
                 {% endif %}
                 {% field create_form.password1 %}
                 {% field create_form.password2 %}
+                {% field create_form.on_mailing_list %}
             {% endwith %}
             <div class="controls">
                 <button type="submit" name="create" class="yui3-button">Create Account{% if checking_out %} and Checkout{% endif %}</button>

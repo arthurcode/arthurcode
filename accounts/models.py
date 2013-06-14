@@ -35,7 +35,8 @@ class CustomerProfile(models.Model):
     user = models.OneToOneField(User, related_name="customer_profile")
     phone = models.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
-    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=EMAIL)
+    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, null=True, blank=False, default=None)
+    on_mailing_list = models.BooleanField(default=False)
 
     @property
     def first_name(self):
@@ -46,17 +47,14 @@ class CustomerProfile(models.Model):
         return self.user.last_name
 
     def __unicode__(self):
-        return "%s %s (%s)" % (self.first_name, self.last_name, self.user.username)
-
-    def clean(self):
-        # verify that the user model has a non-null first and last name field
-        if self.user_id and (is_blank(self.user.first_name) or is_blank(self.user.last_name)):
-            raise ValidationError(u"The associated user's first and/or last name cannot be blank")
+        return "customer profile for user %s (%s)" % (self.user.username, self.user.email or "email unknown")
 
     def humanized_contact_method(self):
         """
         Return the human-readable contact-method string.
         """
+        if not self.contact_method:
+            return "Not Specified"
         for method in CustomerProfile.CONTACT_METHOD:
             if method[0] == self.contact_method:
                 return method[1]
@@ -78,11 +76,26 @@ class CustomerBillingAddress(AbstractAddress):
 # add a new method to the builtin User class
 def patch_user(user_clazz):
     def public_name(self):
+        profile = self.get_public_profile()
+        if profile:
+            return profile.username
+        return None
+
+    def get_public_profile(self):
         try:
-            return self.public_profile.username
+            return self.public_profile
         except PublicProfile.DoesNotExist:
             return None
+
+    def get_customer_profile(self):
+        try:
+            return self.customer_profile
+        except CustomerProfile.DoesNotExist:
+            return None
+
     user_clazz.public_name = public_name
+    user_clazz.get_public_profile = get_public_profile
+    user_clazz.get_customer_profile = get_customer_profile
 
 # add custom methods to the built-in User class
 patch_user(User)

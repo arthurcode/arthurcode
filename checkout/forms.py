@@ -1,5 +1,6 @@
 from django import forms
 from accounts.models import CustomerProfile
+from accounts.forms import SUBSCRIBE_TO_MAILING_LIST_LABEL
 from django.core.exceptions import ValidationError
 import datetime
 import re
@@ -64,6 +65,7 @@ class ContactInfoForm(forms.Form):
                                        widget=forms.RadioSelect,
                                        label="If there is a problem with your order how should we contact you?")
     phone = forms.CharField(max_length=20, required=False)
+    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False)
 
     def clean_email2(self):
         email1 = self.cleaned_data.get('email', None)

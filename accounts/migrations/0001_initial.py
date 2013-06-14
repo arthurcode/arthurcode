@@ -24,7 +24,8 @@ class Migration(SchemaMigration):
             ('user', self.gf('django.db.models.fields.related.OneToOneField')(related_name='customer_profile', unique=True, to=orm['auth.User'])),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('date_added', self.gf('django.db.models.fields.DateField')(auto_now_add=True, blank=True)),
-            ('contact_method', self.gf('django.db.models.fields.SmallIntegerField')(default=2)),
+            ('contact_method', self.gf('django.db.models.fields.SmallIntegerField')(default=None, null=True)),
+            ('on_mailing_list', self.gf('django.db.models.fields.BooleanField')(default=False)),
         ))
         db.send_create_signal('accounts', ['CustomerProfile'])
 
@@ -92,9 +93,10 @@ class Migration(SchemaMigration):
         },
         'accounts.customerprofile': {
             'Meta': {'object_name': 'CustomerProfile'},
-            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
+            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': 'None', 'null': 'True'}),
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'on_mailing_list': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'customer_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },

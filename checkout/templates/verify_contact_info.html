@@ -15,6 +15,8 @@
                     <dd>{% firstof profile.phone '(Not on file)' %}</dd>
                     <dt>Preferred Contact Method:</dt>
                     <dd>{{ profile.humanized_contact_method }}</dd>
+                    <dt>On Mailing List:</dt>
+                    <dd>{% if profile.on_mailing_list %}Yes{% else %}No{% endif %}</dd>
                 </dl>
 
                 <form method="post" action="" class="stacked">
@@ -45,6 +47,7 @@
             {% field form.email2 %}
             {% field form.contact_method %}
             {% field form.phone %}
+            {% field form.on_mailing_list %}
         </fieldset>
         <div class="controls">
             <button class="action" name="edit">Save and Continue</button>
