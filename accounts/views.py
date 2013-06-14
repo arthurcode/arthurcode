@@ -7,11 +7,13 @@ from django.utils.http import is_safe_url
 from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
-from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm
+from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, ConvertLazyUserForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
+from lazysignup.decorators import is_lazy_user
+from lazysignup.models import LazyUser
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -40,12 +42,15 @@ def login_or_create_account(request,
 
                 return HttpResponseRedirect(redirect_to)
         elif u'create' in postdata:
-            create_form = CustomerCreationForm(data=postdata)
+            create_form = _customer_creation_form(request, data=postdata)
             if create_form.is_valid():
                 # Okay, security check complete. Create the new user and log them in.
                 username = create_form.cleaned_data['username']
                 password = create_form.cleaned_data['password2']
-                create_form.save()
+                if isinstance(create_form, ConvertLazyUserForm):
+                    LazyUser.objects.convert(create_form)
+                else:
+                    create_form.save()
                 user = authenticate(username=username, password=password)
                 auth_login(request, user)
 
@@ -55,7 +60,7 @@ def login_or_create_account(request,
                 return HttpResponseRedirect(redirect_to)
 
     auth_form = auth_form or CustomerAuthenticationForm(request)
-    create_form = create_form or CustomerCreationForm()
+    create_form = create_form or _customer_creation_form(request)
 
     request.session.set_test_cookie()
 
@@ -73,6 +78,13 @@ def login_or_create_account(request,
         context.update(extra_context)
     return TemplateResponse(request, template_name, context,
                             current_app=current_app)
+
+
+def _customer_creation_form(request, *args, **kwargs):
+    if is_lazy_user(request.user):
+        return ConvertLazyUserForm(request.user, *args, **kwargs)
+    return CustomerCreationForm(*args, **kwargs)
+
 
 @login_required()
 def show_account(request):

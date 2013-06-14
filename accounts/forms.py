@@ -3,7 +3,7 @@ from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from utils.validators import not_blank
+from utils.validators import not_blank, is_blank
 from accounts.models import PublicProfile
 
 
@@ -61,6 +61,35 @@ class CustomerCreationForm(UserCreationForm):
         if commit:
             user.save()
         return user
+
+
+class ConvertLazyUserForm(CustomerCreationForm):
+
+    def __init__(self, lazyUser, *args, **kwargs):
+        self._set_initial_data(lazyUser, **kwargs)
+        super(ConvertLazyUserForm, self).__init__(*args, **kwargs)
+        self.instance = lazyUser
+
+    def _set_initial_data(self, lazyUser, **kwargs):
+        data = kwargs.get('data', None)
+        initial = kwargs.get('initial', {})
+
+        first_name = lazyUser.first_name
+        last_name = lazyUser.last_name
+        email = lazyUser.email
+
+        self._update_data('first_name', first_name, initial, data)
+        self._update_data('last_name', last_name, initial, data)
+        self._update_data('email', email, initial, data)
+
+        kwargs['initial'] = initial
+        kwargs['data'] = data
+
+    def _update_data(self, field_name, value, initial, data):
+        if not is_blank(value):
+            initial[field_name] = value
+            if data:
+                data[field_name] = value
 
 
 class CustomerAuthenticationForm(AuthenticationForm):

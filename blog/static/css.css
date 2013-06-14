@@ -1409,3 +1409,10 @@ body.flag-review .controls {
     padding-top: 10px;
     font-size: 130%;
 }
+
+.readonly label {
+    padding-right: 10px;
+    float: left;
+    clear: both;
+    display: inline;
+}

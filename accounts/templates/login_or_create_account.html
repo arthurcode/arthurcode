@@ -1,5 +1,6 @@
 {% extends 'base_site.html' %}
 {% load form_tags %}
+{% load lazysignup_tags %}
 
 {% block title %}Log In or Create Account{% endblock %}
 
@@ -21,11 +22,25 @@
         {% form_errors create_form %}
         <form method="post" action="{% url login_or_create_account %}?next={{ next }}" class="stacked">
             {% csrf_token %}
-            {% field create_form.first_name %}
-            {% field create_form.last_name %}
-            {% field create_form.email %}
-            {% field create_form.password1 %}
-            {% field create_form.password2 %}
+            {% with request.user|is_lazy_user as lazy %}
+                {% if lazy and request.user.first_name %}
+                    {% readonly_field create_form.first_name %}
+                {% else %}
+                    {% field create_form.first_name %}
+                {% endif %}
+                {% if lazy and request.user.last_name %}
+                    {% readonly_field create_form.last_name %}
+                {% else %}
+                    {% field create_form.last_name %}
+                {% endif %}
+                {% if lazy and request.user.email %}
+                    {% readonly_field create_form.email %}
+                {% else %}
+                    {% field create_form.email %}
+                {% endif %}
+                {% field create_form.password1 %}
+                {% field create_form.password2 %}
+            {% endwith %}
             <div class="controls">
                 <button type="submit" name="create" class="yui3-button">Create Account{% if checking_out %} and Checkout{% endif %}</button>
             </div>

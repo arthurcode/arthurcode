@@ -104,3 +104,7 @@ def form_errors(form):
             else:
                 error_list.append(unicode(general_errors))
     return {'error_list': error_list}
+
+@register.inclusion_tag("_readonly_field.html")
+def readonly_field(field):
+    return {'field': field}

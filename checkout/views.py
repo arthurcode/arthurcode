@@ -677,10 +677,9 @@ class Checkout:
 
     def get_user(self):
         """
-        Returns the logged-in user associated with this request.  Will return None if the user is not authenticated, or
-        if they are lazy
+        Returns the logged-in user associated with this request.  May return a lazy user.
         """
-        if self.request.user.is_authenticated() and not is_lazy_user(self.request.user):
+        if self.request.user.is_authenticated():
             return self.request.user
         return None
 
