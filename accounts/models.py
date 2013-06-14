@@ -28,14 +28,16 @@ class CustomerProfile(models.Model):
     """
     PHONE = 1
     EMAIL = 2
+    UNKNOWN = 3
 
     CONTACT_METHOD = ((EMAIL, 'Email'),
-                      (PHONE, 'Phone'))
+                      (PHONE, 'Phone'),
+                      (UNKNOWN, 'Unknown'))
 
     user = models.OneToOneField(User, related_name="customer_profile")
     phone = models.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
-    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, null=True, blank=False, default=None)
+    contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=UNKNOWN)
     on_mailing_list = models.BooleanField(default=False)
 
     @property
@@ -48,17 +50,6 @@ class CustomerProfile(models.Model):
 
     def __unicode__(self):
         return "customer profile for user %s (%s)" % (self.user.username, self.user.email or "email unknown")
-
-    def humanized_contact_method(self):
-        """
-        Return the human-readable contact-method string.
-        """
-        if not self.contact_method:
-            return "Not Specified"
-        for method in CustomerProfile.CONTACT_METHOD:
-            if method[0] == self.contact_method:
-                return method[1]
-        return "Unknown"
 
 
 class CustomerShippingAddress(AbstractAddress):

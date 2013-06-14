@@ -15,7 +15,7 @@
                     <dt>Phone:</dt>
                     <dd>{% firstof profile.phone '(Not on file)' %}</dd>
                     <dt>Preferred Contact Method:</dt>
-                    <dd>{{ profile.humanized_contact_method }}</dd>
+                    <dd>{{ profile.get_contact_method_display }}</dd>
                     <dt>On Mailing List:</dt>
                     <dd>{% if profile.on_mailing_list %}Yes{% else %}No{% endif %}</dd>
                 </dl>

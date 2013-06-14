@@ -56,13 +56,17 @@ def cardLuhnChecksumIsValid(card_number):
 
 class ContactInfoForm(forms.Form):
 
+    # similar to CustomerProfile contact method choices, minus the 'unknown' choice
+    CONTACT_METHOD_CHOICES = ((CustomerProfile.EMAIL, 'Email'),
+                              (CustomerProfile.PHONE, 'Phone'))
+
     ERROR_PHONE_REQUIRED = u"A phone number is required because you selected 'Phone' as your preferred contact method."
 
     first_name = forms.CharField(max_length=30, required=True)  # 30 is the max length set by User
     last_name = forms.CharField(max_length=30, required=True)   # 30 is the max length set by User
     email = forms.EmailField(required=True)
     email2 = forms.EmailField(required=True, label="Retype Email")
-    contact_method = forms.ChoiceField(choices=CustomerProfile.CONTACT_METHOD, initial=CustomerProfile.EMAIL,
+    contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
                                        widget=forms.RadioSelect,
                                        label="If there is a problem with your order how should we contact you?")
     phone = forms.CharField(max_length=20, required=False)
