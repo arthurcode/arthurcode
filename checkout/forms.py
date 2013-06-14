@@ -4,6 +4,7 @@ from accounts.forms import SUBSCRIBE_TO_MAILING_LIST_LABEL
 from django.core.exceptions import ValidationError
 import datetime
 import re
+from lazysignup.decorators import is_lazy_user
 
 
 def cc_expire_years():
@@ -66,6 +67,17 @@ class ContactInfoForm(forms.Form):
                                        label="If there is a problem with your order how should we contact you?")
     phone = forms.CharField(max_length=20, required=False)
     on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False)
+
+    def __init__(self, request, *args, **kwargs):
+        if 'data' in kwargs and kwargs['data']:
+            if request.user.is_authenticated and not is_lazy_user(request.user) and request.user.email:
+                # it's not a simple thing to change a register's user's email address, don't let them do that from
+                # this form
+                kwargs['data']['email'] = request.user.email
+                kwargs['data']['email2'] = request.user.email
+
+        super(ContactInfoForm, self).__init__(*args, **kwargs)
+        self.request = request
 
     def clean_email2(self):
         email1 = self.cleaned_data.get('email', None)

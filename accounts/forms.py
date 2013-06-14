@@ -75,6 +75,7 @@ class CustomerCreationForm(UserCreationForm):
             user.save()
             profile = user.get_customer_profile() or CustomerProfile(user=user)
             profile.on_mailing_list = self.cleaned_data['on_mailing_list']
+            profile.full_clean()
             profile.save()
         return user
 

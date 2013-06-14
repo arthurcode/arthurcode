@@ -132,11 +132,11 @@ class ContactInfoStep(Step):
         if not form.is_bound:
             # there was no saved data, this is the first time the user is seeing this form in this checkout.
             data = self.get_existing_contact_info()
-            test_form = ContactInfoForm(data=data)
+            test_form = ContactInfoForm(self.checkout.request, data=data)
             if test_form.is_valid():
                 # we have all of the information we need, we just need the user to validate it.
                 self.save(self.using_profile_data_key, True)
-            form = ContactInfoForm(initial=data)
+            form = ContactInfoForm(self.checkout.request, initial=data)
         return self._render_form(form)
 
     def _render_form(self, form, template='verify_contact_info.html'):
@@ -157,7 +157,7 @@ class ContactInfoStep(Step):
             self.checkout._mark_step_complete(self)
             return HttpResponseRedirect(self.checkout.get_next_url())
         else:
-            form = ContactInfoForm(data)
+            form = ContactInfoForm(self.checkout.request, data=data)
             if form.is_valid():
                 self.save(self.form_key, self.request.POST.copy())
                 self.save(self.using_profile_data_key, False)
@@ -167,7 +167,7 @@ class ContactInfoStep(Step):
 
     def get_saved_form(self):
         saved_data = self.get(self.form_key, None)
-        return ContactInfoForm(data=saved_data)
+        return ContactInfoForm(self.checkout.request, data=saved_data)
 
     def get_existing_contact_info(self):
         """
@@ -225,7 +225,7 @@ class ContactInfoStep(Step):
         """
         if self.is_using_profile_data():
             data = self.get_existing_contact_info()
-            form = ContactInfoForm(data=data)
+            form = ContactInfoForm(self.checkout.request, data=data)
         else:
             form = self.get_saved_form()
         if form.is_valid():

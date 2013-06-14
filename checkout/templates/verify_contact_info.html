@@ -1,5 +1,6 @@
 {% extends 'base_checkout.html' %}
 {% load form_tags %}
+{% load lazysignup_tags %}
 
 {% block forms %}
     {% if using_profile_data %}
@@ -43,8 +44,12 @@
             </legend>
             {% field form.first_name %}
             {% field form.last_name %}
-            {% field form.email %}
+            {% if request.user.is_authenticated and not request.user|is_lazy_user and request.user.email %}
+                {% readonly_field form.email %}
+            {% else %}
+                {% field form.email %}
             {% field form.email2 %}
+            {% endif %}
             {% field form.contact_method %}
             {% field form.phone %}
             {% field form.on_mailing_list %}
