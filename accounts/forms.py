@@ -18,13 +18,23 @@ class CustomerCreationForm(UserCreationForm):
     from the email address using an md5 hash algorithm.
     """
     email = forms.EmailField(required=True)
+    email2 = forms.EmailField(required=True, label="Email Confirmation",
+                              help_text="Enter the same email as above, for verification.")
 
     def __init__(self, *args, **kwargs):
         super(CustomerCreationForm, self).__init__(*args, **kwargs)
         # the username field won't be displayed on the form, it will be given a default (generated) value
         self.fields['username'].required = False
         # make sure the username is cleaned last, since it depends on email
-        self.fields.keyOrder = ['email', 'password1', 'password2', 'username']
+        self.fields.keyOrder = ['email', 'email2', 'password1', 'password2', 'username']
+
+    def clean_email2(self):
+        email1 = self.cleaned_data.get('email', None)
+        email2 = self.cleaned_data.get('email2', None)
+
+        if email1 and email2 and not email1 == email2:
+            raise ValidationError("The two email fields did not match")
+        return email2
 
     def clean_username(self):
         """
@@ -67,6 +77,7 @@ class ConvertLazyUserForm(CustomerCreationForm):
         if not is_blank(email):
             if 'data' in kwargs:
                 kwargs['data']['email'] = email
+                kwargs['data']['email2'] = email
             initial = kwargs.get('initial', {})
             initial['email'] = email
             kwargs['initial'] = initial
