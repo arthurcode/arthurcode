@@ -47,3 +47,24 @@ def show_view(request, id):
     question = get_object_or_404(MPTTComment, id=id)
     context = {'question': question}
     return render_to_response('show_question.html', context, context_instance=RequestContext(request))
+
+
+def edit_view(request, id):
+    question = get_object_or_404(MPTTComment, id=id)
+    if not question.user == request.user:
+        return HttpResponseForbidden(u"You do not have permission to edit this question.")
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = EditQuestionForm(request, question, data=post_data)
+        if form.is_valid():
+            form.save_changes()
+            return HttpResponseRedirect(reverse('show_question', kwargs={'id': question.id}))
+    else:
+        form = EditQuestionForm(request, question)
+
+    context = {
+        'question': question,
+        'form': form,
+    }
+    return render_to_response('edit_question.html', context, context_instance=RequestContext(request))

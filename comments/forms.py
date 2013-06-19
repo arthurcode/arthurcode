@@ -13,6 +13,7 @@ from django.utils.encoding import force_unicode
 from django.utils.text import get_text_list
 from django.utils import timezone
 from django.utils.translation import ungettext, ugettext, ugettext_lazy as _
+from django.core.exceptions import ValidationError
 
 COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH', 3000)
 
@@ -232,4 +233,31 @@ class MPTTCommentForm(CommentForm):
                 del cleaned_data['email_on_reply']
         return cleaned_data
 
+
+class EditCommentForm(forms.Form):
+
+    ERROR_NO_PERMISSION = u"You do not have permission to edit this comment."
+    comment = forms.CharField(max_length=COMMENT_MAX_LENGTH, label="Comment", widget=forms.Textarea)
+
+    def __init__(self, request, comment, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        initial['comment'] = comment.comment
+        kwargs['initial'] = initial
+        super(EditCommentForm, self).__init__(*args, **kwargs)
+        self.request = request
+        self.comment = comment
+
+    def clean(self):
+        if not self.permission_to_edit():
+            raise ValidationError(EditCommentForm.ERROR_NO_PERMISSION)
+        return super(EditCommentForm, self).clean()
+
+    def permission_to_edit(self):
+        # by default only allow the comment author to edit the comment.  Subclasses can override
+        return self.comment.user == self.request.user
+
+    def save_changes(self):
+        self.comment.comment = self.cleaned_data['comment']
+        self.comment.full_clean()
+        self.comment.save()
 

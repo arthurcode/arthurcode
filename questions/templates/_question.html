@@ -14,4 +14,7 @@
 {% endblock %}
 
 {% block moderation %}
+    {% if request.user == content.user %}
+        <a href="{% url edit_question content.id %}">edit</a>
+    {% endif %}
 {% endblock %}

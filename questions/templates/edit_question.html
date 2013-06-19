@@ -1,0 +1,20 @@
+{% extends "base_catalogue.html" %}
+{% load user_content %}
+{% load form_tags %}
+
+{% block title %}Edit Question{% endblock %}
+
+{% block body %}
+    <h2>Edit Your Question</h2>
+    {% question question %}
+
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% field form.comment %}
+        <div class="controls">
+            <a class="action" href="{{ question.get_absolute_url }}">Cancel</a>
+            <button class="action" type="submit" name="edit">Save Changes</button>
+        </div>
+    </form>
+{% endblock %}
