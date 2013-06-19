@@ -11,3 +11,11 @@ def review(context, review):
         'content': review,
         'request': Variable('request').resolve(context)
     }
+
+
+@register.inclusion_tag('_question.html', takes_context=True)
+def question(context, question):
+    return {
+        'content': question,
+        'request': Variable('request').resolve(context)
+    }

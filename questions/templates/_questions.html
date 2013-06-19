@@ -1,17 +1,17 @@
 {% load comment %}
 {% load mptt_tags %}
+{% load user_content %}
 
 {% get_comment_list for product as comments %}
 
 {% if comments %}
     <a href="{% url ask_question product.slug %}">Ask A Question</a>
 
-    <ul class="questions">
+    <ul class="comments">
         {% recursetree comments %}
             <li class="comment">
-                <a name="c{{ node.id }}"></a>
                 {% if not node.parent %}
-                    {% with node as question %}{% include "_question.html" %}{% endwith %}
+                    {% question node %}
                 {% endif %}
                 {% if not node.is_leaf_node %}
                     <ul class="comments">{{ children }}</ul>

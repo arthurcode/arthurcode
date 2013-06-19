@@ -1317,7 +1317,7 @@ div#reviews h3 {
     font-size: 100%;
 }
 
-.review {
+.review, .question {
     width: 35em;
 }
 

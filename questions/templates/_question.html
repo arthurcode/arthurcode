@@ -1,15 +1,17 @@
-<a id="{{ review.anchor }}"></a>
-<div class="metadata">
-    <span class="name">{% firstof question.user.public_name "anonymous user" %}</span>
-    <span class="date">{{ question.submit_date|date:"M j, Y" }}</span>
-    {% if question.user.public_name %}
-        <span class="location">{{ review.user.public_profile.location }}</span>
-        <span class="self-description">description: {{ review.user.public_profile.description }}</span>
-    {% endif %}
-</div>
-<div class="content">
-    <h4>Question</h4>
-    <p>{{ question.comment }}</p>
-    <div class="moderation">
-    </div>
-</div>
+{% extends "_user_content.html" %}
+
+{% block anchor-id %}c{{ content.id }}{% endblock %}
+
+{% block type %}question{% endblock %}
+
+{% block date %}
+    <span class="date">{{ content.submit_date|date:"M j, Y" }}</span>
+{% endblock %}
+
+{% block main-content %}
+    <h4><a href="#c{{ content.id }}">Question:</a></h4>
+    <p>{{ content.comment }}</p>
+{% endblock %}
+
+{% block moderation %}
+{% endblock %}
