@@ -1,5 +1,6 @@
 {% extends "base_catalogue.html" %}
 {% load form_tags %}
+{% load user_content %}
 
 {% block title %}Report an Inappropriate Review{% endblock %}
 
@@ -7,7 +8,7 @@
 
 {% block body %}
     <h2>Report the following review as inappropriate?</h2>
-    <div class="review">{% include "_review.html" %}</div>
+    <div class="review">{% review review %}</div>
 
     {% form_errors form %}
     <form method="post" action="">

@@ -1,0 +1,39 @@
+{% extends "_user_content.html" %}
+{% load ratings %}
+
+{% block anchor-id %}{{ content.anchor }}{% endblock %}
+
+{% block type %}review{% endblock %}
+
+{% block date %}
+    {% if content.was_edited %}
+        <span class="date">submitted: {{ content.date_added|date:"M j, Y" }}</span>
+        <span class="date">updated: {{ content.last_modified|date:"M j, Y" }}</span>
+    {% else %}
+        <span class="date">{{ content.date_added|date:"M j, Y" }}</span>
+    {% endif %}
+{% endblock %}
+
+{% block main-content %}
+    {% rating content.rating %}
+    <h4><a href="{{ content.get_absolute_url }}">{{ content.summary }}</a></h4>
+    {% if content.review %}
+        <p>{{ content.review }}</p>
+    {% endif %}
+{% endblock %}
+
+{% block moderation %}
+    {% if request.user == content.user %}
+        <form method="post" action="{{ content.get_edit_url }}">
+            {% csrf_token %}
+            <button class="link" type="submit" name="delete">delete</button>
+        </form>
+        <a href="{{ content.get_edit_url }}">edit</a>
+    {% else %}
+        {% if request.user.is_staff %}
+            <a href="{% url admin_delete_review content.id %}">delete review</a>
+        {% else %}
+            <a href="{% url flag_review content.id %}">report as inappropriate</a>
+        {% endif %}
+    {% endif %}
+{% endblock %}

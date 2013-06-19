@@ -1,0 +1,18 @@
+<div class="user-content {% block type %}generic{% endblock %}">
+    <a id="{% block anchor-id %}{% endblock %}"></a>
+    <div class="metadata">
+        <span class="name">{% block name %}{% firstof content.user.public_name "anonymous user" %}{% endblock %}</span>
+        {% block date %}{% endblock %}
+        {% with content.user.get_public_profile as profile %}
+            {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
+            {% if profile.description %}<span class="self-description">description: {{ profile.description }}</span>{% endif %}
+        {% endwith %}
+    </div>
+    <div class="content">
+        {% block main-content %}{% endblock %}
+
+        <div class="moderation">
+            {% block moderation %}{% endblock %}
+        </div>
+    </div>
+</div>

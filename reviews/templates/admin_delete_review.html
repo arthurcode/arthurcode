@@ -1,12 +1,13 @@
 {% extends "base_site.html" %}
 {% load form_tags %}
+{% load user_content %}
 
 {% block title %}Delete Review{% endblock %}
 
 {% block body %}
     <h2>Delete the Following Review?</h2>
     <div class="review">
-        {% include "_review.html" %}
+        {% review review %}
     </div>
 
     {% form_errors form %}

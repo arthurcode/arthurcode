@@ -1291,48 +1291,50 @@ div#reviews h3 {
     font-size: larger;
 }
 
-.review {
+.user-content {
+    float: left;
     padding: 10px;
     border: 1px solid lightgray;
-    /* float to fix a float */
-    float: left;
-    width: 35em;
 }
 
-.review h4 {
+.user-content h4 {
     font-weight: bolder;
 }
 
-.review h4 a {
+.user-content h4 a {
     text-decoration: none;
 }
 
-.review span {
+.user-content span {
     font-size: small;
     display: block;
     font-style: italic;
 }
 
-.review span.name {
+.user-content span.name {
     font-style: normal;
     font-weight: bolder;
     font-size: 100%;
 }
 
-.review .metadata {
+.review {
+    width: 35em;
+}
+
+.user-content .metadata {
     float: left;
     width: 30%;
     line-height: 1.2em;
 }
 
-.review .content {
+.user-content .content {
     float: left;
     width: 67%;
     padding-left: 2%;
     border-left: 1px solid lightgray;
 }
 
-.review p {
+.user-content p {
     line-height: 1.2em;
     padding-top: 5px;
 }
@@ -1345,17 +1347,17 @@ div.rating img {
     height: 1em;
 }
 
-.review .moderation {
+.user-content .moderation {
     font-size: small;
     float: right;
     color: steelblue;
 }
 
-.review .moderation a {
+.user-content .moderation a {
     color: inherit;
 }
 
-.review form {
+.user-content form {
     display: inline-block;
 }
 

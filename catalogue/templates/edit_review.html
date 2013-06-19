@@ -1,5 +1,6 @@
 {% extends "product_review.html" %}
 {% load form_tags %}
+{% load user_content %}
 
 {% block title %}Edit Your Review{% endblock %}
 
@@ -19,7 +20,7 @@
 {% block review-preview %}
     <h3>Your Current Review:</h3>
     <div class="review">
-        {% include "_review.html" %}
+        {% review review %}
     </div>
 {% endblock %}
 
