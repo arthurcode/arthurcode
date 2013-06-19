@@ -1,0 +1,32 @@
+{% extends 'base_catalogue.html' %}
+{% load form_tags %}
+
+{% block title %}Ask A Question{% endblock %}
+
+{% block body %}
+    <h2>Ask A Question: {{ product.name }}</h2>
+
+    <p>
+        After your question has been posted you can expect it to be answered within 1-2 working days by a staff member.
+        You will be contacted via email once the question has been answered.
+    </p>
+
+    {% form_errors form %}
+    <form method="POST" action="">
+        {% csrf_token %}
+        {#Render the hidden fields#}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                <div>{{ field }}</div>
+            {% endif %}
+        {% endfor %}
+        {% if form.ask_for_email %}
+            {% field form.email %}
+        {% endif %}
+        {% field form.comment %}
+        <div class="controls">
+            <a class="action" href="{{ product.get_absolute_url }}">Cancel</a>
+            <button class="action" type="submit" name="ask">Post Question</button>
+        </div>
+    </form>
+{% endblock %}

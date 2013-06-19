@@ -1,0 +1,15 @@
+<a id="{{ review.anchor }}"></a>
+<div class="metadata">
+    <span class="name">{% firstof question.user.public_name "anonymous user" %}</span>
+    <span class="date">{{ question.submit_date|date:"M j, Y" }}</span>
+    {% if question.user.public_name %}
+        <span class="location">{{ review.user.public_profile.location }}</span>
+        <span class="self-description">description: {{ review.user.public_profile.description }}</span>
+    {% endif %}
+</div>
+<div class="content">
+    <h4>Question</h4>
+    <p>{{ question.comment }}</p>
+    <div class="moderation">
+    </div>
+</div>

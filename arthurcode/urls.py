@@ -8,6 +8,7 @@ import accounts.urls
 import lazysignup.urls
 import search.urls
 import reviews.urls
+import questions.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -40,4 +41,6 @@ urlpatterns = patterns('',
     url(r'^search/', include(search.urls)),
 
     url(r'^reviews/', include(reviews.urls)),
+
+    url(r'^questions/', include(questions.urls)),
 )

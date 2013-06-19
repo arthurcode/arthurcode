@@ -140,6 +140,7 @@ INSTALLED_APPS = (
     'search',
     'debug_toolbar',
     'reviews',
+    'questions',
 )
 
 # A sample logging configuration. The only tangible logging

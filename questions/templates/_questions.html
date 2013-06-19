@@ -1,0 +1,24 @@
+{% load comment %}
+{% load mptt_tags %}
+
+{% get_comment_list for product as comments %}
+
+{% if comments %}
+    <a href="{% url ask_question product.slug %}">Ask A Question</a>
+
+    <ul class="questions">
+        {% recursetree comments %}
+            <li class="comment">
+                <a name="c{{ node.id }}"></a>
+                {% if not node.parent %}
+                    {% with node as question %}{% include "_question.html" %}{% endwith %}
+                {% endif %}
+                {% if not node.is_leaf_node %}
+                    <ul class="comments">{{ children }}</ul>
+                {% endif %}
+            </li>
+        {% endrecursetree %}
+    </ul>
+{% else %}
+    <p>Be the first to <a href="{% url ask_question product.slug %}">ask a question</a></p>
+{% endif %}
