@@ -766,7 +766,3 @@ def cancel(request):
     co = Checkout(request)
     co.cancel()
     return HttpResponseRedirect(reverse('show_cart'))
-
-
-def get_guest_checkout_url():
-    return reverse('checkout') + "?guest=True"

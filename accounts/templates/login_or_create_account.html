@@ -13,7 +13,7 @@
             {% field auth_form.email %}
             {% field auth_form.password %}
             <div class="controls">
-                <button type="submit" name="login" class="yui3-button">Log In{% if checking_out %} and Checkout{% endif %}</button>
+                <button type="submit" name="login" class="yui3-button">{% block login-button %}Log In{% endblock %}</button>
             </div>
         </form>
     </div>
@@ -34,11 +34,11 @@
                 {% field create_form.on_mailing_list %}
             {% endwith %}
             <div class="controls">
-                <button type="submit" name="create" class="yui3-button">Create Account{% if checking_out %} and Checkout{% endif %}</button>
+                <button type="submit" name="create" class="yui3-button">{% block create-button %}Create Account{% endblock %}</button>
             </div>
         </form>
     </div>
-    {% if allow_guests %}
-        <a class="guest action" href="{{ guest_url }}">{{ guest_action }}</a>
-    {% endif %}
+    {% block guest-passthrough %}
+        <a class="guest action" href="{{ next }}?guest=True">{% block guest-button %}{% endblock %}</a>
+    {% endblock %}
 {% endblock %}

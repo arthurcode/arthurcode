@@ -14,7 +14,6 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
-from checkout.views import get_guest_checkout_url
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -64,12 +63,7 @@ def login_or_create_account(request,
     create_form = create_form or _customer_creation_form(request)
 
     request.session.set_test_cookie()
-
     current_site = get_current_site(request)
-    checkout_url = reverse('checkout')
-    allow_guests = checkout_url == redirect_to
-    guest_url = get_guest_checkout_url()
-    guest_action = "Checkout As Guest"
 
     context = {
         'auth_form': auth_form,
@@ -77,13 +71,10 @@ def login_or_create_account(request,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
-        'allow_guests': allow_guests,
-        'guest_url': guest_url,
-        'guest_action': guest_action,
         }
     if extra_context is not None:
         context.update(extra_context)
-    return TemplateResponse(request, template_name, context,
+    return TemplateResponse(request, _template_name(redirect_to), context,
                             current_app=current_app)
 
 
@@ -91,6 +82,18 @@ def _customer_creation_form(request, *args, **kwargs):
     if is_lazy_user(request.user):
         return ConvertLazyUserForm(request.user, *args, **kwargs)
     return CustomerCreationForm(*args, **kwargs)
+
+
+def _template_name(redirect_to):
+    """
+    tailor the look of the login page according to which url the user is being redirected to.  The redirect url will,
+    for example, determine whether or not guest (lazy) users are allowed.
+    """
+    if redirect_to == reverse('checkout'):
+        return 'login_checkout.html'
+    if redirect_to.startswith('/questions/ask'):
+        return 'login_ask_question.html'
+    return 'login_no_guests.html'
 
 
 @login_required()
