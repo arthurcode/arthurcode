@@ -68,3 +68,19 @@ def edit_view(request, id):
         'form': form,
     }
     return render_to_response('edit_question.html', context, context_instance=RequestContext(request))
+
+
+def delete_view(request, id):
+    question = get_object_or_404(MPTTComment, id=id)
+    if not question.user == request.user:
+        return HttpResponseForbidden(u"You do not have permission to delete this question.")
+
+    if request.method == "POST":
+        question.delete()
+        return HttpResponseRedirect(question.content_object.get_absolute_url())
+
+    context = {
+        'question': question,
+    }
+    return render_to_response('delete_question.html', context, context_instance=RequestContext(request))
+

@@ -1,0 +1,16 @@
+{% extends "base_catalogue.html" %}
+{% load user_content %}
+
+{% block title %}Delete Question{% endblock %}
+
+{% block body %}
+    <h2>Delete Your Question?</h2>
+    {% question question %}
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="controls">
+            <a class="action" href="{{ question.get_absolute_url }}">Cancel</a>
+            <button class="action" type="submit" name="delete">Delete</button>
+        </div>
+    </form>
+{% endblock %}
