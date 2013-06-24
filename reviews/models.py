@@ -8,9 +8,10 @@ from django.db import models
 from catalogue.models import Product
 from utils.util import get_full_url
 from utils.validators import not_blank
+from utils.models import AkismetMixin
 
 
-class Review(models.Model):
+class Review(models.Model, AkismetMixin):
     SUMMARY_LENGTH = 100
 
     RATING_CHOICES = (
@@ -108,6 +109,19 @@ class Review(models.Model):
             raise ValidationError("The user cannot review the same product more than once")
         if not self.user.public_name():
             raise ValidationError("The associated user does not have a public profile.")
+
+    def get_spam_data(self, request=None):
+        data = super(Review, self).get_spam_data(request)
+        review_content = self.summary
+        if self.review:
+            review_content += "\n" + self.review
+        data.update({
+            'comment_type': 'review',
+            'comment_author': self.user.public_name() or self.user.username or '',
+            'comment_author_email': self.user.email or '',
+            'comment_content': review_content,
+        })
+        return data
 
 
 class ReviewFlag(models.Model):

@@ -35,6 +35,9 @@ class AddReviewForm(ReviewForm):
         if Review.objects.filter(user=self.request.user, product=self.product).exists():
             raise ValidationError(u"You have already reviewed this product. "
                                   u"Please edit or delete your original review.")
+        review = self.create_review(commit=False)
+        if review.check_spam(self.request):
+            raise ValidationError("This review has been flagged as spam and will not be accepted.")
 
     def create_review(self, commit=True):
         review = Review(product=self.product)
@@ -65,6 +68,9 @@ class EditReviewForm(ReviewForm):
         super(EditReviewForm, self).clean()
         if not self.review.user == self.request.user:
             raise ValidationError("This review was created under a different account and cannot be edited.")
+        review = self.edit_review(commit=False)
+        if review.check_spam(self.request):
+            raise ValidationError("This review edit has been marked as spam and will not be accepted.")
 
     def edit_review(self, commit=True):
         self.review.rating = self.data['rating']

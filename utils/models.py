@@ -1,6 +1,10 @@
 from django.db import models
 from utils.validators import not_blank
 from django_countries import CountryField
+from arthurcode import settings
+from comments.akismet import comment_check, AkismetError, verify_key, submit_spam, submit_ham
+from django.contrib.sites.models import Site
+from utils.util import get_full_url
 
 
 class AbstractAddress(models.Model):
@@ -58,3 +62,78 @@ class AbstractAddress(models.Model):
             unicode(self.country),
         ]
         return " ".join(fields)
+
+
+class AkismetMixin(object):
+    """
+    Adds spam-checking functionality to an object.
+    """
+
+    def get_spam_data(self, request=None):
+        """
+        Returns the data dict that will be used to determine whether or not this object is SPAM.  Subclasses should
+        override this method and augment the dictionary with model-specific fields.
+        """
+        data = {}
+        data['permalink'] = get_full_url(self, request) # request may be None
+        if request:
+            data['referrer'] = request.META.get('HTTP_REFERER', '')
+            data['user_agent'] = request.META.get('HTTP_USER_AGENT', '')
+            data['user_ip'] = request.META.get("REMOTE_ADDR", '')
+        return data
+
+    def check_spam(self, request=None):
+        """
+        Returns True if the comment is spam and False if it's ham.
+        """
+        key = self._get_key()
+
+        if not key:
+            # TODO: log a warning
+            return False
+
+        domain = self._get_domain()
+
+        try:
+            if verify_key(key, domain):
+                data = self.get_spam_data(request)
+                return comment_check(key, domain, **data)
+        except AkismetError, e:
+            # TODO: log a warning with the exception
+            print e.response, e.statuscode
+        return False
+
+    def marked_as_spam(self):
+        key = self._get_key()
+        if not key:
+            return
+
+        domain = self._get_domain()
+        try:
+            if verify_key(key, domain):
+                data = self.get_spam_data()
+                submit_spam(key, domain, **data)
+        except AkismetError, e:
+            print e.response, e.statuscode
+
+    def marked_not_spam(self):
+        key = self._get_key()
+        if not key:
+            return
+
+        domain = self._get_domain()
+        try:
+            if verify_key(key, domain):
+                data = self.get_spam_data()
+                submit_ham(key, domain, **data)
+        except AkismetError, e:
+            print e.response, e.statuscode
+
+    def _get_key(self):
+        return getattr(settings, 'AKISMET_KEY', None)
+
+    def _get_domain(self):
+        return Site.objects.get_current().domain
+
+
+
