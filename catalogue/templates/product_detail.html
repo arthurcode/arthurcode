@@ -48,12 +48,12 @@
                     <li id="specs" class="tab"><a class="tabview" href="#specs">Specifications</a></li>
                 </ul>
                 <div class="views">
-                    <div id="description">
+                    <div class="view" id="description">
                         {% autoescape off %}
                             <div class="text">{{ product.long_description }}</div>
                         {% endautoescape %}
                     </div>
-                    <div id="specs" class="hide-initially">
+                    <div id="specs" class="view hide-initially">
                         TODO
                     </div>
                 </div>
@@ -79,8 +79,8 @@
             <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>
         </ul>
         <div class="views">
-            <div id="reviews">{% include "_reviews.html" %}</div>
-            <div class="hide-initially" id="qa">{% include "_questions.html" %}</div>
+            <div class="view" id="reviews">{% include "_reviews.html" %}</div>
+            <div class="view hide-initially" id="qa">{% include "_questions.html" %}</div>
         </div>
     </div>
 {% endblock %}

@@ -17,11 +17,30 @@
 {% block site_wrapper %} {% endblock %}
 {% block javascript %}
     <script type="text/javascript">
-        YUI().use('node', 'event', function(Y) {
+        YUI().use('node', 'event', 'node-event-simulate', function(Y) {
             // initially hide elements with the 'hide-initially' class
             Y.all('.hide-initially').each(function(f) {
                 f.addClass('hidden');
             });
+
+            function selectTab(tab) {
+                var id = tab.getAttribute('id');
+                var parent = tab.ancestor('div', false);
+                var content = parent.one('div#' + id);
+
+                tab.addClass('selected');
+                content.removeClass('hidden');
+
+                // deselect all sibling tabs
+                tab.siblings('.tab').each(function (tab) {
+                    tab.removeClass('selected');
+                });
+
+                // hide all sibling divs
+                content.siblings('div').each(function (div) {
+                    div.addClass('hidden');
+                });
+            }
 
             // Hook up tabview functionality.  When someone clicks on an a.tabview element, the tab with the matching
             // id will become selected, and the content with the matching id will become visible.
@@ -29,21 +48,7 @@
                 link.on("click", function (e) {
                     var href = this.getAttribute('href');
                     var tab = Y.one('.tab' + href);
-                    var parent = tab.ancestor('div', false);
-                    var content = parent.one('div' + href);
-
-                    tab.addClass('selected');
-                    content.removeClass('hidden');
-
-                    // deselect all sibling tabs
-                    tab.siblings('.tab').each(function (tab) {
-                        tab.removeClass('selected');
-                    });
-
-                    // hide all sibling divs
-                    content.siblings('div').each(function (div) {
-                        div.addClass('hidden');
-                    })
+                    selectTab(tab);
                 });
             });
 
@@ -64,6 +69,29 @@
                     //view.setStyle('height', maxHeight);
                 });
             });
+
+            // if the current URL has an anchor, make sure it is visible in the tab-view
+            var url = location.href.split('#');
+            if (url[1]) {
+                var tabHash = url[1];
+                // get the element that the anchor links to
+                var hashElem = Y.one('#' + tabHash);
+                var tab = null;
+                if (hashElem) {
+                    if (hashElem.hasClass('tab')) {
+                        tab = hashElem;
+                    } else {
+                        var parentView = hashElem.ancestor('.view', true);
+                        if (parentView) {
+                            var id = parentView.getAttribute('id');
+                            tab = Y.one('.tab#' + id);
+                        }
+                    }
+                }
+                if (tab) {
+                    selectTab(tab);
+                }
+            }
         });
     </script>
 {% endblock %}
