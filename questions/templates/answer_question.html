@@ -1,0 +1,25 @@
+{% extends "base_site.html" %}
+{% load user_content %}
+{% load form_tags %}
+
+{% block title %}Answer Question{% endblock %}
+
+{% block body %}
+    <h2>Answer the Following Question:</h2>
+    {% question question %}
+
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% for field in form %}
+            {% if field.is_hidden %}
+                {{ field }}
+            {% endif %}
+        {% endfor %}
+        {% field form.comment %}
+        <div class="controls">
+            <a class="action" href="{{ question.get_absolute_url }}">Cancel</a>
+            <button class="action" type="submit" name="answer">Post Answer</button>
+        </div>
+    </form>
+{% endblock %}

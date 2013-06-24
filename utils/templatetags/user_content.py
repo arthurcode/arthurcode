@@ -19,3 +19,11 @@ def question(context, question):
         'content': question,
         'request': Variable('request').resolve(context)
     }
+
+
+@register.inclusion_tag('_answer.html', takes_context=True)
+def answer(context, answer):
+    return {
+        'content': answer,
+        'request': Variable('request').resolve(context)
+    }

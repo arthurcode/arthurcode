@@ -1,0 +1,17 @@
+{% extends "_question.html" %}
+
+{% block type %}answer{% endblock %}
+
+{% block name %}Customer Service{% endblock %}
+
+{% block main-content %}
+    <h4><a href="#c{{ content.id }}">Answer:</a></h4>
+    <p>{{ content.comment }}</p>
+{% endblock %}
+
+{% block moderation %}
+    {% if request.user.is_staff %}
+        <a href="{% url delete_question content.id %}">delete</a>
+        <a href="{% url edit_question content.id %}">edit</a>
+    {% endif %}
+{% endblock %}

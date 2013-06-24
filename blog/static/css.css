@@ -1317,8 +1317,9 @@ div#reviews h3 {
     font-size: 100%;
 }
 
-.review, .question {
+.review, .question, .answer {
     width: 35em;
+    clear: both;
 }
 
 .user-content .metadata {
@@ -1417,4 +1418,10 @@ body.flag-review .controls {
     float: left;
     clear: both;
     display: inline;
+}
+
+/* hack alert */
+.comments li {
+    float: left;
+    clear: both;
 }

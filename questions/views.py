@@ -6,10 +6,11 @@ from django.http import HttpResponseRedirect
 from django.http import HttpResponseForbidden
 from catalogue.models import Product
 from comments.models import MPTTComment
-from questions.forms import AskQuestionForm, EditQuestionForm
+from questions.forms import AskQuestionForm, EditQuestionForm, AnswerQuestionForm
 from django.views.decorators.http import require_GET
 from comments.views.comment import CommentPostBadRequest
 from accounts.accountutils import is_regular_user, is_lazy_user
+from django.contrib.admin.views.decorators import staff_member_required
 
 
 @allow_lazy_user
@@ -72,7 +73,7 @@ def edit_view(request, id):
 
 def delete_view(request, id):
     question = get_object_or_404(MPTTComment, id=id)
-    if not question.user == request.user:
+    if not question.user.is_staff and not question.user == request.user:
         return HttpResponseForbidden(u"You do not have permission to delete this question.")
 
     if request.method == "POST":
@@ -83,4 +84,27 @@ def delete_view(request, id):
         'question': question,
     }
     return render_to_response('delete_question.html', context, context_instance=RequestContext(request))
+
+
+@staff_member_required
+def answer_view(request, id):
+    question = get_object_or_404(MPTTComment, id=id)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = AnswerQuestionForm(request, question, data=post_data)
+        if form.is_valid():
+            answer = form.get_comment_object()
+            answer.full_clean()
+            answer.save()
+            return HttpResponseRedirect(question.get_absolute_url())
+    else:
+        form = AnswerQuestionForm(request, question)
+
+    context = {
+        'question': question,
+        'form': form,
+    }
+    return render_to_response('answer_question.html', context, context_instance=RequestContext(request))
+
 

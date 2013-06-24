@@ -1,6 +1,7 @@
 from django import forms
 from comments.forms import MPTTCommentForm, EditCommentForm
 from accounts.accountutils import is_regular_user
+from django.core.exceptions import ValidationError
 
 
 class AskQuestionForm(MPTTCommentForm):
@@ -46,4 +47,32 @@ class EditQuestionForm(EditCommentForm):
         super(EditQuestionForm, self).__init__(*args, **kwargs)
         self.fields['comment'].label = "Question"
 
+
+class AnswerQuestionForm(MPTTCommentForm):
+    """
+    At the moment questions can only be answered by staff members.
+    """
+
+    def __init__(self, request, question, *args, **kwargs):
+        if 'data' in kwargs:
+            # link the answer to the question
+            kwargs['data']['parent'] = question.id
+
+        super(AnswerQuestionForm, self).__init__(question.content_object, *args, **kwargs)
+        self.request = request
+        self.question = question
+        self.fields['name'].required = False
+        self.fields['comment'].label = "Answer"
+
+    def clean(self):
+        data = super(AnswerQuestionForm, self).clean()
+        if not self.request.user.is_staff:
+            raise ValidationError(u"Sorry, only staff members are allowed to answer customer questions.")
+        return data
+
+    def get_comment_create_data(self):
+        data = super(AnswerQuestionForm, self).get_comment_create_data()
+        data['user'] = self.request.user
+        data['ip_address'] = self.request.META.get("REMOTE_ADDR", None)
+        return data
 

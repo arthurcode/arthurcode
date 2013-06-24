@@ -17,5 +17,7 @@
     {% if request.user == content.user %}
         <a href="{% url delete_question content.id %}">delete</a>
         <a href="{% url edit_question content.id %}">edit</a>
+    {% elif request.user.is_staff %}
+        <a href="{% url answer_question content.id %}">answer it!</a>
     {% endif %}
 {% endblock %}

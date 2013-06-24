@@ -12,6 +12,8 @@
             <li class="comment">
                 {% if not node.parent %}
                     {% question node %}
+                {% else %}
+                    {% answer node %}
                 {% endif %}
                 {% if not node.is_leaf_node %}
                     <ul class="comments">{{ children }}</ul>
