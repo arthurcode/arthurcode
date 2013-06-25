@@ -37,9 +37,9 @@ def flag(request, comment_id, next=None):
 
 @csrf_protect
 @permission_required("comments.can_moderate")
-def delete(request, comment_id, next=None):
+def remove(request, comment_id, next=None):
     """
-    Deletes a comment. Confirmation on GET, action on POST. Requires the "can
+    Removes a comment. Confirmation on GET, action on POST. Requires the "can
     moderate comments" permission.
 
     Templates: `comments/delete.html`,
@@ -52,7 +52,7 @@ def delete(request, comment_id, next=None):
     # Delete on POST
     if request.method == 'POST':
         # Flag the comment as deleted instead of actually deleting it.
-        perform_delete(request, comment)
+        perform_remove(request, comment)
         return next_redirect(request, next, delete_done, c=comment.pk)
 
     # Render a form on GET
@@ -125,7 +125,7 @@ def perform_flag(request, comment):
         request = request,
     )
 
-def perform_delete(request, comment):
+def perform_remove(request, comment):
     flag, created = comments.models.CommentFlag.objects.get_or_create(
         comment = comment,
         user    = request.user,
@@ -195,9 +195,9 @@ flag_done = confirmation_view(
     template = "comments/flagged.html",
     doc = 'Displays a "comment was flagged" success page.'
 )
-delete_done = confirmation_view(
-    template = "comments/deleted.html",
-    doc = 'Displays a "comment was deleted" success page.'
+remove_done = confirmation_view(
+    template = "comments/removed.html",
+    doc = 'Displays a "comment was removed" success page.'
 )
 approve_done = confirmation_view(
     template = "comments/approved.html",

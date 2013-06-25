@@ -2,7 +2,7 @@ from django.contrib import admin
 from comments.models import MPTTComment, CommentFlag
 from django.utils.translation import ugettext_lazy as _, ungettext
 from comments import get_model
-from comments.views.moderation import perform_flag, perform_approve, perform_delete, perform_mark_as_spam
+from comments.views.moderation import perform_flag, perform_approve, perform_remove, perform_mark_as_spam
 
 # TODO: put this code in a better place since it's specific to Blog's models
 from django.contrib.admin import SimpleListFilter
@@ -113,7 +113,7 @@ class CommentsAdmin(admin.ModelAdmin):
     approve_comments.short_description = _("Approve selected comments")
 
     def remove_comments(self, request, queryset):
-        self._bulk_flag(request, queryset, perform_delete,
+        self._bulk_flag(request, queryset, perform_remove,
                         lambda n: ungettext('removed', 'removed', n))
     remove_comments.short_description = _("Remove selected comments")
 

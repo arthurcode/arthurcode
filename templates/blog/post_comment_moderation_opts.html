@@ -13,7 +13,7 @@
 
         {% if perms.comments.can_moderate %}
             <a href="{% url comments-mark-spam comment.id %}">mark as spam</a>
-            <a href="{% url comments-delete comment.id %}">remove text</a>
+            <a href="{% url comments-remove comment.id %}">remove text</a>
         {% endif %}
     </div>
 {% endif %}
