@@ -575,8 +575,11 @@ class Checkout:
             _, url, _ = STEPS[next_step-1]
             return url
         # the step is outside of our expected url range.  We must be finished the checkout process
-        # for now just return a dummy url
-        return reverse('account_orders')
+        order_id = self.get('order', None)
+        if order_id:
+            return reverse('order_detail', kwargs={'order_id': order_id})
+        # for some reason there is no saved order id, redirect to the cart page
+        return reverse('show_cart')
 
     def save(self, key, value):
         data = self._get_data()
@@ -652,6 +655,9 @@ class Checkout:
         for (name, rate, total) in pyOrder.tax_breakdown():
             orderTax = OrderTax(name=name, rate=rate, total=total, order=order)
             orderTax.save()
+
+        # save the order-id in the session dictionary
+        self.save('order', order.id)
         return True
 
     def build_order(self):

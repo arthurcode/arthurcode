@@ -1,1 +1,21 @@
-# Create your views here.
+from django.shortcuts import get_object_or_404, render_to_response
+from orders.models import Order
+from django.template import RequestContext
+from django.contrib.auth.decorators import login_required
+from django.http import HttpResponseForbidden
+from django.views.decorators.http import require_GET
+
+
+@require_GET
+@login_required
+def detail_view(request, order_id):
+    order = get_object_or_404(Order, id=order_id)
+    if not request.user.is_staff:
+        # check that this regular user has permission to view this order summary
+        if not order.customer or not order.customer.user == request.user:
+            return HttpResponseForbidden(u"You do not have permission to view this order.")
+
+    context = {
+        'order': order,
+    }
+    return render_to_response('order_detail.html', context, context_instance=RequestContext(request))

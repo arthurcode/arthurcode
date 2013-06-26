@@ -5,7 +5,9 @@ from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
 from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
+from django.core.urlresolvers import reverse
 from decimal import Decimal
+
 
 class Order(models.Model):
     """
@@ -88,6 +90,9 @@ class Order(models.Model):
         if self.contact_method == CustomerProfile.PHONE and (not self.phone or is_blank(self.phone)):
             raise ValidationError(u"The preferred contact method is phone, "
                                   u"therefore a valid phone number is required.")
+
+    def get_absolute_url(self):
+        return reverse('order_detail', kwargs={'order_id': self.id})
 
 
 class OrderItem(models.Model):
