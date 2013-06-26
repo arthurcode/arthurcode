@@ -9,7 +9,7 @@
             <img class="flag" src="{{ STATIC_URL }}icons/canada_flag_32.png">
             <span class="canadian">Proudly Canadian</span>
             <span class="contact">1-800-664-9741</span>
-            <a class="account" href="{% url show_account %}">my account</a>
+            <a class="account" href="{% url account_orders %}">my account</a>
             {% if user.is_authenticated and not user|is_lazy_user %}
                 <a class="logout" href="{% url logout %}">log out</a>
                 <span class="welcome">Welcome, {% firstof user.public_name user.first_name user.email %}</span>

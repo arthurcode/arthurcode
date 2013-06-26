@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
+from decorators import non_lazy_login_required
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -96,14 +97,6 @@ def _template_name(redirect_to):
     return 'login_no_guests.html'
 
 
-@login_required()
-def show_account(request):
-    """
-    Shows a user's account settings.  In this context the user is a customer
-    """
-    return render_to_response('my_account.html', locals(), context_instance=RequestContext(request))
-
-
 def _get_redirect_url(request, redirect_field_name=REDIRECT_FIELD_NAME):
     """
     If the user supplied redirection is either not present or unsafe the default LOGIN_REDIRECT_URL is returned.
@@ -123,7 +116,7 @@ def create_public_profile(request):
         form = CreatePublicProfileForm(request, data=post_data)
         if form.is_valid():
             form.create_profile()
-            redirect_to = next or reverse('show_account')
+            redirect_to = next or reverse('account_personal')
             return HttpResponseRedirect(redirect_to)
     else:
         form = CreatePublicProfileForm(request)
@@ -133,4 +126,21 @@ def create_public_profile(request):
         'next': next
     }
     return render_to_response('create_public_profile.html', context, context_instance=RequestContext(request))
+
+
+@non_lazy_login_required()
+def view_orders(request):
+    return render_to_response('orders.html', {}, context_instance=RequestContext(request))
+
+@non_lazy_login_required()
+def view_personal(request):
+    return render_to_response('personal.html', {}, context_instance=RequestContext(request))
+
+@non_lazy_login_required()
+def view_wishlists(request):
+    return render_to_response('wishlists.html', {}, context_instance=RequestContext(request))
+
+@non_lazy_login_required()
+def view_reviews(request):
+    return render_to_response('reviews.html', {}, context_instance=RequestContext(request))
 
