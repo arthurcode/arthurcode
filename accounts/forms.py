@@ -5,6 +5,9 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from utils.validators import not_blank, is_blank
 from accounts.models import PublicProfile, CustomerProfile
+from accounts.accountutils import is_regular_user
+from django.contrib.auth.hashers import check_password
+from django.db.transaction import commit_on_success
 
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
@@ -148,5 +151,59 @@ class CreatePublicProfileForm(forms.Form):
             profile.full_clean()
             profile.save()
         return profile
+
+
+class ChangeEmailForm(forms.Form):
+    """
+    Gives registered users a way to change their email address.  Their account password is required for security
+    reasons.
+    """
+
+    new_email = forms.EmailField(label="New Email Address")
+    password = forms.CharField(widget=forms.PasswordInput,
+                               help_text="For security reasons please enter your account password.")
+
+    def __init__(self, request, *args, **kwargs):
+        super(ChangeEmailForm, self).__init__(*args, **kwargs)
+        self.request = request
+
+    def clean_new_email(self):
+        email = self.cleaned_data.get('new_email', None)
+        if email and email == self.request.user.email:
+            raise ValidationError("This email address is the same as the one that is already on file.")
+        return email
+
+    def clean_password(self):
+        password = self.cleaned_data.get('password', None)
+        if password and not check_password(password, self.request.user.password):
+            raise ValidationError("Incorrect password")
+
+    def clean(self):
+        data = super(ChangeEmailForm, self).clean()
+        if not is_regular_user(self.request.user):
+            raise ValidationError("This form can only be used by registered users.")
+
+        new_email = self.cleaned_data.get('new_email', None)
+        if new_email:
+            username = username_from_email(new_email)
+            if User.objects.filter(username=username).exists():
+                 # the generated username is not unique
+                if User.objects.filter(email=new_email).exists():
+                    self.errors['new_email'] = self.error_class([u'A user with this email address already exists.'])
+                else:
+                    # hmmm, this must be a hash algorithm collision
+                    self.errors['new_email'] = self.error_class([u'Sorry, we were unable to generate a unique username from '
+                                                                u'this email address. You will need to register with'
+                                                                u' a different email address.'])
+        return data
+
+    @commit_on_success
+    def do_change_email(self):
+        # since the username is derived from the email they both have to change at the same time
+        email = self.cleaned_data.get('new_email')
+        username = username_from_email(email)
+        self.request.user.username = username
+        self.request.user.email = email
+        self.request.user.save()
 
 

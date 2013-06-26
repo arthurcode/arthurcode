@@ -1,0 +1,16 @@
+{% extends "base_account.html" %}
+{% load form_tags %}
+
+{% block title %}Change Your Email Address{% endblock %}
+
+{% block body %}
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% field form.new_email %}
+        {% field form.password %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Change Email</button>
+        </div>
+    </form>
+{% endblock %}

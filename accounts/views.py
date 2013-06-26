@@ -7,7 +7,8 @@ from django.utils.http import is_safe_url
 from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
-from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, ConvertLazyUserForm
+from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
+    ConvertLazyUserForm, ChangeEmailForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -154,4 +155,23 @@ def view_wishlists(request):
 @non_lazy_login_required()
 def view_reviews(request):
     return render_to_response('reviews.html', {}, context_instance=RequestContext(request))
+
+@non_lazy_login_required()
+@sensitive_post_parameters()
+@never_cache
+def change_email(request):
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = ChangeEmailForm(request, data=post_data)
+        if form.is_valid():
+            form.do_change_email()
+            return HttpResponseRedirect(reverse('account_personal'))
+    else:
+        form = ChangeEmailForm(request)
+    context = {
+        'form': form,
+    }
+    return render_to_response('change_email.html', context, context_instance=RequestContext(request))
+
+
 
