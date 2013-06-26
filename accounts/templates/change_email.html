@@ -5,7 +5,7 @@
 
 {% block body %}
     {% form_errors form %}
-    <form method="post" action="">
+    <form method="post" action="{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         {% field form.new_email %}
         {% field form.password %}

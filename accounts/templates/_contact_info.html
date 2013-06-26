@@ -1,5 +1,5 @@
 <dt>Email:</dt>
-<dd>{% firstof request.user.email "Not on file" %} (<a href="{% url account_change_email %}">change email</a>)</dd>
+<dd>{% firstof request.user.email "Not on file" %} (<a href="{% url account_change_email %}?next={{ request.path }}">change email</a>)</dd>
 <dt>First Name:</dt>
 <dd>{% firstof request.user.first_name "Not on file" %}</dd>
 <dt>Last Name:</dt>

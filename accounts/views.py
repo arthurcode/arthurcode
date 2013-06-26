@@ -160,16 +160,19 @@ def view_reviews(request):
 @sensitive_post_parameters()
 @never_cache
 def change_email(request):
+    next = request.GET.get('next', None)
     if request.method == "POST":
         post_data = request.POST.copy()
         form = ChangeEmailForm(request, data=post_data)
         if form.is_valid():
+            redirect_to = next or reverse('account_personal')
             form.do_change_email()
-            return HttpResponseRedirect(reverse('account_personal'))
+            return HttpResponseRedirect(redirect_to)
     else:
         form = ChangeEmailForm(request)
     context = {
         'form': form,
+        'next': next
     }
     return render_to_response('change_email.html', context, context_instance=RequestContext(request))
 
