@@ -139,7 +139,13 @@ def view_orders(request):
 
 @non_lazy_login_required()
 def view_personal(request):
-    return render_to_response('personal.html', {}, context_instance=RequestContext(request))
+    public_profile = request.user.get_public_profile()
+    customer_profile = request.user.get_customer_profile()
+    context = {
+        'public_profile': public_profile,
+        'customer_profile': customer_profile
+    }
+    return render_to_response('personal.html', context, context_instance=RequestContext(request))
 
 @non_lazy_login_required()
 def view_wishlists(request):

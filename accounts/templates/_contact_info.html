@@ -1,0 +1,14 @@
+<dt>Email:</dt>
+<dd>{% firstof request.user.email "Not on file" %}</dd>
+<dt>First Name:</dt>
+<dd>{% firstof request.user.first_name "Not on file" %}</dd>
+<dt>Last Name:</dt>
+<dd>{% firstof request.user.last_name "Not on file" %}</dd>
+<dt>Phone:</dt>
+<dd>{% if not customer_profile %}Not on file{% else %}{% firstof customer_profile.phone "Not on file" %}{% endif %}</dd>
+{% if customer_profile %}
+    <dt>Preferred Contact Method:</dt>
+    <dd>{{ customer_profile.get_contact_method_display }}</dd>
+    <dt>Subscribed to Mailing List?</dt>
+    <dd>{% if customer_profile.on_mailing_list %}Yes{% else %}No{% endif %}</dd>
+{% endif %}
