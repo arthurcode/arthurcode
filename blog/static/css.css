@@ -1429,3 +1429,11 @@ body.flag-review .controls {
     float: left;
     clear: both;
 }
+
+table.orders {
+    width: 80%;
+}
+
+table.orders td, table.orders th {
+    text-align: center;
+}

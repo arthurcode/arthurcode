@@ -1,9 +1,37 @@
 {% extends "base_account.html" %}
+{% load extras %}
 
 {% block title %}Orders{% endblock %}
 
 {% block root-category %}orders{% endblock %}
 
 {% block body %}
-    ORDERS TBD
+    <h2>Order History</h2>
+    <table class="orders">
+        <caption class="hidden">Order History</caption>
+        <thead class="title-bar">
+        <tr>
+            <th scope="col">Order #</th>
+            <th scope="col">Date</th>
+            <th class="right" scope="col">Total</th>
+            <th scope="col">Status</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% if orders %}
+            {% for order in orders %}
+                <tr>
+                    <td><a href="{% url order_detail order.id %}">{{ order.id }}</a></td>
+                    <td>{{ order.date|date:"M j, Y" }}</td>
+                    <td class="right">{{ order.total|currency }}</td>
+                    <td>{{ order.get_status_display }}</td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr>
+                <td colspan="4">You have not placed any orders with us</td>
+            </tr>
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

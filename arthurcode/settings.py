@@ -107,7 +107,7 @@ ROOT_URLCONF = 'arthurcode.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'arthurcode.wsgi.application'
 
-LOGIN_REDIRECT_URL = '/accounts/my_account'
+LOGIN_REDIRECT_URL = '/accounts/orders'
 
 import os
 TEMPLATE_DIRS = (os.path.join(os.path.dirname(__file__), '..', 'templates').replace('\\','/'),)

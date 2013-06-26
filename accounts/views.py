@@ -15,6 +15,7 @@ from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
 from decorators import non_lazy_login_required
+from orders.models import Order
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -130,7 +131,11 @@ def create_public_profile(request):
 
 @non_lazy_login_required()
 def view_orders(request):
-    return render_to_response('orders.html', {}, context_instance=RequestContext(request))
+    orders = Order.objects.filter(customer__user=request.user).order_by('-date')
+    context = {
+        'orders': orders,
+    }
+    return render_to_response('orders.html', context, context_instance=RequestContext(request))
 
 @non_lazy_login_required()
 def view_personal(request):

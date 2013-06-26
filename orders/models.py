@@ -55,7 +55,7 @@ class Order(models.Model):
     @property
     def merchandise_total(self):
         total = Decimal('0.00')
-        for item in self.items:
+        for item in self.items.all():
             total += item.price
         return total
 
@@ -90,6 +90,13 @@ class Order(models.Model):
         if self.contact_method == CustomerProfile.PHONE and (not self.phone or is_blank(self.phone)):
             raise ValidationError(u"The preferred contact method is phone, "
                                   u"therefore a valid phone number is required.")
+
+    @property
+    def total(self):
+        total = self.merchandise_total + self.shipping_charge
+        for tax in self.taxes.all():
+            total += tax.total
+        return total
 
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'order_id': self.id})
@@ -135,7 +142,7 @@ class OrderTax(models.Model):
     """
     A tax (eg GST or PST) that has been applied to an order.
     """
-    order = models.ForeignKey(Order)
+    order = models.ForeignKey(Order, related_name="taxes")
     name = models.CharField(max_length=20)
     rate = models.DecimalField(max_digits=7, decimal_places=4, validators=[MinValueValidator(0.0)])  # percentage
     total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
