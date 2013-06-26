@@ -15,6 +15,8 @@ from utils.validators import is_blank
 import checkoututils
 from decimal import Decimal
 from django.views.decorators.http import require_GET
+from accounts.accountutils import is_guest_passthrough
+
 
 class PyOrder(object):
     """
@@ -715,7 +717,7 @@ def checkout(request):
     """
     co = Checkout(request)
     if is_lazy_user(request.user) and not co.is_in_progress():
-        if not request.GET.get('guest', False):
+        if not is_guest_passthrough(request):
             # redirect to the login view where they can explicitly choose to login or checkout as a guest
             login_url = reverse('login_or_create_account')
             checkout_url = reverse('checkout')

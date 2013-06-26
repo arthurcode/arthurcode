@@ -9,12 +9,12 @@ from comments.models import MPTTComment
 from questions.forms import AskQuestionForm, EditQuestionForm, AnswerQuestionForm
 from django.views.decorators.http import require_GET
 from comments.views.comment import CommentPostBadRequest
-from accounts.accountutils import is_lazy_user
-from accounts.decorators import public_profile_required_for_regular_users
+from accounts.decorators import public_profile_required_for_regular_users, lazy_users_choose_guest
 from django.contrib.admin.views.decorators import staff_member_required
 
 
 @allow_lazy_user
+@lazy_users_choose_guest
 @public_profile_required_for_regular_users
 def ask_view(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -29,9 +29,6 @@ def ask_view(request, product_slug):
         elif form.security_errors():
             return CommentPostBadRequest(u"Security errors in form.")
     else:
-        if is_lazy_user(request.user) and not 'guest' in request.GET:
-            redirect_to = reverse('login_or_create_account') + "?next=" + request.path
-            return HttpResponseRedirect(redirect_to)
         form = AskQuestionForm(request, product)
 
     context = {
