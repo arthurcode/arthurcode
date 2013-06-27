@@ -18,7 +18,7 @@ from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
 from decorators import non_lazy_login_required
 from orders.models import Order
-from django.contrib.auth.views import password_change, password_change_done
+from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -191,5 +191,11 @@ def change_password(request):
 @require_GET
 def change_password_done(request):
     return password_change_done(request, template_name='registration/change_password_done.html')
+
+
+@non_lazy_login_required()
+def logout(request):
+    return auth_logout(request, template_name='registration/after_log_out.html', redirect_field_name='next')
+
 
 

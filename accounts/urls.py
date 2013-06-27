@@ -1,7 +1,6 @@
 from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
-    create_public_profile, change_email, change_password, change_password_done
-from django.contrib.auth.views import logout
+    create_public_profile, change_email, change_password, change_password_done, logout
 
 urlpatterns = patterns('',
                        url(r'^login/$', login_or_create_account, name="login_or_create_account"),
