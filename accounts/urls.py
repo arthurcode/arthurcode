@@ -1,6 +1,7 @@
 from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
-    create_public_profile, change_email, change_password, change_password_done, logout
+    create_public_profile, change_email, change_password, change_password_done, logout, reset_password, \
+    reset_password_done, reset_password_confirm
 
 urlpatterns = patterns('',
                        url(r'^login/$', login_or_create_account, name="login_or_create_account"),
@@ -13,5 +14,8 @@ urlpatterns = patterns('',
                        url(r'^change-email/$', change_email, name="account_change_email"),
                        url(r'^change-password/$', change_password, name="account_change_password"),
                        url(r'^change-password-done/$', change_password_done, name="account_change_password_done"),
+                       url(r'^reset-password/$', reset_password, name="account_reset_password"),
+                       url(r'^reset-password-done/$', reset_password_done, name="account_reset_password_done"),
+                       url(r'^reset-password-confirm/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', reset_password_confirm, name="account_reset_password_confirm")
                        )
 
