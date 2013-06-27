@@ -1,6 +1,7 @@
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
+from django.views.decorators.http import require_GET
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
 from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
@@ -12,12 +13,12 @@ from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, Cre
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
-from django.contrib.auth.forms import PasswordChangeForm
 from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
 from decorators import non_lazy_login_required
 from orders.models import Order
+from django.contrib.auth.views import password_change, password_change_done
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -175,28 +176,20 @@ def change_email(request):
         'form': form,
         'next': next
     }
-    return render_to_response('change_email.html', context, context_instance=RequestContext(request))
+    return render_to_response('registration/change_email.html', context, context_instance=RequestContext(request))
 
 
 @non_lazy_login_required()
 @sensitive_post_parameters()
 @never_cache
 def change_password(request):
-    next = request.GET.get('next', None)
-    if request.method == "POST":
-        post_data = request.POST.copy()
-        form = PasswordChangeForm(request.user, data=post_data)
-        if form.is_valid():
-            form.save(commit=True)
-            redirect_to = next or reverse('account_personal')
-            return HttpResponseRedirect(redirect_to)
-    else:
-        form = PasswordChangeForm(request.user)
-    context = {
-        'form': form,
-        'next': next
-    }
-    return render_to_response('change_password.html', context, context_instance=RequestContext(request))
+    next = request.GET.get('next', None) or reverse('account_change_password_done')
+    template = 'registration/change_password.html'
+    return password_change(request, template_name=template, post_change_redirect=next)
 
+
+@require_GET
+def change_password_done(request):
+    return password_change_done(request, template_name='registration/change_password_done.html')
 
 
