@@ -19,7 +19,7 @@ from lazysignup.models import LazyUser
 from decorators import non_lazy_login_required
 from orders.models import Order
 from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout, \
-    password_reset, password_reset_done, password_reset_confirm
+    password_reset, password_reset_done, password_reset_confirm, password_reset_complete
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -216,6 +216,14 @@ def reset_password_done(request):
 
 
 def reset_password_confirm(request, uidb36=None, token=None):
-    return password_reset_confirm(request, uidb36=uidb36, token=token)
+    redirect_to = reverse('account_reset_password_complete')
+    template_name = 'registration/reset_my_password_confirm.html'
+    return password_reset_confirm(request, uidb36=uidb36, token=token, post_reset_redirect=redirect_to,
+                                  template_name=template_name)
+
+
+def reset_password_complete(request):
+    template = 'registration/reset_my_password_complete.html'
+    return password_reset_complete(request, template_name=template)
 
 
