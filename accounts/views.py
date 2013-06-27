@@ -12,6 +12,7 @@ from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, Cre
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import PasswordChangeForm
 from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
 from lazysignup.models import LazyUser
@@ -175,6 +176,27 @@ def change_email(request):
         'next': next
     }
     return render_to_response('change_email.html', context, context_instance=RequestContext(request))
+
+
+@non_lazy_login_required()
+@sensitive_post_parameters()
+@never_cache
+def change_password(request):
+    next = request.GET.get('next', None)
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = PasswordChangeForm(request.user, data=post_data)
+        if form.is_valid():
+            form.save(commit=True)
+            redirect_to = next or reverse('account_personal')
+            return HttpResponseRedirect(redirect_to)
+    else:
+        form = PasswordChangeForm(request.user)
+    context = {
+        'form': form,
+        'next': next
+    }
+    return render_to_response('change_password.html', context, context_instance=RequestContext(request))
 
 
 

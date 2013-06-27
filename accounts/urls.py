@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
-    create_public_profile, change_email
+    create_public_profile, change_email, change_password
 from django.contrib.auth.views import logout
 
 urlpatterns = patterns('',
@@ -11,6 +11,7 @@ urlpatterns = patterns('',
                        url(r'^personal/$', view_personal, name="account_personal"),
                        url(r'^wishlists/$', view_wishlists, name="account_wishlists"),
                        url(r'^reviews/$', view_reviews, name="account_reviews"),
-                       url(r'^change-email/$', change_email, name="account_change_email")
+                       url(r'^change-email/$', change_email, name="account_change_email"),
+                       url(r'^change-password/$', change_password, name="account_change_password")
                        )
 
