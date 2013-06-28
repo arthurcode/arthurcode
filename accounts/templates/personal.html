@@ -5,29 +5,56 @@
 {% block root-category %}personal{% endblock %}
 
 {% block body %}
-    <h2>Contact Information</h2>
-    {% include "_contact_info.html" %}
-    <a href="{% url account_change_password %}">change your password</a>
-    <h2>Public Profile</h2>
-    {% if public_profile %}
-        {% include "_public_profile.html" %}
-    {% else %}
-        <a href="{% url create_public_profile %}?next={{ request.path }}">create your public profile</a>
-    {% endif %}
-    <h2>Shipping Addresses</h2>
-    {% if customer_profile %}
-        {% for address in customer_profile.shipping_addresses.all %}
-            {% include "_address.html" %}
-        {% endfor %}
-    {% else %}
-        TODO - add a shipping address
-    {% endif %}
-    <h2>Billing Addresses</h2>
-    {% if customer_profile %}
-        {% for address in customer_profile.billing_addresses.all %}
-            {% include "_address.html" %}
-        {% endfor %}
-    {% else %}
-        TODO - add a billing address
-    {% endif %}
+
+    <div class="tabview">
+        <ul class="tabcol">
+            <li id="account" class="tab selected"><a class="tabview" href="#account">Account</a></li>
+            <li id="contact" class="tab"><a class="tabview" href="#contact">Contact Information</a></li>
+            <li id="public" class="tab"><a class="tabview" href="#public">Public Profile</a></li>
+            <li id="shipping" class="tab"><a class="tabview" href="#shipping">Shipping Addresses</a></li>
+            <li id="billing" class="tab"><a class="tabview" href="#billing">Billing Addresses</a></li>
+        </ul>
+
+        <div class="views">
+            <div class="view" id="account">
+                <h2>Account</h2>
+                <ul>
+                    <li><a href="{% url account_change_email %}">change your email address</a></li>
+                    <li><a href="{% url account_change_password %}">change your password</a></li>
+                </ul>
+            </div>
+            <div class="view hide-initially" id="contact">
+                <h2>Contact Information</h2>
+                {% include "_contact_info.html" %}
+            </div>
+            <div class="view hide-initially" id="public">
+                <h2>Public Profile</h2>
+                {% if public_profile %}
+                    {% include "_public_profile.html" %}
+                {% else %}
+                    <a href="{% url create_public_profile %}?next={{ request.path }}">create your public profile</a>
+                {% endif %}
+            </div>
+            <div class="view hide-initially" id="shipping">
+                <h2>Shipping Addresses</h2>
+                {% if customer_profile %}
+                    {% for address in customer_profile.shipping_addresses.all %}
+                        {% include "_address.html" %}
+                    {% endfor %}
+                {% else %}
+                    TODO - add a shipping address
+                {% endif %}
+            </div>
+            <div class="view hide-initially" id="billing">
+                <h2>Billing Addresses</h2>
+                {% if customer_profile %}
+                    {% for address in customer_profile.billing_addresses.all %}
+                        {% include "_address.html" %}
+                    {% endfor %}
+                {% else %}
+                    TODO - add a billing address
+                {% endif %}
+            </div>
+        </div>
+    </div>
 {% endblock %}

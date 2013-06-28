@@ -1,6 +1,8 @@
-<dt>Username:</dt>
-<dd>{{ public_profile.username }}</dd>
-<dt>Description:</dt>
-<dd>{% firstof public_profile.description "Not on File" %}</dd>
-<dt>Location:</dt>
-<dd>{% firstof public_profile.location "Not on File" %}</dd>
+<dl class="horizontal">
+    <dt>Username:</dt>
+    <dd>{{ public_profile.username }}</dd>
+    <dt>Description:</dt>
+    <dd>{% firstof public_profile.description "Not on File" %}</dd>
+    <dt>Location:</dt>
+    <dd>{% firstof public_profile.location "Not on File" %}</dd>
+</dl>

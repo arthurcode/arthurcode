@@ -1,5 +1,7 @@
 {% extends "base_site.html" %}
 
+{% block body_class %}account{% endblock %}
+
 {% block secondary-navigation %}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}none-selected{% endblock %}{% endspaceless %}">
@@ -11,4 +13,4 @@
     {% endspaceless %}
 {% endblock %}
 
-{% block secondary-nav-title %}<h2>Manage Your Account</h2>{% endblock %}
+{% block secondary-nav-title %}<h2>Manage Your Account | {{ user.email }}</h2>{% endblock %}
