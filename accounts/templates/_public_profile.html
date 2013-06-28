@@ -1,8 +1,8 @@
 <dl class="horizontal">
     <dt>Username:</dt>
-    <dd>{{ public_profile.username }}</dd>
+    <dd>{% firstof public_profile.username "-" %}</dd>
     <dt>Description:</dt>
-    <dd>{% firstof public_profile.description "Not on File" %}</dd>
+    <dd>{% firstof public_profile.description "-" %}</dd>
     <dt>Location:</dt>
-    <dd>{% firstof public_profile.location "Not on File" %}</dd>
+    <dd>{% firstof public_profile.location "-" %}</dd>
 </dl>
