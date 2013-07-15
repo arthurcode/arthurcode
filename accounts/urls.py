@@ -1,12 +1,13 @@
 from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
     create_public_profile, change_email, change_password, change_password_done, logout, reset_password, \
-    reset_password_done, reset_password_confirm, reset_password_complete, edit_contact_info
+    reset_password_done, reset_password_confirm, reset_password_complete, edit_contact_info, edit_public_profile
 
 urlpatterns = patterns('',
                        url(r'^login/$', login_or_create_account, name="login_or_create_account"),
                        url(r'^logout/$', logout, name="logout"),
                        url(r'^create-public-profile', create_public_profile, name="create_public_profile"),
+                       url(r'^edit-public-profile', edit_public_profile, name="edit_public_profile"),
                        url(r'^orders/$', view_orders, name="account_orders"),
                        url(r'^personal/$', view_personal, name="account_personal"),
                        url(r'^wishlists/$', view_wishlists, name="account_wishlists"),

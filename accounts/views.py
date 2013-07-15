@@ -9,7 +9,7 @@ from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
-    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo
+    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo, EditPublicProfileForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -121,7 +121,7 @@ def create_public_profile(request):
         form = CreatePublicProfileForm(request, data=post_data)
         if form.is_valid():
             form.create_profile()
-            redirect_to = next or reverse('account_personal')
+            redirect_to = next or reverse('account_personal') + "#public"
             return HttpResponseRedirect(redirect_to)
     else:
         form = CreatePublicProfileForm(request)
@@ -131,6 +131,27 @@ def create_public_profile(request):
         'next': next
     }
     return render_to_response('create_public_profile.html', context, context_instance=RequestContext(request))
+
+
+@login_required
+def edit_public_profile(request):
+    next = request.GET.get('next', None)
+
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = EditPublicProfileForm(request, data=post_data)
+        if form.is_valid():
+            form.save(commit=True)
+            redirect_to = next or reverse('account_personal') + "#public"
+            return HttpResponseRedirect(redirect_to)
+    else:
+        form = EditPublicProfileForm(request)
+
+    context = {
+        'form': form,
+        'next': next,
+    }
+    return render_to_response('edit_public_profile.html', context, context_instance=RequestContext(request))
 
 
 @non_lazy_login_required()

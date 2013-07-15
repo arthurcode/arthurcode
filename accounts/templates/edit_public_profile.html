@@ -1,0 +1,18 @@
+{% extends "base_site.html" %}
+{% load form_tags %}
+
+{% block title %}Edit Public Profile{% endblock %}
+
+{% block body %}
+    <h2>Edit Public Profile</h2>
+    {% form_errors form %}
+    <form method="post" action="{% if next %}?next={{ next }}{% endif %}">
+        {% csrf_token %}
+        {% field form.username %}
+        {% field form.description %}
+        {% field form.location %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Edit Profile</button>
+        </div>
+    </form>
+{% endblock %}

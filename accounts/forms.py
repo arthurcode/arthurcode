@@ -138,16 +138,48 @@ class CreatePublicProfileForm(forms.Form):
         self.request = request
 
     def clean(self):
-        super(CreatePublicProfileForm, self).clean()
+        data = super(CreatePublicProfileForm, self).clean()
         if not self.request.user.is_authenticated():
             raise ValidationError(u"You must be logged-in to create a public profile.")
+        return data
 
     def create_profile(self, commit=True):
         profile = PublicProfile(user=self.request.user)
-        profile.username = self.data['username']
-        profile.description = self.data['description']
-        profile.location = self.data['location']
+        profile.username = self.cleaned_data['username']
+        profile.description = self.cleaned_data['description']
+        profile.location = self.cleaned_data['location']
 
+        if commit:
+            profile.full_clean()
+            profile.save()
+        return profile
+
+
+class EditPublicProfileForm(CreatePublicProfileForm):
+
+    def __init__(self, request, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        initial.update(self.make_initial_dict(request))
+        kwargs['initial'] = initial
+        super(EditPublicProfileForm, self).__init__(request, *args, **kwargs)
+
+    def make_initial_dict(self, request):
+        profile = request.user.get_public_profile()
+        if not profile:
+            return {}
+        return {
+            'username': profile.username,
+            'description': profile.description,
+            'location': profile.location,
+        }
+
+    def save(self, commit=True):
+        profile = self.request.user.get_public_profile()
+        if not profile:
+            return self.create_profile(commit=commit)
+        profile.username = self.cleaned_data['username']
+        profile.description = self.cleaned_data['description']
+        profile.location = self.cleaned_data['location']
         if commit:
             profile.full_clean()
             profile.save()
