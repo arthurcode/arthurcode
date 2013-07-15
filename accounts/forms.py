@@ -247,8 +247,9 @@ class ContactInfoForm(forms.Form):
     def clean(self):
         cleaned_data = super(ContactInfoForm, self).clean()
         contact_method = cleaned_data.get('contact_method', None)
+        phone = cleaned_data.get('phone', None)
 
-        if contact_method and int(contact_method) == CustomerProfile.PHONE and not 'phone' in self.changed_data:
+        if contact_method and int(contact_method) == CustomerProfile.PHONE and not phone:
             # a phone number wasn't entered, indicate that it is now conditionally required.
             self._errors['contact_method'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
             self._errors['phone'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
