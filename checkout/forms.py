@@ -1,10 +1,8 @@
-from django import forms
-from accounts.models import CustomerProfile
-from accounts.forms import SUBSCRIBE_TO_MAILING_LIST_LABEL
-from django.core.exceptions import ValidationError
 import datetime
 import re
-from lazysignup.decorators import is_lazy_user
+
+from django import forms
+from django.core.exceptions import ValidationError
 
 
 def cc_expire_years():
@@ -52,55 +50,6 @@ def cardLuhnChecksumIsValid(card_number):
             digit -= 9
         checksum += digit
     return (checksum % 10) == 0
-
-
-class ContactInfoForm(forms.Form):
-
-    # similar to CustomerProfile contact method choices, minus the 'unknown' choice
-    CONTACT_METHOD_CHOICES = ((CustomerProfile.EMAIL, 'Email'),
-                              (CustomerProfile.PHONE, 'Phone'))
-
-    ERROR_PHONE_REQUIRED = u"A phone number is required because you selected 'Phone' as your preferred contact method."
-
-    first_name = forms.CharField(max_length=30, required=True)  # 30 is the max length set by User
-    last_name = forms.CharField(max_length=30, required=True)   # 30 is the max length set by User
-    email = forms.EmailField(required=True)
-    email2 = forms.EmailField(required=True, label="Retype Email")
-    contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
-                                       widget=forms.RadioSelect,
-                                       label="If there is a problem with your order how should we contact you?")
-    phone = forms.CharField(max_length=20, required=False)
-    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False)
-
-    def __init__(self, request, *args, **kwargs):
-        if 'data' in kwargs and kwargs['data']:
-            if request.user.is_authenticated and not is_lazy_user(request.user) and request.user.email:
-                # it's not a simple thing to change a register's user's email address, don't let them do that from
-                # this form
-                kwargs['data']['email'] = request.user.email
-                kwargs['data']['email2'] = request.user.email
-
-        super(ContactInfoForm, self).__init__(*args, **kwargs)
-        self.request = request
-
-    def clean_email2(self):
-        email1 = self.cleaned_data.get('email', None)
-        email2 = self.cleaned_data.get('email2', '')
-        if email1 and email2 and email1 != email2:
-            raise ValidationError(u"The two email addresses do not match.")
-        return email2
-
-    def clean(self):
-        cleaned_data = super(ContactInfoForm, self).clean()
-        contact_method = cleaned_data.get('contact_method', None)
-
-        if contact_method and int(contact_method) == CustomerProfile.PHONE and not 'phone' in self.changed_data:
-            # a phone number wasn't entered, indicate that it is now conditionally required.
-            self._errors['contact_method'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
-            self._errors['phone'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
-            del(cleaned_data['contact_method'])
-
-        return cleaned_data
 
 
 class PaymentInfoForm(forms.Form):

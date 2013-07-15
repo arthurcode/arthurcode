@@ -3,6 +3,7 @@ from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
+from lazysignup.utils import is_lazy_user
 from utils.validators import not_blank, is_blank
 from accounts.models import PublicProfile, CustomerProfile
 from accounts.accountutils import is_regular_user
@@ -205,5 +206,110 @@ class ChangeEmailForm(forms.Form):
         self.request.user.username = username
         self.request.user.email = email
         self.request.user.save()
+
+
+class ContactInfoForm(forms.Form):
+
+    # similar to CustomerProfile contact method choices, minus the 'unknown' choice
+    CONTACT_METHOD_CHOICES = ((CustomerProfile.EMAIL, 'Email'),
+                              (CustomerProfile.PHONE, 'Phone'))
+
+    ERROR_PHONE_REQUIRED = u"A phone number is required because you selected 'Phone' as your preferred contact method."
+
+    first_name = forms.CharField(max_length=30, required=True)  # 30 is the max length set by User
+    last_name = forms.CharField(max_length=30, required=True)   # 30 is the max length set by User
+    email = forms.EmailField(required=True)
+    email2 = forms.EmailField(required=True, label="Retype Email")
+    contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
+                                       widget=forms.RadioSelect,
+                                       label="If there is a problem with your order how should we contact you?")
+    phone = forms.CharField(max_length=20, required=False)
+    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
+
+    def __init__(self, request, *args, **kwargs):
+        if 'data' in kwargs and kwargs['data']:
+            if request.user.is_authenticated and not is_lazy_user(request.user) and request.user.email:
+                # it's not a simple thing to change a register's user's email address, don't let them do that from
+                # this form
+                kwargs['data']['email'] = request.user.email
+                kwargs['data']['email2'] = request.user.email
+
+        super(ContactInfoForm, self).__init__(*args, **kwargs)
+        self.request = request
+
+    def clean_email2(self):
+        email1 = self.cleaned_data.get('email', None)
+        email2 = self.cleaned_data.get('email2', '')
+        if email1 and email2 and email1 != email2:
+            raise ValidationError(u"The two email addresses do not match.")
+        return email2
+
+    def clean(self):
+        cleaned_data = super(ContactInfoForm, self).clean()
+        contact_method = cleaned_data.get('contact_method', None)
+
+        if contact_method and int(contact_method) == CustomerProfile.PHONE and not 'phone' in self.changed_data:
+            # a phone number wasn't entered, indicate that it is now conditionally required.
+            self._errors['contact_method'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
+            self._errors['phone'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
+            del(cleaned_data['contact_method'])
+
+        return cleaned_data
+
+
+class EditContactInfo(ContactInfoForm):
+
+    def __init__(self, request, *args, **kwargs):
+        initial = kwargs.get('initial', {})
+        initial.update(self.make_initial_dict(request))
+        kwargs['initial'] = initial
+        super(EditContactInfo, self).__init__(request, *args, **kwargs)
+        self.request = request
+
+    def make_initial_dict(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return {}
+
+        initial = {
+            'email': user.email,
+            'email2': user.email,
+            'first_name': user.first_name,
+            'last_name': user.last_name,
+        }
+
+        profile = user.get_customer_profile()
+        if profile:
+            initial.update({
+                'contact_method': profile.contact_method,
+                'phone': profile.phone,
+                'on_mailing_list': profile.on_mailing_list
+            })
+        return initial
+
+    def save(self):
+        # save the edited contact information back to this user's account table
+        # never change a registered user's email address using this form
+        user = self.request.user
+        user.first_name = self.cleaned_data.get('first_name')
+        user.last_name = self.cleaned_data.get('last_name')
+        new_email = self.cleaned_data.get('email')
+
+        if not user.email or not is_regular_user(user):
+            user.email = new_email
+
+        profile = user.get_customer_profile()
+        if not profile:
+            profile = CustomerProfile(user=user)
+
+        profile.phone = self.cleaned_data.get('phone')
+        profile.contact_method = self.cleaned_data.get('contact_method')
+        profile.on_mailing_list = self.cleaned_data.get('on_mailing_list')
+
+        profile.full_clean()
+        profile.save()
+        user.full_clean()
+        user.save()
+        return user
 
 

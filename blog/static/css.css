@@ -1214,7 +1214,7 @@ div.contact-info, div.new-address-form {
     clear: left;
 }
 
-.order-summary dt {
+.order-summary dl.horizontal dt {
     font-weight: bolder;
     float: left;
     clear: left;

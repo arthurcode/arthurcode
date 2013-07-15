@@ -1,0 +1,21 @@
+{% extends "base_account.html" %}
+{% load form_tags %}
+
+{% block title %}Edit Contact Info{% endblock %}
+
+{% block body %}
+    <h2>Edit Contact Information</h2>
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% readonly_field form.email %}
+        {% field form.first_name %}
+        {% field form.last_name %}
+        {% field form.phone %}
+        {% field form.contact_method %}
+        {% field form.on_mailing_list %}
+        <div class="controls">
+            <button type="submit" name="submit" class="action">Submit Changes</button>
+        </div>
+    </form>
+{% endblock %}

@@ -9,7 +9,7 @@ from arthurcode import settings
 from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
-    ConvertLazyUserForm, ChangeEmailForm
+    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -225,5 +225,21 @@ def reset_password_confirm(request, uidb36=None, token=None):
 def reset_password_complete(request):
     template = 'registration/reset_my_password_complete.html'
     return password_reset_complete(request, template_name=template)
+
+
+def edit_contact_info(request):
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = EditContactInfo(request, data=post_data)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(reverse('account_personal') + "#contact")
+    else:
+        form = EditContactInfo(request)
+
+    context = {
+        'form': form,
+    }
+    return render_to_response('edit_contact_info.html', context, context_instance=RequestContext(request))
 
 

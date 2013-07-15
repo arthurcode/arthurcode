@@ -2,7 +2,8 @@ from lazysignup.decorators import allow_lazy_user
 from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from checkout.forms import ContactInfoForm, PaymentInfoForm, ChooseAddressForm
+from accounts.forms import ContactInfoForm
+from checkout.forms import PaymentInfoForm, ChooseAddressForm
 from utils.forms import CanadaShippingForm, BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
