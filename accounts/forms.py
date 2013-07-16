@@ -11,7 +11,7 @@ from django.contrib.auth.hashers import check_password
 from django.db.transaction import commit_on_success
 
 
-SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
+SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales. (You can unsubscribe at any time)"
 
 def username_from_email(email):
     md5 = hashlib.md5(email.lower())
