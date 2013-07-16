@@ -275,27 +275,11 @@ def add_shipping_address(request):
     """
     Adds a new shipping address to this customer's profile
     """
-    if request.method == "POST":
-        post_data = request.POST.copy()
-        form = CanadaShippingForm(data=post_data)
-        if form.is_valid():
-            profile = request.user.get_customer_profile()
-            if not profile:
-                profile = CustomerProfile(user=request.user)
-                profile.full_clean()
-                profile.save()
-            address = form.save(CustomerShippingAddress, commit=False)
-            address.customer = profile
-            address.full_clean()
-            address.save()
-            return HttpResponseRedirect(reverse('account_personal') + '#shipping')
-    else:
-        form = CanadaShippingForm()
-
-    context = {
-        'form': form,
-    }
-    return render_to_response('add_shipping_address.html', context, context_instance=RequestContext(request))
+    template_name = 'add_shipping_address.html'
+    redirect_to = reverse('account_personal') + '#shipping'
+    form_clazz = CanadaShippingForm
+    model_clazz = CustomerShippingAddress
+    return _add_address(request, template_name, redirect_to, form_clazz, model_clazz)
 
 
 @non_lazy_login_required()
@@ -303,25 +287,33 @@ def add_billing_address(request):
     """
     Adds a new billing address to this customer's profile
     """
+    template_name = 'add_billing_address.html'
+    redirect_to = reverse('account_personal') + '#billing'
+    form_clazz = BillingForm
+    model_clazz = CustomerBillingAddress
+    return _add_address(request, template_name, redirect_to, form_clazz, model_clazz)
+
+
+def _add_address(request, template_name, redirect_to, form_clazz, model_clazz):
     if request.method == "POST":
         post_data = request.POST.copy()
-        form = BillingForm(data=post_data)
+        form = form_clazz(data=post_data)
         if form.is_valid():
             profile = request.user.get_customer_profile()
             if not profile:
                 profile = CustomerProfile(user=request.user)
                 profile.full_clean()
                 profile.save()
-            address = form.save(CustomerBillingAddress, commit=False)
+            address = form.save(model_clazz, commit=False)
             address.customer = profile
             address.full_clean()
             address.save()
-            return HttpResponseRedirect(reverse('account_personal') + '#billing')
+            return HttpResponseRedirect(redirect_to)
     else:
-        form = BillingForm()
+        form = form_clazz()
     context = {
         'form': form,
     }
-    return render_to_response('add_billing_address.html', context, context_instance=RequestContext(request))
+    return render_to_response(template_name, context, context_instance=RequestContext(request))
 
 
