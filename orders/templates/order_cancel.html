@@ -1,0 +1,21 @@
+{% extends "base_site.html" %}
+
+{% block title %}Cancel Order{% endblock %}
+
+{% block body %}
+    {% if order.can_be_canceled %}
+        <h2>Are you sure you want to cancel this order?</h2>
+
+        TBD: Summarize ORDER
+
+        <form method="post" action="">
+            {% csrf_token %}
+            <div class="controls">
+                <button class="action" type="submit" name="cancel">Cancel</button>
+                <button class="action" type="submit" name="confirm">Yes</button>
+            </div>
+        </form>
+    {% else %}
+        <h2>Sorry, this order cannot be cancelled.</h2>
+    {% endif %}
+{% endblock %}

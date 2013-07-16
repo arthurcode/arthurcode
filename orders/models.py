@@ -101,6 +101,30 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'order_id': self.id})
 
+    def cancel(self):
+        """
+        Cancels this order.  Orders can only be cancelled before they have shipped.
+        """
+        if not self.can_be_canceled():
+            # user should not see this exception if we're extremely careful about when we present the option to
+            # cancel orders.
+            raise Exception("Sorry, this order cannot be canceled.")
+
+        # toggle status
+        self.status = Order.CANCELLED
+
+        # increment stock counts
+        for item in self.items.all():
+            item.product.quantity += item.quantity
+            item.product.save()
+
+        # TODO: reverse any payment authorizations
+        self.payment_status = Order.CANCELLED
+        self.save()
+
+    def can_be_canceled(self):
+        return self.status in [Order.SUBMITTED, Order.PROCESSED] and not self.payment_status == Order.PAID
+
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items")

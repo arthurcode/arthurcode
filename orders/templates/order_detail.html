@@ -62,5 +62,9 @@
         </dl>
     </div>
 
+    {% if order.can_be_canceled %}
+        <div><a class="action" href="{% url order_cancel order.id %}">Cancel Order</a></div>
+    {% endif %}
+
 
 {% endblock %}
