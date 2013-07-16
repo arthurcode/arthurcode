@@ -1,0 +1,25 @@
+{% extends "base_account.html" %}
+{% load form_tags %}
+
+{% block root-category %}personal{% endblock %}
+{% block title %}Add Shipping Address{% endblock %}
+
+{% block body %}
+    <h2>Add Shipping Address (Canada Only)</h2>
+
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.country }}
+        {% field form.name %}
+        {% field form.phone %}
+        {% field form.line1 %}
+        {% field form.line2 %}
+        {% field form.city %}
+        {% field form.region %}
+        {% field form.post_code %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Add Address</button>
+        </div>
+    </form>
+{% endblock %}

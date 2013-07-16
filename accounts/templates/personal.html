@@ -39,12 +39,11 @@
             </div>
             <div class="view hide-initially" id="shipping">
                 <h2>Shipping Addresses</h2>
+                <a href="{% url add_shipping_address %}">add new address</a>
                 {% if customer_profile %}
                     {% for address in customer_profile.shipping_addresses.all %}
                         {% include "_address.html" %}
                     {% endfor %}
-                {% else %}
-                    TODO - add a shipping address
                 {% endif %}
             </div>
             <div class="view hide-initially" id="billing">

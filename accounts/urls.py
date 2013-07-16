@@ -1,7 +1,8 @@
 from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
     create_public_profile, change_email, change_password, change_password_done, logout, reset_password, \
-    reset_password_done, reset_password_confirm, reset_password_complete, edit_contact_info, edit_public_profile
+    reset_password_done, reset_password_confirm, reset_password_complete, edit_contact_info, edit_public_profile, \
+    add_shipping_address
 
 urlpatterns = patterns('',
                        url(r'^login/$', login_or_create_account, name="login_or_create_account"),
@@ -20,5 +21,6 @@ urlpatterns = patterns('',
                        url(r'^reset-password-confirm/(?P<uidb36>[0-9A-Za-z]{1,13})-(?P<token>[0-9A-Za-z]{1,13}-[0-9A-Za-z]{1,20})/$', reset_password_confirm, name="account_reset_password_confirm"),
                        url(r'^reset-password-complete/$', reset_password_complete, name="account_reset_password_complete"),
                        url(r'^edit-contact-info/$', edit_contact_info, name="account_edit_contact_info"),
+                       url(r'^add-shipping-address/$', add_shipping_address, name="add_shipping_address"),
                        )
 
