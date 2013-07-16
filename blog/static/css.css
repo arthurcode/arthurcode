@@ -1492,3 +1492,7 @@ body.account div.views {
     float: left;
     border: none;
 }
+
+body.receipt #bd div {
+    clear: both;
+}

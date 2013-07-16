@@ -2,6 +2,65 @@
 
 {% block title %}Order Detail{% endblock %}
 
+{% block body_class %}receipt{% endblock %}
+
 {% block body %}
     <h2>Order #{{ order.id }}</h2>
+    <hr>
+    <div>
+        <dl class="horizontal">
+            <dt>Date:</dt>
+            <dd>{{ order.date|date:"M j, Y" }}</dd>
+            <dt>Status:</dt>
+            <dd>{{ order.get_status_display }}</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h3>Customer Info</h3>
+        <hr>
+        <dl class="horizontal">
+            {% if order.customer %}
+                <dt>Customer #:</dt>
+                <dd>{{ order.customer_id }}</dd>
+            {% endif %}
+            <dt>Name:</dt>
+            <dd>{{ order.first_name }} {{ order.last_name }}</dd>
+            <dt>Email:</dt>
+            <dd>{{ order.email }}</dd>
+            <dt>Phone:</dt>
+            <dd>{{ order.phone }}</dd>
+            <dt>Preferred Contact Method:</dt>
+            <dd>{{ order.get_contact_method_display }}</dd>
+        </dl>
+    </div>
+
+    <div>
+        <h3>Shipping Address</h3>
+        <hr>
+        {% if order.is_pickup %}
+            <p>N/A (pickup order)</p>
+        {% else %}
+            {% with order.shipping_address as address %}{% include "_address.html" %}{% endwith %}
+        {% endif %}
+    </div>
+
+    <div>
+        <h3>Items</h3>
+        <hr>
+    </div>
+
+    <div>
+        <h3>Payment Info</h3>
+        <hr>
+        <dl class="horizontal">
+            <dt>Status:</dt>
+            <dd>{{ order.get_payment_status_display }}</dd>
+            <dt>Transaction #</dt>
+            <dd>{{ order.transaction_id }}</dd>
+            <dt></dt>
+        </dl>
+    </div>
+
+
 {% endblock %}
