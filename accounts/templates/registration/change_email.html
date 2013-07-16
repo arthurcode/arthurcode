@@ -1,9 +1,11 @@
 {% extends "base_account.html" %}
 {% load form_tags %}
 
+{% block root-category %}personal{% endblock %}
 {% block title %}Change Your Email Address{% endblock %}
 
 {% block body %}
+    <h2>Change Your Email Address</h2>
     {% form_errors form %}
     <form method="post" action="{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
