@@ -1,13 +1,14 @@
 from django.views.decorators.debug import sensitive_post_parameters
 from django.views.decorators.cache import never_cache
 from django.views.decorators.csrf import csrf_protect
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login, authenticate
 from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from arthurcode import settings
 from django.contrib.sites.models import get_current_site
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.shortcuts import get_object_or_404
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
     ConvertLazyUserForm, ChangeEmailForm, EditContactInfo, EditPublicProfileForm
 from django.shortcuts import render_to_response
@@ -315,5 +316,38 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz):
         'form': form,
     }
     return render_to_response(template_name, context, context_instance=RequestContext(request))
+
+
+@non_lazy_login_required()
+@require_POST
+def delete_shipping_address(request, address_id, redirect_to=None):
+    return _delete_address(request, address_id, CustomerShippingAddress, redirect_to)
+
+
+@non_lazy_login_required()
+@require_POST
+def delete_billing_address(request, address_id, redirect_to=None):
+    return _delete_address(request, address_id, CustomerBillingAddress, redirect_to)
+
+
+def _delete_address(request, address_id, model_clazz, redirect_to):
+    """
+    Addresses can only be deleted by the user that 'owns' them.  Staff members can delete addresses through the admin
+    interface if need be.
+    """
+    address = get_object_or_404(model_clazz, id=address_id)
+    if not address.customer.user == request.user:
+        return HttpResponseForbidden(u"You do not have permission to delete this address.")
+    redirect_to = redirect_to or request.GET.get('next', None)
+
+    if not redirect_to:
+        if model_clazz == CustomerShippingAddress:
+            redirect_to = reverse('account_personal') + '#shipping'
+        else:
+            redirect_to = reverse('account_personal') + '#billing'
+
+    address.delete()
+    return HttpResponseRedirect(redirect_to)
+
 
 

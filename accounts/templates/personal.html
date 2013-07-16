@@ -43,6 +43,10 @@
                 {% if customer_profile %}
                     {% for address in customer_profile.shipping_addresses.all %}
                         {% include "_address.html" %}
+                        <form method="post" action="{% url delete_shipping_address address.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="submit" class="action">Delete</button>
+                        </form>
                     {% endfor %}
                 {% endif %}
             </div>
@@ -52,6 +56,10 @@
                 {% if customer_profile %}
                     {% for address in customer_profile.billing_addresses.all %}
                         {% include "_address.html" %}
+                        <form method="post" action="{% url delete_billing_address address.id %}">
+                            {% csrf_token %}
+                            <button type="submit" name="submit" class="action">Delete</button>
+                        </form>
                     {% endfor %}
                 {% endif %}
             </div>
