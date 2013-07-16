@@ -20,8 +20,8 @@ from decorators import non_lazy_login_required
 from orders.models import Order
 from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout, \
     password_reset, password_reset_done, password_reset_confirm, password_reset_complete
-from utils.forms import CanadaShippingForm
-from accounts.models import CustomerShippingAddress, CustomerProfile
+from utils.forms import CanadaShippingForm, BillingForm
+from accounts.models import CustomerShippingAddress, CustomerProfile, CustomerBillingAddress
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -298,9 +298,30 @@ def add_shipping_address(request):
     return render_to_response('add_shipping_address.html', context, context_instance=RequestContext(request))
 
 
+@non_lazy_login_required()
 def add_billing_address(request):
     """
     Adds a new billing address to this customer's profile
     """
+    if request.method == "POST":
+        post_data = request.POST.copy()
+        form = BillingForm(data=post_data)
+        if form.is_valid():
+            profile = request.user.get_customer_profile()
+            if not profile:
+                profile = CustomerProfile(user=request.user)
+                profile.full_clean()
+                profile.save()
+            address = form.save(CustomerBillingAddress, commit=False)
+            address.customer = profile
+            address.full_clean()
+            address.save()
+            return HttpResponseRedirect(reverse('account_personal') + '#billing')
+    else:
+        form = BillingForm()
+    context = {
+        'form': form,
+    }
+    return render_to_response('add_billing_address.html', context, context_instance=RequestContext(request))
 
 

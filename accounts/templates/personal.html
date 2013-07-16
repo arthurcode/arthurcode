@@ -48,12 +48,11 @@
             </div>
             <div class="view hide-initially" id="billing">
                 <h2>Billing Addresses</h2>
+                <a href="{% url add_billing_address %}">add new address</a>
                 {% if customer_profile %}
                     {% for address in customer_profile.billing_addresses.all %}
                         {% include "_address.html" %}
                     {% endfor %}
-                {% else %}
-                    TODO - add a billing address
                 {% endif %}
             </div>
         </div>
