@@ -7,6 +7,7 @@ from utils.validators import is_blank, not_blank
 from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from decimal import Decimal
+from orders.signals import signal_order_cancelled
 
 
 class Order(models.Model):
@@ -121,6 +122,9 @@ class Order(models.Model):
         # TODO: reverse any payment authorizations
         self.payment_status = Order.CANCELLED
         self.save()
+
+        # send the order-cancelled signal
+        signal_order_cancelled.send(sender=self)
 
     def can_be_canceled(self):
         return self.status in [Order.SUBMITTED, Order.PROCESSED] and not self.payment_status == Order.PAID
