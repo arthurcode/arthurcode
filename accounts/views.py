@@ -124,6 +124,10 @@ def create_public_profile(request):
             redirect_to = next or reverse('account_personal') + "#public"
             return HttpResponseRedirect(redirect_to)
     else:
+        profile = request.user.get_public_profile()
+        if profile:
+            # this user already has a public profile
+            return HttpResponseRedirect(reverse('edit_public_profile'))
         form = CreatePublicProfileForm(request)
 
     context = {
