@@ -42,6 +42,7 @@ class Migration(SchemaMigration):
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
             ('customer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='shipping_addresses', to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
+            ('nickname', self.gf('django.db.models.fields.CharField')(max_length=50)),
         ))
         db.send_create_signal('accounts', ['CustomerShippingAddress'])
 
@@ -110,6 +111,7 @@ class Migration(SchemaMigration):
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'line2': ('django.db.models.fields.CharField', [], {'max_length': '100', 'null': 'True', 'blank': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
+            'nickname': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'post_code': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'region': ('django.db.models.fields.CharField', [], {'max_length': '100'})

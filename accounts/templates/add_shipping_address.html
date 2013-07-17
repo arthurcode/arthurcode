@@ -11,6 +11,7 @@
     <form method="post" action="">
         {% csrf_token %}
         {{ form.country }}
+        {% field form.nickname %}
         {% field form.name %}
         {% field form.phone %}
         {% field form.line1 %}

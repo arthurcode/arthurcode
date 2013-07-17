@@ -5,10 +5,11 @@ from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from lazysignup.utils import is_lazy_user
 from utils.validators import not_blank, is_blank
-from accounts.models import PublicProfile, CustomerProfile
+from accounts.models import PublicProfile, CustomerProfile, CustomerShippingAddress
 from accounts.accountutils import is_regular_user
 from django.contrib.auth.hashers import check_password
 from django.db.transaction import commit_on_success
+from utils.forms import CanadaShippingForm
 
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales. (You can unsubscribe at any time)"
@@ -344,5 +345,24 @@ class EditContactInfo(ContactInfoForm):
         user.full_clean()
         user.save()
         return user
+
+
+class CustomerShippingAddressForm(CanadaShippingForm):
+    """
+    A shipping address form that includes a 'nickname' field.  The nickname will be used by the customer to easily
+    distinguish an address from others in his/her address book.
+    """
+
+    nickname = forms.CharField(max_length=CustomerShippingAddress.NICKNAME_MAX_LENGTH, label="Nickname",
+                            help_text="Something to distinguish this address from the others in your address book. " +
+                                      "Examples: 'Aunt Mary', 'Flower Shop'", validators=[not_blank])
+
+    def save(self, clazz, commit=True):
+        address = super(CustomerShippingAddressForm, self).save(clazz, commit=False)
+        address.nickname = self.cleaned_data.get('nickname')
+        if commit:
+            address.save()
+        return address
+
 
 

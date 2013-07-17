@@ -10,7 +10,7 @@ from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
-    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo, EditPublicProfileForm
+    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo, EditPublicProfileForm, CustomerShippingAddressForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -21,7 +21,7 @@ from decorators import non_lazy_login_required
 from orders.models import Order
 from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout, \
     password_reset, password_reset_done, password_reset_confirm, password_reset_complete
-from utils.forms import CanadaShippingForm, BillingForm
+from utils.forms import BillingForm
 from accounts.models import CustomerShippingAddress, CustomerProfile, CustomerBillingAddress
 
 @sensitive_post_parameters()
@@ -278,7 +278,7 @@ def add_shipping_address(request):
     """
     template_name = 'add_shipping_address.html'
     redirect_to = reverse('account_personal') + '#shipping'
-    form_clazz = CanadaShippingForm
+    form_clazz = CustomerShippingAddressForm
     model_clazz = CustomerShippingAddress
     return _add_address(request, template_name, redirect_to, form_clazz, model_clazz)
 

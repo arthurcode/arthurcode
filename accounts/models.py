@@ -53,9 +53,13 @@ class CustomerProfile(models.Model):
 
 
 class CustomerShippingAddress(AbstractAddress):
+
+    NICKNAME_MAX_LENGTH = 50
+
     # a customer can have several shipping addresses associated with their profile
     customer = models.ForeignKey(CustomerProfile, related_name='shipping_addresses')
     last_used = models.DateTimeField(auto_now_add=True)
+    nickname = models.CharField(max_length=NICKNAME_MAX_LENGTH)
 
 
 class CustomerBillingAddress(AbstractAddress):

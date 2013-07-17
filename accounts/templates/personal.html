@@ -42,6 +42,7 @@
                 <a href="{% url add_shipping_address %}">add new address</a>
                 {% if customer_profile %}
                     {% for address in customer_profile.shipping_addresses.all %}
+                        <h3>{{ address.nickname }}</h3>
                         {% include "_address.html" %}
                         <form method="post" action="{% url delete_shipping_address address.id %}">
                             {% csrf_token %}
