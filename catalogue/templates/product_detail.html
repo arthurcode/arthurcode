@@ -33,6 +33,7 @@
             {% if product.quantity <= 0 %}
                 <span class="out-of-stock">Out Of Stock</span>
             {% endif %}
+
             <div class="price">
                 {% if product.sale_price %}
                     Was: <span class="old-price">{{ product.price|currency }}</span>
@@ -41,6 +42,7 @@
                     <span class="price">{{ product.price|currency }}</span>
                 {% endif %}
             </div>
+            <div class="fb-like" data-href="http://developers.facebook.com/docs/reference/plugins/like" data-send="true" data-width="450" data-show-faces="false" data-font="arial"></div>
 
             <div class="tabview">
                 <ul class="tabrow">
