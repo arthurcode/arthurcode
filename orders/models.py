@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.transaction import commit_on_success
 from catalogue.models import Product
 from django.core.validators import MinValueValidator
 from accounts.models import CustomerProfile
@@ -102,6 +103,7 @@ class Order(models.Model):
     def get_absolute_url(self):
         return reverse('order_detail', kwargs={'order_id': self.id})
 
+    @commit_on_success
     def cancel(self):
         """
         Cancels this order.  Orders can only be cancelled before they have shipped.
