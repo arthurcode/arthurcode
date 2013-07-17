@@ -631,6 +631,11 @@ class Checkout:
 
         # link customer information
         order.customer = pyOrder.customer
+        order.first_name = pyOrder.first_name
+        order.last_name = pyOrder.last_name
+        order.email = pyOrder.email
+        order.phone = pyOrder.phone
+        order.contact_method = pyOrder.contact_method
 
         # contact paypal to authorize the transfer of funds
         order.shipping_charge = pyOrder.shipping_charge
