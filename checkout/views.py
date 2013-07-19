@@ -381,7 +381,7 @@ class ShippingInfoStep(ChooseAddressStep):
         order.shipping_charge = decimal.Decimal('0.00')
 
 
-class BillingInfoStep(ChooseAddressStep):
+class BillingInfoStep(Step):
 
     data_key = 'billing'
     form_key = 'billing_form'
@@ -395,14 +395,53 @@ class BillingInfoStep(ChooseAddressStep):
             'shipping_address': ShippingInfoStep(self.checkout).get_address()
         }
 
-    def get_customer_addresses(self):
+    def _get(self):
+        form = self.get_saved_form()
+        return self._render_form(form)
+
+    def _post(self):
+        post_data = self.request.POST.copy()
+        form = self.form_clazz(data=post_data)
+        if form.is_valid():
+            self.save(self.form_key, post_data)
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+        return self._render_form(form)
+
+    def _render_form(self, form):
+        context = {
+            'form': form
+        }
+        if self.extra_context:
+            context.update(self.extra_context)
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
+        return render_to_response(self.template, context, context_instance=RequestContext(self.request))
+
+    def get_customer_address(self):
         """
-        Returns the billing addresses associated with this user's profile, in order of most recently used.
+        Returns the billing address associated with this user's profile.
         """
         profile = self.checkout.get_customer_profile()
         if not profile or not profile.billing_address:
-            return []
+            return None
         return profile.billing_address
+
+    def get_saved_form(self):
+        """
+        Returns the saved billing form data, or data that already exists in the form of a saved billing address.
+        """
+        form_data = self.get(self.form_key, None)
+        if not form_data:
+            address = self.get_customer_address()
+            if address:
+                form_data = address.as_dict()
+        return self.form_clazz(data=form_data)
+
+    def get_address(self):
+        form = self.get_saved_form()
+        if form.is_valid():
+            return form.save(self.addr_clazz, commit=False)
 
     def get_address_type(self):
         return "billing"

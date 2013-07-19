@@ -63,6 +63,18 @@ class AbstractAddress(models.Model):
         ]
         return " ".join(fields)
 
+    def as_dict(self):
+        return {
+            'name': self.name,
+            'phone': self.phone,
+            'line1': self.line1,
+            'line2': self.line2,
+            'city': self.city,
+            'region': self.region,
+            'country': self.country,
+            'post_code': self.post_code
+        }
+
 
 class AkismetMixin(object):
     """
