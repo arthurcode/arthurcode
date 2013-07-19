@@ -57,7 +57,7 @@ class Migration(SchemaMigration):
             ('country', self.gf('django_countries.fields.CountryField')(max_length=2)),
             ('post_code', self.gf('django.db.models.fields.CharField')(max_length=20, null=True, blank=True)),
             ('phone', self.gf('django.db.models.fields.CharField')(max_length=50, null=True, blank=True)),
-            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(related_name='billing_addresses', to=orm['accounts.CustomerProfile'])),
+            ('customer', self.gf('django.db.models.fields.related.OneToOneField')(related_name='billing_address', unique=True, to=orm['accounts.CustomerProfile'])),
             ('last_used', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
         ))
         db.send_create_signal('accounts', ['CustomerBillingAddress'])
@@ -82,7 +82,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'CustomerBillingAddress'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
-            'customer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'billing_addresses'", 'to': "orm['accounts.CustomerProfile']"}),
+            'customer': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'billing_address'", 'unique': 'True', 'to': "orm['accounts.CustomerProfile']"}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'last_used': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'line1': ('django.db.models.fields.CharField', [], {'max_length': '100'}),

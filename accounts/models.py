@@ -64,7 +64,7 @@ class CustomerShippingAddress(AbstractAddress):
 
 class CustomerBillingAddress(AbstractAddress):
     # a customer can have several billing addresses associated with their profile
-    customer = models.ForeignKey(CustomerProfile, related_name='billing_addresses')
+    customer = models.OneToOneField(CustomerProfile, related_name='billing_address')
     last_used = models.DateTimeField(auto_now_add=True)
 
 

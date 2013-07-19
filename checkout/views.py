@@ -400,9 +400,9 @@ class BillingInfoStep(ChooseAddressStep):
         Returns the billing addresses associated with this user's profile, in order of most recently used.
         """
         profile = self.checkout.get_customer_profile()
-        if not profile:
+        if not profile or not profile.billing_address:
             return []
-        return profile.billing_addresses.order_by('-last_used')
+        return profile.billing_address
 
     def get_address_type(self):
         return "billing"
