@@ -72,7 +72,8 @@ class AbstractAddress(models.Model):
             'city': self.city,
             'region': self.region,
             'country': self.country,
-            'post_code': self.post_code
+            'post_code': self.post_code,
+            'address_id': self.id,             #TODO: change this to 'id' instead
         }
 
 

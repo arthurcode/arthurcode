@@ -134,7 +134,7 @@ class ContactInfoStep(Step):
             form = ContactInfoForm(self.checkout.request, initial=data)
         return self._render_form(form)
 
-    def _render_form(self, form, template='verify_contact_info.html'):
+    def _render_form(self, form, template='contact_info.html'):
         context = {
             'form': form,
             'user': self.checkout.get_user(),
@@ -397,11 +397,15 @@ class BillingInfoStep(Step):
         Returns the saved billing form data, or data that already exists in the form of a saved billing address.
         """
         form_data = self.get(self.form_key, None)
+        address = self.get_customer_address()
         if not form_data:
-            address = self.get_customer_address()
             if address:
                 form_data = address.as_dict()
-        return self.form_clazz(data=form_data)
+        # are we editing an existing address or creating a new one?
+        address_id = None
+        if address:
+            address_id = address.id
+        return self.form_clazz(address_id=address_id, data=form_data)
 
     def get_address(self):
         form = self.get_saved_form()

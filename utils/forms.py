@@ -29,7 +29,7 @@ class AddressForm(forms.Form):
 
     def __init__(self, address_id=None, *args, **kwargs):
         if address_id:
-            initial = kwargs.get('initial', {})
+            initial = kwargs.get('initial', {}) or {}
             initial['address_id'] = address_id
             kwargs['initial'] = initial
         super(AddressForm, self).__init__(*args, **kwargs)
