@@ -190,6 +190,7 @@ class ContactInfoStep(Step):
         user.email = cd['email']
         user.first_name = cd['first_name']
         user.last_name = cd['last_name']
+        user.full_clean()
         user.save()
 
         profile = self.checkout.get_customer_profile()
@@ -294,7 +295,7 @@ class ShippingInfoStep(Step):
     def _render_form(self, form, nickname):
         nicknames = set()
         nicknames.add(self.ME_NICKNAME)
-        nicknames.union(self.get_existing_nicknames())
+        nicknames.update(self.get_existing_nicknames())
         nicknames.add(self.NEW_ADDRESS_NICKNAME)
 
         context = {
