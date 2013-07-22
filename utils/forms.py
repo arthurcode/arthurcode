@@ -25,8 +25,13 @@ class AddressForm(forms.Form):
     region = forms.CharField(max_length=AbstractAddress.REGION_LENGTH, label="State/Province")
     post_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code", required=False)
     country = forms.ChoiceField(choices=COUNTRY_CHOICES, label="Country")
+    address_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, address_id=None, *args, **kwargs):
+        if address_id:
+            initial = kwargs.get('initial', {})
+            initial['address_id'] = address_id
+            kwargs['initial'] = initial
         super(AddressForm, self).__init__(*args, **kwargs)
         for field in self.fields.keys():
             customize_method = 'customize_' + field
@@ -38,7 +43,15 @@ class AddressForm(forms.Form):
         cd = self.cleaned_data
         if not issubclass(clazz, AbstractAddress):
             raise Exception("The AddressForm meta class is not a subclass of " + AbstractAddress.__class__.__name___)
-        address = clazz()
+
+        address_id = self.cleaned_data.get('address_id', None)
+        if address_id:
+            # we're editing an existing address
+            address = clazz.objects.get(id=address_id)
+        else:
+            address = clazz()
+
+        # set fields
         address.name = cd['name']
         address.phone = cd['phone']
         address.line1 = cd['line1']

@@ -1,16 +1,34 @@
-{% extends 'choose_address.html' %}
+{% extends 'base_checkout.html' %}
 {% load form_tags %}
 
-{% block form_fields %}
-    {{ form.country }}
-    <fieldset>
-        <legend>
-            {% if addresses %}
-                New Shipping Address
-            {% else %}
-                Shipping Address (Canada Only)
-            {% endif %}
-        </legend>
+{% block forms %}
+
+    <h2>Where would you like to ship this order?</h2>
+    <form action="">
+        <label>Ship To:
+            <select onchange="this.form.submit()" name="ship_to">
+                {% for nickname in nicknames %}
+                    <option{% if nickname == selected_nickname %} selected{% endif %}>{{ nickname }}</option>
+                {% endfor %}
+            </select>
+        </label>
+    </form>
+
+    {% if selected_nickname == "other" %}
+        <h2>Add a New Shipping Destination</h2>
+    {% else %}
+        <h2>Shipping Address for '{{ selected_nickname }}'</h2>
+    {% endif %}
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {{ form.address_id }}
+        {{ form.country }}
+        {% if selected_nickname == "other" %}
+            {% field form.nickname %}
+        {% else %}
+            <input type="hidden" name="nickname" value="{{ form.nickname.value }}"/>
+        {% endif %}
         {% field form.name %}
         {% field form.phone %}
         {% field form.line1 %}
@@ -18,5 +36,8 @@
         {% field form.city %}
         {% field form.region %}
         {% field form.post_code %}
-    </fieldset>
+        <div class="controls">
+            <button type="submit" name="submit" class="action">Submit</button>
+        </div>
+    </form>
 {% endblock %}

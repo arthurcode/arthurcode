@@ -2,9 +2,9 @@ from lazysignup.decorators import allow_lazy_user
 from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from accounts.forms import ContactInfoForm
-from checkout.forms import PaymentInfoForm, ChooseAddressForm
-from utils.forms import CanadaShippingForm, BillingForm
+from accounts.forms import ContactInfoForm, CustomerShippingAddressForm
+from checkout.forms import PaymentInfoForm
+from utils.forms import BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -239,146 +239,131 @@ class ContactInfoStep(Step):
             order.contact_method = cd['contact_method']
             order.phone = cd['phone']
         profile = self.checkout.get_customer_profile()
+        if not profile:
+            # create a profile for this user if one doesn't yet exist (even if they are a guest user)
+            profile = CustomerProfile(user=self.request.user)
         order.customer = profile
 
-class ChooseAddressStep(Step):
-    # The 4 properties initialized to 'None' should be overridden by the BaseClass.
-    using_address_key = 'using_address'
-    form_key = None
-    form_clazz = None
-    template = None
-    addr_clazz = None
+
+class ShippingInfoStep(Step):
+    ME_NICKNAME = "Me"
+    NEW_ADDRESS_NICKNAME = "other"
+    SHIP_TO_KEY = "ship_to"
+
+    data_key = "shipping"
+    form_key = "shipping_form"
 
     def _get(self):
-        saved_data = self.get(self.form_key, None)
-        form = self.form_clazz(data=saved_data)
-        return self._render_form(form, self.get_customer_addresses())
+        saved_data = self.get(self.form_key, {})
+        # first check if the user has requested to use a specific nickname
+        nickname = self.request.GET.get(self.SHIP_TO_KEY, None)
 
-    def _render_form(self, form, addresses):
-        using_address = None
-        using_address_id = self.get(self.using_address_key, None)
-        for address in addresses:
-            # don't overwrite an existing bound form
-            if not hasattr(address, 'form'):
-                setattr(address, 'form', ChooseAddressForm(address, self.form_clazz))
-            if address.id == using_address_id:
-                using_address = address
+        if not nickname:
+            # check the saved data to see what nickname we should be using
+            nickname = saved_data.get('nickname', None)
 
-        if not using_address and len(addresses) == 1:
-            using_address = addresses[0]
+        if not nickname:
+            # default to 'Me'
+            nickname = self.ME_NICKNAME
+
+        form = self.get_form_for_nickname(nickname, saved_data)
+        return self._render_form(form, nickname)
+
+    def get_form_for_nickname(self, nickname, saved_data=None):
+        data = None
+        use_saved_data = saved_data and saved_data.get('nickname', None) == nickname
+        if use_saved_data:
+            data = saved_data
+
+        profile = self.checkout.get_customer_profile()
+        address = None
+        address_id = None
+
+        if profile:
+            addresses = profile.shipping_addresses.filter(nickname=nickname)
+            if addresses.count() > 0:
+                address = addresses[0]
+                address_id = address.id
+
+        if address and not use_saved_data:
+            data = address.as_dict()
+
+        initial = None
+        if nickname == self.ME_NICKNAME:
+            order = self.checkout.extra_context['order']
+            if not order:
+                order = self.checkout.build_order()
+
+            initial = {
+                'name': "%s %s" % (order.first_name, order.last_name),
+                'nickname': self.ME_NICKNAME,
+                'phone': order.phone,
+            }
+
+        return CustomerShippingAddressForm(address_id=address_id, data=data, initial=initial)
+
+    def _post(self):
+        """
+        Validate the address form and if applicable move to the next step.
+        """
+        post_data = self.request.POST.copy()
+        form = CustomerShippingAddressForm(data=post_data)
+
+        if form.is_valid():
+            self.save(self.form_key, post_data)
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+        return self._render_form(form, post_data.get('nickname'))
+
+    def _render_form(self, form, nickname):
+        nicknames = set()
+        nicknames.add(self.ME_NICKNAME)
+        nicknames.union(self.get_existing_nicknames())
+        nicknames.add(self.NEW_ADDRESS_NICKNAME)
 
         context = {
             'form': form,
-            'addresses': addresses,
-            'using_address': using_address,
-            'address_type': self.get_address_type()
+            'nicknames': nicknames,
+            'selected_nickname': nickname
         }
-        if self.checkout.extra_context:
-            context.update(self.checkout.extra_context)
         if self.extra_context:
             context.update(self.extra_context)
-        return render_to_response(self.template, context, context_instance=RequestContext(self.request))
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
+        return render_to_response('shipping_form.html', context, context_instance=RequestContext(self.request))
 
-    def _post(self):
-        form = self.form_clazz()
-        data = self.request.POST.copy()
-        addresses = None
+    def visit(self, order):
+        order.shipping_address = self.get_address()
+        order.shipping_charge = decimal.Decimal('5')
 
-        if 'submit' in data:
-            form = self.form_clazz(data)
-            if form.is_valid():
-                # the user is adding a new shipping address
-                self.save(self.form_key, self.request.POST.copy())
-                self.save(self.using_address_key, None)
-                self.checkout._mark_step_complete(self)
-                return HttpResponseRedirect(self.checkout.get_next_url())
-        else:
-            addresses = self.get_customer_addresses()
-            address_id = data.get('address_id', None)
-            for address in addresses:
-                if address_id and address.id == int(address_id):
-                    if 'delete' in data:
-                        using_address_id = self.get(self.using_address_key, None)
-                        if using_address_id == address.id:
-                            # the user has gone and deleted the address that they had previously selected to use
-                            # for this step, thus rendering the step incomplete.
-                            self.checkout._mark_step_incomplete(self)
-                        address.delete()
-                        return HttpResponseRedirect(self.checkout.get_step_url(self))
-                    else:
-                        form = ChooseAddressForm(address, self.form_clazz, data=data)
-                        if form.is_valid():
-                            self.save(self.using_address_key, address.id)
-                            self.save(self.form_key, None)
-                            self.checkout._mark_step_complete(self)
-                            return HttpResponseRedirect(self.checkout.get_next_url())
-                        setattr(address, 'form', form)
-
-        if addresses is None:
-            addresses = self.get_customer_addresses()
-        return self._render_form(form, addresses)
-
-    def get_saved_form(self, verify=False):
-        saved_data = self.get(self.form_key, None)
-        form = self.form_clazz(data=saved_data)
-        if verify:
-            if not form.is_valid():
-                raise Exception("Unexpected error in saved form: " + str(form))
-        return form
-
-    def get_customer_addresses(self):
+    def get_existing_nicknames(self):
         """
-        Subclasses should override.
-        """
-        return []
-
-    def get_address(self):
-        """
-        Returns the shipping address chosen during this step.  This method should only be called after the step has been
-        completed successfully.  Returns an instance of CustomerShippingAddress.  If this is a new address, or if the
-        requesting user does not have an associated customer profile, the 'customer' field of the address will be None.
-        """
-        address_id = self.get(self.using_address_key, None)
-        if not address_id:
-            return self.get_saved_form(verify=True).save(self.addr_clazz, commit=False)
-        return self.addr_clazz.objects.get(id=address_id)
-
-    def save_address_to_profile(self):
-        address_id = self.get(self.using_address_key, None)
-        if not address_id:
-            profile = self.checkout.get_customer_profile()
-            if profile:
-                address = self.get_saved_form(verify=True).save(self.addr_clazz, commit=False)
-                address.customer = profile
-                address.save()
-
-    def get_address_type(self):
-        raise Exception("Subclasses should override.")
-
-
-class ShippingInfoStep(ChooseAddressStep):
-    data_key = 'shipping'
-    form_key = 'shipping_form'
-    form_clazz = CanadaShippingForm
-    template = 'shipping_form.html'
-    addr_clazz = CustomerShippingAddress
-
-    def get_customer_addresses(self):
-        """
-        Returns the shipping addresses associated with this user's profile, in order of most recently used.
+        Returns the nicknames that identify this customer's saved shipping addresses.  Returns and empty list if the
+        customer doesn't have a profile or if there aren't any addresses associated with the profile.
         """
         profile = self.checkout.get_customer_profile()
         if not profile:
             return []
-        return profile.shipping_addresses.order_by('-last_used')
+        return [a.nickname for a in profile.shipping_addresses.all()]
 
-    def get_address_type(self):
-        return "shipping"
+    def save_address_to_profile(self):
+        profile = self.checkout.get_customer_profile()
+        if not profile:
+            profile = CustomerProfile(user=self.request.user)
+            profile.full_clean()
+            profile.save()
+        address = self.get_address()
+        address.customer = profile
+        address.full_clean()
+        address.save()
 
-    def visit(self, order):
-        order.shipping_address = self.get_address()
-        # this is only a temporary hack
-        order.shipping_charge = decimal.Decimal('0.00')
+    def get_address(self):
+        form = CustomerShippingAddressForm(data=self.get(self.form_key))
+        if form.is_valid():
+            return form.save(CustomerShippingAddress, commit=False)
+        # This shouldn't happen, but I guess you never do know
+        return None
+
 
 
 class BillingInfoStep(Step):
@@ -423,9 +408,14 @@ class BillingInfoStep(Step):
         Returns the billing address associated with this user's profile.
         """
         profile = self.checkout.get_customer_profile()
-        if not profile or not profile.billing_address:
+        if not profile:
             return None
-        return profile.billing_address
+        try:
+            return profile.billing_address
+        except CustomerBillingAddress.DoesNotExist:
+            # the reverse of a one-to-one relationship will throw DoesNotExist if there is no billing address
+            # associated with the profile.  Something to watch out for.
+            return None
 
     def get_saved_form(self):
         """
@@ -448,6 +438,9 @@ class BillingInfoStep(Step):
 
     def visit(self, order):
         order.billing_address = self.get_address()
+
+    def save_address_to_profile(self):
+        pass
 
 
 class ReviewStep(Step):
