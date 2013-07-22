@@ -3,95 +3,26 @@
 {% load lazysignup_tags %}
 
 {% block forms %}
-    {% if using_profile_data %}
-        <div class='verify-contact-info{% if form.is_bound %} hide-initially{% endif %}'>
-            <h2>Confirm Contact Info</h2>
-            <div class='contact-preview shadow-box'>
-                <dl>
-                    <dt>Name:</dt>
-                    <dd>{{ user.first_name }} {{ user.last_name }}</dd>
-                    <dt>Email:</dt>
-                    <dd>{{ user.email }}</dd>
-                    <dt>Phone:</dt>
-                    <dd>{% firstof profile.phone '(Not on file)' %}</dd>
-                    <dt>Preferred Contact Method:</dt>
-                    <dd>{{ profile.get_contact_method_display }}</dd>
-                    <dt>On Mailing List:</dt>
-                    <dd>{% if profile.on_mailing_list %}Yes{% else %}No{% endif %}</dd>
-                </dl>
 
-                <form method="post" action="" class="stacked">
-                    {% csrf_token %}
-                    <div class="controls">
-                        <button class="action" name="use-profile-data">OK</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-    {% endif %}
-
-<div class='contact-info{% if using_profile_data and not form.is_bound %} hide-initially{% endif %}'>
+<div class='contact-info'>
+    <h2>Enter Contact Info</h2>
     {% form_errors form %}
     <form method="post" action="" class="stacked">
         {% csrf_token %}
-        <fieldset>
-            <legend>
-                {% if using_profile_data %}
-                    Edit Contact Info
-                {% else %}
-                    Contact Info
-                {% endif %}
-            </legend>
-            {% field form.first_name %}
-            {% field form.last_name %}
-            {% if request.user.is_authenticated and not request.user|is_lazy_user and request.user.email %}
-                {% readonly_field form.email %}
-            {% else %}
-                {% field form.email %}
+        {% field form.first_name %}
+        {% field form.last_name %}
+        {% if request.user.is_authenticated and not request.user|is_lazy_user and request.user.email %}
+            {% readonly_field form.email %}
+        {% else %}
+            {% field form.email %}
             {% field form.email2 %}
-            {% endif %}
-            {% field form.contact_method %}
-            {% field form.phone %}
-            {% field form.on_mailing_list %}
-        </fieldset>
+        {% endif %}
+        {% field form.contact_method %}
+        {% field form.phone %}
+        {% field form.on_mailing_list %}
         <div class="controls">
             <button class="action" name="edit">Save and Continue</button>
         </div>
     </form>
 </div>
-{% endblock %}
-
-{% block javascript %}
-    {{ block.super }}
-    <script type="text/javascript">
-        YUI().use('node', function(Y) {
-            var verify_div = Y.one('div.verify-contact-info');
-
-            if (verify_div != null) {
-                // add an extra button to each form, used to toggle the visibility of each form
-                verify_div.all('form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script edit action'>Edit</button>");
-                });
-
-                Y.all('div.contact-info form .controls').each(function(f) {
-                    f.prepend("<button type='button' class='script cancel action'>Cancel</button>");
-                });
-            }
-
-            // toggle form visibility when our custom script buttons are pressed
-            Y.delegate('click', function(e) {
-                var edit_div = Y.one('div.contact-info');
-                var verify_div = Y.one('div.verify-contact-info');
-                if (e.currentTarget.hasClass('edit')) {
-                    verify_div.addClass('hidden');
-                    edit_div.removeClass('hidden');
-                } else {
-                    // must be the cancel button
-                    edit_div.addClass('hidden');
-                    verify_div.removeClass('hidden');
-                }
-            }, document, 'button.script');
-        });
-    </script>
-
 {% endblock %}
