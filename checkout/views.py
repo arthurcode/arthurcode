@@ -365,7 +365,6 @@ class ShippingInfoStep(Step):
         return None
 
 
-
 class BillingInfoStep(Step):
 
     data_key = 'billing'
@@ -433,14 +432,19 @@ class BillingInfoStep(Step):
         if form.is_valid():
             return form.save(self.addr_clazz, commit=False)
 
-    def get_address_type(self):
-        return "billing"
-
     def visit(self, order):
         order.billing_address = self.get_address()
 
     def save_address_to_profile(self):
-        pass
+        profile = self.checkout.get_customer_profile()
+        if not profile:
+            profile = CustomerProfile(user=self.request.user)
+            profile.full_clean()
+            profile.save()
+        address = self.get_address()
+        address.customer = profile
+        address.full_clean()
+        address.save()
 
 
 class ReviewStep(Step):
