@@ -61,6 +61,9 @@ class CustomerShippingAddress(AbstractAddress):
     last_used = models.DateTimeField(auto_now_add=True)
     nickname = models.CharField(max_length=NICKNAME_MAX_LENGTH, validators=[not_blank])
 
+    class Meta:
+        unique_together = ('nickname', 'customer')
+
 
 class CustomerBillingAddress(AbstractAddress):
     # a customer can have several billing addresses associated with their profile

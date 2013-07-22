@@ -46,6 +46,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('accounts', ['CustomerShippingAddress'])
 
+        # Adding unique constraint on 'CustomerShippingAddress', fields ['nickname', 'customer']
+        db.create_unique('accounts_customershippingaddress', ['nickname', 'customer_id'])
+
         # Adding model 'CustomerBillingAddress'
         db.create_table('accounts_customerbillingaddress', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -64,6 +67,9 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
+        # Removing unique constraint on 'CustomerShippingAddress', fields ['nickname', 'customer']
+        db.delete_unique('accounts_customershippingaddress', ['nickname', 'customer_id'])
+
         # Deleting model 'PublicProfile'
         db.delete_table('accounts_publicprofile')
 
@@ -102,7 +108,7 @@ class Migration(SchemaMigration):
             'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'customer_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'accounts.customershippingaddress': {
-            'Meta': {'object_name': 'CustomerShippingAddress'},
+            'Meta': {'unique_together': "(('nickname', 'customer'),)", 'object_name': 'CustomerShippingAddress'},
             'city': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'country': ('django_countries.fields.CountryField', [], {'max_length': '2'}),
             'customer': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'shipping_addresses'", 'to': "orm['accounts.CustomerProfile']"}),
