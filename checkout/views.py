@@ -224,7 +224,7 @@ class ContactInfoStep(Step):
 
 class ShippingInfoStep(Step):
     ME_NICKNAME = "Me"
-    NEW_ADDRESS_NICKNAME = "other"
+    NEW_ADDRESS_NICKNAME = "New Address"
     SHIP_TO_KEY = "ship_to"
 
     data_key = "shipping"

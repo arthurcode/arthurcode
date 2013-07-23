@@ -14,8 +14,8 @@
         </label>
     </form>
 
-    {% if selected_nickname == "other" %}
-        <h2>Add a New Shipping Destination</h2>
+    {% if selected_nickname == "New Address" %}
+        <h2>Add a New Shipping Address</h2>
     {% else %}
         <h2>Shipping Address for '{{ selected_nickname }}'</h2>
     {% endif %}
@@ -24,7 +24,7 @@
         {% csrf_token %}
         {{ form.address_id }}
         {{ form.country }}
-        {% if selected_nickname == "other" %}
+        {% if selected_nickname == "New Address" %}
             {% field form.nickname %}
         {% else %}
             <input type="hidden" name="nickname" value="{{ form.nickname.value }}"/>
