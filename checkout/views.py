@@ -232,23 +232,31 @@ class ShippingInfoStep(Step):
 
     def _get(self):
         saved_data = self.get(self.form_key, {})
-        # first check if the user has requested to use a specific nickname
-        nickname = self.request.GET.get(self.SHIP_TO_KEY, None)
-
-        if not nickname:
-            # check the saved data to see what nickname we should be using
-            nickname = saved_data.get('nickname', None)
-
-        if not nickname:
-            # default to 'Me'
-            nickname = self.ME_NICKNAME
-
+        nickname = self.get_nickname(saved_data)
         form = self.get_form_for_nickname(nickname, saved_data)
         return self._render_form(form, nickname)
 
+    def get_nickname(self, saved_data):
+        nickname = self.request.GET.get(self.SHIP_TO_KEY, None)
+        if not nickname:
+            nickname = saved_data.get('nickname', None)
+        if not nickname:
+            # default to 'Me'
+            nickname = self.ME_NICKNAME
+        return nickname
+
     def get_form_for_nickname(self, nickname, saved_data=None):
+        use_saved_data = False
+
+        if saved_data:
+            saved_nickname = saved_data.get('nickname', None)
+            if nickname == self.NEW_ADDRESS_NICKNAME and saved_nickname not in self.get_existing_nicknames() \
+                and saved_nickname != self.ME_NICKNAME:
+                use_saved_data = True
+            elif saved_nickname == nickname:
+                use_saved_data = True
+
         data = None
-        use_saved_data = saved_data and saved_data.get('nickname', None) == nickname
         if use_saved_data:
             data = saved_data
 
@@ -277,31 +285,36 @@ class ShippingInfoStep(Step):
                 'phone': order.phone,
             }
 
-        return CustomerShippingAddressForm(address_id=address_id, data=data, initial=initial)
+        return CustomerShippingAddressForm(profile, address_id=address_id, data=data, initial=initial)
 
     def _post(self):
         """
         Validate the address form and if applicable move to the next step.
         """
         post_data = self.request.POST.copy()
-        form = CustomerShippingAddressForm(data=post_data)
+        form = CustomerShippingAddressForm(self.request.user.get_customer_profile(), data=post_data)
 
         if form.is_valid():
             self.save(self.form_key, post_data)
             self.mark_complete()
             return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form, post_data.get('nickname'))
+        return self._render_form(form, self.request.GET.get(self.SHIP_TO_KEY, None) or post_data.get('nickname'))
 
     def _render_form(self, form, nickname):
+        existing_nicknames = self.get_existing_nicknames()
         nicknames = set()
         nicknames.add(self.ME_NICKNAME)
-        nicknames.update(self.get_existing_nicknames())
+        nicknames.update(existing_nicknames)
         nicknames.add(self.NEW_ADDRESS_NICKNAME)
+
+        selected_nickname = nickname  # the option that should be 'selected' from the template drop-down list
+        if not selected_nickname == self.ME_NICKNAME and not selected_nickname in existing_nicknames:
+            selected_nickname = self.NEW_ADDRESS_NICKNAME
 
         context = {
             'form': form,
             'nicknames': nicknames,
-            'selected_nickname': nickname
+            'selected_nickname': selected_nickname
         }
         if self.extra_context:
             context.update(self.extra_context)
@@ -330,12 +343,11 @@ class ShippingInfoStep(Step):
             profile.full_clean()
             profile.save()
         address = self.get_address()
-        address.customer = profile
         address.full_clean()
         address.save()
 
     def get_address(self):
-        form = CustomerShippingAddressForm(data=self.get(self.form_key))
+        form = CustomerShippingAddressForm(self.request.user.get_customer_profile(), data=self.get(self.form_key))
         if form.is_valid():
             return form.save(CustomerShippingAddress, commit=False)
         # This shouldn't happen, but I guess you never do know

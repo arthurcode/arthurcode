@@ -357,9 +357,24 @@ class CustomerShippingAddressForm(CanadaShippingForm):
                             help_text="Something to distinguish this address from the others in your address book. " +
                                       "Examples: 'Aunt Mary', 'Flower Shop'", validators=[not_blank])
 
+    def __init__(self, customer, *args, **kwargs):
+        super(CustomerShippingAddressForm, self).__init__(*args, **kwargs)
+        self.customer = customer
+
+    def clean(self):
+        data = super(CustomerShippingAddressForm, self).clean()
+        nickname = self.cleaned_data.get('nickname', None)
+        address_id = self.cleaned_data.get('address_id', None)
+        if nickname and self.customer:
+            if CustomerShippingAddress.objects.filter(nickname=nickname, customer=self.customer).exclude(id=address_id).exists():
+                self._errors['nickname'] = self.error_class([u"An address with this nickname already exists."])
+                del(data['nickname'])
+        return data
+
     def save(self, clazz, commit=True):
         address = super(CustomerShippingAddressForm, self).save(clazz, commit=False)
         address.nickname = self.cleaned_data.get('nickname')
+        address.customer = self.customer
         if commit:
             address.save()
         return address
