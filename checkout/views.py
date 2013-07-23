@@ -302,10 +302,15 @@ class ShippingInfoStep(Step):
 
     def _render_form(self, form, nickname):
         existing_nicknames = self.get_existing_nicknames()
-        nicknames = set()
-        nicknames.add(self.ME_NICKNAME)
-        nicknames.update(existing_nicknames)
-        nicknames.add(self.NEW_ADDRESS_NICKNAME)
+        existing_nicknames.sort()
+
+        # ugh
+        if self.ME_NICKNAME in existing_nicknames:
+            existing_nicknames.remove(self.ME_NICKNAME)
+
+        nicknames = [self.ME_NICKNAME]
+        nicknames.extend(existing_nicknames)
+        nicknames.append(self.NEW_ADDRESS_NICKNAME)
 
         selected_nickname = nickname  # the option that should be 'selected' from the template drop-down list
         if not selected_nickname == self.ME_NICKNAME and not selected_nickname in existing_nicknames:
