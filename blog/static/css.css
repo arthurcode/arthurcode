@@ -26,6 +26,7 @@ h2 {
     font-size: 130%;
     font-weight: bolder;
     color: midnightblue;
+    padding-bottom: 10px;
 }
 
 .title-bar {
@@ -1141,7 +1142,6 @@ div.chosen-address {
 
 p.address span {
     display: block;
-    line-height: 100%;
 }
 
 p.address span.region, p.address span.city {
@@ -1494,5 +1494,25 @@ body.account div.views {
 }
 
 body.receipt #bd div {
+    clear: both;
+}
+
+.review-order h3 {
+    font-weight: bolder;
+    font-size: 110%;
+}
+
+.review-order h3 a {
+    font-size: 80%;
+    font-weight: lighter;
+}
+
+.review-order div.contact, .review-order div.shipping, .review-order div.billing {
+    display: inline-block;
+    float: left;
+    margin-right: 20px;
+}
+
+.review-order div.items {
     clear: both;
 }
