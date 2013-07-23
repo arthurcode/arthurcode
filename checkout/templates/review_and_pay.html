@@ -7,7 +7,7 @@
 
 {% block forms %}
     <div class="review-order">
-        <h2>Review Your Order</h2>
+        <h2 class="title-bar">Review Your Order</h2>
         <div class="contact">
             <h3>Contact Information <a href="{% url checkout_contact %}">(edit)</a></h3>
             {{ order.first_name }} {{ order.last_name }} <br>
@@ -23,7 +23,6 @@
             {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}
         </div>
         <div class="items">
-            <h3>Items <a href="{% url show_cart %}">(edit cart)</a></h3>
             <table class="shopping-cart">
                 <caption class="hidden">Order Breakdown</caption>
                 <thead class="title-bar">
@@ -102,20 +101,21 @@
     </div>
 
     <div class='payment-info'>
+        <h2 class="title-bar">Enter Payment Info</h2>
         {% form_errors form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
             {% comment %}Hidden form fields{% endcomment %}
             {{ form.total }}
-            <fieldset>
-                <legend>
-                    Payment Info
-                </legend>
+                <p>
                 {% field form.first_name %}
                 {% field form.last_name %}
+                </p>
                 {% field form.card_type %}
+                <p>
                 {% field form.card_number %}
                 {% field form.cvv %}
+                </p>
                 <fieldset>
                     <legend>
                         Expiry Date
@@ -123,7 +123,6 @@
                     {% field form.expire_month %}
                     {% field form.expire_year %}
                 </fieldset>
-            </fieldset>
             <div class="controls">
                 <button class="action" name="submit">Submit Order</button>
             </div>

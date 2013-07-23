@@ -1511,8 +1511,32 @@ body.receipt #bd div {
     display: inline-block;
     float: left;
     margin-right: 20px;
+    padding-bottom: 10px;
 }
 
 .review-order div.items {
+    clear: both;
+}
+
+.review-order, .payment-info {
+    border: 2px solid lightgray;
+    padding: 10px;
+    float: left;
+    width: 100%;
+}
+
+.payment-info div.field {
+    display: inline-block;
+    width: auto;
+    float: left;
+    clear: none;
+}
+
+.payment-info form {
+    float: left;
+    width: 100%;
+}
+
+.payment-info form p {
     clear: both;
 }
