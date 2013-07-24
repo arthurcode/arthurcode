@@ -120,6 +120,14 @@ class Step(object):
         """
         return
 
+    def is_complete(self):
+        """
+        Return 'True' if this step has already been marked as completed, and 'False' otherwise.
+        """
+        highest_completed_step = self.checkout.get_completed_step()
+        this_step_num = self.checkout.get_step_number(self)
+        return this_step_num <= highest_completed_step
+
 
 class ContactInfoStep(Step):
 
@@ -131,6 +139,14 @@ class ContactInfoStep(Step):
         if not form.is_bound:
             # there was no saved data, this is the first time the user is seeing this form in this checkout.
             data = self.get_existing_contact_info()
+            if not self.is_complete():
+                test_form = ContactInfoForm(self.request, data=data)
+                if test_form.is_valid():
+                    # we have all the information we need saved in the user's profile.  Don't bore them with it again.
+                    # They can modify the info later if required.
+                    self.save(self.form_key, data)
+                    self.mark_complete()
+                    return HttpResponseRedirect(self.checkout.get_next_url())
             form = ContactInfoForm(self.checkout.request, initial=data)
         return self._render_form(form)
 
@@ -231,6 +247,17 @@ class ShippingInfoStep(Step):
     form_key = "shipping_form"
 
     def _get(self):
+        if not self.is_complete():
+            # if we only have one saved shipping address, just use it and ask the customer to confirm their data in the
+            # last step
+            existing_nicknames = self.get_existing_nicknames()
+            if len(existing_nicknames) == 1:
+                nickname = existing_nicknames[0]
+                form = self.get_form_for_nickname(nickname, None)
+                if form.is_valid():
+                    self.save(self.form_key, form.data)
+                    self.mark_complete()
+                    return HttpResponseRedirect(self.checkout.get_next_url())
         saved_data = self.get(self.form_key, {})
         nickname = self.get_nickname(saved_data)
         form = self.get_form_for_nickname(nickname, saved_data)
@@ -375,6 +402,11 @@ class BillingInfoStep(Step):
 
     def _get(self):
         form = self.get_saved_form()
+        if not self.is_complete() and form.is_valid():
+            # we already have the information we need!
+            self.save(self.form_key, form.data)
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form)
 
     def _post(self):
