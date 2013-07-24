@@ -2,7 +2,7 @@ from lazysignup.decorators import allow_lazy_user
 from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from accounts.forms import ContactInfoForm, CustomerShippingAddressForm
+from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm
 from checkout.forms import PaymentInfoForm
 from utils.forms import BillingForm
 from django.shortcuts import render_to_response
@@ -390,7 +390,7 @@ class BillingInfoStep(Step):
 
     data_key = 'billing'
     form_key = 'billing_form'
-    form_clazz = BillingForm
+    form_clazz = CustomerBillingAddressForm
     addr_clazz = CustomerBillingAddress
     template = 'billing_form.html'
 
@@ -411,7 +411,7 @@ class BillingInfoStep(Step):
 
     def _post(self):
         post_data = self.request.POST.copy()
-        form = self.form_clazz(data=post_data)
+        form = self.form_clazz(self.request.user.get_customer_profile(), data=post_data)
         if form.is_valid():
             self.save(self.form_key, post_data)
             self.mark_complete()
@@ -455,7 +455,7 @@ class BillingInfoStep(Step):
         address_id = None
         if address:
             address_id = address.id
-        return self.form_clazz(address_id=address_id, data=form_data)
+        return self.form_clazz(self.request.user.get_customer_profile(), address_id=address_id, data=form_data)
 
     def get_address(self):
         form = self.get_saved_form()
@@ -472,7 +472,6 @@ class BillingInfoStep(Step):
             profile.full_clean()
             profile.save()
         address = self.get_address()
-        address.customer = profile
         address.full_clean()
         address.save()
 

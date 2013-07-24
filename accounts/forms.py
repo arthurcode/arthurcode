@@ -9,7 +9,7 @@ from accounts.models import PublicProfile, CustomerProfile, CustomerShippingAddr
 from accounts.accountutils import is_regular_user
 from django.contrib.auth.hashers import check_password
 from django.db.transaction import commit_on_success
-from utils.forms import CanadaShippingForm
+from utils.forms import CanadaShippingForm, BillingForm
 
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales. (You can unsubscribe at any time)"
@@ -374,10 +374,30 @@ class CustomerShippingAddressForm(CanadaShippingForm):
     def save(self, clazz, commit=True):
         address = super(CustomerShippingAddressForm, self).save(clazz, commit=False)
         address.nickname = self.cleaned_data.get('nickname')
-        address.customer = self.customer
+        if self.customer:
+            address.customer = self.customer
         if commit:
+            address.full_clean()
             address.save()
         return address
 
+
+class CustomerBillingAddressForm(BillingForm):
+    """
+    A billing address that is linked to a customer account.
+    """
+
+    def __init__(self, customer, *args, **kwargs):
+        super(CustomerBillingAddressForm, self).__init__(*args, **kwargs)
+        self.customer = customer
+
+    def save(self, clazz, commit=True):
+        address = super(CustomerBillingAddressForm, self).save(clazz, commit=False)
+        if self.customer:
+            address.customer = self.customer
+        if commit:
+            address.full_clean()
+            address.save()
+        return address
 
 

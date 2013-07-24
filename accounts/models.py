@@ -64,6 +64,11 @@ class CustomerShippingAddress(AbstractAddress):
     class Meta:
         unique_together = ('nickname', 'customer')
 
+    def as_dict(self):
+        dict = super(CustomerShippingAddress, self).as_dict()
+        dict['nickname'] = self.nickname
+        return dict
+
 
 class CustomerBillingAddress(AbstractAddress):
     # a customer can have several billing addresses associated with their profile
