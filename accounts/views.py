@@ -280,7 +280,13 @@ def add_shipping_address(request):
     redirect_to = reverse('account_personal') + '#shipping'
     form_clazz = CustomerShippingAddressForm
     model_clazz = CustomerShippingAddress
-    return _add_address(request, template_name, redirect_to, form_clazz, model_clazz)
+    profile = request.user.get_customer_profile()
+    initial_data = {}
+
+    if profile and profile.shipping_addresses.count() == 0:
+        initial_data['nickname'] = 'Me'  # encourage users to first add a 'Me' address.  They can change it if they want.
+
+    return _add_address(request, template_name, redirect_to, form_clazz, model_clazz, initial_data)
 
 
 @non_lazy_login_required()
@@ -295,7 +301,7 @@ def add_billing_address(request):
     return _add_address(request, template_name, redirect_to, form_clazz, model_clazz)
 
 
-def _add_address(request, template_name, redirect_to, form_clazz, model_clazz):
+def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, initial_data=None):
     profile = request.user.get_customer_profile()
     save_profile = False
     if not profile:
@@ -312,7 +318,7 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz):
             form.save(model_clazz, commit=True)
             return HttpResponseRedirect(redirect_to)
     else:
-        form = form_clazz(profile)
+        form = form_clazz(profile, initial=initial_data)
     context = {
         'form': form,
     }
