@@ -22,7 +22,7 @@
         <div class="visual">
             <div id="primary-img">
                 {% if images %}
-                    <img src="{{ STATIC_URL }}{{ images.0.path }}" alt="{{ images.0.alt_text }}">
+                    <a href="{{ STATIC_URL }}{{ images.0.detail_path }}"><img src="{{ STATIC_URL }}{{ images.0.path }}" alt="{{ images.0.alt_text }}"></a>
                 {% else %}
                     <img src="{{ STATIC_URL }}products/no_image_available.png" alt="no image available">
                 {% endif %}
@@ -113,6 +113,11 @@
                   if (primary_image) {
                       primary_image.set('src', src);
                       primary_image.set('alt', alt);
+                      var primary_link = primary_image.ancestor('a');
+                      var clicked_link = image.ancestor('a');
+                      if (primary_link && clicked_link) {
+                          primary_link.set('href', clicked_link.get('href'));
+                      }
                   }
                });
             });
