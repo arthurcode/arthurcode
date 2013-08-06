@@ -99,3 +99,22 @@
         </div>
     </div>
 {% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        YUI().use('event', function(Y) {
+            var images = Y.all('div.other-views img');
+            images.each(function(image) {
+               image.on("click", function(e) {
+                  var src = image.get('src');
+                  var alt = image.get('alt');
+                  var primary_image = Y.one('#primary-img img');
+                  if (primary_image) {
+                      primary_image.set('src', src);
+                      primary_image.set('alt', alt);
+                  }
+               });
+            });
+        });
+    </script>
+{% endblock %}
