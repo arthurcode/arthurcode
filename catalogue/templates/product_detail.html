@@ -20,9 +20,20 @@
 
     <div class="product-detail">
         <div class="visual">
-            {% for image in images %}
-                <img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}">
-            {% endfor %}
+            <div id="primary-img">
+                {% if images %}
+                    <img src="{{ STATIC_URL }}{{ images.0.path }}" alt="{{ images.0.alt_text }}">
+                {% else %}
+                    <img src="{{ STATIC_URL }}products/no_image_available.png" alt="no image available">
+                {% endif %}
+            </div>
+            {% if images|length > 1 %}
+                <div class="other-views">
+                    {% for image in images %}
+                        <img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}">
+                    {% endfor %}
+                </div>
+            {% endif %}
         </div>
         <div class="description">
             <h1>{{ product.name }}</h1>

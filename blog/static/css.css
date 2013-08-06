@@ -926,6 +926,15 @@ div.product-detail .visual {
     display: inline-block;
 }
 
+div.product-detail div.other-views img {
+    height: 64px;
+    display: inline-block;
+}
+
+#primary-img img {
+    height: 350px;
+}
+
 div.product-detail .description {
     float: right;
     width: 60%;
