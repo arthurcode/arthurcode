@@ -30,7 +30,7 @@
             {% if images|length > 1 %}
                 <div class="other-views">
                     {% for image in images %}
-                        <img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}">
+                        <a href="{{ STATIC_URL }}{{ image.detail_path }}"><img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}"></a>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -106,6 +106,7 @@
             var images = Y.all('div.other-views img');
             images.each(function(image) {
                image.on("click", function(e) {
+                  e.preventDefault()
                   var src = image.get('src');
                   var alt = image.get('alt');
                   var primary_image = Y.one('#primary-img img');
