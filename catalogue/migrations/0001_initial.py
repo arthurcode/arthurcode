@@ -101,6 +101,17 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('catalogue_product_themes', ['product_id', 'theme_id'])
 
+        # Adding model 'ProductImage'
+        db.create_table('catalogue_productimage', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='images', to=orm['catalogue.Product'])),
+            ('is_primary', self.gf('django.db.models.fields.BooleanField')(default=False)),
+            ('path', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('detail_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('alt_text', self.gf('django.db.models.fields.CharField')(max_length=200)),
+        ))
+        db.send_create_signal('catalogue', ['ProductImage'])
+
 
     def backwards(self, orm):
         # Deleting model 'Category'
@@ -126,6 +137,9 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field themes on 'Product'
         db.delete_table('catalogue_product_themes')
+
+        # Deleting model 'ProductImage'
+        db.delete_table('catalogue_productimage')
 
 
     models = {
@@ -188,6 +202,15 @@ class Migration(SchemaMigration):
             'themes': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.Theme']"}),
             'upc': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
+        },
+        'catalogue.productimage': {
+            'Meta': {'object_name': 'ProductImage'},
+            'alt_text': ('django.db.models.fields.CharField', [], {'max_length': '200'}),
+            'detail_path': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'is_primary': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'path': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['catalogue.Product']"})
         },
         'catalogue.theme': {
             'Meta': {'object_name': 'Theme'},

@@ -1,5 +1,5 @@
 from django.contrib import admin
-from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme
+from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage
 from mptt.admin import MPTTModelAdmin
 
 
@@ -28,7 +28,16 @@ class ThemeAdmin(admin.ModelAdmin):
 
 admin.site.register(Theme, ThemeAdmin)
 
+
+class ProductImageInline(admin.TabularInline):
+    model = ProductImage
+
+
 class ProductAdmin(admin.ModelAdmin):
+    inlines = [
+        ProductImageInline,
+    ]
+
     list_display = ('name', 'category', 'price', 'sale_price', 'created_at', 'updated_at', 'is_award_winner')
     list_display_links = ('name', 'category')
     list_per_page = 50

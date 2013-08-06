@@ -195,6 +195,28 @@ class Product(models.Model):
         return queryset.extra(select={"current_price": "COALESCE(sale_price, price)"})
 
 
+class ProductImage(models.Model):
+    """
+    Represents an image or 'view' of a particular product.  A product can have zero or more images associated with
+    it.  Product thumbnails are not included in this set.
+    """
+    PATH_MAX_LENGTH = 100
+    ALT_TEXT_MAX_LENGTH = 200
+
+    product = models.ForeignKey(Product, related_name="images")
+    is_primary = models.BooleanField(default=False,
+                                     help_text=u"The primary image is the first to load on the product page."
+                                               u" It should be the image that best represents the product.")
+    path = models.CharField(max_length=PATH_MAX_LENGTH,
+                            help_text=u"Path to the medium resolution image, relative to the static url")
+    detail_path = models.CharField(max_length=PATH_MAX_LENGTH,
+                                   help_text=u"Path to the high resolution image, relative to the static url.")
+    alt_text = models.CharField(max_length=ALT_TEXT_MAX_LENGTH, help_text=u"HTML image alt text.")
+
+    def __unicode__(self):
+        return self.path
+
+
 def get_inactive_category():
     """
     Returns a special Category instance that can be used to store products that are no longer active.  We don't want

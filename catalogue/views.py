@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Count, Sum, Avg
 
-from catalogue.models import Product, Category, Brand, Theme
+from catalogue.models import Product, Category, Brand, Theme, ProductImage
 from arthurcode import settings
 from cart.forms import ProductAddToCartForm
 from cart import cartutils
@@ -55,6 +55,7 @@ def product_detail_view(request, slug=""):
     meta_description = product.short_description
     reviews = product.reviews.select_related('product', 'user__public_profile').\
         prefetch_related('flags').order_by('-last_modified')
+    images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list
 
     # manually calculate the average rating rather than hit the DB again
     avg = None
@@ -71,6 +72,7 @@ def product_detail_view(request, slug=""):
         'meta_description': meta_description,
         'reviews': reviews,
         'avg_rating': avg,
+        'images': images,
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))

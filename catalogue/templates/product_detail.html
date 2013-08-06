@@ -20,7 +20,9 @@
 
     <div class="product-detail">
         <div class="visual">
-            <img src="{{ STATIC_URL }}products/example.jpg" alt="Image of {{ product.name }}">
+            {% for image in images %}
+                <img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}">
+            {% endfor %}
         </div>
         <div class="description">
             <h1>{{ product.name }}</h1>
