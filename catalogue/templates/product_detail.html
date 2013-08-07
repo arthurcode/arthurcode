@@ -31,7 +31,7 @@
             {% if images|length > 1 %}
                 <div class="other-views">
                     {% for image in images %}
-                        <a href="{{ STATIC_URL }}{{ image.detail_path }}"><img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}"></a>
+                        <a href="{{ STATIC_URL }}{{ image.detail_path }}"><img id="image-{{ image.id }}" alt="{{ image.alt_text }}" style="visibility:hidden"></a>
                     {% endfor %}
                 </div>
             {% endif %}
@@ -104,7 +104,19 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('event', 'panel', function(Y) {
+        YUI().use('event', 'panel', 'imageloader', function(Y) {
+
+            // lazy loading of product's images (except for the first, primary image)
+            var imageGroup = new Y.ImgLoadGroup({foldDistance: 30});
+            // iterate over every image, and register the image-{id} div with the appropriate source image
+            {% for image in images %}
+                imageGroup.registerImage({
+                    domId: "image-" + "{{ image.id }}",
+                    srcUrl: "{{ STATIC_URL }}{{ image.path }}",
+                    setVisible: true
+                });
+            {% endfor %}
+
 
             // configure image selector
             var images = Y.all('div.other-views img');
