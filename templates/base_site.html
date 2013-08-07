@@ -67,7 +67,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('node', 'event', function(Y) {
+        YUI().use('node', 'event', 'custom', function(Y) {
             // add some simple client-side validation to the search bar
             var searchButton = Y.one("form#search button");
             if (searchButton) {
@@ -83,7 +83,7 @@
                         } else {
                             message = "Please type at least 3 characters in the search box";
                         }
-                        alert(message);
+                        Y.Custom.messageBox(message, "Search Error").render();
                     }
                 });
             }
