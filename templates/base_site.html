@@ -63,3 +63,30 @@
     <span class='copyright'>copyright &copy 2013 www.thetoytree.com</span>
     {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', 'event', function(Y) {
+            // add some simple client-side validation to the search bar
+            var searchButton = Y.one("form#search button");
+            if (searchButton) {
+                searchButton.on("click", function(e) {
+                    var searchBox = Y.one("form#search input#id_q");
+                    var searchText = searchBox.get("value").trim();
+                    if (searchText.length <= 2) {
+                        // invalid search query
+                        e.preventDefault();
+                        var message = "";
+                        if (searchText.length == 0) {
+                            message = "You need to add some text to the search box before you can perform a search";
+                        } else {
+                            message = "Please type at least 3 characters in the search box";
+                        }
+                        alert(message);
+                    }
+                });
+            }
+        });
+    </script>
+{% endblock %}
