@@ -101,12 +101,15 @@
 {% endblock %}
 
 {% block javascript %}
+    {{ block.super }}
     <script type="text/javascript">
-        YUI().use('event', function(Y) {
+        YUI().use('event', 'panel', function(Y) {
+
+            // configure image selector
             var images = Y.all('div.other-views img');
             images.each(function(image) {
                image.on("click", function(e) {
-                  e.preventDefault()
+                  e.preventDefault();
                   var src = image.get('src');
                   var alt = image.get('alt');
                   var primary_image = Y.one('#primary-img img');
@@ -121,6 +124,28 @@
                   }
                });
             });
+
+            // load a high resolution image in a panel when the primary image is clicked
+            var primary_image = Y.one('#primary-img img');
+            if (primary_image) {
+                primary_image.on("click", function(e) {
+                    var parent_link = primary_image.ancestor('a');
+                    if (parent_link) {
+                        // default behaviour is to link to the high-res image in a new window
+                        e.preventDefault();
+                        var detail_src = parent_link.get('href');
+                        var bodyContent = '<img src="' + detail_src + '">';
+                        var panel = new Y.Panel({
+                            headerContent: "{{ product.name }}",
+                            bodyContent: bodyContent,
+                            centered: true,
+                            zIndex: 100,
+                            modal: true,
+                            render: true
+                        });
+                    }
+                });
+            }
         });
     </script>
 {% endblock %}
