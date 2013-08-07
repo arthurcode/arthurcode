@@ -935,6 +935,13 @@ div.product-detail div.other-views img {
     height: 350px;
 }
 
+#primary-img p {
+    font-size: 80%;
+    font-style: italic;
+    color: darkgray;
+    float: right;
+}
+
 div.product-detail .description {
     float: right;
     width: 60%;
