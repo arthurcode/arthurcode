@@ -57,6 +57,7 @@
             // id will become selected, and the content with the matching id will become visible.
             Y.all('a.tabview').each(function(link) {
                 link.on("click", function (e) {
+                    e.preventDefault();
                     var href = this.getAttribute('href');
                     var tab = Y.one('.tab' + href);
                     selectTab(tab);
