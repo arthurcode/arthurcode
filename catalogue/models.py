@@ -5,7 +5,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 
-from utils.validators import not_blank, valid_upc
+from utils.validators import not_blank, valid_sku
 
 
 class Category(MPTTModel, models.Model):
@@ -130,7 +130,7 @@ class Product(models.Model):
                             help_text='Unique value for product page URL, created from name.',
                             validators=[not_blank])
     brand = models.ForeignKey(Brand, related_name="products")
-    upc = models.CharField(max_length=12, validators=[valid_upc])
+    base_sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
     sale_price = models.DecimalField(max_digits=9,
                                      decimal_places=2,

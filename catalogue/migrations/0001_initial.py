@@ -68,7 +68,7 @@ class Migration(SchemaMigration):
             ('name', self.gf('django.db.models.fields.CharField')(unique=True, max_length=255)),
             ('slug', self.gf('django.db.models.fields.SlugField')(unique=True, max_length=255)),
             ('brand', self.gf('django.db.models.fields.related.ForeignKey')(related_name='products', to=orm['catalogue.Brand'])),
-            ('upc', self.gf('django.db.models.fields.CharField')(max_length=12)),
+            ('base_sku', self.gf('django.db.models.fields.CharField')(unique=True, max_length=10)),
             ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
             ('sale_price', self.gf('django.db.models.fields.DecimalField')(null=True, max_digits=9, decimal_places=2, blank=True)),
             ('is_active', self.gf('django.db.models.fields.BooleanField')(default=True)),
@@ -183,6 +183,7 @@ class Migration(SchemaMigration):
         'catalogue.product': {
             'Meta': {'object_name': 'Product'},
             'awards': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.AwardInstance']"}),
+            'base_sku': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'}),
             'brand': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'products'", 'to': "orm['catalogue.Brand']"}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Category']"}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -200,7 +201,6 @@ class Migration(SchemaMigration):
             'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
             'themes': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.Theme']"}),
-            'upc': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
         'catalogue.productimage': {

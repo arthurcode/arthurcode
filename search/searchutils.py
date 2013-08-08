@@ -46,7 +46,7 @@ def products(search_text, products=Product.active.all()):
         product_query &= (Q(name__icontains=word) |
                           Q(short_description__icontains=word) |
                           Q(long_description__icontains=word) |
-                          Q(upc__iexact=word) |                   # TODO include sku when I have a sku
+                          Q(base_sku__iexact=word) |
                           Q(brand__name__icontains=word) |
                           Q(themes__name__icontains=word))
 

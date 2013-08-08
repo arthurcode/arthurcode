@@ -4,10 +4,8 @@ from django.core.exceptions import ValidationError
 import re
 
 ERROR_BLANK = "This field cannot be blank."  # same as built-in 'blank' error
-ERROR_UPC = "The UPC must consist of exactly 12 digits."
 ERROR_SKU = "The SKU must consist of 3-10 alphanumeric characters, cannot start with a 0, and may not contain the letters I, L or O."
 
-UPC_PATTERN = re.compile('^\d{12}$')         # 12 digits
 SKU_PATTERN = re.compile('^[1-9A-HJKMNP-Z][0-9A-HJKMNP-Z]{2,9}$')
 
 
@@ -19,14 +17,6 @@ def not_blank(value):
     """
     if is_blank(value):
         raise ValidationError(ERROR_BLANK)
-
-
-def valid_upc(upc_str):
-    """
-    Tests that the upc string is composed of exactly 12 digits.
-    """
-    if not upc_str or not UPC_PATTERN.match(upc_str):
-        raise ValidationError(ERROR_UPC)
 
 
 def valid_sku(sku_str):
