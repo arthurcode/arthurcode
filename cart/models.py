@@ -1,5 +1,5 @@
 from django.db import models
-from catalogue.models import Product
+from catalogue.models import ProductInstance
 from django.core.validators import MinValueValidator
 import random
 
@@ -10,7 +10,7 @@ class CartItem(models.Model):
     cart_id = models.CharField(max_length=50)
     date_added = models.DateTimeField(auto_now_add=True)
     quantity = models.IntegerField(default=1, validators=[MinValueValidator(1)])
-    product = models.ForeignKey(Product, unique=False)
+    item = models.ForeignKey(ProductInstance, unique=False)
 
     class Meta:
         ordering = ['date_added']
@@ -20,18 +20,18 @@ class CartItem(models.Model):
         return self.quantity * price
 
     def name(self):
-        return self.product.name
+        return self.item.product.name
 
     @property
     def price(self):
-        return self.product.price
+        return self.item.product.price
 
     @property
     def sale_price(self):
-        return self.product.sale_price
+        return self.item.product.sale_price
 
     def get_absolute_url(self):
-        return self.product.get_absolute_url()
+        return self.item.product.get_absolute_url()
 
     def augment_quantity(self, quantity):
         self.quantity += int(quantity)
@@ -41,12 +41,12 @@ class CartItem(models.Model):
         """
         Checks if there is enough stock to satisfy this cart-item request.
         """
-        if self.quantity > self.product.quantity:
-            return "%s Please adjust your cart." % CartItem.get_insufficient_stock_msg(self.product.quantity)
+        if self.quantity > self.item.quantity:
+            return "%s Please adjust your cart." % CartItem.get_insufficient_stock_msg(self.item.quantity)
         return None
 
     def __unicode__(self):
-        return self.product.name
+        return self.item.product.name
 
     @classmethod
     def generate_cart_id(cls):

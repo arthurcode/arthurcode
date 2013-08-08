@@ -2,6 +2,7 @@ from django import forms
 from catalogue.models import Product
 from cart.models import CartItem
 import cartutils
+from django.core.exceptions import ValidationError
 
 
 class ProductAddToCartForm(forms.Form):
@@ -35,8 +36,12 @@ class ProductAddToCartForm(forms.Form):
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
             elif product_slug and quantity:
+                # find the product instance
                 product = Product.objects.get(slug=product_slug)
-                error = check_stock(product, self.request, quantity_to_add=quantity)
+                if not product.instances.count() == 1:
+                    raise ValidationError("Unable to handle products with 0 or 2+ instances.")
+                instance = product.instances.all()[0]
+                error = check_stock(instance, self.request, quantity_to_add=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
@@ -65,14 +70,14 @@ class UpdateCartItemForm(forms.Form):
         if quantity and item_id:
             item = CartItem.objects.get(id=item_id)
             if item:
-                error = check_stock(item.product, self.request, final_quantity=quantity)
+                error = check_stock(item.item, self.request, final_quantity=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
         return cleaned_data
 
 
-def check_stock(product, request, final_quantity=None, quantity_to_add=0):
+def check_stock(item, request, final_quantity=None, quantity_to_add=0):
     """
     Check whether there is enough product to satisfy the given cart request.  From the request we can get the
     current number of products in their cart.  If final_quantity != None then the customer is using the update_cart
@@ -81,9 +86,9 @@ def check_stock(product, request, final_quantity=None, quantity_to_add=0):
 
     Returns None if the request is valid.  Returns an error message if the request is invalid.
     """
-    in_stock = product.quantity
+    in_stock = item.quantity
     in_cart = 0
-    cart_item = cartutils.get_item_for_product(request, product)
+    cart_item = cartutils.get_item_for_product(request, item)
     if cart_item:
         in_cart = cart_item.quantity
 

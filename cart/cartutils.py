@@ -32,18 +32,22 @@ def add_to_cart(request):
 
     # fetch the product or return a missing page error
     p = get_object_or_404(Product, slug=product_slug)
+    if p.instances.count() != 1:
+        raise Exception("Cannot yet handle products with zero or 2+ instances")
+    item = p.instances.all()[0]
+
     # get products in cart
-    cart_products = get_cart_items(request)
-    product_in_cart = False
+    cart_items = get_cart_items(request)
+    item_in_cart = False
     # check to see if item is already in cart
-    for cart_item in cart_products:
-        if cart_item.product.id == p.id:
+    for cart_item in cart_items:
+        if cart_item.item.id == item.id:
             cart_item.augment_quantity(quantity)
-            product_in_cart = True
-    if not product_in_cart:
+            item_in_cart = True
+    if not item_in_cart:
         # create and save a new cart item
         ci = CartItem()
-        ci.product = p
+        ci.item = item
         ci.quantity = quantity
         ci.cart_id = _cart_id(request)
         ci.save()
@@ -57,12 +61,12 @@ def get_single_item(request, item_id):
     return get_object_or_404(CartItem, id=item_id, cart_id=_cart_id(request))
 
 
-def get_item_for_product(request, product):
+def get_item_for_product(request, item):
     """
     Returns the cart-item corresponding to the given product, if one exists.  Returns None if the product is not
     yet in the cart.
     """
-    items = get_cart_items(request).filter(product_id=product.id)
+    items = get_cart_items(request).filter(item_id=item.id)
     if not items:
         return None
     return items[0]

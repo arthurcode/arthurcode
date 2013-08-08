@@ -4,6 +4,7 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
+from django.db.models import Count
 
 from utils.validators import not_blank, valid_sku
 
@@ -69,8 +70,12 @@ class Category(MPTTModel, models.Model):
 
 
 class ActiveProductsManager(models.Manager):
+    """
+    Select products that are active and have one or more instances for sale.
+    """
     def get_query_set(self):
-        return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)
+        return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)\
+            .annotate(num_instances=Count('instances')).filter(num_instances__gt=0)
 
 
 class Award(models.Model):
@@ -192,6 +197,15 @@ class Product(models.Model):
     def select_current_price(cls, queryset):
         return queryset.extra(select={"current_price": "COALESCE(sale_price, price)"})
 
+    def in_stock(self):
+        """
+        Returns True if any of this product's instances (options) are in stock.
+        """
+        for instance in self.instances.all():
+            if instance.quantity > 0:
+                return True
+        return False
+
 
 class ProductOption(models.Model):
     """
@@ -227,7 +241,7 @@ class ProductInstance(models.Model):
     """
     product = models.ForeignKey(Product, related_name="instances")
     quantity = models.PositiveIntegerField()
-    options = models.ManyToManyField(ProductOption)
+    options = models.ManyToManyField(ProductOption, blank=True)
     sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
 
     def __unicode__(self):
