@@ -4,7 +4,6 @@ from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm
 from checkout.forms import PaymentInfoForm
-from utils.forms import BillingForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -60,7 +59,7 @@ class PyOrder(object):
     def merchandise_total(self):
         total = Decimal('0.00')
         for item in self.items:
-            total += item.price
+            total += item.total
         return total
 
     def _taxable_total(self):
@@ -716,12 +715,12 @@ class Checkout:
         billing_address.order = order
         billing_address.save()
 
-        for item in pyOrder.items:
-            item.order = order
-            item.save()
-            in_stock = item.product.quantity
-            item.product.quantity = max(0, in_stock - item.quantity)
-            item.product.save()
+        for order_item in pyOrder.items:
+            order_item.order = order
+            order_item.save()
+            in_stock = order_item.item.quantity
+            order_item.item.quantity = max(0, in_stock - order_item.quantity)
+            order_item.item.save()
 
         for (name, rate, total) in pyOrder.tax_breakdown():
             orderTax = OrderTax(name=name, rate=rate, total=total, order=order)
@@ -750,11 +749,11 @@ class Checkout:
 
     def get_order_items(self):
         order_items = []
-        for item in cartutils.get_cart_items(self.request):
+        for cart_item in cartutils.get_cart_items(self.request):
             order_item = OrderItem()
-            order_item.product = item.product
-            order_item.quantity = item.quantity
-            order_item.price = item.price
+            order_item.item = cart_item.item
+            order_item.quantity = cart_item.quantity
+            order_item.price = cart_item.price
             # don't save them yet
             order_items.append(order_item)
         return order_items

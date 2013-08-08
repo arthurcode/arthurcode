@@ -32,7 +32,7 @@ class Migration(SchemaMigration):
         db.create_table('orders_orderitem', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='items', to=orm['orders.Order'])),
-            ('product', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Product'])),
+            ('item', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.ProductInstance'])),
             ('quantity', self.gf('django.db.models.fields.IntegerField')()),
             ('price', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
         ))
@@ -71,7 +71,7 @@ class Migration(SchemaMigration):
         # Adding model 'OrderTax'
         db.create_table('orders_ordertax', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['orders.Order'])),
+            ('order', self.gf('django.db.models.fields.related.ForeignKey')(related_name='taxes', to=orm['orders.Order'])),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('rate', self.gf('django.db.models.fields.DecimalField')(max_digits=7, decimal_places=4)),
             ('total', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
@@ -99,11 +99,12 @@ class Migration(SchemaMigration):
     models = {
         'accounts.customerprofile': {
             'Meta': {'object_name': 'CustomerProfile'},
-            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
+            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '3'}),
             'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'on_mailing_list': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'unique': 'True'})
+            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'customer_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
         },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
@@ -134,6 +135,28 @@ class Migration(SchemaMigration):
             'user_permissions': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['auth.Permission']", 'symmetrical': 'False', 'blank': 'True'}),
             'username': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '30'})
         },
+        'catalogue.award': {
+            'Meta': {'object_name': 'Award'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'long_description': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
+        },
+        'catalogue.awardinstance': {
+            'Meta': {'object_name': 'AwardInstance'},
+            'award': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Award']"}),
+            'date': ('django.db.models.fields.DateField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'})
+        },
+        'catalogue.brand': {
+            'Meta': {'object_name': 'Brand'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'long_description': ('django.db.models.fields.TextField', [], {}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
+        },
         'catalogue.category': {
             'Meta': {'ordering': "['tree_id', 'lft']", 'object_name': 'Category'},
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
@@ -151,22 +174,45 @@ class Migration(SchemaMigration):
         },
         'catalogue.product': {
             'Meta': {'object_name': 'Product'},
-            'brand': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'awards': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.AwardInstance']"}),
+            'brand': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'products'", 'to': "orm['catalogue.Brand']"}),
             'category': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Category']"}),
             'created_at': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_active': ('django.db.models.fields.BooleanField', [], {'default': 'True'}),
             'is_bestseller': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_box_stuffer': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'is_green': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'long_description': ('django.db.models.fields.TextField', [], {}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'price': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
-            'quantity': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'sale_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '9', 'decimal_places': '2', 'blank': 'True'}),
             'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
             'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '255'}),
-            'upc': ('django.db.models.fields.CharField', [], {'max_length': '12'}),
+            'themes': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.Theme']"}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
+        },
+        'catalogue.productinstance': {
+            'Meta': {'object_name': 'ProductInstance'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'options': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['catalogue.ProductOption']", 'symmetrical': 'False', 'blank': 'True'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'instances'", 'to': "orm['catalogue.Product']"}),
+            'quantity': ('django.db.models.fields.PositiveIntegerField', [], {}),
+            'sku': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
+        },
+        'catalogue.productoption': {
+            'Meta': {'unique_together': "(('category', 'name'),)", 'object_name': 'ProductOption'},
+            'category': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '25'})
+        },
+        'catalogue.theme': {
+            'Meta': {'object_name': 'Theme'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'short_description': ('django.db.models.fields.CharField', [], {'max_length': '500'}),
+            'slug': ('django.db.models.fields.SlugField', [], {'unique': 'True', 'max_length': '50'})
         },
         'contenttypes.contenttype': {
             'Meta': {'ordering': "('name',)", 'unique_together': "(('app_label', 'model'),)", 'object_name': 'ContentType', 'db_table': "'django_content_type'"},
@@ -209,9 +255,9 @@ class Migration(SchemaMigration):
         'orders.orderitem': {
             'Meta': {'object_name': 'OrderItem'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'item': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.ProductInstance']"}),
             'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'items'", 'to': "orm['orders.Order']"}),
             'price': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.Product']"}),
             'quantity': ('django.db.models.fields.IntegerField', [], {})
         },
         'orders.ordershippingaddress': {
@@ -231,7 +277,7 @@ class Migration(SchemaMigration):
             'Meta': {'object_name': 'OrderTax'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
-            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['orders.Order']"}),
+            'order': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'taxes'", 'to': "orm['orders.Order']"}),
             'rate': ('django.db.models.fields.DecimalField', [], {'max_digits': '7', 'decimal_places': '4'}),
             'total': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'})
         }

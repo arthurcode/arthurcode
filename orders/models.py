@@ -1,6 +1,6 @@
 from django.db import models
 from django.db.transaction import commit_on_success
-from catalogue.models import Product
+from catalogue.models import ProductInstance
 from django.core.validators import MinValueValidator
 from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
@@ -117,9 +117,9 @@ class Order(models.Model):
         self.status = Order.CANCELLED
 
         # increment stock counts
-        for item in self.items.all():
-            item.product.quantity += item.quantity
-            item.product.save()
+        for order_item in self.items.all():
+            order_item.item.quantity += order_item.quantity
+            order_item.item.save()
 
         # TODO: reverse any payment authorizations
         self.payment_status = Order.CANCELLED
@@ -134,13 +134,13 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items")
-    product = models.ForeignKey(Product)
+    item = models.ForeignKey(ProductInstance)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     # I suppose the item could technically be free
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0)])
 
     def get_absolute_url(self):
-        return self.product.get_absolute_url()
+        return self.item.product.get_absolute_url()
 
     @property
     def total(self):
@@ -148,10 +148,10 @@ class OrderItem(models.Model):
 
     @property
     def name(self):
-        return self.product.name
+        return self.item.product.name
 
     def __unicode__(self):
-        return self.product.name
+        return self.item.product.name
 
 
 class OrderBillingAddress(AbstractAddress):
