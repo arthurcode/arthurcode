@@ -4,7 +4,7 @@ from django.core.exceptions import ValidationError
 import re
 
 ERROR_BLANK = "This field cannot be blank."  # same as built-in 'blank' error
-ERROR_SKU = "The SKU must consist of 3-10 alphanumeric characters, cannot start with a 0, and may not contain the letters I, L or O."
+ERROR_SKU = "The SKU must consist of 3-10 alphanumeric (uppercase) characters, cannot start with a 0, and may not contain the letters I, L or O."
 
 SKU_PATTERN = re.compile('^[1-9A-HJKMNP-Z][0-9A-HJKMNP-Z]{2,9}$')
 

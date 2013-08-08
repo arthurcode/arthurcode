@@ -130,7 +130,6 @@ class Product(models.Model):
                             help_text='Unique value for product page URL, created from name.',
                             validators=[not_blank])
     brand = models.ForeignKey(Brand, related_name="products")
-    base_sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
     sale_price = models.DecimalField(max_digits=9,
                                      decimal_places=2,
@@ -145,7 +144,6 @@ class Product(models.Model):
 
     short_description = models.CharField(max_length=500)
     long_description = models.TextField()
-    quantity = models.PositiveIntegerField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)
@@ -193,6 +191,50 @@ class Product(models.Model):
     @classmethod
     def select_current_price(cls, queryset):
         return queryset.extra(select={"current_price": "COALESCE(sale_price, price)"})
+
+
+class ProductOption(models.Model):
+    """
+    A product option can be something like a size or color option.  It is generic and can be associated with more than
+    one product. Examples:
+       size: XL
+       size: M
+       color: red
+       color: yellow
+    """
+    COLOR = 1
+    SIZE = 2
+
+    OPTION_CATEGORIES = ((COLOR, 'Color'),
+                         (SIZE, 'Size'))
+
+    category = models.SmallIntegerField(choices=OPTION_CATEGORIES)
+    name = models.CharField(max_length=25, validators=[not_blank], help_text="Examples: XL, L, red, yellow")
+
+    class Meta:
+        unique_together = ('category', 'name')
+
+    def __unicode__(self):
+        return "%s: %s" %(self.get_category_display(), self.name)
+
+
+class ProductInstance(models.Model):
+    """
+    A product instance is a product together with zero or more product options.  An instance has a unique SKU derived
+    from the base SKU of the product together with the SKUs of any applicable product options.  ProductInstances have
+    stock counts and can be sold, Products cannot.  ProductInstances are grouped together on category pages since they
+    differ only by size/color options (for example).
+    """
+    product = models.ForeignKey(Product, related_name="instances")
+    quantity = models.PositiveIntegerField()
+    options = models.ManyToManyField(ProductOption)
+    sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
+
+    def __unicode__(self):
+        string = unicode(self.product) + " (" + self.sku + ")"
+        for option in self.options.all():
+            string += " (%s)" % unicode(option)
+        return string
 
 
 class ProductImage(models.Model):

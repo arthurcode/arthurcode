@@ -1,5 +1,6 @@
 from django.contrib import admin
-from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage
+from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage, ProductOption, \
+    ProductInstance
 from mptt.admin import MPTTModelAdmin
 
 
@@ -63,3 +64,16 @@ class CategoryAdmin(MPTTModelAdmin):
     prepopulated_fields = {'slug': ('name',)}
 
 admin.site.register(Category, CategoryAdmin)
+
+
+class ProductOptionAdmin(admin.ModelAdmin):
+    list_display = ('category', 'name')
+    ordering = ['category']
+
+admin.site.register(ProductOption, ProductOptionAdmin)
+
+class ProductInstanceAdmin(admin.ModelAdmin):
+    list_display = ('__unicode__', 'quantity', 'sku')
+    search_fields = ('sku', 'product__name')
+
+admin.site.register(ProductInstance, ProductInstanceAdmin)
