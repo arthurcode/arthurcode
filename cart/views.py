@@ -6,6 +6,7 @@ from urlparse import urlparse
 from cart.forms import UpdateCartItemForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect
+from catalogue.models import ProductInstance
 
 
 def show_cart(request):
@@ -31,30 +32,36 @@ def show_cart(request):
                 checkout_url = reverse('checkout')
                 return HttpResponseRedirect(checkout_url)
 
-    cart_items = cartutils.get_cart_items(request)
+    try:
+        cart_items = cartutils.get_cart_items(request)
 
-    if checkout_errors == None:
-        checkout_errors = _get_cart_errors(request)
+        if checkout_errors == None:
+            checkout_errors = _get_cart_errors(request)
 
-    for cart_item in cart_items:
-        if bound_form_id == cart_item.id:
-            form = bound_form
-        else:
-            # create an unbound form
-            form = UpdateCartItemForm(request)
-            form.fields['item_id'].widget.attrs['value'] = cart_item.id
-        setattr(cart_item, 'update_form', form)
-    cart_subtotal = cartutils.cart_subtotal(request)
-    continue_shopping_url = get_continue_shopping_url(request)
+        for cart_item in cart_items:
+            if bound_form_id == cart_item.id:
+                form = bound_form
+            else:
+                # create an unbound form
+                form = UpdateCartItemForm(request)
+                form.fields['item_id'].widget.attrs['value'] = cart_item.id
+            setattr(cart_item, 'update_form', form)
+        cart_subtotal = cartutils.cart_subtotal(request)
+        continue_shopping_url = get_continue_shopping_url(request)
 
-    context = {
-        'cart_subtotal': cart_subtotal,
-        'continue_shopping_url': continue_shopping_url,
-        'cart_items': cart_items,
-        'checkout_errors': checkout_errors
-    }
+        context = {
+            'cart_subtotal': cart_subtotal,
+            'continue_shopping_url': continue_shopping_url,
+            'cart_items': cart_items,
+            'checkout_errors': checkout_errors
+        }
 
-    return render_to_response('cart.html', context, context_instance=RequestContext(request))
+        return render_to_response('cart.html', context, context_instance=RequestContext(request))
+    except ProductInstance.DoesNotExist:
+        # something funny is happened - the user has an item in his cart that for some reason no longer exists in our
+        # system.  This should never happen, but I guess you never know.
+        cartutils.clear_cart(request)
+        return HttpResponseRedirect(reverse('show_cart'))
 
 
 def get_continue_shopping_url(request):

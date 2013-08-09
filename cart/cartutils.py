@@ -92,3 +92,8 @@ def cart_subtotal(request):
     for cart_item in cart_products:
         cart_total += cart_item.total()
     return cart_total
+
+
+def clear_cart(request):
+    for item in get_cart_items(request):
+        item.delete()
