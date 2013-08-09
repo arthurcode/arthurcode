@@ -135,6 +135,7 @@ class Migration(SchemaMigration):
             ('path', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('detail_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('alt_text', self.gf('django.db.models.fields.CharField')(max_length=200)),
+            ('option', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.ProductOption'], null=True, blank=True)),
         ))
         db.send_create_signal('catalogue', ['ProductImage'])
 
@@ -245,13 +246,14 @@ class Migration(SchemaMigration):
             'detail_path': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'is_primary': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
+            'option': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.ProductOption']", 'null': 'True', 'blank': 'True'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['catalogue.Product']"})
         },
         'catalogue.productinstance': {
             'Meta': {'object_name': 'ProductInstance'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'options': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['catalogue.ProductOption']", 'symmetrical': 'False'}),
+            'options': ('django.db.models.fields.related.ManyToManyField', [], {'to': "orm['catalogue.ProductOption']", 'symmetrical': 'False', 'blank': 'True'}),
             'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'instances'", 'to': "orm['catalogue.Product']"}),
             'quantity': ('django.db.models.fields.PositiveIntegerField', [], {}),
             'sku': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})

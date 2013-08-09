@@ -268,6 +268,19 @@ class ProductInstance(models.Model):
             string += " (%s)" % unicode(option)
         return string
 
+    def get_best_image(self):
+        """
+        Of all the images linked to the main product, choose the one that best represents this product instance.
+        Returns an instance of ProductImage.
+        """
+        if not self.product.images.count():
+            return None
+
+        specific_images = self.product.images.filter(option__in=self.options.all()).order_by('-is_primary', 'id')
+        if specific_images.exists():
+            return specific_images[0]
+        return self.product.images.order_by('-is_primary', 'id')[0]
+
 
 class ProductImage(models.Model):
     """
@@ -286,6 +299,7 @@ class ProductImage(models.Model):
     detail_path = models.CharField(max_length=PATH_MAX_LENGTH,
                                    help_text=u"Path to the high resolution image, relative to the static url.")
     alt_text = models.CharField(max_length=ALT_TEXT_MAX_LENGTH, help_text=u"HTML image alt text.")
+    option = models.ForeignKey(ProductOption, help_text=u"The product option this image represents (ie. color).", null=True, blank=True)
 
     def __unicode__(self):
         return self.path
