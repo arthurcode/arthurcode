@@ -1053,7 +1053,7 @@ table.shopping-cart td {
 }
 
 table.shopping-cart img {
-    width: 4em;    /* TODO: add a max width as well */
+    width: 6em;    /* TODO: add a max width as well */
     margin: 0 auto;
     display: block;
 }
@@ -1496,6 +1496,16 @@ dl.horizontal dt {
 dl.horizontal dd {
     float: left;
     margin-left: 1em;
+}
+
+table.shopping-cart dl.horizontal dt {
+    width: 3em;
+    font-weight: normal;
+}
+
+table.shopping-cart dl.horizontal dd {
+    margin-left: 0.5em;
+    font-style: italic;
 }
 
 body.account ul.tabcol {

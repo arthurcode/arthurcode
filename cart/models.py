@@ -30,6 +30,10 @@ class CartItem(models.Model):
     def sale_price(self):
         return self.item.product.sale_price
 
+    @property
+    def sku(self):
+        return self.item.sku
+
     def get_absolute_url(self):
         return self.item.product.get_absolute_url()
 

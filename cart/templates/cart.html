@@ -27,6 +27,7 @@
         <thead class="title-bar">
         <tr>
             <th scope="col">Product</th>
+            <th scope="col">Details</th>
             <th class="right" scope="col">Item Price</th>
             <th class="right" scope="col">Quantity</th>
             <th></th>
@@ -36,7 +37,7 @@
         </thead>
         <tfoot>
         <tr>
-            <th class="right" colspan="5">
+            <th class="right" colspan="6">
                 Cart Subtotal:
             </th>
             <th class="right">
@@ -45,7 +46,7 @@
         </tr>
         {% if cart_items %}
             <tr>
-                <th class="right" colspan="6">
+                <th class="right" colspan="7">
                     <form method="post" action="." class="checkout">
                         {% csrf_token %}
                         <button type="submit" name="Checkout" class="action">Checkout Now</button>
@@ -60,7 +61,17 @@
                 <tr>
                     <td>
                         <a href="{{ item.get_absolute_url }}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="{{ item }}"/></a>
-                        <a href="{{ item.get_absolute_url }}" class="cart">{{ item }}</a>
+                        <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
+                    </td>
+                    <td>
+                        <dl class="horizontal">
+                            {% for option in item.item.options.all %}
+                                <dt>{{ option.get_category_display|capfirst }}:</dt>
+                                <dd>{{ option.name }}</dd>
+                            {% endfor %}
+                            <dt>SKU:</dt>
+                            <dd>{{ item.sku }}</dd>
+                        </dl>
                     </td>
                     <td class="right">
                         {% if item.sale_price %}
@@ -102,7 +113,7 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td class="left" colspan="6">
+                <td class="left" colspan="7">
                     your cart is empty
                 </td>
             </tr>
