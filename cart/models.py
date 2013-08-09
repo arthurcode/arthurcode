@@ -46,7 +46,7 @@ class CartItem(models.Model):
         return None
 
     def __unicode__(self):
-        return self.item.product.name
+        return unicode(self.item)
 
     @classmethod
     def generate_cart_id(cls):

@@ -1,4 +1,5 @@
 from django import forms
+from catalogue.models import ProductInstance, ProductOption
 from cart.models import CartItem
 import cartutils
 from django.core.exceptions import ValidationError
@@ -19,10 +20,17 @@ class ProductAddToCartForm(forms.Form):
         self.product = product
         self.request = request
         super(ProductAddToCartForm, self).__init__(*args, **kwargs)
+        self.extra_fields = []
 
         if self.product.has_options():
-            # TODO: add option fields to the form
-            pass
+            opt_map = self.product.get_options()
+            for category, options in opt_map.items():
+                category = category.lower()
+                choices = [('', '---')]
+                choices.extend([(o.id, o.name) for o in options])
+                self.fields[category] = forms.ChoiceField(choices=choices,
+                                                          label="Choose a %s" % category)
+                self.extra_fields.append(category)
 
     # custom validation to check for cookies
     def clean(self):
@@ -38,6 +46,8 @@ class ProductAddToCartForm(forms.Form):
                     del(cleaned_data['quantity'])
             elif quantity:
                 instance = self.get_product_instance(cleaned_data)
+                if not instance:
+                    raise ValidationError("Sorry, the requested product is not available.")
                 error = check_stock(instance, self.request, quantity_to_add=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
@@ -46,9 +56,24 @@ class ProductAddToCartForm(forms.Form):
 
     def get_product_instance(self, cleaned_data):
         """
-        Gets the product instance from the product itself together with the options the user has chosen
+        Gets the product instance from the product itself together with the options the user has chosen.  Returns None
+        if a product instance does not exist with this particular set of options.  Raises a validation error if more
+        than one product-instance matches this option set.
         """
-        return self.product.instances.all()[0]  #TODO fix me
+
+        options = [cleaned_data.get(f) for f in self.extra_fields]
+        instances = ProductInstance.objects.filter(product=self.product)
+
+        for option_id in options:
+            products = ProductInstance.objects.filter(options__id=option_id)
+            instances = instances.filter(pk__in=products)  # set intersection
+
+        if instances.count() > 1:
+            raise ValidationError("Internal Error: there was more than one product with this option set.")
+        if instances.count() == 0:
+            return None
+        return instances[0]
+
 
     def save(self):
         """

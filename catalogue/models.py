@@ -201,16 +201,28 @@ class Product(models.Model):
         """
         Returns True if any of this product's instances (options) are in stock.
         """
-        for instance in self.instances.all():
-            if instance.quantity > 0:
-                return True
-        return False
+        return self.instances.filter(quantity__gt=0).exists()
 
     def has_options(self):
         """
         Returns True if this product has any options, such as size and/or color.
         """
         return self.instances.count() > 1
+
+    def get_options(self):
+        """
+        Returns a mapping from option category --> the unique set of ProductOptions in that category that apply
+        to this product.
+        """
+        # I need to get all product options that are linked to one or more of self.instances
+        options = ProductOption.objects.filter(productinstance__in=self.instances.all()).distinct()  #TODO: make sure this works the way I think it does
+        option_map = {}
+        for option in options:
+            category = option.get_category_display()
+            if category not in option_map:
+                option_map[category] = []
+            option_map[category].append(option)
+        return option_map
 
 
 class ProductOption(models.Model):
@@ -251,7 +263,7 @@ class ProductInstance(models.Model):
     sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
 
     def __unicode__(self):
-        string = unicode(self.product) + " (" + self.sku + ")"
+        string = unicode(self.product)
         for option in self.options.all():
             string += " (%s)" % unicode(option)
         return string
