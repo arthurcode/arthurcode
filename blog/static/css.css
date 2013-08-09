@@ -167,7 +167,7 @@ ul {
 }
 
 html {
-    background: rgb(63,76,107); /* Old browsers */
+    background: white; /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(63,76,107,1) 0%, rgba(63,76,107,1) 11px, rgba(36,36,61,1) 30px, rgba(255,255,255,1) 30px) no-repeat; /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(63,76,107,1)), color-stop(11px,rgba(63,76,107,1)), color-stop(30px,rgba(36,36,61,1)), color-stop(30px,rgba(255,255,255,1))) no-repeat; /* Chrome,Safari4+ */
     background: -webkit-linear-gradient(top,  rgba(63,76,107,1) 0%,rgba(63,76,107,1) 11px,rgba(36,36,61,1) 30px, rgba(255,255,255,1) 30px)) no-repeat; /* Chrome10+,Safari5.1+ */
