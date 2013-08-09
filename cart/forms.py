@@ -1,5 +1,4 @@
 from django import forms
-from catalogue.models import Product
 from cart.models import CartItem
 import cartutils
 from django.core.exceptions import ValidationError
@@ -15,17 +14,19 @@ class ProductAddToCartForm(forms.Form):
                                                                 'maxlength': '5'}),
                                   error_messages={'invalid': 'Please enter a valid quantity.'},
                                   min_value=1)
-    product_slug = forms.CharField(widget=forms.HiddenInput())
 
-    # override the default __init__ so we can set the request
-    def __init__(self, request=None, *args, **kwargs):
+    def __init__(self, product, request=None, *args, **kwargs):
+        self.product = product
         self.request = request
         super(ProductAddToCartForm, self).__init__(*args, **kwargs)
+
+        if self.product.has_options():
+            # TODO: add option fields to the form
+            pass
 
     # custom validation to check for cookies
     def clean(self):
         cleaned_data = super(ProductAddToCartForm, self).clean()
-        product_slug = cleaned_data.get('product_slug', None)
         quantity = cleaned_data.get('quantity', None)
 
         if self.request:
@@ -35,19 +36,26 @@ class ProductAddToCartForm(forms.Form):
                 self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
-            elif product_slug and quantity:
-                # find the product instance
-                product = Product.objects.get(slug=product_slug)
-                if not product.instances.count() == 1:
-                    raise ValidationError("Unable to handle products with 0 or 2+ instances.")
-                instance = product.instances.all()[0]
+            elif quantity:
+                instance = self.get_product_instance(cleaned_data)
                 error = check_stock(instance, self.request, quantity_to_add=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
         return cleaned_data
 
+    def get_product_instance(self, cleaned_data):
+        """
+        Gets the product instance from the product itself together with the options the user has chosen
+        """
+        return self.product.instances.all()[0]  #TODO fix me
 
+    def save(self):
+        """
+        Adds the product instance to the customer's cart
+        """
+        instance = self.get_product_instance(self.cleaned_data)
+        cartutils.add_to_cart(self.request, instance, self.cleaned_data.get('quantity', 0))
 
 
 class UpdateCartItemForm(forms.Form):

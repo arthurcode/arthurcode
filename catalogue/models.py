@@ -206,6 +206,12 @@ class Product(models.Model):
                 return True
         return False
 
+    def has_options(self):
+        """
+        Returns True if this product has any options, such as size and/or color.
+        """
+        return self.instances.count() > 1
+
 
 class ProductOption(models.Model):
     """

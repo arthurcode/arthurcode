@@ -19,35 +19,24 @@ def get_cart_items(request):
     return CartItem.objects.filter(cart_id=_cart_id(request))
 
 
-# add an item to the cart
-def add_to_cart(request):
-    postdata = request.POST.copy()
-    # get product slug from post data, return blank if empty
-    product_slug = postdata.get('product_slug', '')
-    # get quantity added, return 1 if emtpy
-    quantity = postdata.get('quantity', 1)
+# add a product instance to the customer's cart
+def add_to_cart(request, product_instance, quantity):
     # this shouldn't happen because the form has been validated, but just in case ...
     if quantity < 1:
         return
-
-    # fetch the product or return a missing page error
-    p = get_object_or_404(Product, slug=product_slug)
-    if p.instances.count() != 1:
-        raise Exception("Cannot yet handle products with zero or 2+ instances")
-    item = p.instances.all()[0]
 
     # get products in cart
     cart_items = get_cart_items(request)
     item_in_cart = False
     # check to see if item is already in cart
     for cart_item in cart_items:
-        if cart_item.item.id == item.id:
+        if cart_item.item.id == product_instance.id:
             cart_item.augment_quantity(quantity)
             item_in_cart = True
     if not item_in_cart:
         # create and save a new cart item
         ci = CartItem()
-        ci.item = item
+        ci.item = product_instance
         ci.quantity = quantity
         ci.cart_id = _cart_id(request)
         ci.save()

@@ -31,26 +31,24 @@ def featured_view(request):
 
 
 def product_detail_view(request, slug=""):
+    product = get_object_or_404(Product, slug=slug)
     if request.method == 'POST':
         # add to cart, create the bound form
         postdata = request.POST.copy()
-        form = ProductAddToCartForm(request, postdata)
+        form = ProductAddToCartForm(product, request, postdata)
         # check if posted data is valid
         if form.is_valid():
             #add to cart and redirect to cart page
-            cartutils.add_to_cart(request)
+            form.save()
             # if test cookie worked, get rid of it
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
             return HttpResponseRedirect(reverse('show_cart'))
     else:
         # it's a GET, create the unbound form.  Note request as a kwarg
-        form = ProductAddToCartForm(request=request)
-        # assign the hidden input the product slug
-        form.fields['product_slug'].widget.attrs['value'] = slug
+        form = ProductAddToCartForm(product, request=request)
     # set the test cookie on our first GET request
     request.session.set_test_cookie()
-    product = get_object_or_404(Product, slug=slug)
     breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
     meta_description = product.short_description
     reviews = product.reviews.select_related('product', 'user__public_profile').\
