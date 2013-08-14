@@ -1,0 +1,9 @@
+{% extends "_field.html" %}
+{% load catalogue_extras %}
+{% load extras %}
+
+{% block radio-images %}
+    {% for choice in field %}
+        {% product_option option_id_map|keyvalue:choice.choice_value %}
+    {% endfor %}
+{% endblock %}

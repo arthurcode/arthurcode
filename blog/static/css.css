@@ -595,7 +595,7 @@ form span.error, .errorlist {
 }
 
 /* when a field has an error but a red border around the input */
-.field.error textarea, .field.error input, .field.error.radio ul, .field.error select {
+.field.error textarea, .field.error input, .field.error.radio fieldset, .field.error select {
     border: 1px solid red;
 }
 
@@ -635,6 +635,11 @@ form.stacked .field.checkbox input {
 
 .field.checkbox label {
     float: left;
+}
+
+.field.radio input {
+    float: left;
+    clear: both;
 }
 
 /* Align the controls with the form input fields. */
@@ -980,7 +985,7 @@ div.add-to-cart form label span.error {
     clear: left;
 }
 
-div.add-to-cart form input {
+div.add-to-cart form .field.text input {
     position: absolute;
     top: 0;
     right: 0;
@@ -1565,4 +1570,15 @@ body.receipt #bd div {
 
 .payment-info form p {
     clear: both;
+}
+
+.radio-image {
+    height: 15px;
+    width: 15px;
+    display: inline-block;
+    border: 1px dashed black;
+}
+
+.radio-image.selected {
+    border: 2px solid midnightblue;
 }

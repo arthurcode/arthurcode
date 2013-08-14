@@ -26,16 +26,21 @@ class ProductAddToCartForm(forms.Form):
             opt_map = self.product.get_options()
             for category, options in opt_map.items():
                 category = category.lower()
-                choices = [('', '---')]
-                choices.extend([(o.id, o.name) for o in options])
+                choices = [(o.id, o.name) for o in options]
                 self.fields[category] = forms.ChoiceField(choices=choices,
-                                                          label="Choose a %s" % category)
+                                                          label=category, widget=forms.RadioSelect,
+                                                          required=True)
                 self.extra_fields.append(category)
 
     # custom validation to check for cookies
     def clean(self):
         cleaned_data = super(ProductAddToCartForm, self).clean()
         quantity = cleaned_data.get('quantity', None)
+        all_extra_fields_set = True
+        for field in self.extra_fields:
+            if cleaned_data.get(field) is None:
+                all_extra_fields_set = False
+                break
 
         if self.request:
             if not self.request.session.test_cookie_worked():
@@ -44,7 +49,7 @@ class ProductAddToCartForm(forms.Form):
                 self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
-            elif quantity:
+            elif quantity and all_extra_fields_set:
                 instance = self.get_product_instance(cleaned_data)
                 if not instance:
                     raise ValidationError("Sorry, the requested product is not available.")

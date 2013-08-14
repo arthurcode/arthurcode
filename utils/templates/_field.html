@@ -4,6 +4,16 @@
     {% if field|is_checkbox %}
         {# easier to style if the input comes before the label #}
         {% aria_required_field field %} {% field_label_tag field %}
+    {% elif field|is_radio %}
+        {# radio selects have a unique structure #}
+        <fieldset>
+            <legend>{{ field.label }}</legend>
+            {% for choice in field %}
+                {{ choice.tag }}
+                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+            {% endfor %}
+            <div class="radio-images">{% block radio-images %}{% endblock %}</div>
+        </fieldset>
     {% else %}
         {% field_label_tag field %} {% aria_required_field field %}
     {% endif %}

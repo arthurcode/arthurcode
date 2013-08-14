@@ -4,6 +4,7 @@
 {% load urls %}
 {% load form_tags %}
 {% load ratings %}
+{% load catalogue_extras %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -81,10 +82,10 @@
                     <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
                         {% csrf_token %}
                         {% if form.color %}
-                            {% field form.color %}
+                            {% product_option_field form.color %}
                         {% endif %}
                         {% if form.size %}
-                            {% field form.size %}
+                            {% product_option_field form.size %}
                         {% endif %}
                         {% field form.quantity %}
                         <button type="submit" name="submit" class="action">Add to Cart</button>
@@ -109,7 +110,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('event', 'panel', 'imageloader', function(Y) {
+        YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', function(Y) {
 
             // lazy loading of product's images (except for the first, primary image)
             var imageGroup = new Y.ImgLoadGroup({foldDistance: 30});
@@ -164,6 +165,27 @@
                     }
                 });
             }
+            // hide all of the ugly radio buttons in the add-to-cart form
+            Y.all('.add-to-cart div.radio label, .add-to-cart div.radio input').each(function() {
+                this.addClass('hidden');
+            });
+
+            Y.all('.radio-image').each(function() {
+                this.removeClass('hidden');
+                this.on('click', function(e) {
+                    // when a radio image is clicked, propagate the click to the corresponding radio input button
+                    var id = this.getAttribute('id');
+                    var fieldset = this.ancestor('fieldset');
+                    var input = fieldset.one('input[value="' + id + '"]');
+                    if (input) {
+                        input.simulate("click");
+                        e.target.addClass('selected');
+                        e.target.siblings().each(function() {
+                            this.removeClass('selected');
+                        });
+                    }
+                });
+            });
         });
     </script>
 {% endblock %}

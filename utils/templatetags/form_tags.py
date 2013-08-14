@@ -81,6 +81,11 @@ def is_checkbox(field):
     return field_class(field) == "checkbox"
 
 
+@register.filter(name="is_radio")
+def is_radio(field):
+    return field_class(field) == "radio"
+
+
 @register.inclusion_tag("_field.html")
 def field(field):
     return {'field': field}

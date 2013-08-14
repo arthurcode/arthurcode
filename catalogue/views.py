@@ -55,6 +55,11 @@ def product_detail_view(request, slug=""):
         prefetch_related('flags').order_by('-last_modified')
     images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list
 
+    option_id_map = {}
+    for options in product.get_options().values():
+        for option in options:
+            option_id_map[str(option.id)] = option
+
     # manually calculate the average rating rather than hit the DB again
     avg = None
     if reviews:
@@ -71,6 +76,7 @@ def product_detail_view(request, slug=""):
         'reviews': reviews,
         'avg_rating': avg,
         'images': images,
+        'option_id_map': option_id_map,
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
