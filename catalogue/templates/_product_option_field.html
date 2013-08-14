@@ -6,4 +6,5 @@
     {% for choice in field %}
         {% product_option option_id_map|keyvalue:choice.choice_value %}
     {% endfor %}
+    <span class="chosen-radio">select a {{ field.name|lower }}</span>
 {% endblock %}

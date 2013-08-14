@@ -971,7 +971,7 @@ div.add-to-cart {
 }
 
 div.add-to-cart form {
-    width: 7em;
+    width: 9em;
     position: relative;
 }
 
@@ -1581,4 +1581,11 @@ body.receipt #bd div {
 
 .radio-image.selected {
     border: 2px solid midnightblue;
+}
+
+span.chosen-radio {
+    display: block;
+    color: darkgray;
+    font-style: italic;
+    font-size: 80%;
 }

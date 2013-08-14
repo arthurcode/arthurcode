@@ -183,6 +183,10 @@
                         e.target.siblings().each(function() {
                             this.removeClass('selected');
                         });
+                        var display = fieldset.one('.chosen-radio');
+                        if (display) {
+                            display.setHTML(e.target.one('span').getHTML());
+                        }
                     }
                 });
             });
