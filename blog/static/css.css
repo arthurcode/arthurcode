@@ -1581,6 +1581,7 @@ body.receipt #bd div {
     text-align: center;
     line-height: 1em;
     margin-right: 5px;
+    cursor: pointer;
 }
 
 .radio-image.selected {
