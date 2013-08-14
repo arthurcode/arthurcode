@@ -172,10 +172,13 @@
 
             Y.all('.radio-image').each(function() {
                 this.removeClass('hidden');
+                var fieldset = this.ancestor('fieldset');
+                var display = fieldset.one('.chosen-radio');
+                var defaultDisplayText = display.getHTML();
+
                 this.on('click', function(e) {
                     // when a radio image is clicked, propagate the click to the corresponding radio input button
                     var id = this.getAttribute('id');
-                    var fieldset = this.ancestor('fieldset');
                     var input = fieldset.one('input[value="' + id + '"]');
                     if (input) {
                         input.simulate("click");
@@ -183,9 +186,27 @@
                         e.target.siblings().each(function() {
                             this.removeClass('selected');
                         });
-                        var display = fieldset.one('.chosen-radio');
                         if (display) {
                             display.setHTML(e.target.one('span').getHTML());
+                        }
+                    }
+                });
+
+                // when the mouse rolls over the image display the image text in the chosen-radio span
+                this.on('mouseover', function(e) {
+                    if (display) {
+                        display.setHTML(e.target.one('span').getHTML())
+                    }
+                });
+
+                // reset the chosen-radio span when the mouse rolls out
+                this.on('mouseout', function(e) {
+                    var selected = fieldset.one('.selected span');
+                    if (display) {
+                        if (selected) {
+                            display.setHTML(selected.getHTML());
+                        } else {
+                            display.setHTML(defaultDisplayText);
                         }
                     }
                 });
