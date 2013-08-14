@@ -241,7 +241,9 @@ class ProductOption(models.Model):
                          (SIZE, 'Size'))
 
     category = models.SmallIntegerField(choices=OPTION_CATEGORIES)
-    name = models.CharField(max_length=25, validators=[not_blank], help_text="Examples: XL, L, red, yellow")
+    name = models.CharField(max_length=25, validators=[not_blank], help_text="Unique option name.  Will not be displayed to the user.  Hint, you can use html color strings in here.")
+    display_full_name = models.CharField(max_length=25, validators=[not_blank], help_text="Full name of this option as it will be displayed on invoices.  Eg: light blue")
+    display_short_name = models.CharField(max_length=10, help_text="Abbreviated option name.  Eg: 2T, M, L", blank=True)
 
     class Meta:
         unique_together = ('category', 'name')

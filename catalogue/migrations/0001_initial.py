@@ -104,6 +104,8 @@ class Migration(SchemaMigration):
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
             ('category', self.gf('django.db.models.fields.SmallIntegerField')()),
             ('name', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('display_full_name', self.gf('django.db.models.fields.CharField')(max_length=25)),
+            ('display_short_name', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
         ))
         db.send_create_signal('catalogue', ['ProductOption'])
 
@@ -261,6 +263,8 @@ class Migration(SchemaMigration):
         'catalogue.productoption': {
             'Meta': {'unique_together': "(('category', 'name'),)", 'object_name': 'ProductOption'},
             'category': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'display_full_name': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'display_short_name': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '25'})
         },

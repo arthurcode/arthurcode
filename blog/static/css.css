@@ -1573,14 +1573,18 @@ body.receipt #bd div {
 }
 
 .radio-image {
-    height: 15px;
-    width: 15px;
+    min-height: 15px;
+    min-width: 15px;
     display: inline-block;
-    border: 1px dashed black;
+    border: 1px solid gray;
+    padding: 3px;
+    text-align: center;
+    line-height: 1em;
+    margin-right: 5px;
 }
 
 .radio-image.selected {
-    border: 2px solid midnightblue;
+    box-shadow: 4px 4px 4px;
 }
 
 span.chosen-radio {

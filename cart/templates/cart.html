@@ -67,7 +67,7 @@
                         <dl class="horizontal">
                             {% for option in item.item.options.all %}
                                 <dt>{{ option.get_category_display|capfirst }}:</dt>
-                                <dd>{{ option.name }}</dd>
+                                <dd>{{ option.display_full_name|lower }}</dd>
                             {% endfor %}
                             <dt>SKU:</dt>
                             <dd>{{ item.sku }}</dd>

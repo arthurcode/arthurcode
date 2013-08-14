@@ -16,7 +16,14 @@ def product_option(context, option):
         'option': option,
         'is_color': is_color,
         'is_size': is_size,
+        'background_color': _background_color_for_option(option),
     }
+
+
+def _background_color_for_option(option):
+    if option.category == ProductOption.COLOR:
+        return option.name  # assume that the color name in the DB is a standard HTML color (ugh)
+    return "white"
 
 
 @register.inclusion_tag('_product_option_field.html', takes_context=True)
