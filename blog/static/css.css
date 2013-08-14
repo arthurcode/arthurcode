@@ -979,7 +979,7 @@ div#summary {
 
 div.add-to-cart {
     width: 9em;
-    float: left;
+    float: right;
     padding: 10px;
     border: 1px solid lightgray;
     font-size: smaller;
@@ -1615,4 +1615,8 @@ span.chosen-radio {
     display: block;
     color: darkgray;
     font-style: italic;
+}
+
+.fb-like {
+    float: right;
 }
