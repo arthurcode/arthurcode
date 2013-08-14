@@ -966,11 +966,20 @@ div.product-detail .description h1 {
     font-size: larger;
 }
 
+div#summary {
+    float: left;
+    padding: 10px;
+    padding-left: 0;
+    width: 19em;
+    font-size: smaller;
+    line-height: 1.2em;
+}
+
 /* add-to-cart form styles */
 
 div.add-to-cart {
+    width: 9em;
     float: left;
-    clear: both;
     padding: 10px;
     border: 1px solid lightgray;
     font-size: smaller;
@@ -986,7 +995,6 @@ div.add-to-cart .price {
 }
 
 div.add-to-cart form {
-    width: 9em;
     position: relative;
 }
 

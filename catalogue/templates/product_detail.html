@@ -51,21 +51,10 @@
 
             <div class="fb-like" data-href="http://developers.facebook.com/docs/reference/plugins/like" data-send="true" data-width="450" data-show-faces="false" data-font="arial"></div>
 
-            <div class="tabview">
-                <ul class="tabrow">
-                    <li id="description" class="tab selected"><a class="tabview" href="#description">Description</a></li>
-                    <li id="specs" class="tab"><a class="tabview" href="#specs">Specifications</a></li>
-                </ul>
-                <div class="views">
-                    <div class="view" id="description">
-                        {% autoescape off %}
-                            <div class="text">{{ product.long_description }}</div>
-                        {% endautoescape %}
-                    </div>
-                    <div id="specs" class="view hide-initially">
-                        TODO
-                    </div>
-                </div>
+            <div id="summary">
+                {% autoescape off %}
+                    <div class="text">{{ product.short_description }}</div>
+                {% endautoescape %}
             </div>
 
             <div class="add-to-cart">
