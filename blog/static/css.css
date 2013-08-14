@@ -642,6 +642,10 @@ form.stacked .field.checkbox input {
     clear: both;
 }
 
+.field.radio fieldset {
+    font-size: smaller;
+}
+
 /* Align the controls with the form input fields. */
 form .controls {
     float: left;
@@ -967,7 +971,18 @@ div.product-detail .description h1 {
 div.add-to-cart {
     float: left;
     clear: both;
-    padding-top: 10px;
+    padding: 10px;
+    border: 1px solid lightgray;
+    font-size: smaller;
+    box-shadow: 3px 3px 3px gray;
+}
+
+div.add-to-cart .price, div.add-to-cart button {
+    font-size: 130%;
+}
+
+div.add-to-cart .price {
+    font-weight: bolder;
 }
 
 div.add-to-cart form {
@@ -1592,5 +1607,4 @@ span.chosen-radio {
     display: block;
     color: darkgray;
     font-style: italic;
-    font-size: 80%;
 }

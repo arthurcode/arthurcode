@@ -49,14 +49,6 @@
                 <span class="out-of-stock">Out Of Stock</span>
             {% endif %}
 
-            <div class="price">
-                {% if product.sale_price %}
-                    Was: <span class="old-price">{{ product.price|currency }}</span>
-                    Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
-                {% else %}
-                    <span class="price">{{ product.price|currency }}</span>
-                {% endif %}
-            </div>
             <div class="fb-like" data-href="http://developers.facebook.com/docs/reference/plugins/like" data-send="true" data-width="450" data-show-faces="false" data-font="arial"></div>
 
             <div class="tabview">
@@ -77,6 +69,14 @@
             </div>
 
             <div class="add-to-cart">
+                <div class="price">
+                    {% if product.sale_price %}
+                        Was: <span class="old-price">{{ product.price|currency }}</span>
+                        Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
+                    {% else %}
+                        <span class="price">{{ product.price|currency }}</span>
+                    {% endif %}
+                </div>
                 {% form_errors form %}
                 {% if product.in_stock %}
                     <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart">
