@@ -212,10 +212,13 @@ class Product(models.Model):
     def get_options(self):
         """
         Returns a mapping from option category --> the unique set of ProductOptions in that category that apply
-        to this product.
+        to this product.  The size options will be sorted in order of increasing sort-index.
         """
         # I need to get all product options that are linked to one or more of self.instances
-        options = ProductOption.objects.filter(productinstance__in=self.instances.all()).distinct()  #TODO: make sure this works the way I think it does
+        color_options = Color.objects.filter(productinstance__in=self.instances.all()).distinct()
+        size_options = Size.objects.filter(productinstance__in=self.instances.all()).order_by('sort_index').distinct()
+        options = list(color_options) + list(size_options)
+
         option_map = {}
         for option in options:
             category = option.get_category_display()
