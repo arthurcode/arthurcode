@@ -159,6 +159,38 @@
                 this.addClass('hidden');
             });
 
+            var option_to_stock_map = JSON.parse('{{ option_to_stock_map|escapejs }}');  // parse to javascript map
+
+            function check_option_stock() {
+                var options = Y.all('.radio-image');
+
+                options.each(function() {
+                    this.removeClass('unavailable'); // start fresh
+
+                    var id = this.getAttribute('id');
+                    if (!option_to_stock_map[id]) {
+                        // option is out of stock
+                        this.addClass('unavailable');
+                    }
+                });
+
+                var selected = Y.all('.radio-image.selected');
+                if (selected.size() > 0) {
+                    selected.each(function() {
+                        var id = this.getAttribute('id');
+                        options.each(function() {
+                            var second_id = this.getAttribute('id');
+                            var key = id + "," + second_id;
+                            // assumes that there will be a product instance for every valid option permutation, and thus
+                            // will have a key in the map.
+                            if (key in option_to_stock_map && !option_to_stock_map[key]) {
+                                this.addClass('unavailable');
+                            }
+                        });
+                    });
+                }
+            }
+
             Y.all('.radio-image').each(function() {
                 this.removeClass('hidden');
                 var fieldset = this.ancestor('fieldset');
@@ -167,6 +199,10 @@
 
                 this.on('click', function(e) {
                     // when a radio image is clicked, propagate the click to the corresponding radio input button
+                    if (this.hasClass('unavailable')) {
+                        // if it's unavailable we can't allow it to be selected as an option.
+                        return;
+                    }
                     var id = this.getAttribute('id');
                     var input = fieldset.one('input[value="' + id + '"]');
                     if (input) {
@@ -179,6 +215,7 @@
                             display.setHTML(e.target.one('span').getHTML());
                         }
                     }
+                    check_option_stock();
                 });
 
                 // when the mouse rolls over the image display the image text in the chosen-radio span
@@ -200,6 +237,7 @@
                     }
                 });
             });
+            check_option_stock();
         });
     </script>
 {% endblock %}

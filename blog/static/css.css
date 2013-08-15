@@ -1611,6 +1611,10 @@ body.receipt #bd div {
     box-shadow: 4px 4px 4px;
 }
 
+.radio-image.unavailable {
+    opacity: 0.5;
+}
+
 span.chosen-radio {
     display: block;
     color: darkgray;

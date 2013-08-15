@@ -13,6 +13,7 @@ from cart.forms import ProductAddToCartForm
 from cart import cartutils
 from catalogue import filters
 from search import searchutils
+import json
 
 
 DEFAULT_PAGE_SIZE = 16
@@ -55,10 +56,35 @@ def product_detail_view(request, slug=""):
         prefetch_related('flags').order_by('-last_modified')
     images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list
 
+
+    product_options = product.get_options()
+    # map from option-id (string) --> option instance
     option_id_map = {}
-    for options in product.get_options().values():
+    for options in product_options.values():
         for option in options:
             option_id_map[str(option.id)] = option
+
+    # map from option-id tupple --> stock counts, use this data to indicate out-of-stockiness for product options
+    option_to_stock_map = {}
+    for product_instance in product.instances.all():
+        options = product_instance.options.all()
+        # first go through and accumulate all of the option id singles
+        for o in options:
+            k = str(o.id)
+            if k in option_to_stock_map:
+                option_to_stock_map[k] += product_instance.quantity
+            else:
+                option_to_stock_map[k] = product_instance.quantity
+
+        if options.count() > 2:
+            raise Exception("Can't handle products with more than two options, yet.")
+        elif options.count() == 2:
+            k = "%d,%d" % (options[0].id, options[1].id)
+            option_to_stock_map[k] = product_instance.quantity
+            k = "%d,%d" % (options[1].id, options[0].id)
+            option_to_stock_map[k] = product_instance.quantity
+
+    option_to_stock_map = json.dumps(option_to_stock_map)  # should now be a string
 
     # manually calculate the average rating rather than hit the DB again
     avg = None
@@ -77,6 +103,7 @@ def product_detail_view(request, slug=""):
         'avg_rating': avg,
         'images': images,
         'option_id_map': option_id_map,
+        'option_to_stock_map': option_to_stock_map,
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
