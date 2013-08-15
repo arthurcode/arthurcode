@@ -196,6 +196,7 @@
                 var fieldset = this.ancestor('fieldset');
                 var display = fieldset.one('.chosen-radio');
                 var defaultDisplayText = display.getHTML();
+                var outOfStockSpan = "<span class='error'>(out of stock)<span>"
 
                 this.on('click', function(e) {
                     // when a radio image is clicked, propagate the click to the corresponding radio input button
@@ -220,8 +221,12 @@
 
                 // when the mouse rolls over the image display the image text in the chosen-radio span
                 this.on('mouseover', function(e) {
+                    var text = e.target.one('span').getHTML();
+                    if (e.target.hasClass('unavailable')) {
+                        text  = text + " " + outOfStockSpan;
+                    }
                     if (display) {
-                        display.setHTML(e.target.one('span').getHTML())
+                        display.setHTML(text);
                     }
                 });
 
