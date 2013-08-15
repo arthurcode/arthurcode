@@ -7,7 +7,7 @@
     {% elif field|is_radio %}
         {# radio selects have a unique structure #}
         <fieldset>
-            <legend>{{ field.label }}</legend>
+            <legend>{{ field.label }} <span class="chosen-radio"></span></legend>
             {% for choice in field %}
                 {{ choice.tag }}
                 <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
