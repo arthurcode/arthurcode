@@ -102,15 +102,25 @@ class Migration(SchemaMigration):
         # Adding model 'ProductOption'
         db.create_table('catalogue_productoption', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('category', self.gf('django.db.models.fields.SmallIntegerField')()),
-            ('name', self.gf('django.db.models.fields.CharField')(max_length=25)),
-            ('display_full_name', self.gf('django.db.models.fields.CharField')(max_length=25)),
-            ('display_short_name', self.gf('django.db.models.fields.CharField')(max_length=10, blank=True)),
+            ('name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('category', self.gf('django.db.models.fields.IntegerField')()),
         ))
         db.send_create_signal('catalogue', ['ProductOption'])
 
-        # Adding unique constraint on 'ProductOption', fields ['category', 'name']
-        db.create_unique('catalogue_productoption', ['category', 'name'])
+        # Adding model 'Color'
+        db.create_table('catalogue_color', (
+            ('productoption_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['catalogue.ProductOption'], unique=True, primary_key=True)),
+            ('html', self.gf('django.db.models.fields.CharField')(max_length=25)),
+        ))
+        db.send_create_signal('catalogue', ['Color'])
+
+        # Adding model 'Size'
+        db.create_table('catalogue_size', (
+            ('productoption_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['catalogue.ProductOption'], unique=True, primary_key=True)),
+            ('short_name', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('sort_index', self.gf('django.db.models.fields.IntegerField')()),
+        ))
+        db.send_create_signal('catalogue', ['Size'])
 
         # Adding model 'ProductInstance'
         db.create_table('catalogue_productinstance', (
@@ -143,9 +153,6 @@ class Migration(SchemaMigration):
 
 
     def backwards(self, orm):
-        # Removing unique constraint on 'ProductOption', fields ['category', 'name']
-        db.delete_unique('catalogue_productoption', ['category', 'name'])
-
         # Deleting model 'Category'
         db.delete_table('catalogue_category')
 
@@ -172,6 +179,12 @@ class Migration(SchemaMigration):
 
         # Deleting model 'ProductOption'
         db.delete_table('catalogue_productoption')
+
+        # Deleting model 'Color'
+        db.delete_table('catalogue_color')
+
+        # Deleting model 'Size'
+        db.delete_table('catalogue_size')
 
         # Deleting model 'ProductInstance'
         db.delete_table('catalogue_productinstance')
@@ -221,6 +234,11 @@ class Migration(SchemaMigration):
             'tree_id': ('django.db.models.fields.PositiveIntegerField', [], {'db_index': 'True'}),
             'updated_at': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'})
         },
+        'catalogue.color': {
+            'Meta': {'object_name': 'Color', '_ormbases': ['catalogue.ProductOption']},
+            'html': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
+            'productoption_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['catalogue.ProductOption']", 'unique': 'True', 'primary_key': 'True'})
+        },
         'catalogue.product': {
             'Meta': {'object_name': 'Product'},
             'awards': ('django.db.models.fields.related.ManyToManyField', [], {'symmetrical': 'False', 'related_name': "'products'", 'blank': 'True', 'to': "orm['catalogue.AwardInstance']"}),
@@ -261,12 +279,16 @@ class Migration(SchemaMigration):
             'sku': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
         },
         'catalogue.productoption': {
-            'Meta': {'unique_together': "(('category', 'name'),)", 'object_name': 'ProductOption'},
-            'category': ('django.db.models.fields.SmallIntegerField', [], {}),
-            'display_full_name': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
-            'display_short_name': ('django.db.models.fields.CharField', [], {'max_length': '10', 'blank': 'True'}),
+            'Meta': {'object_name': 'ProductOption'},
+            'category': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '25'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'catalogue.size': {
+            'Meta': {'object_name': 'Size', '_ormbases': ['catalogue.ProductOption']},
+            'productoption_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['catalogue.ProductOption']", 'unique': 'True', 'primary_key': 'True'}),
+            'short_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'sort_index': ('django.db.models.fields.IntegerField', [], {})
         },
         'catalogue.theme': {
             'Meta': {'object_name': 'Theme'},

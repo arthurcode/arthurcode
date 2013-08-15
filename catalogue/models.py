@@ -227,29 +227,41 @@ class Product(models.Model):
 
 class ProductOption(models.Model):
     """
-    A product option can be something like a size or color option.  It is generic and can be associated with more than
-    one product. Examples:
-       size: XL
-       size: M
-       color: red
-       color: yellow
+    A product option can be something like a size or color option.  This functions more like an abstract base class,
+    but in order to simplify the corresponding queries I haven't made it abstract.  Screw you django.
     """
     COLOR = 1
     SIZE = 2
+    OPTION_CATEGORIES = ((COLOR, 'color'),
+                         (SIZE, 'size'))
 
-    OPTION_CATEGORIES = ((COLOR, 'Color'),
-                         (SIZE, 'Size'))
-
-    category = models.SmallIntegerField(choices=OPTION_CATEGORIES)
-    name = models.CharField(max_length=25, validators=[not_blank], help_text="Unique option name.  Will not be displayed to the user.  Hint, you can use html color strings in here.")
-    display_full_name = models.CharField(max_length=25, validators=[not_blank], help_text="Full name of this option as it will be displayed on invoices.  Eg: light blue")
-    display_short_name = models.CharField(max_length=10, help_text="Abbreviated option name.  Eg: 2T, M, L", blank=True)
+    name = models.CharField(max_length=50, validators=[not_blank],
+                            help_text="Full product option name, as it should appear on invoices")
+    category = models.IntegerField(choices=OPTION_CATEGORIES)
 
     class Meta:
         unique_together = ('category', 'name')
 
     def __unicode__(self):
-        return "%s: %s" %(self.get_category_display(), self.name)
+        return self.name
+
+
+class Color(ProductOption):
+    html = models.CharField(max_length=25, validators=[not_blank], help_text="HTML color hex string, or color name.")
+
+    def clean(self):
+        if self.category != ProductOption.COLOR:
+            raise ValidationError(u"Category must be 'color'")
+
+
+class Size(ProductOption):
+    short_name = models.CharField(max_length=50, validators=[not_blank],
+                                  help_text="Abbreviation for this size, as will appear in the sizing select box.  Eg: 'L', 'M'")
+    sort_index = models.IntegerField(help_text="An index used to sort sizes in increasing order.  Eg. 'S' should have a smaller index than 'M'")
+
+    def clean(self):
+        if self.category != ProductOption.SIZE:
+            raise ValidationError(u"Category must be 'size'")
 
 
 class ProductInstance(models.Model):
@@ -261,8 +273,8 @@ class ProductInstance(models.Model):
     """
     product = models.ForeignKey(Product, related_name="instances")
     quantity = models.PositiveIntegerField()
-    options = models.ManyToManyField(ProductOption, blank=True)
     sku = models.CharField(max_length=10, validators=[valid_sku], unique=True)
+    options = models.ManyToManyField(ProductOption, blank=True)
 
     def __unicode__(self):
         string = unicode(self.product)

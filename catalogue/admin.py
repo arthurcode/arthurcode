@@ -1,6 +1,6 @@
 from django.contrib import admin
-from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage, ProductOption, \
-    ProductInstance
+from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage, ProductInstance, \
+    Color, Size
 from mptt.admin import MPTTModelAdmin
 
 
@@ -66,11 +66,17 @@ class CategoryAdmin(MPTTModelAdmin):
 admin.site.register(Category, CategoryAdmin)
 
 
-class ProductOptionAdmin(admin.ModelAdmin):
-    list_display = ('category', 'name')
-    ordering = ['category']
+class ColorProductOptionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'html')
 
-admin.site.register(ProductOption, ProductOptionAdmin)
+admin.site.register(Color, ColorProductOptionAdmin)
+
+
+class SizeProductOptionAdmin(admin.ModelAdmin):
+    list_display = ('name', 'short_name', 'sort_index')
+    ordering = ('sort_index', 'name')
+
+admin.site.register(Size, SizeProductOptionAdmin)
 
 class ProductInstanceAdmin(admin.ModelAdmin):
     list_display = ('__unicode__', 'quantity', 'sku')

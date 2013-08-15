@@ -11,19 +11,20 @@ def product_option(context, option):
     """
     is_color = option.category == ProductOption.COLOR
     is_size = option.category == ProductOption.SIZE
+    background_color = "white"
+    if is_color:
+        background_color = option.color.html
+    text = ""
+    if is_size:
+        text = option.size.short_name
 
     return {
         'option': option,
         'is_color': is_color,
         'is_size': is_size,
-        'background_color': _background_color_for_option(option),
+        'background_color': background_color,
+        'text': text,
     }
-
-
-def _background_color_for_option(option):
-    if option.category == ProductOption.COLOR:
-        return option.name  # assume that the color name in the DB is a standard HTML color (ugh)
-    return "white"
 
 
 @register.inclusion_tag('_product_option_field.html', takes_context=True)
