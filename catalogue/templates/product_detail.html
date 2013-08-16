@@ -162,7 +162,7 @@
             function get_radio_image_display(radio_image) {
                 var text = radio_image.one('span').getHTML();
                 if (radio_image.hasClass('unavailable')) {
-                    text = text + " <span class='error'>(out of stock)</span>";
+                    text = text + " <span class='error'>(sold out)</span>";
                 }
                 return text;
             }
