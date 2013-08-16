@@ -237,6 +237,38 @@
                 });
             });
             check_option_stock();
+
+
+            // hook up increment & decrement buttons for the quantity field
+            var field = Y.one('.add-to-cart .field.text');
+            if (field) {
+                var incrementor = Y.Node.create("<button type='button'>+</button>");
+                var decrementor = Y.Node.create("<button type='button'>-</button>");
+                field.append(incrementor);
+                field.append(decrementor);
+
+                incrementor.on("click", function(e) {
+                    var input = field.one("input");
+                    var currentValue = input.get('value');
+                    var newValue = currentValue*1 + 1;
+                    if (newValue) {
+                        input.set('value', newValue);
+                    }
+                });
+
+                decrementor.on("click", function(e) {
+                    var input = field.one("input");
+                    var currentValue = input.get('value');
+                    var newValue = currentValue*1 - 1;
+                    if (newValue) {
+                        if (newValue < 1) {
+                            newValue = 1;
+                        }
+                        input.set('value', newValue);
+                    }
+                })
+            }
+
         });
     </script>
 {% endblock %}

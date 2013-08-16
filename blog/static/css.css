@@ -1030,9 +1030,23 @@ div.add-to-cart form .field {
     padding-top: 10px !important;
 }
 
+div.add-to-cart form .field.text label {
+    float: left;
+    margin-top: 1em;  /* TODO: checkout how this looks without javascript */
+}
+
 div.add-to-cart form .field.text input {
+    margin-left: 5px;
+    margin-top: 1em;
     height: 1.5em;
     padding: 0 0.3em;  /* required for the input to resize properly with changes in font size */
+    float: left;
+}
+
+div.add-to-cart form .field.text button {
+    width: 2em;
+    float: right;
+    clear: right;
 }
 
 div.add-to-cart form button {
