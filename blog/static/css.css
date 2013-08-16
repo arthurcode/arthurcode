@@ -1025,10 +1025,12 @@ div.add-to-cart form label span.error {
     clear: left;
 }
 
+div.add-to-cart form .field {
+    border-top: 1px solid lightgray;
+    padding-top: 10px !important;
+}
+
 div.add-to-cart form .field.text input {
-    position: absolute;
-    top: 0;
-    right: 0;
     height: 1.5em;
     padding: 0 0.3em;  /* required for the input to resize properly with changes in font size */
 }
@@ -1037,6 +1039,11 @@ div.add-to-cart form button {
     clear: both;
     display: block;
     width: 100%;
+}
+
+div.add-to-cart form legend {
+    /* TODO: this needs to be visible for screen readers */
+    display: none;
 }
 
 div.add-to-cart form input, div.add-to-cart form label {
@@ -1636,9 +1643,13 @@ body.receipt #bd div {
     border: 2px solid red;
 }
 
+.field.radio p {
+    height: 3em;
+    font-size: larger;
+}
+
 .chosen-radio {
     font-style: italic;
-    height: 3em;
 }
 
 .fb-like {
