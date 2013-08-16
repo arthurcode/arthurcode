@@ -56,6 +56,11 @@ def product_detail_view(request, slug=""):
         prefetch_related('flags').order_by('-last_modified')
     images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list
 
+    # map from product-option-id --> product-image-id
+    option_to_image_map = {}
+    for image in images:
+        if image.option:
+            option_to_image_map[image.option.id] = image.id
 
     product_options = product.get_options()
     # map from option-id (string) --> option instance
@@ -104,6 +109,7 @@ def product_detail_view(request, slug=""):
         'images': images,
         'option_id_map': option_id_map,
         'option_to_stock_map': option_to_stock_map,
+        'option_to_image_map': json.dumps(option_to_image_map),  # now a json string
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))

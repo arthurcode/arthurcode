@@ -220,9 +220,20 @@
                 });
             }
 
-            Y.all('.radio-image').each(function() {
-                this.on('click', function(e) {
+            var option_to_image_map = JSON.parse('{{ option_to_image_map|escapejs }}');  // parse to javascript map
+
+            Y.all('.radio-image').each(function(radio) {
+                radio.on('click', function(e) {
                     check_option_stock();
+                    var id = radio.getAttribute('id');
+                    // if this option is linked to an alternate product image, load it.
+                    if (id in option_to_image_map) {
+                        var image_id = option_to_image_map[id];
+                        var image = Y.one('div.other-views img#image-' + image_id);
+                        if (image) {
+                            image.simulate("click");
+                        }
+                    }
                 });
             });
             check_option_stock();

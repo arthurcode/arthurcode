@@ -101,5 +101,5 @@ YUI.add('custom', function(Y) {
         }
     };
 }, '0.0.1', {
-    requires: ['node', 'event', 'panel']
+    requires: ['node', 'event', 'panel', 'node-event-simulate']
 });
