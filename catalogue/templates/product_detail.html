@@ -99,7 +99,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', function(Y) {
+        YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', 'custom', function(Y) {
 
             // lazy loading of product's images (except for the first, primary image)
             var imageGroup = new Y.ImgLoadGroup({foldDistance: 30});
@@ -154,18 +154,8 @@
                     }
                 });
             }
-            // hide all of the ugly radio buttons in the add-to-cart form
-            Y.all('.add-to-cart div.radio label, .add-to-cart div.radio input').each(function() {
-                this.addClass('hidden');
-            });
 
-            function get_radio_image_display(radio_image) {
-                var text = radio_image.one('span').getHTML();
-                if (radio_image.hasClass('unavailable')) {
-                    text = text + " <span class='error'>(sold out)</span>";
-                }
-                return text;
-            }
+            Y.Custom.radioImageForm(Y.one('.add-to-cart form'));
 
             var option_to_stock_map = JSON.parse('{{ option_to_stock_map|escapejs }}');  // parse to javascript map
 
@@ -218,60 +208,15 @@
                    var display = this.one('.chosen-radio');
                    var selected = this.one('.radio-image.selected');
                    if (selected) {
-                       display.setHTML(get_radio_image_display(selected));
+                       display.setHTML(Y.Custom.get_radio_image_display(selected));
                    }
                 });
             }
 
-
             Y.all('.radio-image').each(function() {
-                this.removeClass('hidden');
-                var fieldset = this.ancestor('fieldset');
-                var display = fieldset.one('.chosen-radio');
-                var defaultDisplayText = display.getHTML();
-
                 this.on('click', function(e) {
-                    // when a radio image is clicked, propagate the click to the corresponding radio input button
-                    var id = this.getAttribute('id');
-                    var input = fieldset.one('input[value="' + id + '"]');
-                    if (input) {
-                        input.simulate("click");
-                        e.target.addClass('selected');
-                        e.target.siblings().each(function() {
-                            this.removeClass('selected');
-                        });
-                        check_option_stock();
-                    }
+                    check_option_stock();
                 });
-
-                // when the mouse rolls over the image display the image text in the chosen-radio span
-                this.on('mouseover', function(e) {
-                    if (display) {
-                        display.setHTML(get_radio_image_display(e.target));
-                    }
-                });
-
-                // reset the chosen-radio span when the mouse rolls out
-                this.on('mouseout', function(e) {
-                    var selected = fieldset.one('.selected');
-                    if (display) {
-                        if (selected) {
-                            display.setHTML(get_radio_image_display(selected));
-                        } else {
-                            display.setHTML(defaultDisplayText);
-                        }
-                    }
-                });
-            });
-
-            // if the add-to-cart form is bound make sure that the appropriate radio-images are 'clicked' at start
-            Y.all('div.radio fieldset').each(function() {
-                var selected = this.one('input[type="radio"]:checked');
-                if (selected) {
-                    var id = selected.getAttribute('value');
-                    var radio = this.one('[id="' + id + '"]');               // firefox has an issue with numeric ids! (even though they are valid in html5)
-                    radio.simulate('click');
-                }
             });
             check_option_stock();
         });
