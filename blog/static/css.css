@@ -1599,7 +1599,7 @@ body.receipt #bd div {
     min-height: 15px;
     min-width: 15px;
     display: inline-block;
-    border: 1px solid gray;
+    border: 2px solid gray;
     padding: 3px;
     text-align: center;
     line-height: 1em;
@@ -1608,20 +1608,20 @@ body.receipt #bd div {
 }
 
 .radio-image.selected {
-    box-shadow: 4px 4px 4px;
+    border: 2px solid black;
 }
 
 .radio-image.unavailable {
-    opacity: 0.5;
+
 }
 
 .radio-image.selected.unavailable {
     border: 2px solid red;
 }
 
-span.chosen-radio {
-    font-weight: bolder;
-    font-size: smaller;
+.chosen-radio {
+    font-style: italic;
+    height: 3em;
 }
 
 .fb-like {
