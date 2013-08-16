@@ -957,6 +957,12 @@ div.product-detail .description {
     display: inline-block;
 }
 
+div.product-detail #more-detail {
+    float: left;
+    clear: both;
+    padding: 10px;
+}
+
 div.product-detail .tabrow {
     padding-top: 15px;
 }
@@ -986,12 +992,23 @@ div.add-to-cart {
     box-shadow: 3px 3px 3px gray;
 }
 
-div.add-to-cart .price, div.add-to-cart button {
+div.add-to-cart button {
     font-size: 130%;
 }
 
 div.add-to-cart .price {
     font-weight: bolder;
+    font-size: 180%;
+}
+
+div.add-to-cart .price .old-price {
+    text-decoration: line-through;
+}
+
+div.add-to-cart .price .you-save {
+    font-size: 50%;
+    display: block;
+    font-weight: normal;
 }
 
 div.add-to-cart form {

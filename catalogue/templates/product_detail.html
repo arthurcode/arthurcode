@@ -38,7 +38,7 @@
             {% endif %}
         </div>
         <div class="description">
-            <h1>{{ product.name }}</h1>
+            <h1>{{ product.name }}{% if product.sale_price %} <span class="sale">(On Sale!)</span>{% endif %}</h1>
             {% rating avg_rating %}
             {% if avg_rating %}
                 ({{ reviews.count }} <a class="tabview" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
@@ -55,15 +55,17 @@
                 {% autoescape off %}
                     <div class="text">{{ product.short_description }}</div>
                 {% endautoescape %}
+                <br>
+                <a href="#more-detail">read more</a>
             </div>
 
             <div class="add-to-cart">
                 <div class="price">
                     {% if product.sale_price %}
-                        Was: <span class="old-price">{{ product.price|currency }}</span>
-                        Now: <span class="sale-price">{{ product.sale_price|currency }}</span>
+                        <span class="sale-price">{{ product.sale_price|currency }}</span>
+                        <span class="you-save">Was: <span class="old-price">{{ product.price|currency }}</span> ({{ product.percent_savings|floatformat:0 }}% off!)</span>
                     {% else %}
-                        <span class="price">{{ product.price|currency }}</span>
+                        <span class="normal-price">{{ product.price|currency }}</span>
                     {% endif %}
                 </div>
                 {% form_errors form %}
@@ -81,6 +83,11 @@
                     </form>
                 {% endif %}
             </div>
+        </div>
+
+        <div id="more-detail">
+            <h3><a href="#more-detail">Full Description</a></h3>
+            {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
         </div>
     </div>
 
