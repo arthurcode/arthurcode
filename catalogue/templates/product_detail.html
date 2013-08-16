@@ -263,6 +263,16 @@
                     }
                 });
             });
+
+            // if the add-to-cart form is bound make sure that the appropriate radio-images are 'clicked' at start
+            Y.all('div.radio fieldset').each(function() {
+                var selected = this.one('input[type="radio"]:checked');
+                if (selected) {
+                    var id = selected.getAttribute('value');
+                    var radio = this.one('[id="' + id + '"]');               // firefox has an issue with numeric ids! (even though they are valid in html5)
+                    radio.simulate('click');
+                }
+            });
             check_option_stock();
         });
     </script>
