@@ -978,7 +978,7 @@ div#summary {
 /* add-to-cart form styles */
 
 div.add-to-cart {
-    width: 9em;
+    width: 12em;
     float: right;
     padding: 10px;
     border: 1px solid lightgray;
@@ -1613,6 +1613,10 @@ body.receipt #bd div {
 
 .radio-image.unavailable {
     opacity: 0.5;
+}
+
+.radio-image.selected.unavailable {
+    border: 2px solid red;
 }
 
 span.chosen-radio {

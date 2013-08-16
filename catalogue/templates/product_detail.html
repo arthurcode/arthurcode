@@ -159,6 +159,14 @@
                 this.addClass('hidden');
             });
 
+            function get_radio_image_display(radio_image) {
+                var text = radio_image.one('span').getHTML();
+                if (radio_image.hasClass('unavailable')) {
+                    text = text + " <span class='error'>(out of stock)</span>";
+                }
+                return text;
+            }
+
             var option_to_stock_map = JSON.parse('{{ option_to_stock_map|escapejs }}');  // parse to javascript map
 
             function check_option_stock() {
@@ -174,36 +182,56 @@
                     }
                 });
 
-                var selected = Y.all('.radio-image.selected');
-                if (selected.size() > 0) {
-                    selected.each(function() {
-                        var id = this.getAttribute('id');
-                        options.each(function() {
-                            var second_id = this.getAttribute('id');
-                            var key = id + "," + second_id;
-                            // assumes that there will be a product instance for every valid option permutation, and thus
-                            // will have a key in the map.
-                            if (key in option_to_stock_map && !option_to_stock_map[key]) {
-                                this.addClass('unavailable');
-                            }
-                        });
-                    });
+                var fieldsets = Y.all('.add-to-cart div.radio fieldset');
+                if (fieldsets.size() == 2) {
+                    // the only amount of option categories we can handle right now I'm afraid
+                    var set_1 = fieldsets.item(0);
+                    var set_2 = fieldsets.item(1);
+                    var selected_1 = set_1.one('.radio-image.selected');
+                    var selected_2 = set_2.one('.radio-image.selected');
+                    if (selected_1 || selected_2) {
+                        if (selected_1) {
+                            var id = selected_1.getAttribute('id');
+                            var display = set_1.one('.chosen-radio');
+                            set_2.all('.radio-image').each(function() {
+                                var key = id + "," + this.getAttribute('id');
+                                if (!(key in option_to_stock_map) || option_to_stock_map[key] == 0) {
+                                    this.addClass('unavailable');
+                                }
+                            });
+                        }
+                        if (selected_2) {
+                            var id = selected_2.getAttribute('id');
+                            var display = set_2.one('.chosen-radio');
+                            set_1.all('.radio-image').each(function() {
+                                var key = id + "," + this.getAttribute('id');
+                                if (!(key in option_to_stock_map) || option_to_stock_map[key] == 0) {
+                                    this.addClass('unavailable');
+                                }
+                            });
+                        }
+                    }
                 }
+
+                // set the display value
+                fieldsets.each(function() {
+                   var display = this.one('.chosen-radio');
+                   var selected = this.one('.radio-image.selected');
+                   if (selected) {
+                       display.setHTML(get_radio_image_display(selected));
+                   }
+                });
             }
+
 
             Y.all('.radio-image').each(function() {
                 this.removeClass('hidden');
                 var fieldset = this.ancestor('fieldset');
                 var display = fieldset.one('.chosen-radio');
                 var defaultDisplayText = display.getHTML();
-                var outOfStockSpan = "<span class='error'>(out of stock)<span>"
 
                 this.on('click', function(e) {
                     // when a radio image is clicked, propagate the click to the corresponding radio input button
-                    if (this.hasClass('unavailable')) {
-                        // if it's unavailable we can't allow it to be selected as an option.
-                        return;
-                    }
                     var id = this.getAttribute('id');
                     var input = fieldset.one('input[value="' + id + '"]');
                     if (input) {
@@ -212,30 +240,23 @@
                         e.target.siblings().each(function() {
                             this.removeClass('selected');
                         });
-                        if (display) {
-                            display.setHTML(e.target.one('span').getHTML());
-                        }
+                        check_option_stock();
                     }
-                    check_option_stock();
                 });
 
                 // when the mouse rolls over the image display the image text in the chosen-radio span
                 this.on('mouseover', function(e) {
-                    var text = e.target.one('span').getHTML();
-                    if (e.target.hasClass('unavailable')) {
-                        text  = text + " " + outOfStockSpan;
-                    }
                     if (display) {
-                        display.setHTML(text);
+                        display.setHTML(get_radio_image_display(e.target));
                     }
                 });
 
                 // reset the chosen-radio span when the mouse rolls out
                 this.on('mouseout', function(e) {
-                    var selected = fieldset.one('.selected span');
+                    var selected = fieldset.one('.selected');
                     if (display) {
                         if (selected) {
-                            display.setHTML(selected.getHTML());
+                            display.setHTML(get_radio_image_display(selected));
                         } else {
                             display.setHTML(defaultDisplayText);
                         }
