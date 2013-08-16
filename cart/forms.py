@@ -25,10 +25,9 @@ class ProductAddToCartForm(forms.Form):
         if self.product.has_options():
             opt_map = self.product.get_options()
             for category, options in opt_map.items():
-                category = category.lower()
                 choices = [(o.id, o.name) for o in options]
                 self.fields[category] = forms.ChoiceField(choices=choices,
-                                                          label=category + ":", widget=forms.RadioSelect,
+                                                          label=category.capitalize() + ":", widget=forms.RadioSelect,
                                                           required=True)
                 self.extra_fields.append(category)
 
