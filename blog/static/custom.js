@@ -98,6 +98,63 @@ YUI.add('custom', function(Y) {
                     radio.simulate('click');
                 }
             });
+        },
+
+        fieldError: function(field) {
+            if (!field) {
+                return;
+            }
+
+            if (!field.hasClass('error')) {
+                return;
+            }
+
+            var errorSpan = field.one('span.error');
+            var errorMessage = null;
+            if (errorSpan) {
+                errorMessage = errorSpan.getHTML();
+            }
+            if (!errorMessage) {
+                errorMessage = "unknown error";  /* ugh the user should never see this */
+            }
+
+            /* arg, this is the only way I could find to get the panel to render with a custom class */
+            var panelNode = Y.Node.create('<div class="field-error"><div class="yui3-widget-bd"><p>' + errorMessage + "</p></div></div>");
+
+            var errorPanel = new Y.Panel({
+                modal: false,
+                srcNode: panelNode,
+                zIndex: 100,
+                draggable: false,
+                buttons: {},
+
+                hideOn: [
+                    {
+                        eventName: 'clickoutside'
+                    }
+                ]
+            });
+
+            var alignTo = field;
+
+            if (field.hasClass("text")) {
+                // align to the input
+                var input = field.one('input');
+                if (input) {
+                    alignTo = input;
+                }
+            } else if (field.hasClass("radio")) {
+                // align to the chosen-radio display
+                var span = field.one('p');
+                if (span) {
+                    alignTo = span;
+                }
+            }
+            errorPanel.align(alignTo, [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]);
+            if (errorSpan) {
+                errorSpan.addClass('hidden');
+            }
+            errorPanel.render();
         }
     };
 }, '0.0.1', {

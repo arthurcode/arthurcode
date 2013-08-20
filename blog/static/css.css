@@ -1682,3 +1682,54 @@ body.receipt #bd div {
 .fb-like {
     float: right;
 }
+
+/* style pop-up form field errors (js)
+yui3-panel
+  yui3-panel-content
+     header, body, footer etc.
+*/
+
+.yui3-panel .field-error p {
+    font-size: 80%;
+    border: 3px solid red;
+    padding: 5px;
+    background: white;
+    line-height: 1.2em;
+    box-shadow: 3px 3px 3px;
+}
+
+.yui3-panel .field-error p:before {
+    content: ' ';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 15px solid transparent;
+    border-bottom-color: red;
+    top: -12px;
+    left: 10px;
+}
+
+.yui3-panel .field-error p:after {
+    content: ' ';
+    height: 0;
+    position: absolute;
+    width: 0;
+    border: 10px solid transparent;
+    border-bottom-color: white;
+    top: -1px;
+    left: 13px;
+}
+
+.yui3-panel .field-error {
+    border: none !important;
+    box-shadow: none !important;
+    background: transparent !important;
+}
+
+.yui3-panel > .field-error {
+    background: transparent !important;
+}
+
+.field-error .yui3-widget-bd {
+    padding: 15px 0 !important;
+}
