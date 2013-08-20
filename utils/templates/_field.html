@@ -8,10 +8,11 @@
         {# radio selects have a unique structure #}
         <fieldset>
             <legend>{{ field.label }}</legend>
-            <p>{{ field.label|capfirst }}: <span class="chosen-radio"></span></p>
+            {% field_label_tag field %}
+            <p><span class="chosen-radio"></span></p>
             {% for choice in field %}
                 {{ choice.tag }}
-                <label for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                <label class="choice" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
             {% endfor %}
             <div class="radio-images">{% block radio-images %}{% endblock %}</div>
         </fieldset>

@@ -1014,15 +1014,17 @@ div.add-to-cart .price .you-save {
 div.add-to-cart form {
     position: relative;
 }
-
 div.add-to-cart form label {
     float: left;
-    margin-bottom: 0.5em;
+}
+
+div.add-to-cart form label .label {
+    float: left;
 }
 
 div.add-to-cart form label span.error {
     float: left;
-    clear: left;
+    clear: right;
 }
 
 div.add-to-cart form .field {
@@ -1633,6 +1635,10 @@ body.receipt #bd div {
     clear: both;
 }
 
+.radio-images {
+    clear: both;
+}
+
 .radio-image {
     min-height: 15px;
     min-width: 15px;
@@ -1657,13 +1663,20 @@ body.receipt #bd div {
     border: 2px solid red;
 }
 
+.field.radio legend {
+    display: none;
+}
+
 .field.radio p {
-    height: 3em;
-    font-size: larger;
+    height: 2em;
+    float: left;
+    clear: both;
 }
 
 .chosen-radio {
     font-style: italic;
+    float: left;
+    clear: both;
 }
 
 .fb-like {

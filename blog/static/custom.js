@@ -41,8 +41,8 @@ YUI.add('custom', function(Y) {
                 return;
             }
 
-            // hide all of the ugly radio buttons in the form
-            form.all('div.radio label').each(function(o) {
+            // hide all of the ugly radio buttons in the form, except the first one
+            form.all('div.radio label.choice').each(function(o) {
                 o.addClass('hidden');
             });
 
