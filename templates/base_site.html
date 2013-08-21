@@ -46,8 +46,10 @@
                 {% csrf_token %}
                 <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
                 <fieldset>
-                    <label class="hidden" for="id_q">Search Text</label>
-                    <input type="text" name="q" id="id_q" required aria-required="true"><button type="submit" name="search" class="action">Search</button>
+                    <div class="field text">
+                        <label class="hidden" for="id_q">Search Text</label>
+                        <input type="text" name="q" id="id_q" required aria-required="true"><button type="submit" name="search" class="action">Search</button>
+                    </div>
                 </fieldset>
             </form>
         {% endblock %}
@@ -83,7 +85,8 @@
                         } else {
                             message = "Please type at least 3 characters in the search box";
                         }
-                        Y.Custom.messageBox(message, "Search Error").render();
+                        var field = searchBox.ancestor(".field");
+                        Y.Custom.setFieldError(field, message);
                     }
                 });
             }

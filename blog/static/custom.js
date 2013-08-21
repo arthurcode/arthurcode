@@ -155,6 +155,26 @@ YUI.add('custom', function(Y) {
                 errorSpan.addClass('hidden');
             }
             errorPanel.render();
+        },
+
+        setFieldError: function(field, errorMessage) {
+            if (!field) {
+                return;
+            }
+
+            field.addClass("error");
+            var errorSpan = field.one("span.error");
+            if (errorSpan) {
+                // span already exists, just swap out the message
+                errorSpan.setHTML(errorMessage);
+            } else {
+                var label = field.one('label');
+                if (label) {
+                    errorSpan = Y.Node.create("<span class='error'>" + errorMessage + "</span>");
+                    label.appendChild(errorSpan);
+                }
+            }
+            Y.Custom.fieldError(field);
         }
     };
 }, '0.0.1', {
