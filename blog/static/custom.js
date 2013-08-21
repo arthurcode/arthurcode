@@ -100,13 +100,18 @@ YUI.add('custom', function(Y) {
             });
         },
 
-        fieldError: function(field) {
+        fieldError: function(field, alignPoints) {
             if (!field) {
                 return;
             }
 
             if (!field.hasClass('error')) {
                 return;
+            }
+
+            if (!alignPoints) {
+                // by default align the error with the bottom left side of the input
+                alignPoints = [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]
             }
 
             var errorSpan = field.one('span.error');
@@ -116,6 +121,11 @@ YUI.add('custom', function(Y) {
             }
             if (!errorMessage) {
                 errorMessage = "unknown error";  /* ugh the user should never see this */
+            } else {
+                errorMessage = errorMessage.trim();
+                if (errorMessage.substring(0, 1) == "*") {
+                    errorMessage = errorMessage.substring(1);
+                }
             }
 
             /* arg, this is the only way I could find to get the panel to render with a custom class */
@@ -144,13 +154,13 @@ YUI.add('custom', function(Y) {
                     alignTo = input;
                 }
             } else if (field.hasClass("radio")) {
-                // align to the chosen-radio display
-                var span = field.one('p');
-                if (span) {
-                    alignTo = span;
+                // align to the label
+                var label = field.one('label');
+                if (label) {
+                    alignTo = label;
                 }
             }
-            errorPanel.align(alignTo, [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]);
+            errorPanel.align(alignTo, alignPoints);
             if (errorSpan) {
                 errorSpan.addClass('hidden');
             }
