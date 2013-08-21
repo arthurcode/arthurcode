@@ -59,6 +59,10 @@ h2 {
     visibility: hidden;
 }
 
+.subtle {
+    font-size: 80%;
+}
+
 button {
     cursor: pointer;
 }
@@ -187,6 +191,10 @@ body {
 
 a:link, a:visited {
     color: black;
+}
+
+a.standard:link, a.standard:visited {
+    color: blue;
 }
 
 #bd {
