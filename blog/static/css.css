@@ -1690,12 +1690,16 @@ yui3-panel
 */
 
 .yui3-panel .field-error p {
-    font-size: 80%;
-    border: 3px solid red;
-    padding: 5px;
-    background: white;
+    font-size: 14px;
+    border: 1px solid red;
+    padding: 10px;
     line-height: 1.2em;
-    box-shadow: 3px 3px 3px;
+     box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.80);
+    -moz-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.80);
+    -webkit-box-shadow: 0px 0px 6px rgba(0, 0, 0, 0.80);
+    border-radius: 10px;
+    max-width: 400px;
+    background: #ffcccc;
 }
 
 .yui3-panel .field-error p:before {
@@ -1705,7 +1709,7 @@ yui3-panel
     width: 0;
     border: 15px solid transparent;
     border-bottom-color: red;
-    top: -12px;
+    top: -15px;
     left: 10px;
 }
 
@@ -1714,10 +1718,10 @@ yui3-panel
     height: 0;
     position: absolute;
     width: 0;
-    border: 10px solid transparent;
-    border-bottom-color: white;
-    top: -1px;
-    left: 13px;
+    border: 14px solid transparent;
+    border-bottom-color:#ffcccc;
+    top: -12px;
+    left: 11px;
 }
 
 .yui3-panel .field-error {
