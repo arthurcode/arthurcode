@@ -47,7 +47,7 @@
                 <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
                 <fieldset>
                     <label class="hidden" for="id_q">Search Text</label>
-                    <input type="text" name="q" id="id_q"><button type="submit" name="search" class="action">Search</button>
+                    <input type="text" name="q" id="id_q" required aria-required="true"><button type="submit" name="search" class="action">Search</button>
                 </fieldset>
             </form>
         {% endblock %}
