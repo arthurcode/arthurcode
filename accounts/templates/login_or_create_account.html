@@ -13,7 +13,7 @@
             {% field auth_form.email %}
             {% field auth_form.password %}
             <div class="controls">
-                <button type="submit" name="login" class="yui3-button">{% block login-button %}Log In{% endblock %}</button>
+                <button type="submit" name="login" class="action">{% block login-button %}Log In{% endblock %}</button>
             </div>
         </form>
         <a href="{% url account_reset_password %}">forgot your password?</a>
@@ -35,7 +35,7 @@
                 {% field create_form.on_mailing_list %}
             {% endwith %}
             <div class="controls">
-                <button type="submit" name="create" class="yui3-button">{% block create-button %}Create Account{% endblock %}</button>
+                <button type="submit" name="create" class="action">{% block create-button %}Create Account{% endblock %}</button>
             </div>
         </form>
     </div>
