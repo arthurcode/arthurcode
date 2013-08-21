@@ -1016,6 +1016,7 @@ div.add-to-cart form {
 }
 div.add-to-cart form label {
     float: left;
+    font-size: larger;
 }
 
 div.add-to-cart form label .label {
@@ -1681,6 +1682,7 @@ body.receipt #bd div {
 
 .fb-like {
     float: right;
+    width: 150px;  /* fixing the width prevents the page from 'jumping-around' as the fb widget loads */
 }
 
 /* style pop-up form field errors (js)
@@ -1711,6 +1713,14 @@ yui3-panel
     border-bottom-color: red;
     top: -15px;
     left: 10px;
+}
+
+.yui3-panel .field-error p span:before {
+    content: '! ';
+    font-size: 200%;
+    color: red;
+    height: 40px;
+    width: 40px;
 }
 
 .yui3-panel .field-error p:after {

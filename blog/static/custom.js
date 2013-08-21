@@ -129,7 +129,7 @@ YUI.add('custom', function(Y) {
             }
 
             /* arg, this is the only way I could find to get the panel to render with a custom class */
-            var panelNode = Y.Node.create('<div class="field-error"><div class="yui3-widget-bd"><p>' + errorMessage + "</p></div></div>");
+            var panelNode = Y.Node.create('<div class="field-error"><div class="yui3-widget-bd"><p><span>' + errorMessage + "</span></p></div></div>");
 
             var errorPanel = new Y.Panel({
                 modal: false,
