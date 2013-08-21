@@ -95,7 +95,7 @@
                         <form method="post" action="." class="update-cart">
                             {% csrf_token %}
                             {{ item.update_form.item_id }}
-                            {% field_label_tag item.update_form.quantity %} {% aria_required_field item.update_form.quantity %}
+                            {% field item.update_form.quantity %}
                             <button type="submit" name="Update" class="link">update quantity</button>
                         </form>
                     </td>
@@ -124,4 +124,14 @@
     {% if continue_shopping_url %}
         <a href="{{ continue_shopping_url }}">Continue Shopping</a>
     {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    <script type="text/javascript">
+        YUI().use('node', 'custom', function(Y) {
+            Y.all('table .field.error').each(function(field) {
+                Y.Custom.fieldError(field);
+            });
+        });
+    </script>
 {% endblock %}
