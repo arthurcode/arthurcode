@@ -269,6 +269,47 @@
                 })
             }
 
+            // custom add-to-cart form validation
+            var form = Y.one('.add-to-cart form');
+            if (form) {
+                var button = form.one('button.action');
+                if (button) {
+                    button.on('click', function(e) {
+                        var found_error = false;
+                        form.all('fieldset').each(function(fieldset) {
+                            // make sure that an option has been selected
+                            var selected = fieldset.one('.radio-image.selected');
+                            if (!selected) {
+                                found_error = true;
+                                var message = "Please choose a " + fieldset.one('legend').getHTML().toLowerCase();
+                                Y.Custom.setFieldError(fieldset.ancestor('.field'), message);
+                            }
+                        });
+                        var quantity_input = form.one('input#id_quantity');
+                        var quantity = quantity_input.get('value');
+                        var field = quantity_input.ancestor('.field');
+
+                        if (!quantity) {
+                            found_error = true;
+                            Y.Custom.setFieldError(field, "Please enter a quantity");
+                        } else {
+                            var int_quantity = parseInt(quantity);
+                            if (!int_quantity || int_quantity < 1) {
+                                found_error = true;
+                                Y.Custom.setFieldError(field, "Please enter a number larger than zero");
+                            }
+                        }
+                        if (found_error) {
+                            e.preventDefault()
+                        }
+                    });
+                }
+
+                // make all errors in the add-to-cart form pop up like tooltips
+                form.all('.field.error').each(function(field) {
+                    Y.Custom.fieldError(field);
+                });
+            }
         });
     </script>
 {% endblock %}
