@@ -589,7 +589,14 @@ div#comments > ul {
  *  FORM STYLES
  ************************************/
 
-/* General form styles */
+/* General form styles.  By default my form labels & inputs are aligned vertically */
+
+form input {
+    border-radius: 0;
+    padding: 4px 10px;
+    border-top: 2px solid gray;
+    border-left: 2px solid gray;
+}
 
 form input.quantity {
     width: 1.5em; /* large enough for 2 digits */
@@ -628,12 +635,13 @@ form span.error {
     float: left;         /* float-to-fix-a-float */
     clear: both;         /* stack fields vertically */
     width: 100%;
-    margin: 0.25em 0 !important; /* required for the alignment to work properly */
+    margin: 0.5em 0 !important; /* required for the alignment to work properly */
     padding: 0 !important;
 }
 
 label {
     padding: 0;
+    line-height: 1.2em;
 }
 
 /* styles for checkbox fields */
@@ -642,19 +650,18 @@ label {
 }
 
 .field.checkbox input {
+    position: absolute;
     width: 15px;
     padding: 0;
-    margin: 1% 2% 0 20%;  /* trying to vertically center the darn thing, it still drifts with font size */
+    top: 3px;
+    left: 0;
     float: left;
-    clear: left;
-}
-
-form.stacked .field.checkbox input {
-    margin-left: 0;
 }
 
 .field.checkbox label {
     float: left;
+    margin-left: 25px;
+    margin-top: 0 !important;
 }
 
 .field.radio input {
@@ -1766,12 +1773,4 @@ yui3-panel
 
 .field-error .yui3-widget-bd {
     padding: 15px 0 !important;
-}
-
-/* General form styles */
-form input {
-    border-radius: 0;
-    padding: 4px 10px;
-    border-top: 2px solid gray;
-    border-left: 2px solid gray;
 }
