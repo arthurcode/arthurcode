@@ -1767,3 +1767,11 @@ yui3-panel
 .field-error .yui3-widget-bd {
     padding: 15px 0 !important;
 }
+
+/* General form styles */
+form input {
+    border-radius: 0;
+    padding: 4px 10px;
+    border-top: 2px solid gray;
+    border-left: 2px solid gray;
+}
