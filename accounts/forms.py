@@ -27,7 +27,7 @@ class CustomerCreationForm(UserCreationForm):
     email = forms.EmailField(required=True)
     email2 = forms.EmailField(required=True, label="Email Confirmation",
                               help_text="Enter the same email as above, for verification.")
-    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False)
+    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
 
     def __init__(self, *args, **kwargs):
         super(CustomerCreationForm, self).__init__(*args, **kwargs)
