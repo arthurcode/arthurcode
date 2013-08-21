@@ -81,9 +81,9 @@
                         e.preventDefault();
                         var message = "";
                         if (searchText.length == 0) {
-                            message = "You need to add some text to the search box before you can perform a search";
+                            message = "Enter a search word or phrase";
                         } else {
-                            message = "Please type at least 3 characters in the search box";
+                            message = "Type at least 3 characters in the search box";
                         }
                         var field = searchBox.ancestor(".field");
                         Y.Custom.setFieldError(field, message);
