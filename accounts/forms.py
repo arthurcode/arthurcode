@@ -86,7 +86,9 @@ class CustomerCreationForm(UserCreationForm):
                         self.errors['email'] = self.error_class([u'Sorry, we were unable to generate a unique username from '
                                                                 u'this email address. You will need to register with'
                                                                 u' a different email address.'])
-                raise e
+                else:
+                    # only the count the error against the username field if it's not a uniqueness kind of error
+                    raise e
         else:
             return super(CustomerCreationForm, self).clean_username()
 
