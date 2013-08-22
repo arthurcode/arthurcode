@@ -90,7 +90,8 @@ class CustomerCreationForm(UserCreationForm):
                     # only the count the error against the username field if it's not a uniqueness kind of error
                     raise e
         else:
-            return super(CustomerCreationForm, self).clean_username()
+            # the email field is invalid, so don't even bother cleaning the username, there's no way it could be legit
+            return None
 
     def save(self, commit=True):
         """
