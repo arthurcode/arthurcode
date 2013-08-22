@@ -1,5 +1,7 @@
 {% extends "login_or_create_account.html" %}
 
 {% block login-button %}Log In and Checkout{% endblock %}
-{% block create-button %}Create Account and Checkout{% endblock %}
 {% block guest-button %}Checkout As Guest{% endblock %}
+{% block guest_extra %}
+    <p class="subtle"><br>(You will have the option to create an account after checking out)</p>
+{% endblock %}
