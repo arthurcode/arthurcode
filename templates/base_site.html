@@ -69,7 +69,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('node', 'event', 'custom', function(Y) {
+        YUI().use('node', 'event', 'custom', 'panel', function(Y) {
 
             // use interactive help
             Y.all('.field span.help-text').each(function(help_span) {
@@ -78,6 +78,26 @@
                 var help_node = Y.Node.create('<img class="help" src="{{ STATIC_URL }}icons/help.png">');
                 var field = help_span.ancestor('.field');
                 field.appendChild(help_node);
+
+                help_node.on('click', function(e) {
+
+                    /* arg, this is the only way I could find to get the panel to render with a custom class */
+                    var panelNode = Y.Node.create('<div class="field-help"><div class="yui3-widget-bd"><p><span>' + help_text + "</span></p></div></div>");
+
+                    var panel = new Y.Panel({
+                        srcNode: panelNode,
+                        modal: false,
+                        zIndex: 100,
+                        hideOn: [
+                            {
+                                eventName: 'clickoutside'
+                            }
+                        ],
+                        buttons: []
+                    });
+                    panel.align(e.target, [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC]);
+                    panel.render();
+                });
             });
 
 
