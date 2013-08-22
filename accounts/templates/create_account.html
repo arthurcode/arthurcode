@@ -5,8 +5,9 @@
 {% block title %}Create Account{% endblock %}
 
 {% block body %}
+    <div class="create-account">
     <h2>Create an Account</h2>
-    <span class="subtle">(Already registered? <a class="standard" href="{% url login_or_create_account %}{% if next %}?nex={{ next }}{% endif %}">Log In</a>)</span>
+    <span class="subtle login">(Already registered? <a class="standard" href="{% url login_or_create_account %}{% if next %}?nex={{ next }}{% endif %}">Log In</a>)</span>
     {% form_errors create_form %}
     <form method="post" action="{% if next %}?next={{ next }}{% endif %}" class="create-account">
         {% csrf_token %}
@@ -25,4 +26,5 @@
             <button type="submit" name="create" class="action">{% block create-button %}Create Account{% endblock %}</button>
         </div>
     </form>
+    </div>
 {% endblock %}

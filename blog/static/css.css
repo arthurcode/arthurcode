@@ -621,6 +621,7 @@ form span.error, form span.required-text, form span.optional-text, form span.hel
     padding: 8px;
     line-height: 1.3em;
     float: left;
+    clear: both;
 }
 
 /* display form errors in red */
@@ -1193,7 +1194,7 @@ div.login {
     padding: 10px 20px 10px 10px;
 }
 
-div.login h2 {
+div.login > h2 {
     display: inline;
     float: left;
     font-size: 150%;
@@ -1208,6 +1209,16 @@ div.login .reset-password {
     float: left;
     clear: both;
     margin-top: 20px;
+}
+
+div.create-account span.login {
+    margin-left: 10px;
+    float: left;
+}
+
+div.create-account > h2 {
+    display: inline;
+    float: left;
 }
 
 div.guest {
