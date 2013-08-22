@@ -630,6 +630,10 @@ form span.error {
     outline: 1px solid red;  /* border doesn't seem to work for checkboxes */
 }
 
+form {
+    float: left;  /* float to fix a float */
+}
+
 .field {
     position: relative;  /* need to absolutely position a few of it's children */
     float: left;         /* float-to-fix-a-float */
@@ -1172,10 +1176,36 @@ form.create-account .required-text, form.login .required-text {
     display: none;
 }
 
-a.guest {
+form.login {
+    clear: both;
+}
+
+div.login {
     float: left;
-    clear: left;
-    width: 30%;
+    border-right: 1px solid lightgray;
+    padding: 10px 20px 10px 10px;
+}
+
+div.login h2 {
+    display: inline;
+    float: left;
+    font-size: 150%;
+}
+
+div.login .create-account {
+    float: left;
+    margin-left: 10px;
+}
+
+div.login .reset-password {
+    float: left;
+    clear: both;
+    margin-top: 20px;
+}
+
+div.guest {
+    float: left;
+    padding: 10px 10px 10px 20px;
 }
 
 /* checkout styles */

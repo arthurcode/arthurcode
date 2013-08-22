@@ -5,19 +5,23 @@
 {% block title %}Log In{% endblock %}
 
 {% block body %}
-    <h2>Log In</h2>
-    <span class="subtle">(Not registered? <a class="standard" href="{% url create_account %}">Create an Account</a>)</span>
-    {% form_errors auth_form %}
-    <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login">
-        {% csrf_token %}
-        {% field auth_form.email %}
-        {% field auth_form.password %}
-        <div class="controls">
-            <button type="submit" name="login" class="action">{% block login-button %}Log In{% endblock %}</button>
-        </div>
-    </form>
-    <a class="standard subtle" href="{% url account_reset_password %}">forgot your password?</a>
-    {% block guest-passthrough %}
-        <a class="guest action" href="{{ next }}?guest=True">{% block guest-button %}{% endblock %}</a>
-    {% endblock %}
+    <div class="login">
+        <h2>Log In</h2>
+        <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}">Create an Account</a>)</span>
+        {% form_errors auth_form %}
+        <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login">
+            {% csrf_token %}
+            {% field auth_form.email %}
+            {% field auth_form.password %}
+            <div class="controls">
+                <button type="submit" name="login" class="action">{% block login-button %}Log In{% endblock %}</button>
+            </div>
+        </form>
+        <a class="standard subtle reset-password" href="{% url account_reset_password %}">forgot your password?</a>
+    </div>
+    <div class="guest">
+        {% block guest-passthrough %}
+            <p><h2>... OR</h2><a class="guest action" href="{{ next }}?guest=True">{% block guest-button %}{% endblock %}</a></p>
+        {% endblock %}
+    </div>
 {% endblock %}
