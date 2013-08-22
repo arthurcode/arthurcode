@@ -1168,17 +1168,7 @@ div.error-list {
 
 /* account login styles */
 
-div.create-account, div.login {
-    float: left;
-    display: inline-block;
-    width: 20em;
-}
-
-div.login {
-    margin-right: 2em;
-}
-
-div.create-account .required-text, div.login .required-text {
+form.create-account .required-text, form.login .required-text {
     display: none;
 }
 

@@ -2,43 +2,21 @@
 {% load form_tags %}
 {% load lazysignup_tags %}
 
-{% block title %}Log In or Create Account{% endblock %}
+{% block title %}Log In{% endblock %}
 
 {% block body %}
-    <div class='login'>
-        <h2>Log In (existing users)</h2>
-        {% form_errors auth_form %}
-        <form method="post" action="{% url login_or_create_account %}?next={{ next }}" class="stacked">
-            {% csrf_token %}
-            {% field auth_form.email %}
-            {% field auth_form.password %}
-            <div class="controls">
-                <button type="submit" name="login" class="action">{% block login-button %}Log In{% endblock %}</button>
-            </div>
-        </form>
-        <a class="standard subtle" href="{% url account_reset_password %}">forgot your password?</a>
-    </div>
-    <div class='create-account'>
-        <h2>Create an Account (new users)</h2>
-        {% form_errors create_form %}
-        <form method="post" action="{% url login_or_create_account %}?next={{ next }}" class="stacked">
-            {% csrf_token %}
-            {% with request.user|is_lazy_user as lazy %}
-                {% if lazy and request.user.email %}
-                    {% readonly_field create_form.email %}
-                {% else %}
-                    {% field create_form.email %}
-                    {% field create_form.email2 %}
-                {% endif %}
-                {% field create_form.password1 %}
-                {% field create_form.password2 %}
-                {% field create_form.on_mailing_list %}
-            {% endwith %}
-            <div class="controls">
-                <button type="submit" name="create" class="action">{% block create-button %}Create Account{% endblock %}</button>
-            </div>
-        </form>
-    </div>
+    <h2>Log In</h2>
+    <span class="subtle">(Not registered? <a class="standard" href="{% url create_account %}">Create an Account</a>)</span>
+    {% form_errors auth_form %}
+    <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login">
+        {% csrf_token %}
+        {% field auth_form.email %}
+        {% field auth_form.password %}
+        <div class="controls">
+            <button type="submit" name="login" class="action">{% block login-button %}Log In{% endblock %}</button>
+        </div>
+    </form>
+    <a class="standard subtle" href="{% url account_reset_password %}">forgot your password?</a>
     {% block guest-passthrough %}
         <a class="guest action" href="{{ next }}?guest=True">{% block guest-button %}{% endblock %}</a>
     {% endblock %}

@@ -35,48 +35,25 @@ def login_or_create_account(request,
     Displays the login form and handles the login action.  Largely copied from the built-in auth login/ view.
     """
     redirect_to = _get_redirect_url(request, redirect_field_name)
-    auth_form = None
-    create_form = None
-
     if request.method == "POST":
         postdata = request.POST.copy()
-        if u'login' in postdata:
-            auth_form = CustomerAuthenticationForm(data=postdata)
-            if auth_form.is_valid():
-                # Okay, security check complete. Log the user in.
-                auth_login(request, auth_form.get_user())
+        auth_form = CustomerAuthenticationForm(data=postdata)
+        if auth_form.is_valid():
+            # Okay, security check complete. Log the user in.
+            auth_login(request, auth_form.get_user())
 
-                if request.session.test_cookie_worked():
-                    request.session.delete_test_cookie()
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
 
-                return HttpResponseRedirect(redirect_to)
-        elif u'create' in postdata:
-            create_form = _customer_creation_form(request, data=postdata)
-            if create_form.is_valid():
-                # Okay, security check complete. Create the new user and log them in.
-                username = create_form.cleaned_data['username']
-                password = create_form.cleaned_data['password2']
-                if isinstance(create_form, ConvertLazyUserForm):
-                    LazyUser.objects.convert(create_form)
-                else:
-                    create_form.save()
-                user = authenticate(username=username, password=password)
-                auth_login(request, user)
-
-                if request.session.test_cookie_worked():
-                    request.session.delete_test_cookie()
-
-                return HttpResponseRedirect(redirect_to)
-
-    auth_form = auth_form or CustomerAuthenticationForm(request)
-    create_form = create_form or _customer_creation_form(request)
+            return HttpResponseRedirect(redirect_to)
+    else:
+        auth_form = CustomerAuthenticationForm(request)
 
     request.session.set_test_cookie()
     current_site = get_current_site(request)
 
     context = {
         'auth_form': auth_form,
-        'create_form': create_form,
         redirect_field_name: redirect_to,
         'site': current_site,
         'site_name': current_site.name,
@@ -114,6 +91,43 @@ def _get_redirect_url(request, redirect_field_name=REDIRECT_FIELD_NAME):
     if not is_safe_url(url=redirect_to, host=request.get_host()):
         redirect_to = settings.LOGIN_REDIRECT_URL
     return redirect_to
+
+
+@sensitive_post_parameters()
+@csrf_protect
+@never_cache
+def create_account(request):
+    next = request.GET.get('next', None)
+    if request.method == "POST":
+        postdata = request.POST.copy()
+        create_form = _customer_creation_form(request, data=postdata)
+        if create_form.is_valid():
+            # Okay, security check complete. Create the new user and log them in.
+            username = create_form.cleaned_data['username']
+            password = create_form.cleaned_data['password2']
+            if isinstance(create_form, ConvertLazyUserForm):
+                LazyUser.objects.convert(create_form)
+            else:
+                create_form.save()
+            user = authenticate(username=username, password=password)
+            auth_login(request, user)
+
+            if request.session.test_cookie_worked():
+                request.session.delete_test_cookie()
+
+            redirect_to = _get_redirect_url(request, 'next')
+            return HttpResponseRedirect(redirect_to)
+    else:
+        create_form = _customer_creation_form(request)
+
+    request.session.set_test_cookie()
+
+    context = {
+        'create_form': create_form,
+        'next': next,
+    }
+    return render_to_response('create_account.html', context, context_instance=RequestContext(request))
+
 
 @login_required
 def create_public_profile(request):
