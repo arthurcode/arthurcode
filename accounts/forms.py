@@ -14,6 +14,24 @@ from utils.forms import CanadaShippingForm, BillingForm
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales. (You can unsubscribe at any time)"
 
+EMAIL_INPUT_SIZE = 30        # visible size
+EMAIL_MAXLENGTH = 75   # actual character maximum
+
+FIRST_NAME_INPUT_SIZE = 30
+FIRST_NAME_MAXLENGTH = 30
+
+LAST_NAME_INPUT_SIZE = 30
+LAST_NAME_MAXLENGTH = 30
+
+PHONE_INPUT_SIZE = 12
+PHONE_MAXLENGTH = 20
+
+DEFAULT_EMAIL_WIDGET = forms.TextInput(attrs={'size': EMAIL_INPUT_SIZE, 'maxlength': EMAIL_MAXLENGTH})
+DEFAULT_NAME_WIDGET = forms.TextInput(attrs={'size': FIRST_NAME_INPUT_SIZE, 'maxlength': FIRST_NAME_MAXLENGTH})
+DEFAULT_PHONE_WIDGET = forms.TextInput(attrs={'size': PHONE_INPUT_SIZE, 'maxlength': PHONE_MAXLENGTH})
+DEFAULT_PASSWORD_WIDGET = forms.PasswordInput(attrs={'size': 30, 'maxlength': 125})
+
+
 def username_from_email(email):
     md5 = hashlib.md5(email.lower())
     return md5.hexdigest()[:30]  # max 30 characters
@@ -24,15 +42,18 @@ class CustomerCreationForm(UserCreationForm):
     A user creation form that requires an email instead of a username.  We attempt to generate a unique username
     from the email address using an md5 hash algorithm.
     """
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, widget=DEFAULT_EMAIL_WIDGET)
     email2 = forms.EmailField(required=True, label="Email Confirmation",
-                              help_text="Enter the same email as above, for verification.")
+                              help_text="Enter the same email as above, for verification.",
+                              widget=DEFAULT_EMAIL_WIDGET)
     on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
 
     def __init__(self, *args, **kwargs):
         super(CustomerCreationForm, self).__init__(*args, **kwargs)
         # the username field won't be displayed on the form, it will be given a default (generated) value
         self.fields['username'].required = False
+        self.fields['password1'].widget = DEFAULT_PASSWORD_WIDGET
+        self.fields['password2'].widget = DEFAULT_PASSWORD_WIDGET
         # make sure the username is cleaned last, since it depends on email
         self.fields.keyOrder = ['email', 'email2', 'on_mailing_list', 'password1', 'password2', 'username']
 
@@ -110,11 +131,12 @@ class ConvertLazyUserForm(CustomerCreationForm):
 
 class CustomerAuthenticationForm(AuthenticationForm):
 
-    email = forms.EmailField(required=True)
+    email = forms.EmailField(required=True, widget=DEFAULT_EMAIL_WIDGET)
 
     def __init__(self, *args, **kwargs):
         super(CustomerAuthenticationForm, self).__init__(*args, **kwargs)
         self.fields['username'].required = False
+        self.fields['password'].widget = DEFAULT_PASSWORD_WIDGET
         self.fields.keyOrder = ['email', 'password', 'username']
         self.error_messages['invalid_login'] = u'Incorrect email/password combination. Note that both fields are case sensitive.'
 
@@ -249,14 +271,14 @@ class ContactInfoForm(forms.Form):
 
     ERROR_PHONE_REQUIRED = u"A phone number is required because you selected 'Phone' as your preferred contact method."
 
-    first_name = forms.CharField(max_length=30, required=True)  # 30 is the max length set by User
-    last_name = forms.CharField(max_length=30, required=True)   # 30 is the max length set by User
-    email = forms.EmailField(required=True)
-    email2 = forms.EmailField(required=True, label="Retype Email")
+    first_name = forms.CharField(max_length=30, required=True, widget=DEFAULT_NAME_WIDGET)  # 30 is the max length set by User
+    last_name = forms.CharField(max_length=30, required=True, widget=DEFAULT_NAME_WIDGET)   # 30 is the max length set by User
+    email = forms.EmailField(required=True, widget=DEFAULT_EMAIL_WIDGET)
+    email2 = forms.EmailField(required=True, label="Retype Email", widget=DEFAULT_EMAIL_WIDGET)
     contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
                                        widget=forms.RadioSelect,
                                        label="If there is a problem with your order how should we contact you?")
-    phone = forms.CharField(max_length=20, required=False)
+    phone = forms.CharField(max_length=20, required=False, widget=DEFAULT_PHONE_WIDGET)
     on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
 
     def __init__(self, request, *args, **kwargs):
