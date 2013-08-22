@@ -99,6 +99,7 @@ def form_errors(form, unique=False):
     field-specific errors (may be desirable for very short forms) pass unique=True.
     """
     error_list = []
+    hidden_field_errors = False
     # put the most general errors at the beginning of the list
     if form.errors:
         if '__all__' in form.errors:
@@ -112,13 +113,20 @@ def form_errors(form, unique=False):
             for k,errors in form.errors.items():
                 if k == '__all__':
                     continue
-                field_name = form.fields[k].label or k
+                field = form.fields[k]
+                if field.widget.is_hidden:
+                    hidden_field_errors = True
+                    continue
+                field_name = field.label or k
                 field_name = field_name.capitalize()
                 if isinstance(errors, ErrorList):
                     for e in errors:
                         error_list.append("%s: %s" % (field_name, unicode(e)))
                 else:
                     error_list.append("%s: %s" % (field_name, unicode(errors)))
+        if len(error_list) == 0 and hidden_field_errors:
+            # we need to display a vague error message
+            error_list.append("Internal error - form did not submit and no changes were saved.")
     return {'error_list': error_list}
 
 @register.inclusion_tag("_readonly_field.html")
