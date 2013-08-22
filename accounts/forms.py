@@ -54,6 +54,8 @@ class CustomerCreationForm(UserCreationForm):
         self.fields['username'].required = False
         self.fields['password1'].widget = DEFAULT_PASSWORD_WIDGET
         self.fields['password2'].widget = DEFAULT_PASSWORD_WIDGET
+        self.fields['password2'].label = "Retype Password"
+        self.fields['email2'].label = "Retype Email"
         # make sure the username is cleaned last, since it depends on email
         self.fields.keyOrder = ['email', 'email2', 'on_mailing_list', 'password1', 'password2', 'username']
 
