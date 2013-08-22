@@ -7,7 +7,7 @@
 {% block body %}
     <div class="login">
         <h2>Log In</h2>
-        <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}">Create an Account</a>)</span>
+        <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}{% if next %}?nex={{ next }}{% endif %}">Create an Account</a>)</span>
         {% form_errors auth_form %}
         <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login">
             {% csrf_token %}
