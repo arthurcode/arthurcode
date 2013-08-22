@@ -623,11 +623,11 @@ form span.error {
 
 /* when a field has an error but a red border around the input */
 .field.error textarea, .field.error input, .field.error.radio fieldset, .field.error select {
-    border: 1px solid red;
+    border: 2px solid red;
 }
 
 .field.error input[type='checkbox'] {
-    outline: 1px solid red;  /* border doesn't seem to work for checkboxes */
+    outline: 2px solid red;  /* border doesn't seem to work for checkboxes */
 }
 
 form {
