@@ -42,8 +42,15 @@ def field_label_tag(field):
     if field.field.help_text:
         text += " <span class='help-text'>%s</span>" % unicode(field.field.help_text)
 
-    if field._errors():
-        text += " <span class='error'>%s</span>" % field._errors().as_text()
+    errors = field._errors()
+    if errors:
+        error_img_src = "/static/icons/error.png"  # TODO: this is not robust!  This needs to be turned into an inclusion tag
+        if len(errors) == 1:
+            # avoid that horrible '*' at the front of the message
+            error_text = unicode(errors[0])
+        else:
+            error_text = errors.as_text()
+        text += " <span class='error'><img class='error' src='%s'>%s</span>" % (error_img_src, error_text)
 
     return "<label%s>%s</label>" % (match.group('attrs'), text)
 

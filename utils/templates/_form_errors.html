@@ -1,5 +1,6 @@
 {% if error_list %}
     <ul class="errorlist">
+        <h2>Please correct the following error{{ error_list|pluralize }}:</h2>
         {% for error in error_list %}
             <li>{{ error }}</li>
         {% endfor %}

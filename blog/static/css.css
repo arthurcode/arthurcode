@@ -499,6 +499,12 @@ ul.feeds li {
     padding-left: 20px;
 }
 
+span.error img.error {
+    height: 15px;
+    width: 15px;
+    padding-right: 4px;
+}
+
 ul.errorlist li {
     background-image: url('icons/error.png');
     background-size: 20px 20px;
@@ -614,6 +620,7 @@ form span.error, form span.required-text, form span.optional-text, form span.hel
     background-color: #ffcccc;
     padding: 8px;
     line-height: 1.3em;
+    float: left;
 }
 
 /* display form errors in red */
