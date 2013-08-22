@@ -622,11 +622,13 @@ form span.error, form span.required-text, form span.optional-text, form span.hel
     line-height: 1.3em;
     float: left;
     clear: both;
+    margin-bottom: 1em;
 }
 
 /* display form errors in red */
 form span.error {
     color: red;
+    display: block;  /* by default they are on their own line */
 }
 
 /* when a field has an error but a red border around the input */
@@ -647,7 +649,7 @@ form {
     float: left;         /* float-to-fix-a-float */
     clear: both;         /* stack fields vertically */
     width: 100%;
-    margin: 0.5em 0 !important; /* required for the alignment to work properly */
+    margin: 0.75em 0 !important; /* required for the alignment to work properly */
     padding: 0 !important;
 }
 
@@ -690,6 +692,13 @@ form .controls {
     float: left;
     clear: both;
     width: 100%;
+}
+
+.field img.help {
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    opacity: 0.75;    /* tone the image down a little bit */
 }
 
 /* Styles for HORIZONTAL forms */

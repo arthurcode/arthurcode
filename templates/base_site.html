@@ -70,6 +70,32 @@
     {{ block.super }}
     <script type="text/javascript">
         YUI().use('node', 'event', 'custom', function(Y) {
+
+            // use interactive help
+            Y.all('.field span.help-text').each(function(help_span) {
+                help_span.addClass('hidden'); // TODO: should be visible to screen readers but not occupy space in DOM
+                var help_text = help_span.getHTML();
+                var help_node = Y.Node.create('<img class="help" src="{{ STATIC_URL }}icons/help.png">');
+                var field = help_span.ancestor('.field');
+                field.appendChild(help_node);
+            });
+
+
+            // monkey with the positioning of the error messages in form fields.  As it is they are great for screen
+            // readers but difficult to style
+            Y.all('.field.error').each(function(field) {
+                var errorSpan = field.one('label span.error');
+                if (!errorSpan) {
+                    return;
+                }
+                var newErrorSpan = Y.Node.create('<span class="error">' + errorSpan.getHTML() + '</span>');
+                field.appendChild(newErrorSpan);
+                errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
+            });
+
+
+
+
             // add some simple client-side validation to the search bar
             var searchButton = Y.one("form#search button");
             if (searchButton) {
