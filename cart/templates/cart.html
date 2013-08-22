@@ -92,6 +92,7 @@
                         {{ item.quantity }}
                     </td>
                     <td>
+                        {% form_errors item.update_form unique=1 %}
                         <form method="post" action="." class="update-cart">
                             {% csrf_token %}
                             {{ item.update_form.item_id }}
