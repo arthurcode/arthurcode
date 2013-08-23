@@ -20,7 +20,7 @@
         <h2>Shipping Address for '{{ selected_nickname }}'</h2>
     {% endif %}
     {% form_errors form %}
-    <form method="post" action="">
+    <form method="post" action="" class="shipping">
         {% csrf_token %}
         {{ form.address_id }}
         {{ form.country }}

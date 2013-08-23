@@ -608,7 +608,7 @@ form {
                      override this value so that the form is pleasing to the eye. */
 }
 
-form input {
+form input, form select {
     border-radius: 0;
     padding: 4px 10px;
     border-top: 2px solid gray;
@@ -1907,4 +1907,8 @@ yui3-panel
     top: 50%;
     margin-top: -14px;
     left: -12px;
+}
+
+form.shipping .required-text {
+    display: None;
 }
