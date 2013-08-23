@@ -244,8 +244,8 @@
             if (field) {
                 var incrementor = Y.Node.create("<button type='button'>+</button>");
                 var decrementor = Y.Node.create("<button type='button'>-</button>");
-                field.append(incrementor);
-                field.append(decrementor);
+                field.one('.column1').append(incrementor);
+                field.one('.column1').append(decrementor);
 
                 incrementor.on("click", function(e) {
                     var input = field.one("input");

@@ -72,12 +72,12 @@
         YUI().use('node', 'event', 'custom', 'panel', function(Y) {
 
             // use interactive help
-            Y.all('.field span.help-text').each(function(help_span) {
+            Y.all('.field label span.help-text').each(function(help_span) {
                 help_span.addClass('hidden'); // TODO: should be visible to screen readers but not occupy space in DOM
                 var help_text = help_span.getHTML();
                 var help_node = Y.Node.create('<img class="help" src="{{ STATIC_URL }}icons/help.png">');
-                var field = help_span.ancestor('.field');
-                field.appendChild(help_node);
+                var column2 = help_span.ancestor('.field').one('.column2');
+                column2.appendChild(help_node);
 
                 help_node.on('mouseover', function(e) {
 

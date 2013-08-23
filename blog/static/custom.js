@@ -201,7 +201,7 @@ YUI.add('custom', function(Y) {
                 return;
             }
             var newErrorSpan = Y.Node.create('<span class="error">' + errorSpan.getHTML() + '</span>');
-            field.appendChild(newErrorSpan);
+            field.one('.column1').appendChild(newErrorSpan);
             errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
         }
     };

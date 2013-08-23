@@ -1,22 +1,27 @@
 {% load form_tags %}
 
 <div class="field {% field_class field %}{% if field.errors %} error{% endif %}">
-    {% if field|is_checkbox %}
-        {# easier to style if the input comes before the label #}
-        {% aria_required_field field %} {% field_label_tag field %}
-    {% elif field|is_radio %}
-        {# radio selects have a unique structure #}
-        <fieldset>
-            <legend>{{ field.label }}</legend>
-            {% field_label_tag field %}
-            <p><span class="chosen-radio"></span></p>
-            {% for choice in field %}
-                {{ choice.tag }}
-                <label class="choice" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
-            {% endfor %}
-            <div class="radio-images">{% block radio-images %}{% endblock %}</div>
-        </fieldset>
-    {% else %}
-        {% field_label_tag field %} {% aria_required_field field %}
-    {% endif %}
+    <div class="column1">
+        {% if field|is_checkbox %}
+            {# easier to style if the input comes before the label #}
+            {% aria_required_field field %} {% field_label_tag field %}
+        {% elif field|is_radio %}
+            {# radio selects have a unique structure #}
+            <fieldset>
+                <legend>{{ field.label }}</legend>
+                {% field_label_tag field %}
+                <p><span class="chosen-radio"></span></p>
+                {% for choice in field %}
+                    {{ choice.tag }}
+                    <label class="choice" for="{{ choice.id_for_label }}">{{ choice.choice_label }}</label>
+                {% endfor %}
+                <div class="radio-images">{% block radio-images %}{% endblock %}</div>
+            </fieldset>
+        {% else %}
+            {% field_label_tag field %} {% aria_required_field field %}
+        {% endif %}
+    </div>
+    <div class="column2">
+        {# This is where the visual help is going to go #}
+    </div>
 </div>

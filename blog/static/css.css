@@ -602,6 +602,12 @@ div#comments > ul {
 
 /* General form styles.  By default my form labels & inputs are aligned vertically */
 
+form {
+    width: 25em;  /* By default all forms should have a default width, in em.  Otherwise the two columns
+                     will not expand equally as the font size is increased.  Specific forms can (and probably should)
+                     override this value so that the form is pleasing to the eye. */
+}
+
 form input {
     border-radius: 0;
     padding: 4px 10px;
@@ -656,6 +662,20 @@ form {
     width: 100%;
     margin: 0.75em 0 !important; /* required for the alignment to work properly */
     padding: 0 !important;
+}
+
+.field .column1 {
+    width: 80%;
+    float: left;
+}
+
+.field .column2 {
+    width: 18%;
+    float: right;
+}
+
+.field.text .column2 {
+    padding-top: 1.5em;
 }
 
 label {
@@ -1066,7 +1086,17 @@ div.add-to-cart .price .you-save {
 
 div.add-to-cart form {
     position: relative;
+    width: inherit;     /* fill its containing div */
 }
+
+div.add-to-cart form.column1 {
+    width: inherit;
+}
+
+div.add-to-cart form.column2 {
+    display: None;
+}
+
 div.add-to-cart form label {
     float: left;
     font-size: larger;
