@@ -12,7 +12,8 @@ from django.db.transaction import commit_on_success
 from utils.forms import CanadaShippingForm, BillingForm
 
 
-SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales. (You can unsubscribe at any time)"
+SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
+SUBSCRIBE_TO_MAILING_LIST_HELP = "If you subscribe to our mailing list, you will receive promotional email from us <em>at most</em> once every two weeks.<br> <em>You can unsubscribe at any time.</em>"
 
 EMAIL_INPUT_SIZE = 30        # visible size
 EMAIL_MAXLENGTH = 75   # actual character maximum
@@ -46,7 +47,8 @@ class CustomerCreationForm(UserCreationForm):
     email2 = forms.EmailField(required=True, label="Email Confirmation",
                               help_text="Enter the same email as above, for verification.",
                               widget=DEFAULT_EMAIL_WIDGET)
-    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
+    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False,
+                                         help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
     def __init__(self, *args, **kwargs):
         super(CustomerCreationForm, self).__init__(*args, **kwargs)
@@ -284,7 +286,8 @@ class ContactInfoForm(forms.Form):
                                        widget=forms.RadioSelect,
                                        label="If there is a problem with your order how should we contact you?")
     phone = forms.CharField(max_length=20, required=False, widget=DEFAULT_PHONE_WIDGET)
-    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False)
+    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False,
+                                         help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
     def __init__(self, request, *args, **kwargs):
         if 'data' in kwargs and kwargs['data']:
