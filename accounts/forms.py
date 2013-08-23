@@ -284,8 +284,9 @@ class ContactInfoForm(forms.Form):
     email2 = forms.EmailField(required=True, label="Retype Email", widget=DEFAULT_EMAIL_WIDGET, help_text="Enter the same email as above, for verification.")
     contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
                                        widget=forms.RadioSelect,
-                                       label="If there is a problem with your order how should we contact you?")
-    phone = forms.CharField(max_length=20, required=False, widget=DEFAULT_PHONE_WIDGET)
+                                       label="Preferred Contact Method?",
+                                       help_text="We will never contact you personally unless there is a problem with your order.")
+    phone = forms.CharField(max_length=20, widget=DEFAULT_PHONE_WIDGET, help_text="A phone number is required by some shipping companies.")
     on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False,
                                          help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
@@ -306,19 +307,6 @@ class ContactInfoForm(forms.Form):
         if email1 and email2 and email1 != email2:
             raise ValidationError(u"The two email addresses do not match.")
         return email2
-
-    def clean(self):
-        cleaned_data = super(ContactInfoForm, self).clean()
-        contact_method = cleaned_data.get('contact_method', None)
-        phone = cleaned_data.get('phone', None)
-
-        if contact_method and int(contact_method) == CustomerProfile.PHONE and not phone:
-            # a phone number wasn't entered, indicate that it is now conditionally required.
-            self._errors['contact_method'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
-            self._errors['phone'] = self.error_class([ContactInfoForm.ERROR_PHONE_REQUIRED])
-            del(cleaned_data['contact_method'])
-
-        return cleaned_data
 
 
 class EditContactInfo(ContactInfoForm):
