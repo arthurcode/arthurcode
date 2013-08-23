@@ -100,7 +100,11 @@ YUI.add('custom', function(Y) {
             });
         },
 
-        fieldError: function(field, alignPoints) {
+        popupFieldError: function(field, alignPoints) {
+            /* Takes a field with an error already set on it, and makes the error message 'pop-up' in a tooltip-like
+               panel.
+             */
+
             if (!field) {
                 return;
             }
@@ -114,18 +118,13 @@ YUI.add('custom', function(Y) {
                 alignPoints = [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]
             }
 
-            var errorSpan = field.one('span.error');
+            var errorSpans = field.all('span.error');
             var errorMessage = null;
-            if (errorSpan) {
-                errorMessage = errorSpan.getHTML();
+            if (errorSpans) {
+                errorMessage = errorSpans.item(0).getHTML();  // Should have the same message in all spans
             }
             if (!errorMessage) {
                 errorMessage = "unknown error";  /* ugh the user should never see this */
-            } else {
-                errorMessage = errorMessage.trim();
-                if (errorMessage.substring(0, 1) == "*") {
-                    errorMessage = errorMessage.substring(1);
-                }
             }
 
             /* arg, this is the only way I could find to get the panel to render with a custom class */
@@ -161,13 +160,13 @@ YUI.add('custom', function(Y) {
                 }
             }
             errorPanel.align(alignTo, alignPoints);
-            if (errorSpan) {
-                errorSpan.addClass('hidden');
-            }
+            errorSpans.each(function(span) {
+                span.addClass('hidden');
+            });
             errorPanel.render();
         },
 
-        setFieldError: function(field, errorMessage) {
+        setFieldError: function(field, errorMessage, popup) {
             if (!field) {
                 return;
             }
@@ -184,7 +183,9 @@ YUI.add('custom', function(Y) {
                     label.appendChild(errorSpan);
                 }
             }
-            Y.Custom.fieldError(field);
+            if (popup) {
+                Y.Custom.popupFieldError(field);
+            }
         }
     };
 }, '0.0.1', {

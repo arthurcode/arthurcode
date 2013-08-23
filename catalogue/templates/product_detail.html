@@ -282,7 +282,7 @@
                             if (!selected) {
                                 found_error = true;
                                 var message = "Please choose a " + fieldset.one('legend').getHTML().toLowerCase();
-                                Y.Custom.setFieldError(fieldset.ancestor('.field'), message);
+                                Y.Custom.setFieldError(fieldset.ancestor('.field'), message, true);
                             }
                         });
                         var quantity_input = form.one('input#id_quantity');
@@ -291,12 +291,12 @@
 
                         if (!quantity) {
                             found_error = true;
-                            Y.Custom.setFieldError(field, "Please enter a quantity");
+                            Y.Custom.setFieldError(field, "Please enter a quantity", true);
                         } else {
                             var int_quantity = parseInt(quantity);
                             if (!int_quantity || int_quantity < 1) {
                                 found_error = true;
-                                Y.Custom.setFieldError(field, "Please enter a number larger than zero");
+                                Y.Custom.setFieldError(field, "Please enter a number larger than zero", true);
                             }
                         }
                         if (found_error) {
@@ -307,7 +307,7 @@
 
                 // make all errors in the add-to-cart form pop up like tooltips
                 form.all('.field.error').each(function(field) {
-                    Y.Custom.fieldError(field);
+                    Y.Custom.popupFieldError(field);
                 });
             }
         });

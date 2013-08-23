@@ -135,7 +135,7 @@
                             message = "Type at least 3 characters in the search box";
                         }
                         var field = searchBox.ancestor(".field");
-                        Y.Custom.setFieldError(field, message);
+                        Y.Custom.setFieldError(field, message, true); // error as a popup
                     }
                 });
             }
