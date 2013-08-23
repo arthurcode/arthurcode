@@ -42,7 +42,7 @@
             </div>
         {% endblock %}
         {% block search-bar %}
-            <form id="search" method="post" action="{% url product_search %}">
+            <form id="search" class="no-help" method="post" action="{% url product_search %}">
                 {% csrf_token %}
                 <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
                 <fieldset>
@@ -70,40 +70,6 @@
     {{ block.super }}
     <script type="text/javascript">
         YUI().use('node', 'event', 'custom', 'panel', function(Y) {
-
-            // use interactive help
-            Y.all('.field label span.help-text').each(function(help_span) {
-                help_span.addClass('hidden'); // TODO: should be visible to screen readers but not occupy space in DOM
-                var help_text = help_span.getHTML();
-                var help_node = Y.Node.create('<img class="help" src="{{ STATIC_URL }}icons/help.png">');
-                var column2 = help_span.ancestor('.field').one('.column2');
-                column2.appendChild(help_node);
-
-                help_node.on('mouseover', function(e) {
-
-                    /* arg, this is the only way I could find to get the panel to render with a custom class */
-                    var panelNode = Y.Node.create('<div class="field-help"><div class="yui3-widget-bd"><p><span>' + help_text + "</span></p></div></div>");
-
-                    var panel = new Y.Panel({
-                        srcNode: panelNode,
-                        modal: false,
-                        zIndex: 100,
-                        hideOn: [
-                            {
-                                eventName: 'clickoutside'
-                            },
-                            {
-                                eventName: 'mouseout'
-                            }
-                        ],
-                        buttons: []
-                    });
-                    panel.align(e.target, [Y.WidgetPositionAlign.LC, Y.WidgetPositionAlign.RC]);
-                    panel.render();
-                });
-            });
-
-
             // monkey with the positioning of the error messages in form fields.  As it is they are great for screen
             // readers but difficult to style
             Y.all('.field.error').each(function(field) {

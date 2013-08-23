@@ -22,6 +22,8 @@
         {% endif %}
     </div>
     <div class="column2">
-        {# This is where the visual help is going to go #}
+        {% if field.help_text %}
+            <span class="help-text">{% autoescape off %}{{ field.help_text}}{% endautoescape %}</span>
+        {% endif %}
     </div>
 </div>

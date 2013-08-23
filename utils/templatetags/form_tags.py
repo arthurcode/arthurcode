@@ -40,7 +40,7 @@ def field_label_tag(field):
     text = "<span class='label'>%s %s</span>" % (text, marker_text)
 
     if field.field.help_text:
-        text += " <span class='help-text'>%s</span>" % unicode(field.field.help_text)
+        text += " <span class='help-text hidden'>%s</span>" % unicode(field.field.help_text)  # TODO: this needs to be visible to screen readers
 
     errors = field._errors()
     if errors:
