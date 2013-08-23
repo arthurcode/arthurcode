@@ -120,6 +120,7 @@ class BillingForm(AddressForm):
 
     def customize_name(self, field):
         field.required = True
+        field.help_text = "Cardholder's full name.<br>Example: John Smith"
 
     def customize_post_code(self, field):
         field.required = True
