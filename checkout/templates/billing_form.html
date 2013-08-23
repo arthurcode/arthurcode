@@ -4,7 +4,7 @@
 {% block forms %}
     <h2>Enter Billing Address</h2>
 
-    <form method="post" action="">
+    <form method="post" action="" class="billing">
         {% csrf_token %}
         <div class="hidden same-as-shipping">
             {% field form.same_as_shipping %}

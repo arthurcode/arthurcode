@@ -1912,3 +1912,7 @@ yui3-panel
 form.shipping .required-text {
     display: None;
 }
+
+form.billing .required-text {
+    display: None;
+}
