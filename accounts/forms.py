@@ -281,7 +281,7 @@ class ContactInfoForm(forms.Form):
     first_name = forms.CharField(max_length=30, required=True, widget=DEFAULT_NAME_WIDGET)  # 30 is the max length set by User
     last_name = forms.CharField(max_length=30, required=True, widget=DEFAULT_NAME_WIDGET)   # 30 is the max length set by User
     email = forms.EmailField(required=True, widget=DEFAULT_EMAIL_WIDGET)
-    email2 = forms.EmailField(required=True, label="Retype Email", widget=DEFAULT_EMAIL_WIDGET)
+    email2 = forms.EmailField(required=True, label="Retype Email", widget=DEFAULT_EMAIL_WIDGET, help_text="Enter the same email as above, for verification.")
     contact_method = forms.ChoiceField(choices=CONTACT_METHOD_CHOICES, initial=CustomerProfile.EMAIL,
                                        widget=forms.RadioSelect,
                                        label="If there is a problem with your order how should we contact you?")
