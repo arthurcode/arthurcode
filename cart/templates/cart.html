@@ -47,7 +47,7 @@
         {% if cart_items %}
             <tr>
                 <th class="right" colspan="7">
-                    <form method="post" action="." class="checkout">
+                    <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
                         <button type="submit" name="Checkout" class="action">Checkout Now</button>
                     </form>
@@ -93,7 +93,7 @@
                     </td>
                     <td>
                         {% form_errors item.update_form unique=1 %}
-                        <form method="post" action="." class="update-cart">
+                        <form method="post" action="." class="update-cart no-help">
                             {% csrf_token %}
                             {{ item.update_form.item_id }}
                             {% field item.update_form.quantity %}
@@ -101,7 +101,7 @@
                         </form>
                     </td>
                     <td>
-                        <form method="post" action="." class="cart">
+                        <form method="post" action="." class="cart no-help">
                             {% csrf_token %}
                             <input type="hidden" name="item_id" value="{{ item.id }}" />
                             <button type="submit" name="Remove" class="link">remove</button>

@@ -9,7 +9,7 @@
         <h2>Log In</h2>
         <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}{% if next %}?nex={{ next }}{% endif %}">Create an Account</a>)</span>
         {% form_errors auth_form %}
-        <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login">
+        <form method="post" action="{% url login_or_create_account %}{% if next %}?next={{ next }}{% endif %}" class="login no-help">
             {% csrf_token %}
             {% field auth_form.email %}
             {% field auth_form.password %}
