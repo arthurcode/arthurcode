@@ -79,7 +79,7 @@
                 var field = help_span.ancestor('.field');
                 field.appendChild(help_node);
 
-                help_node.on('click', function(e) {
+                help_node.on('mouseover', function(e) {
 
                     /* arg, this is the only way I could find to get the panel to render with a custom class */
                     var panelNode = Y.Node.create('<div class="field-help"><div class="yui3-widget-bd"><p><span>' + help_text + "</span></p></div></div>");
@@ -91,6 +91,9 @@
                         hideOn: [
                             {
                                 eventName: 'clickoutside'
+                            },
+                            {
+                                eventName: 'mouseout'
                             }
                         ],
                         buttons: []
