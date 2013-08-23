@@ -4,6 +4,12 @@ from django.contrib.localflavor.ca.forms import CAPhoneNumberField, CAPostalCode
 from django_countries import countries
 from django.core.exceptions import ValidationError
 
+DEFAULT_ADDRESSEE_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength':AbstractAddress.ADDRESSEE_LENGTH})
+DEFAULT_ADDRESSEE_PHONE_WIDGET = forms.TextInput(attrs={'size': 12, 'maxlength': AbstractAddress.PHONE_NUMBER_LENGTH})
+DEFAULT_ADDRESS_LINE_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength': AbstractAddress.LINE_LENGTH})
+DEFAULT_CITY_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength': AbstractAddress.CITY_LENGTH})
+DEFAULT_REGION_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength': AbstractAddress.REGION_LENGTH})
+DEFAULT_POST_WIDGET = forms.TextInput(attrs={'size': 7, 'maxlength':AbstractAddress.POST_CODE_LENGTH})
 
 # display as an optgroup with commonly selected countries at the top
 COUNTRY_CHOICES = [
@@ -17,13 +23,17 @@ class AddressForm(forms.Form):
     """
     The DB requires that the address line1, city, region and country fields not be non-null.
     """
-    name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name", required=False)
-    phone = forms.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, label="Phone", required=False)
-    line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1")
-    line2 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 2", required=False)
-    city = forms.CharField(max_length=AbstractAddress.CITY_LENGTH, label="City/Town")
-    region = forms.CharField(max_length=AbstractAddress.REGION_LENGTH, label="State/Province")
-    post_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code", required=False)
+    name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name", required=False,
+                           widget=DEFAULT_ADDRESSEE_WIDGET,
+                           help_text="Recipient's full name.<br>Example: John Smith")
+    phone = forms.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, label="Phone (day)", required=False,
+                            widget=DEFAULT_ADDRESSEE_PHONE_WIDGET,
+                            help_text="Recipient's day-time phone number. This is required by some shipping companies.")
+    line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1", widget=DEFAULT_ADDRESS_LINE_WIDGET)
+    line2 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 2", widget=DEFAULT_ADDRESS_LINE_WIDGET, required=False)
+    city = forms.CharField(max_length=AbstractAddress.CITY_LENGTH, label="City/Town", widget=DEFAULT_CITY_WIDGET)
+    region = forms.CharField(max_length=AbstractAddress.REGION_LENGTH, label="State/Province", widget=DEFAULT_REGION_WIDGET)
+    post_code = forms.CharField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Zip/Postal Code", required=False, widget=DEFAULT_POST_WIDGET)
     country = forms.ChoiceField(choices=COUNTRY_CHOICES, label="Country")
     address_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
@@ -69,11 +79,11 @@ class CanadaShippingForm(AddressForm):
 
     def customize_name(self, field):
         field.required = True
-        field.label = "Recipient's Full Name"
 
     def customize_phone(self, field):
-        self.fields['phone'] = CAPhoneNumberField(label="Recipient's Phone Number", required=True,
-                                                  help_text="This is required by some shipping companies.")
+        self.fields['phone'] = CAPhoneNumberField(label=field.label, required=True,
+                                                  help_text=field.help_text,
+                                                  widget=DEFAULT_ADDRESSEE_PHONE_WIDGET)
 
     def customize_region(self, field):
         self.fields['region'] = CAProvinceField(widget=CAProvinceSelect, label="Province")
@@ -81,7 +91,7 @@ class CanadaShippingForm(AddressForm):
     def customize_post_code(self, field):
 
         self.fields['post_code'] = CAPostalCodeField(max_length=AbstractAddress.POST_CODE_LENGTH, label="Postal Code",
-                                     help_text='(Example: T1B 2K9)', required=True)
+                                    required=True, widget=DEFAULT_POST_WIDGET)
 
     def customize_country(self, field):
         field.widget = forms.HiddenInput()
