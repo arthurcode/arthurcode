@@ -725,6 +725,12 @@ label {
     clear: both;
 }
 
+.field.radio label.choice {
+    float: left;
+    clear: none;
+    margin-left: 10px;
+}
+
 .field.radio fieldset {
     font-size: smaller;
 }
@@ -1790,7 +1796,7 @@ body.receipt #bd div {
     display: none;
 }
 
-.field.radio p {
+.add-to-cart .field.radio p {
     height: 2em;
     float: left;
     clear: both;
