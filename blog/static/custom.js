@@ -120,7 +120,7 @@ YUI.add('custom', function(Y) {
 
             var errorSpans = field.all('span.error');
             var errorMessage = null;
-            if (errorSpans) {
+            if (errorSpans.size() > 0) {
                 errorMessage = errorSpans.item(0).getHTML();  // Should have the same message in all spans
             }
             if (!errorMessage) {
@@ -172,20 +172,37 @@ YUI.add('custom', function(Y) {
             }
 
             field.addClass("error");
-            var errorSpan = field.one("span.error");
-            if (errorSpan) {
-                // span already exists, just swap out the message
-                errorSpan.setHTML(errorMessage);
+            var errorSpans = field.all("span.error");
+            if (errorSpans.size() > 0) {
+                // span(s) already exists, just swap out the message
+                errorSpans.each(function(span) {
+                    span.setHTML(errorMessage);
+                });
             } else {
                 var label = field.one('label');
                 if (label) {
-                    errorSpan = Y.Node.create("<span class='error'>" + errorMessage + "</span>");
+                    var errorSpan = Y.Node.create("<span class='error'>" + errorMessage + "</span>");
                     label.appendChild(errorSpan);
                 }
+                Y.Custom.positionFieldError(field);
             }
             if (popup) {
                 Y.Custom.popupFieldError(field);
             }
+        },
+
+        positionFieldError: function(field) {
+            /*
+            Takes a field with an error and clones the error span so that there is one span ideal for screen readers
+            and one span ideal for visual positioning.
+             */
+            var errorSpan = field.one('label span.error');
+            if (!errorSpan) {
+                return;
+            }
+            var newErrorSpan = Y.Node.create('<span class="error">' + errorSpan.getHTML() + '</span>');
+            field.appendChild(newErrorSpan);
+            errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
         }
     };
 }, '0.0.1', {
