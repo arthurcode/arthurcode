@@ -31,6 +31,7 @@ DEFAULT_EMAIL_WIDGET = forms.TextInput(attrs={'size': EMAIL_INPUT_SIZE, 'maxleng
 DEFAULT_NAME_WIDGET = forms.TextInput(attrs={'size': FIRST_NAME_INPUT_SIZE, 'maxlength': FIRST_NAME_MAXLENGTH})
 DEFAULT_PHONE_WIDGET = forms.TextInput(attrs={'size': PHONE_INPUT_SIZE, 'maxlength': PHONE_MAXLENGTH})
 DEFAULT_PASSWORD_WIDGET = forms.PasswordInput(attrs={'size': 30, 'maxlength': 125})
+DEFAULT_NICKNAME_WIDGET = forms.TextInput(attrs={'size': 30, 'maxlength': CustomerShippingAddress.NICKNAME_MAX_LENGTH})
 
 
 def username_from_email(email):
@@ -373,7 +374,8 @@ class CustomerShippingAddressForm(CanadaShippingForm):
 
     nickname = forms.CharField(max_length=CustomerShippingAddress.NICKNAME_MAX_LENGTH, label="Nickname",
                             help_text="Something to distinguish this address from the others in your address book. " +
-                                      "Examples: 'Aunt Mary', 'Flower Shop'", validators=[not_blank])
+                                      "Examples: 'Aunt Mary', 'Office'", validators=[not_blank],
+                            widget=DEFAULT_NICKNAME_WIDGET)
 
     def __init__(self, customer, *args, **kwargs):
         super(CustomerShippingAddressForm, self).__init__(*args, **kwargs)
