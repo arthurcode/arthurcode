@@ -1928,3 +1928,15 @@ form.shipping .required-text {
 form.billing .required-text {
     display: None;
 }
+
+form.ship-to {
+    clear: both;
+}
+
+form.ship-to .required-text {
+    display: None;
+}
+
+.checkout form {
+    clear: both;
+}

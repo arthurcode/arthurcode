@@ -4,16 +4,12 @@
 {% block forms %}
 
     <h2>Where would you like to ship this order?</h2>
-    <form action="">
-        <label>Ship To:
-            <select onchange="this.form.submit()" name="ship_to">
-                {% for nickname in nicknames %}
-                    <option{% if nickname == selected_nickname %} selected{% endif %}>{{ nickname }}</option>
-                {% endfor %}
-            </select>
-        </label>
+    <form class="ship-to no-help" action="">
+        {% field select_form.ship_to %}
+        <button type="submit" class="action">OK</button>
     </form>
 
+    {% if form %}
     {% if selected_nickname == "New Address" %}
         <h2>Add a New Shipping Address</h2>
     {% else %}
@@ -40,4 +36,5 @@
             <button type="submit" name="submit" class="action">Save and Continue</button>
         </div>
     </form>
+    {% endif %}
 {% endblock %}

@@ -3,7 +3,7 @@ from lazysignup.utils import is_lazy_user
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm
-from checkout.forms import PaymentInfoForm
+from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -238,10 +238,6 @@ class ContactInfoStep(Step):
 
 
 class ShippingInfoStep(Step):
-    ME_NICKNAME = "Me"
-    NEW_ADDRESS_NICKNAME = "New Address"
-    SHIP_TO_KEY = "ship_to"
-
     data_key = "shipping"
     form_key = "shipping_form"
 
@@ -263,21 +259,22 @@ class ShippingInfoStep(Step):
         return self._render_form(form, nickname)
 
     def get_nickname(self, saved_data):
-        nickname = self.request.GET.get(self.SHIP_TO_KEY, None)
+        nickname = self.request.GET.get(ChooseShippingAddressByNickname.SHIP_TO_KEY, None)
         if not nickname:
             nickname = saved_data.get('nickname', None)
-        if not nickname:
-            # default to 'Me'
-            nickname = self.ME_NICKNAME
         return nickname
 
     def get_form_for_nickname(self, nickname, saved_data=None):
+        if not nickname:
+            # can't display any kind of a form until a nickname is chosen
+            return None
+
         use_saved_data = False
 
         if saved_data:
             saved_nickname = saved_data.get('nickname', None)
-            if nickname == self.NEW_ADDRESS_NICKNAME and saved_nickname not in self.get_existing_nicknames() \
-                and saved_nickname != self.ME_NICKNAME:
+            if nickname == ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME and saved_nickname not in self.get_existing_nicknames() \
+                and saved_nickname != ChooseShippingAddressByNickname.ME_NICKNAME:
                 use_saved_data = True
             elif saved_nickname == nickname:
                 use_saved_data = True
@@ -300,14 +297,14 @@ class ShippingInfoStep(Step):
             data = address.as_dict()
 
         initial = None
-        if nickname == self.ME_NICKNAME:
+        if nickname == ChooseShippingAddressByNickname.ME_NICKNAME:
             order = self.checkout.extra_context['order']
             if not order:
                 order = self.checkout.build_order()
 
             initial = {
                 'name': "%s %s" % (order.first_name, order.last_name),
-                'nickname': self.ME_NICKNAME,
+                'nickname': ChooseShippingAddressByNickname.ME_NICKNAME,
                 'phone': order.phone,
             }
 
@@ -324,28 +321,19 @@ class ShippingInfoStep(Step):
             self.save(self.form_key, post_data)
             self.mark_complete()
             return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form, self.request.GET.get(self.SHIP_TO_KEY, None) or post_data.get('nickname'))
+        return self._render_form(form, self.request.GET.get(ChooseShippingAddressByNickname.SHIP_TO_KEY, None) or post_data.get('nickname'))
 
     def _render_form(self, form, nickname):
-        existing_nicknames = self.get_existing_nicknames()
-        existing_nicknames.sort()
+        selected_nickname = nickname
 
-        # ugh
-        if self.ME_NICKNAME in existing_nicknames:
-            existing_nicknames.remove(self.ME_NICKNAME)
-
-        nicknames = [self.ME_NICKNAME]
-        nicknames.extend(existing_nicknames)
-        nicknames.append(self.NEW_ADDRESS_NICKNAME)
-
-        selected_nickname = nickname  # the option that should be 'selected' from the template drop-down list
-        if not selected_nickname == self.ME_NICKNAME and not selected_nickname in existing_nicknames:
-            selected_nickname = self.NEW_ADDRESS_NICKNAME
+        if nickname and nickname != ChooseShippingAddressByNickname.ME_NICKNAME and nickname not in self.get_existing_nicknames():
+            selected_nickname = ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME
+        select_form = ChooseShippingAddressByNickname(self.request, initial={ChooseShippingAddressByNickname.SHIP_TO_KEY: selected_nickname})
 
         context = {
             'form': form,
-            'nicknames': nicknames,
-            'selected_nickname': selected_nickname
+            'select_form': select_form,
+            'selected_nickname': selected_nickname,
         }
         if self.extra_context:
             context.update(self.extra_context)

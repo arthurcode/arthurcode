@@ -85,7 +85,6 @@ class PaymentInfoForm(forms.Form):
         return cvv
 
 
-
 class ChooseAddressForm(forms.Form):
     """
     An address that can be chosen and validated against an existing AddressForm class.
@@ -114,3 +113,38 @@ class ChooseAddressForm(forms.Form):
             return
         #TODO: transfer the errors from form to self
         self._errors = form._errors
+
+
+class ChooseShippingAddressByNickname(forms.Form):
+    """
+    Chooses from a set of existing shipping addresses by nickname.
+    """
+
+    ME_NICKNAME = "Me"
+    NEW_ADDRESS_NICKNAME = "New Address"
+    SHIP_TO_KEY = "ship_to"
+
+    def __init__(self, request, *args, **kwargs):
+        self.request = request
+        super(ChooseShippingAddressByNickname, self).__init__(*args, **kwargs)
+        nicknames = self.get_existing_nicknames()
+        choices = [(n, n) for n in nicknames]
+
+        if not ChooseShippingAddressByNickname.ME_NICKNAME in nicknames:
+            choices = [(ChooseShippingAddressByNickname.ME_NICKNAME, ChooseShippingAddressByNickname.ME_NICKNAME)] + choices
+        choices = [(None, '-----------')] + choices
+        choices.append((ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME, 'Other Address'))
+        self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
+                                                                               label="Ship To", required=True)
+        if kwargs and 'initial' in kwargs and ChooseShippingAddressByNickname.SHIP_TO_KEY in kwargs['initial']:
+            self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY].initial = kwargs['initial'][ChooseShippingAddressByNickname.SHIP_TO_KEY]
+
+    def get_existing_nicknames(self):
+        """
+        Returns the nicknames that identify this customer's saved shipping addresses.  Returns and empty list if the
+        customer doesn't have a profile or if there aren't any addresses associated with the profile.
+        """
+        profile = self.request.user.get_customer_profile()
+        if not profile:
+            return []
+        return [a.nickname for a in profile.shipping_addresses.all()]
