@@ -213,6 +213,10 @@ body.products #bd {
     padding: 0 0 20px 0;
 }
 
+.checkout #bd {
+    padding-top: 0;
+}
+
 #ft {
     font-size: smaller;
     color: white;
@@ -1425,10 +1429,12 @@ div.contact-info form .column2 {
 
 .order-summary {
     border: 1px solid lightgray;
+    border-top: none;
+    border-bottom: none;
     clear: both;
     float: left;
     font-size: smaller;
-    padding: 10px 0;
+    padding: 10px;
 }
 
 .order-summary .hr {
@@ -1440,10 +1446,9 @@ div.contact-info form .column2 {
 }
 
 .order-summary dl.horizontal dt {
-    font-weight: bolder;
     float: left;
     clear: left;
-    width: 9em;
+    width: 5em;
     text-align: right;
 }
 
@@ -1699,7 +1704,6 @@ dl.horizontal dt {
     clear: both;
     text-align: left;
     width: 11em;
-    font-weight: bolder;
 }
 
 dl.horizontal dd {
@@ -1978,6 +1982,8 @@ form.ship-to .required-text {
 .checkout .main {
     width: 75%;
     float: left;
+    padding: 40px 20px 20px 20px;
+    border-left: 1px solid lightgray;
 }
 
 .form-h {
