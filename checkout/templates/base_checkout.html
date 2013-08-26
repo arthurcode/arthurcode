@@ -23,6 +23,10 @@
 {% block cart-summary %}{% endblock %}
 
 {% block body %}
-    {% block order_summary %}{% order_summary order %}{% endblock %}
-    {% block forms %}{% endblock forms %}
+    <div class="sidebar">
+        {% block order_summary %}{% order_summary order %}{% endblock %}
+    </div>
+    <div class="main">
+        {% block forms %}{% endblock forms %}
+    </div>
 {% endblock %}

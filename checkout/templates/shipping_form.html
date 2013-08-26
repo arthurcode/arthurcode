@@ -3,17 +3,17 @@
 
 {% block forms %}
 
-    <h2>Where would you like to ship this order?</h2>
+    <h2 class="form-h">Choose Shipping Destination</h2>
     <form class="ship-to no-help" action="">
         {% field select_form.ship_to %}
-        <button type="submit" class="action">OK</button>
+        <button type="submit" class="action">OK!</button>
     </form>
 
     {% if form %}
     {% if selected_nickname == "New Address" %}
-        <h2>Add a New Shipping Address</h2>
+        <h2 class="form-h">Add a New Shipping Address</h2>
     {% else %}
-        <h2>Shipping Address for '{{ selected_nickname }}'</h2>
+        <h2 class="form-h">Shipping Address for '{{ selected_nickname }}'</h2>
     {% endif %}
     {% form_errors form %}
     <form method="post" action="" class="shipping">

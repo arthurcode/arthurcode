@@ -132,7 +132,7 @@ class ChooseShippingAddressByNickname(forms.Form):
 
         if not ChooseShippingAddressByNickname.ME_NICKNAME in nicknames:
             choices = [(ChooseShippingAddressByNickname.ME_NICKNAME, ChooseShippingAddressByNickname.ME_NICKNAME)] + choices
-        choices = [(None, '-----------')] + choices
+        choices = [(None, '')] + choices
         choices.append((ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME, 'Other Address'))
         self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
                                                                                label="Ship To", required=True)
