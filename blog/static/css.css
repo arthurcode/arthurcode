@@ -1424,9 +1424,9 @@ div.contact-info form .column2 {
 }
 
 .order-summary {
-    background-color: aliceblue;border: 2px solid lightgray;
+    border: 1px solid lightgray;
     clear: both;
-    float: right;
+    float: left;
     font-size: smaller;
     padding: 10px 0;
 }
