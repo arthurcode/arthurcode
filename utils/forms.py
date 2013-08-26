@@ -25,10 +25,10 @@ class AddressForm(forms.Form):
     """
     name = forms.CharField(max_length=AbstractAddress.ADDRESSEE_LENGTH, label="Name", required=False,
                            widget=DEFAULT_ADDRESSEE_WIDGET,
-                           help_text="Recipient's full name.<br>Example: John Smith")
-    phone = forms.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, label="Phone (day)", required=False,
+                           help_text="Recipient's full name")
+    phone = forms.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, label="Daytime Phone", required=False,
                             widget=DEFAULT_ADDRESSEE_PHONE_WIDGET,
-                            help_text="Recipient's day-time phone number. This is required by some shipping companies.")
+                            help_text="Recipient's phone number. This is required by some shipping companies.")
     line1 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 1", widget=DEFAULT_ADDRESS_LINE_WIDGET)
     line2 = forms.CharField(max_length=AbstractAddress.LINE_LENGTH, label="Address Line 2", widget=DEFAULT_ADDRESS_LINE_WIDGET, required=False)
     city = forms.CharField(max_length=AbstractAddress.CITY_LENGTH, label="City/Town", widget=DEFAULT_CITY_WIDGET)

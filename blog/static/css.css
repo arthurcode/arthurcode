@@ -692,7 +692,7 @@ form {
 }
 
 .field.text .column2 {
-    padding-top: 1.5em;
+    padding-top: 1.3em;
 }
 
 label {
@@ -1385,6 +1385,18 @@ div.contact-info, div.new-address-form {
     display: inline-block;
     float: left;
     clear: left;
+}
+
+div.contact-info form {
+    width: 35em;
+}
+
+div.contact-info form .column1 {
+    width: 50%;
+}
+
+div.contact-info form .column2 {
+    width: 40%;
 }
 
 .address-preview button.link {

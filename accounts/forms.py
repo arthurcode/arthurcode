@@ -287,7 +287,7 @@ class ContactInfoForm(forms.Form):
                                        widget=forms.RadioSelect,
                                        label="Preferred Contact Method?",
                                        help_text="We will never contact you personally unless there is a problem with your order.")
-    phone = forms.CharField(max_length=20, widget=DEFAULT_PHONE_WIDGET, help_text="A phone number is required by some shipping companies.")
+    phone = forms.CharField(max_length=20, widget=DEFAULT_PHONE_WIDGET, label="Daytime Phone")
     on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False,
                                          help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
