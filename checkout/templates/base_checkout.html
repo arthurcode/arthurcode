@@ -12,6 +12,8 @@
     {% include "_checkout_navigation.html" %}
 {% endblock %}
 
+{% block account_links %}{% endblock %}  {# the user really shouldn't use these links during an active checkout session #}
+
 {% block extra-utilities %}
     <ul class="checkout-utils">
         <a href="{% url checkout_cancel %}">cancel checkout</a>
