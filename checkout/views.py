@@ -507,6 +507,18 @@ class ReviewStep(Step):
         return self._render_form(form)
 
 
+class CreateAccount(Step):
+
+    def _get(self):
+        if not self.checkout.is_guest():
+            # this step only applies to guest accounts
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+
+    def _post(self):
+        pass
+
+
 class Checkout:
 
     DATA_KEY = 'checkout'
@@ -545,7 +557,7 @@ class Checkout:
             # empty the customer's cart
             item.delete()
 
-        if not is_lazy_user(self.request.user):
+        if not self.is_guest():
             ContactInfoStep(self).save_data_to_profile()
             ShippingInfoStep(self).save_address_to_profile()
             BillingInfoStep(self).save_address_to_profile()
@@ -767,6 +779,12 @@ class Checkout:
             return self.request.user
         return None
 
+    def is_guest(self):
+        """
+        Returns True if this is a guest checkout.  Returns False if the user has logged in to checkout.
+        """
+        return is_lazy_user(self.request.user)
+
     def get_customer_profile(self):
         """
         Returns the customer profile associated with this user, if one exists.  Otherwise returns None.
@@ -783,7 +801,8 @@ class Checkout:
 STEPS = [(ContactInfoStep, reverse_lazy('checkout_contact'), 'Contact Info'),
          (ShippingInfoStep, reverse_lazy('checkout_shipping'), 'Shipping Info'),
          (BillingInfoStep, reverse_lazy('checkout_billing'), 'Billing Info'),
-         (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay')]
+         (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay'),
+         (CreateAccount, reverse_lazy('checkout_create_account'), 'Create Account')]
 
 
 @require_GET
@@ -845,3 +864,11 @@ def cancel(request):
     co = Checkout(request)
     co.cancel()
     return HttpResponseRedirect(reverse('show_cart'))
+
+
+def create_account(request):
+    """
+    Asks (guest) users if they would like to save their data in an account.
+    """
+    co = Checkout(request)
+    return co.process_step(5)
