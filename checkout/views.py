@@ -572,7 +572,7 @@ class Checkout:
         if not data:
             self._save_data({})
 
-        if self.is_finished():
+        if self.is_finished() or self.is_order_submitted():
             # start a new checkout process
             self._save_data({})
 
@@ -805,6 +805,12 @@ class Checkout:
         if order_id is not None:
             return Order.objects.get(id=order_id)
         return None
+
+    def is_order_submitted(self):
+        """
+        Returns True if an order has already been submitted for this checkout.
+        """
+        return self.get('order', None) is not None
 
     def get_order_items(self):
         order_items = []
