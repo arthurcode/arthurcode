@@ -545,10 +545,10 @@ class Checkout:
             # empty the customer's cart
             item.delete()
 
-        # save the shipping and billing addresses, if necessary
-        ContactInfoStep(self).save_data_to_profile()
-        ShippingInfoStep(self).save_address_to_profile()
-        BillingInfoStep(self).save_address_to_profile()
+        if not is_lazy_user(self.request.user):
+            ContactInfoStep(self).save_data_to_profile()
+            ShippingInfoStep(self).save_address_to_profile()
+            BillingInfoStep(self).save_address_to_profile()
 
     def is_finished(self):
         return self.get_completed_step() == len(STEPS)
