@@ -12,11 +12,16 @@ def detail_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if not request.user.is_staff:
         # check that this regular user has permission to view this order summary
-        if not order.customer or not order.customer.user == request.user:
+        if not order.user or not order.user == request.user:
             return HttpResponseForbidden(u"You do not have permission to view this order.")
+
+    profile = None
+    if order.user:
+        profile = order.user.get_customer_profile()
 
     context = {
         'order': order,
+        'profile': profile,
     }
     return render_to_response('order_detail.html', context, context_instance=RequestContext(request))
 
@@ -25,7 +30,7 @@ def detail_view(request, order_id):
 def cancel_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
     if not request.user.is_staff:
-        if not order.customer or not order.customer.user == request.user:
+        if not order.user or not order.user == request.user:
             return HttpResponseForbidden(u"You do not have permission to cancel this order.")
 
     if request.method == "POST":

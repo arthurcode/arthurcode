@@ -33,7 +33,6 @@ class PyOrder(object):
         self.items = None              # Order items
         self.shipping_address = None   # CustomerShippingAddress
         self.billing_address = None    # CustomerBillingAddress
-        self.customer = None           # CustomerProfile
         self.first_name = None
         self.last_name = None
         self.email = None
@@ -232,11 +231,6 @@ class ContactInfoStep(Step):
             order.email = cd['email']
             order.contact_method = cd['contact_method']
             order.phone = cd['phone']
-        profile = self.checkout.get_customer_profile()
-        if not profile:
-            # create a profile for this user if one doesn't yet exist (even if they are a guest user)
-            profile = CustomerProfile(user=self.request.user)
-        order.customer = profile
 
 
 class ShippingInfoStep(Step):
@@ -541,6 +535,11 @@ class CreateAccount(Step):
             LazyUser.objects.convert(form)
             user = authenticate(username=username, password=password)
             auth_login(self.request, user)
+
+            # link customer information to the saved order
+            order.user = user
+            order.save()
+
             if self.request.session.test_cookie_worked():
                 self.request.session.delete_test_cookie()
             self.mark_complete()
@@ -744,7 +743,8 @@ class Checkout:
             return False
 
         # link customer information
-        order.customer = pyOrder.customer
+        if not self.is_guest():
+            order.user = self.request.user
         order.first_name = pyOrder.first_name
         order.last_name = pyOrder.last_name
         order.email = pyOrder.email

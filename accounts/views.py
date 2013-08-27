@@ -171,7 +171,7 @@ def edit_public_profile(request):
 
 @non_lazy_login_required()
 def view_orders(request):
-    orders = Order.objects.filter(customer__user=request.user).order_by('-date')
+    orders = Order.objects.filter(user=request.user).order_by('-date')
     context = {
         'orders': orders,
     }

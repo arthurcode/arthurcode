@@ -20,9 +20,9 @@
         <h3>Customer Info</h3>
         <hr>
         <dl class="horizontal">
-            {% if order.customer %}
+            {% if profile %}
                 <dt>Customer #:</dt>
-                <dd>{{ order.customer_id }}</dd>
+                <dd>{{ profile.id }}</dd>
             {% endif %}
             <dt>Name:</dt>
             <dd>{{ order.first_name }} {{ order.last_name }}</dd>

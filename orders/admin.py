@@ -14,7 +14,7 @@ class ShippingAddressInline(StackedInline):
     model = OrderShippingAddress
 
 class OrderAdmin(ModelAdmin):
-    list_display = ('__unicode__', 'customer', 'date', 'status', 'payment_status')
+    list_display = ('__unicode__', 'user', 'date', 'status', 'payment_status')
     inlines = [BillingAddressInline, ShippingAddressInline, OrderItemInline]
     readonly_fields = ('date', 'last_updated', 'shipping_charge', 'transaction_id', 'ip_address',
                        'merchandise_total', 'payment_status')
@@ -31,7 +31,7 @@ class OrderAdmin(ModelAdmin):
         }),
         ('Customer Info', {
             'classes': ('collapse',),
-            'fields': ('customer', 'email', 'phone', 'contact_method', 'ip_address')
+            'fields': ('user', 'email', 'phone', 'contact_method', 'ip_address')
         })
     )
 

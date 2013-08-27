@@ -11,7 +11,7 @@ class Migration(SchemaMigration):
         # Adding model 'Order'
         db.create_table('orders_order', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
-            ('customer', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['accounts.CustomerProfile'], null=True, blank=True)),
+            ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True, blank=True)),
             ('first_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True)),
             ('last_name', self.gf('django.db.models.fields.CharField')(max_length=30, null=True, blank=True)),
             ('email', self.gf('django.db.models.fields.EmailField')(max_length=50, null=True, blank=True)),
@@ -97,15 +97,6 @@ class Migration(SchemaMigration):
 
 
     models = {
-        'accounts.customerprofile': {
-            'Meta': {'object_name': 'CustomerProfile'},
-            'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '3'}),
-            'date_added': ('django.db.models.fields.DateField', [], {'auto_now_add': 'True', 'blank': 'True'}),
-            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'on_mailing_list': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
-            'phone': ('django.db.models.fields.CharField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
-            'user': ('django.db.models.fields.related.OneToOneField', [], {'related_name': "'customer_profile'", 'unique': 'True', 'to': "orm['auth.User']"})
-        },
         'auth.group': {
             'Meta': {'object_name': 'Group'},
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
@@ -203,9 +194,9 @@ class Migration(SchemaMigration):
         },
         'catalogue.productoption': {
             'Meta': {'unique_together': "(('category', 'name'),)", 'object_name': 'ProductOption'},
-            'category': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'category': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
-            'name': ('django.db.models.fields.CharField', [], {'max_length': '25'})
+            'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
         },
         'catalogue.theme': {
             'Meta': {'object_name': 'Theme'},
@@ -224,7 +215,6 @@ class Migration(SchemaMigration):
         'orders.order': {
             'Meta': {'object_name': 'Order'},
             'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
-            'customer': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['accounts.CustomerProfile']", 'null': 'True', 'blank': 'True'}),
             'date': ('django.db.models.fields.DateTimeField', [], {'auto_now_add': 'True', 'blank': 'True'}),
             'email': ('django.db.models.fields.EmailField', [], {'max_length': '50', 'null': 'True', 'blank': 'True'}),
             'first_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
@@ -237,7 +227,8 @@ class Migration(SchemaMigration):
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'shipping_charge': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
-            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
+            'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
         'orders.orderbillingaddress': {
             'Meta': {'object_name': 'OrderBillingAddress'},

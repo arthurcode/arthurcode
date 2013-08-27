@@ -9,6 +9,7 @@ from django.core.exceptions import ValidationError, ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from decimal import Decimal
 from orders.signals import signal_order_cancelled
+from django.contrib.auth.models import User
 
 
 class Order(models.Model):
@@ -37,7 +38,7 @@ class Order(models.Model):
                         (CANCELLED, 'Cancelled'))
 
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
-    customer = models.ForeignKey(CustomerProfile, null=True, blank=True)
+    user = models.ForeignKey(User, null=True, blank=True)
     first_name = models.CharField('first name', max_length=30, blank=True, null=True, validators=[not_blank])
     last_name = models.CharField('last name', max_length=30, blank=True, null=True, validators=[not_blank])
     email = models.EmailField(max_length=50, null=True, blank=True)
