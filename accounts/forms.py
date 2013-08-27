@@ -115,24 +115,20 @@ class CustomerCreationForm(UserCreationForm):
 
 
 class ConvertLazyUserForm(CustomerCreationForm):
+    """
+    Example usage:
+    if create_form.is_valid():
+            # Okay, security check complete. Create the new user and log them in.
+            username = create_form.cleaned_data['username']
+            password = create_form.cleaned_data['password2']
+            if isinstance(create_form, ConvertLazyUserForm):
+                LazyUser.objects.convert(create_form)
+            else:
+                create_form.save()
+            ... (log in)
+    """
 
     def __init__(self, lazyUser, *args, **kwargs):
-        email = lazyUser.email
-        initial = kwargs.get('initial', {})
-
-        if not is_blank(email):
-            initial['email'] = email
-            if 'data' in kwargs:
-                kwargs['data']['email'] = email
-                kwargs['data']['email2'] = email
-
-        customer_profile = lazyUser.get_customer_profile()
-        if customer_profile and customer_profile.on_mailing_list:
-            # don't make it easier than necessary for them to un-subscribe from the mailing list
-            initial['on_mailing_list'] = True
-
-        kwargs['initial'] = initial
-
         super(ConvertLazyUserForm, self).__init__(*args, **kwargs)
         self.instance = lazyUser
 

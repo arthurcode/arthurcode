@@ -64,12 +64,6 @@ def login_or_create_account(request,
                             current_app=current_app)
 
 
-def _customer_creation_form(request, *args, **kwargs):
-    if is_lazy_user(request.user):
-        return ConvertLazyUserForm(request.user, *args, **kwargs)
-    return CustomerCreationForm(*args, **kwargs)
-
-
 def _template_name(redirect_to):
     """
     tailor the look of the login page according to which url the user is being redirected to.  The redirect url will,
@@ -100,7 +94,7 @@ def create_account(request):
     next = request.GET.get('next', None)
     if request.method == "POST":
         postdata = request.POST.copy()
-        create_form = _customer_creation_form(request, data=postdata)
+        create_form = CustomerCreationForm(data=postdata)
         if create_form.is_valid():
             # Okay, security check complete. Create the new user and log them in.
             username = create_form.cleaned_data['username']
@@ -118,7 +112,7 @@ def create_account(request):
             redirect_to = _get_redirect_url(request, 'next')
             return HttpResponseRedirect(redirect_to)
     else:
-        create_form = _customer_creation_form(request)
+        create_form = CustomerCreationForm()
 
     request.session.set_test_cookie()
 

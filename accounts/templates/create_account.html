@@ -11,17 +11,11 @@
     {% form_errors create_form %}
     <form method="post" action="{% if next %}?next={{ next }}{% endif %}" class="create-account">
         {% csrf_token %}
-        {% with request.user|is_lazy_user as lazy %}
-            {% if lazy and request.user.email %}
-                {% readonly_field create_form.email %}
-            {% else %}
-                {% field create_form.email %}
-                {% field create_form.email2 %}
-            {% endif %}
-            {% field create_form.password1 %}
-            {% field create_form.password2 %}
-            {% field create_form.on_mailing_list %}
-        {% endwith %}
+        {% field create_form.email %}
+        {% field create_form.email2 %}
+        {% field create_form.password1 %}
+        {% field create_form.password2 %}
+        {% field create_form.on_mailing_list %}
         <div class="controls">
             <button type="submit" name="create" class="action">{% block create-button %}Create Account{% endblock %}</button>
         </div>
