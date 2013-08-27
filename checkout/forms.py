@@ -53,8 +53,6 @@ def cardLuhnChecksumIsValid(card_number):
 
 
 class PaymentInfoForm(forms.Form):
-    first_name = forms.CharField(max_length=25, label="Cardholder's First Name")
-    last_name = forms.CharField(max_length=25, label="Cardholder's Last Name")
     card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Card Type')
     card_number = forms.CharField(label='Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}))
     expire_month = forms.ChoiceField(choices=cc_expire_months(), label='Month')
@@ -132,7 +130,7 @@ class ChooseShippingAddressByNickname(forms.Form):
 
         if not ChooseShippingAddressByNickname.ME_NICKNAME in nicknames:
             choices = [(ChooseShippingAddressByNickname.ME_NICKNAME, ChooseShippingAddressByNickname.ME_NICKNAME)] + choices
-        choices = [(None, '')] + choices
+        choices = [('', 'Select one:')] + choices
         choices.append((ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME, 'Other Address'))
         self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
                                                                                label="Ship To", required=True)

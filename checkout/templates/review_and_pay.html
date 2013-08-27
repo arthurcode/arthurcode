@@ -107,10 +107,6 @@
             {% csrf_token %}
             {% comment %}Hidden form fields{% endcomment %}
             {{ form.total }}
-                <p>
-                {% field form.first_name %}
-                {% field form.last_name %}
-                </p>
                 {% field form.card_type %}
                 <p>
                 {% field form.card_number %}
