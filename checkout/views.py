@@ -636,7 +636,7 @@ class Checkout:
             return HttpResponseRedirect(reverse('show_cart'))
 
         self.extra_context = {
-            'steps': STEPS,
+            'steps': STEPS[:4],     # the template doesn't need to know about the 'create account' step
             'current_step': step,
             'completed_step': highest_completed_step,
             'current_step_name': STEPS[step-1][2],
