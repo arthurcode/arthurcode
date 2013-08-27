@@ -13,7 +13,7 @@
     {% if selected_nickname == "New Address" %}
         <h2 class="form-h">Add a New Shipping Address</h2>
     {% else %}
-        <h2 class="form-h">Enter Shipping Address for '{{ selected_nickname }}'</h2>
+        <h2 class="form-h">{% if edit %}Edit{% else %}Enter{% endif %} Shipping Address for '{{ selected_nickname }}'</h2>
     {% endif %}
     {% form_errors form %}
     <form method="post" action="" class="shipping">

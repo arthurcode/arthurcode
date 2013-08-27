@@ -242,16 +242,16 @@ class ShippingInfoStep(Step):
     form_key = "shipping_form"
 
     def _get(self):
-        if not self.is_complete():
-            # check if a nickname has been selected.  If one has, and we have all the data we need, mark the step complete.
-            nickname = self.get_nickname(None)
-            if nickname:
-                form = self.get_form_for_nickname(nickname, None)
-                if form.is_valid():
-                    self.save(self.form_key, form.data)
-                    self.mark_complete()
-                    return HttpResponseRedirect(self.checkout.get_next_url())
+        # anytime a nickname is explicitly chosen via the GET form, use that address without further validation required.
+        nickname = self.get_nickname(None)
+        if nickname:
+            form = self.get_form_for_nickname(nickname, None)  # no saved data allowed
+            if form.is_valid():
+                self.save(self.form_key, form.data)
+                self.mark_complete()
+                return HttpResponseRedirect(self.checkout.get_next_url())
 
+        if not self.is_complete():
             # if we only have one saved shipping address, just use it and ask the customer to confirm their data in the
             # last step
             existing_nicknames = self.get_existing_nicknames()
@@ -343,6 +343,7 @@ class ShippingInfoStep(Step):
             'form': form,
             'select_form': select_form,
             'selected_nickname': selected_nickname,
+            'edit': self.is_complete(),
         }
         if self.extra_context:
             context.update(self.extra_context)
