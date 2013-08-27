@@ -519,7 +519,7 @@ class CreateAccount(Step):
 
         form = ConvertLazyUserForm(self.checkout.get_user())
         self.request.session.set_test_cookie()
-        return self._render_form(form, self.checkout.build_order().email)
+        return self._render_form(form, self.checkout.get_submitted_order().email)
 
     def _post(self):
         post_data = self.request.POST.copy()
@@ -529,9 +529,9 @@ class CreateAccount(Step):
             self.mark_complete()
             return HttpResponseRedirect(self.checkout.get_next_url())
 
-        email = self.checkout.build_order().email
-        post_data['email'] = email
-        post_data['email2'] = email
+        order = self.checkout.get_submitted_order()
+        post_data['email'] = order.email
+        post_data['email2'] = order.email
         form = ConvertLazyUserForm(self.checkout.get_user(), data=post_data)
 
         if form.is_valid():
@@ -541,12 +541,11 @@ class CreateAccount(Step):
             LazyUser.objects.convert(form)
             user = authenticate(username=username, password=password)
             auth_login(self.request, user)
-
             if self.request.session.test_cookie_worked():
                 self.request.session.delete_test_cookie()
             self.mark_complete()
             return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form, email)
+        return self._render_form(form, order.email)
 
     def _render_form(self, form, email):
         context = {
@@ -797,6 +796,15 @@ class Checkout:
         for i in range(completed_step):
             STEPS[i][0](self).visit(order)
         return order
+
+    def get_submitted_order(self):
+        """
+        Returns the Order that was saved (submitted) as a result of this checkout process
+        """
+        order_id = self.get('order', None)
+        if order_id is not None:
+            return Order.objects.get(id=order_id)
+        return None
 
     def get_order_items(self):
         order_items = []
