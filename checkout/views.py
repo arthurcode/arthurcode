@@ -1,8 +1,9 @@
 from lazysignup.decorators import allow_lazy_user
 from lazysignup.utils import is_lazy_user
+from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm
+from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
 from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -16,6 +17,7 @@ import checkoututils
 from decimal import Decimal
 from django.views.decorators.http import require_GET
 from accounts.accountutils import is_guest_passthrough
+from django.contrib.auth import login as auth_login, authenticate
 
 
 class PyOrder(object):
@@ -515,9 +517,45 @@ class CreateAccount(Step):
             self.mark_complete()
             return HttpResponseRedirect(self.checkout.get_next_url())
 
-    def _post(self):
-        pass
+        form = ConvertLazyUserForm(self.checkout.get_user())
+        self.request.session.set_test_cookie()
+        return self._render_form(form, self.checkout.build_order().email)
 
+    def _post(self):
+        post_data = self.request.POST.copy()
+
+        if 'cancel' in post_data:
+            # they don't wish to create an account
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+
+        email = self.checkout.build_order().email
+        post_data['email'] = email
+        post_data['email2'] = email
+        form = ConvertLazyUserForm(self.checkout.get_user(), data=post_data)
+
+        if form.is_valid():
+            # convert the lazy user and log them in
+            username = form.cleaned_data['username']
+            password = form.cleaned_data['password2']
+            LazyUser.objects.convert(form)
+            user = authenticate(username=username, password=password)
+            auth_login(self.request, user)
+
+            if self.request.session.test_cookie_worked():
+                self.request.session.delete_test_cookie()
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+        return self._render_form(form, email)
+
+    def _render_form(self, form, email):
+        context = {
+            'form': form,
+            'email': email,
+        }
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
+        return render_to_response('convert_account.html', context, context_instance=RequestContext(self.request))
 
 class Checkout:
 

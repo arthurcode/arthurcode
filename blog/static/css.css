@@ -1989,3 +1989,24 @@ form.ship-to .required-text {
     float: left;
     clear: both;
 }
+
+.checkout div.convert-account {
+    padding: 20px;
+    border: 2px solid darkgray;
+    float: left;
+}
+
+.checkout div.convert-account p {
+    font-size: 80%;
+    line-height: 1.3em;
+}
+
+.checkout div.convert-account .required-text {
+    display: none;
+}
+
+.checkout div.cancel {
+    float: left;
+    clear: both;
+    padding: 20px;
+}
