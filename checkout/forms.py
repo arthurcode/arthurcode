@@ -117,7 +117,6 @@ class ChooseShippingAddressByNickname(forms.Form):
     """
     Chooses from a set of existing shipping addresses by nickname.
     """
-
     ME_NICKNAME = "Me"
     NEW_ADDRESS_NICKNAME = "New Address"
     SHIP_TO_KEY = "ship_to"
@@ -126,16 +125,19 @@ class ChooseShippingAddressByNickname(forms.Form):
         self.request = request
         super(ChooseShippingAddressByNickname, self).__init__(*args, **kwargs)
         nicknames = self.get_existing_nicknames()
-        choices = [(n, n) for n in nicknames]
+        nicknames.sort()
 
-        if not ChooseShippingAddressByNickname.ME_NICKNAME in nicknames:
-            choices = [(ChooseShippingAddressByNickname.ME_NICKNAME, ChooseShippingAddressByNickname.ME_NICKNAME)] + choices
-        choices = [('', 'Select one:')] + choices
-        choices.append((ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME, 'Other Address'))
-        self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
+        # the choices group always has to start with 'Me'
+        choices = []
+        address_book_choices = [(self.ME_NICKNAME, self.ME_NICKNAME)]
+        address_book_choices.extend([(n, n) for n in nicknames if n != self.ME_NICKNAME])
+        choices.append(("Address Book", address_book_choices))
+        choices.append(("Other", ((self.NEW_ADDRESS_NICKNAME, 'New Address'),)))
+
+        self.fields[self.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
                                                                                label="Ship To", required=True)
-        if kwargs and 'initial' in kwargs and ChooseShippingAddressByNickname.SHIP_TO_KEY in kwargs['initial']:
-            self.fields[ChooseShippingAddressByNickname.SHIP_TO_KEY].initial = kwargs['initial'][ChooseShippingAddressByNickname.SHIP_TO_KEY]
+        if kwargs and 'initial' in kwargs and self.SHIP_TO_KEY in kwargs['initial']:
+            self.fields[self.SHIP_TO_KEY].initial = kwargs['initial'][self.SHIP_TO_KEY]
 
     def get_existing_nicknames(self):
         """
