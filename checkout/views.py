@@ -262,6 +262,9 @@ class ShippingInfoStep(Step):
                     self.save(self.form_key, form.data)
                     self.mark_complete()
                     return HttpResponseRedirect(self.checkout.get_next_url())
+            elif len(existing_nicknames) == 0 and not nickname:
+                # automatically 'choose' the 'Me' nickname so that the user sees this form immediately
+                return HttpResponseRedirect(self.request.path + "?%s=%s" % (ChooseShippingAddressByNickname.SHIP_TO_KEY, ChooseShippingAddressByNickname.ME_NICKNAME))
         saved_data = self.get(self.form_key, {})
         nickname = self.get_nickname(saved_data)
         form = self.get_form_for_nickname(nickname, saved_data)
