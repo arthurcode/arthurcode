@@ -243,6 +243,15 @@ class ShippingInfoStep(Step):
 
     def _get(self):
         if not self.is_complete():
+            # check if a nickname has been selected.  If one has, and we have all the data we need, mark the step complete.
+            nickname = self.get_nickname(None)
+            if nickname:
+                form = self.get_form_for_nickname(nickname, None)
+                if form.is_valid():
+                    self.save(self.form_key, form.data)
+                    self.mark_complete()
+                    return HttpResponseRedirect(self.checkout.get_next_url())
+
             # if we only have one saved shipping address, just use it and ask the customer to confirm their data in the
             # last step
             existing_nicknames = self.get_existing_nicknames()
@@ -260,7 +269,7 @@ class ShippingInfoStep(Step):
 
     def get_nickname(self, saved_data):
         nickname = self.request.GET.get(ChooseShippingAddressByNickname.SHIP_TO_KEY, None)
-        if not nickname:
+        if not nickname and saved_data:
             nickname = saved_data.get('nickname', None)
         return nickname
 

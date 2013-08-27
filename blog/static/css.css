@@ -1758,8 +1758,7 @@ body.receipt #bd div {
 }
 
 .review-order, .payment-info {
-    border: 2px solid lightgray;
-    padding: 10px;
+    padding-bottom: 20px;
     float: left;
     width: 100%;
 }
