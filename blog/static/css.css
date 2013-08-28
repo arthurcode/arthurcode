@@ -1198,10 +1198,6 @@ table .left {
     text-align: left !important;
 }
 
-table.shopping-cart {
-    width: 80%;
-}
-
 table.shopping-cart tbody {
     font-size: 80%;
 }
@@ -1231,6 +1227,27 @@ table.shopping-cart img {
     width: 6em;    /* TODO: add a max width as well */
     margin: 0 auto;
     display: block;
+}
+
+table.shopping-cart .update-cart .field {
+    float: left;
+    width: auto;
+}
+
+table.shopping-cart .update-cart button {
+    float: left;
+    clear: none;
+    padding-top: 1.7em;
+}
+
+table.shopping-cart form.checkout {
+    float: right;
+}
+
+table.shopping-cart .continue-shopping {
+    float: left;
+    font-size: 120%;
+    font-weight: normal;
 }
 
 /* product detail styles */

@@ -46,11 +46,14 @@
         </tr>
         {% if cart_items %}
             <tr>
-                <th class="right" colspan="7">
+                <th colspan="7">
                     <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
                         <button type="submit" name="Checkout" class="action">Checkout Now</button>
                     </form>
+                    {% if continue_shopping_url %}
+                        <a class="action continue-shopping" href="{{ continue_shopping_url }}">Continue Shopping</a>
+                    {% endif %}
                 </th>
             </tr>
         {% endif %}
@@ -121,10 +124,6 @@
         {% endif %}
         </tbody>
     </table>
-
-    {% if continue_shopping_url %}
-        <a href="{{ continue_shopping_url }}">Continue Shopping</a>
-    {% endif %}
 {% endblock %}
 
 {% block javascript %}
