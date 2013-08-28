@@ -18,7 +18,6 @@ COUNTRY_CHOICES = [
     (u"All Countries", countries.COUNTRIES)
 ]
 
-
 class AddressForm(forms.Form):
     """
     The DB requires that the address line1, city, region and country fields not be non-null.
@@ -86,7 +85,10 @@ class CanadaShippingForm(AddressForm):
                                                   widget=DEFAULT_ADDRESSEE_PHONE_WIDGET)
 
     def customize_region(self, field):
-        self.fields['region'] = CAProvinceField(widget=CAProvinceSelect, label="Province")
+        new_field = CAProvinceField(widget=CAProvinceSelect, label="Province")
+        new_field.widget.choices = add_empty_choice(new_field.widget.choices)
+        self.fields['region'] = new_field
+
 
     def customize_post_code(self, field):
 
@@ -124,3 +126,17 @@ class BillingForm(AddressForm):
 
     def customize_post_code(self, field):
         field.required = True
+
+
+def add_empty_choice(choices, label='select one:'):
+    """
+    Adds an empty select choice to the start of this choices list.  An aria-required select field will not allow the
+    form to be submitted with the empty choice selected.  The 'label' field controls the label for the empty choice.
+    The default is 'select one:'
+    """
+    empty_choice = ('', label)
+    if not choices:
+        choices = []
+    choices = [empty_choice] + list(choices)
+    return choices
+

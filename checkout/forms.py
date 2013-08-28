@@ -3,6 +3,7 @@ import re
 
 from django import forms
 from django.core.exceptions import ValidationError
+from utils.forms import add_empty_choice
 
 
 def cc_expire_years():
@@ -56,8 +57,8 @@ def cardLuhnChecksumIsValid(card_number):
 class PaymentInfoForm(forms.Form):
     card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Credit Card Type')
     card_number = forms.CharField(label='Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}))
-    expire_month = forms.ChoiceField(choices=cc_expire_months(), label='Month')
-    expire_year = forms.ChoiceField(choices=cc_expire_years(), label='Year')
+    expire_month = forms.ChoiceField(choices=add_empty_choice(cc_expire_months(), '-'), label='Month')
+    expire_year = forms.ChoiceField(choices=add_empty_choice(cc_expire_years(), '-'), label='Year')
     cvv = forms.CharField(label='CVV', max_length=3,
                           help_text="<a href='http://www.cvvnumber.com/cvv.html' target='_blank' style='font-size:11px'>What is my CVV code?</a>",
                           widget=forms.TextInput(attrs={'size': 3, 'maxlength': 3}))  # most are 3 digits, american-express is 4 digits
