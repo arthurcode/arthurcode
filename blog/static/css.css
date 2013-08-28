@@ -2090,5 +2090,8 @@ form.ship-to .required-text {
 .checkout div.cancel {
     float: left;
     clear: both;
-    padding: 20px;
+}
+
+.checkout div.cancel button {
+    color: blue;
 }

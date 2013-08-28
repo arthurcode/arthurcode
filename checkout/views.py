@@ -667,6 +667,11 @@ class Checkout:
             # the user is not allowed to skip ahead like this.  Redirect them to the proper step
             return HttpResponseRedirect(self.get_next_url())
 
+        # check if a payment has already been made in this checkout flow.  If so, the user is not permitted to go back
+        # and modify any of their contact, shipping, or billing information.  And definitely prevent them from paying twice!
+        if self.is_order_submitted() and step <= self.get_step_number(ReviewStep(self)):
+            return HttpResponseRedirect(self.get_next_url())
+
         if not cartutils.cart_distinct_item_count(self.request):
             # there are no items in the customer's cart!  Redirect them to the cart page
             return HttpResponseRedirect(reverse('show_cart'))
