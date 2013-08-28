@@ -1198,6 +1198,10 @@ table .left {
     text-align: left !important;
 }
 
+table.shopping-cart {
+    min-width: 70%;
+}
+
 table.shopping-cart tbody {
     font-size: 80%;
 }
