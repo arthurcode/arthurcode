@@ -1434,7 +1434,6 @@ div.contact-info form .column2 {
 .order-summary {
     border: 1px solid lightgray;
     border-top: none;
-    border-bottom: none;
     clear: both;
     float: left;
     font-size: smaller;
@@ -1452,7 +1451,7 @@ div.contact-info form .column2 {
 .order-summary dl.horizontal dt {
     float: left;
     clear: left;
-    width: 5em;
+    width: 6em;
     text-align: right;
 }
 
@@ -1462,6 +1461,13 @@ div.contact-info form .column2 {
 
 .order-summary .total {
     font-weight: bolder;
+}
+
+.order-summary a {
+    float: left;
+    clear: both;
+    width: 100%;
+    text-align: center;
 }
 
 .checkout-utils {

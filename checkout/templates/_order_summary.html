@@ -3,7 +3,7 @@
 <div class="order-summary">
     <h2>Order Summary</h2>
     <dl class="horizontal">
-        <dt>Items in Cart:</dt>
+        <dt>Items:</dt>
         <dd>{{ item_count }}</dd>
         <dt>Subtotal:</dt>
         <dd>{{ order.merchandise_total|currency }}</dd>
@@ -25,4 +25,5 @@
             <dd class="total">{{ order.total|currency }}</dd>
         {% endif %}
     </dl>
+    <a class="subtle standard" href="{% url show_cart %}">< go back to cart</a>
 </div>
