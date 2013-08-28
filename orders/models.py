@@ -151,6 +151,10 @@ class OrderItem(models.Model):
     def name(self):
         return self.item.product.name
 
+    @property
+    def sku(self):
+        return self.item.sku
+
     def __unicode__(self):
         return self.item.product.name
 

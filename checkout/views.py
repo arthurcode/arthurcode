@@ -581,7 +581,7 @@ class Checkout:
 
     def cancel(self):
         """
-        Cancels any in-progress checkout steps
+        Cancels any in-progress checkout steps.  If an order has already been submitted this will NOT cancel it.
         """
         self._clear_data()
 

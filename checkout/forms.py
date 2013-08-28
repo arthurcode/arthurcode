@@ -18,7 +18,8 @@ def cc_expire_months():
             numeric = '0' + str(month)
         else:
             numeric = str(month)
-        months.append((numeric, datetime.date(2009, month, 1).strftime('%B')))
+        #months.append((numeric, datetime.date(2009, month, 1).strftime('%B')))
+        months.append((numeric, numeric))
     return months
 
 
@@ -53,7 +54,7 @@ def cardLuhnChecksumIsValid(card_number):
 
 
 class PaymentInfoForm(forms.Form):
-    card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Card Type')
+    card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Credit Card Type')
     card_number = forms.CharField(label='Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}))
     expire_month = forms.ChoiceField(choices=cc_expire_months(), label='Month')
     expire_year = forms.ChoiceField(choices=cc_expire_years(), label='Year')
