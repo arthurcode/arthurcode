@@ -747,9 +747,9 @@ class Checkout:
         if not payment_form.is_valid():
             return False
 
-        # link customer information
-        if not self.is_guest():
-            order.user = self.request.user
+        # link user information, even if that user is a guest (lazy) account.  They'll need this information set in
+        # order to view their order receipt at the end of the process.
+        order.user = self.request.user
         order.first_name = pyOrder.first_name
         order.last_name = pyOrder.last_name
         order.email = pyOrder.email
