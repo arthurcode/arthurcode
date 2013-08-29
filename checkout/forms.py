@@ -103,6 +103,8 @@ class AddGiftCardForm(forms.Form):
         number = self.cleaned_data.get('card_number', None)
         if number:
             number = strip_non_numbers(number)
+            if not len(number) == 16:
+                raise ValidationError(u"Card numbers are exactly 16 digits long")
             balance = get_gift_card_balance(number)
             if balance is None:
                 raise ValidationError(u"Sorry, this is an unrecognized gift card number.")

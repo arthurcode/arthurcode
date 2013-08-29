@@ -125,12 +125,12 @@
         <h2>2. Enter Payment Info</h2>
         {% if gift_cards %}
             <h3>Gift Cards ({{ gift_cards|length }})</h3>
-            <dl class="horizontal">
+            <dl class="horizontal subtle">
                 {% for card,balance in gift_cards %}
-                    <dt>{{ card }}</dt>
+                    <dt>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</dt>
                     <dd>{{ balance|currency }}</dd>
                     <dd>
-                        <form method="post" class="remove-gift-card no-help subtle">
+                        <form method="post" class="remove-gift-card no-help">
                             {% csrf_token %}
                             <input type="hidden" id="id_number" name="number" value="{{ card }}">
                             <button type="submit" name="remove-gift-card" class="link">(remove)</button>
