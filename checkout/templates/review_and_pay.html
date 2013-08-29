@@ -124,7 +124,7 @@
     <div class='payment-info'>
         <h2>2. Enter Payment Info</h2>
         {% if gift_cards %}
-            <h3>Gift Cards ({{ gift_cards|length }})</h3>
+            <h3>Gift Cards ({{ gc_total|currency}})</h3>
             <dl class="horizontal subtle">
                 {% for card,balance in gift_cards %}
                     <dt>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</dt>
@@ -139,7 +139,7 @@
                 {% endfor %}
             </dl>
         {% endif %}
-        {% if can_add_gift_card %}
+        {% if balance_remaining > 0 %}
             <div class="needed-for-javascript">
             <div class="add-gift-card{% if not gift_card_form.is_bound %} hide-initially{% endif %}">
                 {% form_errors gift_card_form unique=1 %}
@@ -153,7 +153,8 @@
         {% endif %}
 
 
-        <span class="balance">Balance to be applied to credit card:  {{ order.total|currency }}</span>
+        {% if balance_remaining %}
+        <h3>Credit Card ({{ balance_remaining|currency }})</h3>
         {% form_errors credit_form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
@@ -173,6 +174,7 @@
                 <button class="action" name="submit">Submit Order</button>
             </div>
         </form>
+        {% endif %}
     </div>
 {% endblock %}
 

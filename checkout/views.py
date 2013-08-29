@@ -487,21 +487,19 @@ class ReviewStep(Step):
 
     def _render_form(self, credit_form, add_gift_card_form):
         gift_cards = self.get_gift_cards_with_balance()
-        can_add_gift_card = True
 
-        total = Decimal('0')
+        gc_total = Decimal('0')
         for (card, balance) in gift_cards:
-            total += balance
+            gc_total += balance
 
-        if total >= credit_form.pyOrder.total():
-            can_add_gift_card = False
-            # we already have enough gift cards to pay for this order
+        balance_remaining = max(Decimal('0'), credit_form.pyOrder.total() - gc_total)
 
         context = {
             'credit_form': credit_form,
             'gift_card_form': add_gift_card_form,
             'gift_cards': gift_cards,
-            'can_add_gift_card': can_add_gift_card,
+            'gc_total': min(gc_total, credit_form.pyOrder.total()),
+            'balance_remaining': balance_remaining
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)

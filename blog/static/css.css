@@ -2172,6 +2172,8 @@ form.ship-to .required-text {
 .payment-info h3 {
     color: midnightblue;
     font-weight: bolder;
+    float: left;
+    clear: both;
 }
 
 form.remove-gift-card {
