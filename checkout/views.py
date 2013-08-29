@@ -520,6 +520,7 @@ class ReviewStep(Step):
         elif 'remove-gift-card' in data:
             card_number = data['number']
             self._remove_gift_card(card_number)
+            return HttpResponseRedirect(self.request.path)
         else:
             # we must be checking out
             order = self.checkout.build_order()
