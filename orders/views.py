@@ -10,10 +10,12 @@ from django.views.decorators.http import require_GET
 @login_required
 def detail_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+    receipt = False
     if not request.user.is_staff:
         # check that this regular user has permission to view this order summary
         if not order.user or not order.user == request.user:
             return HttpResponseForbidden(u"You do not have permission to view this order.")
+        receipt = True
 
     profile = None
     if order.user:
@@ -22,6 +24,7 @@ def detail_view(request, order_id):
     context = {
         'order': order,
         'profile': profile,
+        'receipt': receipt
     }
     return render_to_response('order_detail.html', context, context_instance=RequestContext(request))
 

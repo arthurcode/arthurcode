@@ -1,69 +1,143 @@
 {% extends "base_site.html" %}
+{% load extras %}
+{% load lazysignup_tags %}
 
-{% block title %}Order Detail{% endblock %}
+{% block title %}{% if receipt %}Your Receipt{% else %}Order Detail{% endif %}{% endblock %}
 
 {% block body_class %}receipt{% endblock %}
 
 {% block body %}
-    <h2>Order #{{ order.id }}</h2>
-    <hr>
-    <div>
+    {% if receipt %}
+        <p class="thank-you">Thank you for your Order!</p>
+    {% endif %}
+    <div class="receipt">
+        <h2>{% if receipt %}Receipt: {% endif %}Order #{{ order.id }}</h2>
+
         <dl class="horizontal">
             <dt>Date:</dt>
             <dd>{{ order.date|date:"M j, Y" }}</dd>
             <dt>Status:</dt>
             <dd>{{ order.get_status_display }}</dd>
+            <dt>Customer:</dt>
+            <dd>{% if order.user|is_lazy_user %}guest{% else %}#{{ profile.id }}{% endif %}</dd>
         </dl>
-    </div>
 
-    <div>
-        <h3>Customer Info</h3>
-        <hr>
-        <dl class="horizontal">
-            {% if profile %}
-                <dt>Customer #:</dt>
-                <dd>{{ profile.id }}</dd>
-            {% endif %}
-            <dt>Name:</dt>
-            <dd>{{ order.first_name }} {{ order.last_name }}</dd>
-            <dt>Email:</dt>
-            <dd>{{ order.email }}</dd>
-            <dt>Phone:</dt>
-            <dd>{{ order.phone }}</dd>
-            <dt>Preferred Contact Method:</dt>
-            <dd>{{ order.get_contact_method_display }}</dd>
-        </dl>
-    </div>
-
-    <div>
-        <h3>Shipping Address</h3>
-        <hr>
-        {% if order.is_pickup %}
-            <p>N/A (pickup order)</p>
-        {% else %}
+        <div class="contact">
+            <h3>Customer Information</h3>
+            <div>
+            {{ order.first_name }} {{ order.last_name }} <br>
+            {{ order.email }} <br>
+            {{ order.phone }} <br>
+            </div>
+        </div>
+        <div class="shipping">
+            <h3>Shipping Address</h3>
+            <div>
             {% with order.shipping_address as address %}{% include "_address.html" %}{% endwith %}
-        {% endif %}
-    </div>
+            </div>
+        </div>
+        <div class="billing">
+            <h3>Billing Address</h3>
+            <div>
+            {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}
+            </div>
+        </div>
+        <div class="items">
+            <table class="shopping-cart">
+                <caption class="hidden">Order Breakdown</caption>
+                <thead class="title-bar">
+                <tr>
+                    <th scope="col">Product</th>
+                    <th scope="col">Details</th>
+                    <th class="right" scope="col">Item Price</th>
+                    <th class="right" scope="col">Quantity</th>
+                    <th class="right" scope="col">Item Total</th>
+                </tr>
+                </thead>
+                <tfoot>
+                <tr>
+                    <th class="right" colspan="4">
+                        Subtotal:
+                    </th>
+                    <th class="right">
+                        {{ order.merchandise_total|currency }}
+                    </th>
+                </tr>
+                <tr>
+                    <th class="right" colspan="4">
+                        + Shipping:
+                    </th>
+                    <th class="right">
+                        {{ order.shipping_charge|currency }}
+                    </th>
+                </tr>
+                {% for tax in order.taxes.all %}
+                    <tr>
+                        <th class="right" colspan="4">
+                            + {{ tax.name }} ({{ tax.rate|floatformat }}%):
+                        </th>
+                        <th class="right">
+                            {{ tax.total|currency }}
+                        </th>
+                    </tr>
+                {% endfor %}
+                <tr>
+                    <th class="left" colspan="3"></th>
+                    <th class="right total-left">
+                        Total Paid:
+                    </th>
+                    <th class="right total-right">
+                        {{ order.total|currency }}
+                    </th>
+                </tr>
+                </tfoot>
+                <tbody>
+                {% if order.items.count %}
+                    {% for item in order.items.all %}
+                        <tr>
+                            <td>
+                                <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
+                            </td>
+                            <td>
+                                <dl class="horizontal">
+                                    {% for option in item.item.options.all %}
+                                        <dt>{{ option.get_category_display|capfirst }}:</dt>
+                                        <dd>{{ option.name|lower }}</dd>
+                                    {% endfor %}
+                                    <dt>SKU:</dt>
+                                    <dd>{{ item.sku }}</dd>
+                                </dl>
+                            </td>
+                            <td class="right">
+                                {{ item.price|currency }}
+                            </td>
+                            <td class="right">
+                                {{ item.quantity }}
+                            </td>
+                            <td class="right">
+                                {{ item.total|currency }}
+                            </td>
+                        </tr>
+                    {% endfor %}
+                {% else %}
+                    <tr>
+                        <td class="left" colspan="4">
+                            There are no items on this order
+                        </td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
 
-    <div>
-        <h3>Items</h3>
-        <hr>
-    </div>
-
-    <div>
-        <h3>Payment Info</h3>
-        <hr>
-        <dl class="horizontal">
-            <dt>Status:</dt>
-            <dd>{{ order.get_payment_status_display }}</dd>
-            <dt>Transaction #</dt>
-            <dd>{{ order.transaction_id }}</dd>
-            <dt></dt>
-        </dl>
+        <div class="payment">
+            <h3>Payment Details</h3>
+            TBD
+        </div>
     </div>
 
     {% if order.can_be_canceled %}
-        <div><a class="action" href="{% url order_cancel order.id %}">Cancel Order</a></div>
+        <div class="actions"><a class="action" href="{% url order_cancel order.id %}">Cancel Order</a></div>
     {% endif %}
 
 
