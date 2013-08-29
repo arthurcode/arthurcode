@@ -5,7 +5,8 @@ from django import forms
 from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
 from orders.models import CreditCardPayment
-from credit_card import authorize
+from credit_card import authorize, get_gift_card_balance
+from utils.validators import not_blank
 
 
 def cc_expire_years():
@@ -89,6 +90,25 @@ class PaymentInfoForm(forms.Form):
         # authorize the funds
         self.transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
         return cd
+
+
+class AddGiftCardForm(forms.Form):
+    card_number = forms.CharField(label='Gift Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}),
+                                  validators=[not_blank])
+
+    def __init__(self, *args, **kwargs):
+        super(AddGiftCardForm, self).__init__(*args, **kwargs)
+
+    def clean_card_number(self):
+        number = self.cleaned_data.get('card_number', None)
+        if number:
+            number = strip_non_numbers(number)
+            balance = get_gift_card_balance(number)
+            if balance is None:
+                raise ValidationError(u"Sorry, this is an unrecognized gift card number.")
+            if balance <= 0:
+                raise ValidationError(u"Sorry, there is no money left on this card.")
+        return number
 
 
 class ChooseAddressForm(forms.Form):

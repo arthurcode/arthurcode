@@ -1803,6 +1803,9 @@ body.receipt #bd div {
 .payment-info span.balance {
     font-weight: bolder;
     color: midnightblue;
+    float: left;
+    clear: both;
+    padding-top: 10px;
 }
 
 .review-order div.contact, .receipt div.contact, .review-order div.shipping, .receipt div.shipping, .review-order div.billing, .receipt div.billing {
@@ -2147,4 +2150,26 @@ form.ship-to .required-text {
 
 .receipt .payment dl dt {
     width: 20em;
+}
+
+.add-gift-card .field {
+    margin: 0 !important;
+}
+
+.add-gift-card button {
+    float: left;
+    margin-top: 1.6em;
+}
+
+.add-gift-card {
+    padding: 10px;
+    background-color: #f0f0f0;
+    border: 1px solid darkgray;
+    float: left;
+    clear: both;
+}
+
+.payment-info h3 {
+    color: midnightblue;
+    font-weight: bolder;
 }

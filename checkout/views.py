@@ -4,7 +4,7 @@ from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
-from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment
+from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment, AddGiftCardForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -18,6 +18,7 @@ from decimal import Decimal
 from django.views.decorators.http import require_GET
 from accounts.accountutils import is_guest_passthrough
 from django.contrib.auth import login as auth_login, authenticate
+from credit_card import get_gift_card_balance
 
 
 class PyOrder(object):
@@ -475,16 +476,32 @@ class BillingInfoStep(Step):
 class ReviewStep(Step):
 
     data_key = 'review'
+    gift_card_key = 'gift_cards'
 
     def _get(self):
         order = self.checkout.build_order()
         # for now just put the full amount on the credit card
-        form = PaymentInfoForm(order, order.total())
-        return self._render_form(form)
+        credit_form = PaymentInfoForm(order, order.total())
+        add_gift_card_form = AddGiftCardForm()
+        return self._render_form(credit_form, add_gift_card_form)
 
-    def _render_form(self, form):
+    def _render_form(self, credit_form, add_gift_card_form):
+        gift_cards = self.get_gift_cards_with_balance()
+        can_add_gift_card = True
+
+        total = Decimal('0')
+        for (card, balance) in gift_cards:
+            total += balance
+
+        if total >= credit_form.pyOrder.total():
+            can_add_gift_card = False
+            # we already have enough gift cards to pay for this order
+
         context = {
-            'form': form,
+            'credit_form': credit_form,
+            'gift_card_form': add_gift_card_form,
+            'gift_cards': gift_cards,
+            'can_add_gift_card': can_add_gift_card,
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -492,14 +509,41 @@ class ReviewStep(Step):
 
     def _post(self):
         data = self.request.POST.copy()
-        order = self.checkout.build_order()
-        form = PaymentInfoForm(order, order.total(), data=data)
+        gift_card_form = None
+        credit_form = None
+
+        if 'add-gift-card' in data:
+            gift_card_form = AddGiftCardForm(data=data)
+            if gift_card_form.is_valid():
+                self._save_gift_card(gift_card_form)
+                return HttpResponseRedirect(self.request.path)
+        else:
+            # we must be checking out
+            order = self.checkout.build_order()
+            credit_form = PaymentInfoForm(order, order.total(), data=data)
+            if credit_form.is_valid():
+                success = self.checkout.process_order(credit_form)
+                if success:
+                    self.checkout._mark_step_complete(self)
+                    return HttpResponseRedirect(self.checkout.get_next_url())
+
+        gift_card_form = gift_card_form or AddGiftCardForm()
+        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order(), None)
+        return self._render_form(credit_form, gift_card_form)
+
+    def _save_gift_card(self, form):
+        existing_cards = self._get_gift_cards()
         if form.is_valid():
-            success = self.checkout.process_order(form)
-            if success:
-                self.checkout._mark_step_complete(self)
-                return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form)
+            card_number = form.cleaned_data['card_number']
+            existing_cards.append(card_number)
+            self.save(self.gift_card_key, existing_cards)
+
+    def _get_gift_cards(self):
+        return self.get(self.gift_card_key, [])
+
+    def get_gift_cards_with_balance(self):
+        # make sure the order is preserved
+        return [(n, get_gift_card_balance(n)) for n in self._get_gift_cards()]
 
 
 class CreateAccount(Step):

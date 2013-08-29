@@ -123,23 +123,42 @@
 
     <div class='payment-info'>
         <h2>2. Enter Payment Info</h2>
+        {% if gift_cards %}
+            <h3>Gift Cards</h3>
+            <dl class="horizontal">
+                {% for card,balance in gift_cards %}
+                    <dt>{{ card }}</dt>
+                    <dd>{{ balance|currency }}</dd>
+                {% endfor %}
+            </dl>
+        {% endif %}
+        {% if can_add_gift_card %}
+            <div class="add-gift-card">
+                {% form_errors gift_card_form %}
+                <form method="post" class="no-help" action="">
+                    {% csrf_token %}
+                    {% field gift_card_form.card_number %}
+                    <button type="submit" class="action" name="add-gift-card">Redeem</button>
+                </form>
+            </div>
+        {% endif %}
+
+
         <span class="balance">Balance to be applied to credit card:  {{ order.total|currency }}</span>
-        {% form_errors form %}
+        {% form_errors credit_form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
-            {% comment %}Hidden form fields{% endcomment %}
-            {{ form.total }}
-                {% field form.card_type %}
+                {% field credit_form.card_type %}
                 <p>
-                {% field form.card_number %}
-                {% field form.cvv %}
+                {% field credit_form.card_number %}
+                {% field credit_form.cvv %}
                 </p>
                 <fieldset>
                     <legend>
                         Expiry Date
                     </legend>
-                    {% field form.expire_month %}
-                    {% field form.expire_year %}
+                    {% field credit_form.expire_month %}
+                    {% field credit_form.expire_year %}
                 </fieldset>
             <div class="controls">
                 <button class="action" name="submit">Submit Order</button>
