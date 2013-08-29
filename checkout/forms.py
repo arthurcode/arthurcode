@@ -96,7 +96,8 @@ class AddGiftCardForm(forms.Form):
     card_number = forms.CharField(label='Gift Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}),
                                   validators=[not_blank])
 
-    def __init__(self, *args, **kwargs):
+    def __init__(self, existing_gcs=[], *args, **kwargs):
+        self.existing_gcs = existing_gcs
         super(AddGiftCardForm, self).__init__(*args, **kwargs)
 
     def clean_card_number(self):
@@ -105,6 +106,10 @@ class AddGiftCardForm(forms.Form):
             number = strip_non_numbers(number)
             if not len(number) == 16:
                 raise ValidationError(u"Card numbers are exactly 16 digits long")
+
+            if number in self.existing_gcs:
+                raise ValidationError(u"You have already added this gift card")
+
             balance = get_gift_card_balance(number)
             if balance is None:
                 raise ValidationError(u"Sorry, this is an unrecognized gift card number.")

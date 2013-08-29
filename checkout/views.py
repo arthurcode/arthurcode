@@ -503,7 +503,7 @@ class ReviewStep(Step):
         credit_form = None
 
         if 'add-gift-card' in data:
-            gift_card_form = AddGiftCardForm(data=data)
+            gift_card_form = AddGiftCardForm(existing_gcs=self._get_gift_cards(), data=data)
             if gift_card_form.is_valid():
                 self._save_gift_card(gift_card_form)
                 return HttpResponseRedirect(self.request.path)
