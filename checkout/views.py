@@ -481,25 +481,17 @@ class ReviewStep(Step):
     def _get(self):
         order = self.checkout.build_order()
         # for now just put the full amount on the credit card
-        credit_form = PaymentInfoForm(order, order.total())
+        credit_form = PaymentInfoForm(order, self.get_balance_remaining())
         add_gift_card_form = AddGiftCardForm()
         return self._render_form(credit_form, add_gift_card_form)
 
     def _render_form(self, credit_form, add_gift_card_form):
-        gift_cards = self.get_gift_cards_with_balance()
-
-        gc_total = Decimal('0')
-        for (card, balance) in gift_cards:
-            gc_total += balance
-
-        balance_remaining = max(Decimal('0'), credit_form.pyOrder.total() - gc_total)
-
         context = {
             'credit_form': credit_form,
             'gift_card_form': add_gift_card_form,
-            'gift_cards': gift_cards,
-            'gc_total': min(gc_total, credit_form.pyOrder.total()),
-            'balance_remaining': balance_remaining
+            'gift_cards': self.get_gift_cards_with_balance(),
+            'gc_total': credit_form.pyOrder.total() - credit_form.amount,
+            'balance_remaining': credit_form.amount
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -522,7 +514,7 @@ class ReviewStep(Step):
         else:
             # we must be checking out
             order = self.checkout.build_order()
-            credit_form = PaymentInfoForm(order, order.total(), data=data)
+            credit_form = PaymentInfoForm(order, self.get_balance_remaining(), data=data)
             if credit_form.is_valid():
                 success = self.checkout.process_order(credit_form)
                 if success:
@@ -530,7 +522,7 @@ class ReviewStep(Step):
                     return HttpResponseRedirect(self.checkout.get_next_url())
 
         gift_card_form = gift_card_form or AddGiftCardForm()
-        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order(), None)
+        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order(), self.get_balance_remaining())
         return self._render_form(credit_form, gift_card_form)
 
     def _save_gift_card(self, form):
@@ -554,6 +546,19 @@ class ReviewStep(Step):
     def get_gift_cards_with_balance(self):
         # make sure the order is preserved
         return [(n, get_gift_card_balance(n)) for n in self._get_gift_cards()]
+
+    def get_balance_remaining(self):
+        """
+        Returns the amount that remains to be paid for after the gift certificates (if any)
+        """
+        order = self.checkout.build_order()
+        total = order.total()
+
+        gc_total = Decimal('0')
+        for (card, balance) in self.get_gift_cards_with_balance():
+            gc_total += balance
+        return max(Decimal('0'), total - gc_total)
+
 
 
 class CreateAccount(Step):
@@ -846,12 +851,17 @@ class Checkout:
         self.save('order', order.id)
         return True
 
+    _order = None
     def build_order(self):
         """
         Builds a PyOrder object using the data that has been collected from this checkout process.
         Only the steps that have been completed will be used to collect the data.  This order is NOT saved to the
         database at this point.
+
+        This method caches the PyOrder and is NOT THREAD SAFE.
         """
+        if self._order:
+            return self._order
         order = PyOrder(self.request)
         order.items = self.get_order_items()
 
@@ -861,6 +871,7 @@ class Checkout:
 
         for i in range(completed_step):
             STEPS[i][0](self).visit(order)
+        self._order = order
         return order
 
     def get_submitted_order(self):
