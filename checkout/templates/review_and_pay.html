@@ -153,15 +153,15 @@
         {% endif %}
 
 
-        {% if balance_remaining %}
-        <h3>Credit Card ({{ balance_remaining|currency }})</h3>
+        {% if balance_remaining %}<h3>Credit Card ({{ balance_remaining|currency }})</h3>{% endif %}
         {% form_errors credit_form %}
         <form method="post" action="" class="stacked">
             {% csrf_token %}
+            {% if balance_remaining %}
                 {% field credit_form.card_type %}
                 <p>
-                {% field credit_form.card_number %}
-                {% field credit_form.cvv %}
+                    {% field credit_form.card_number %}
+                    {% field credit_form.cvv %}
                 </p>
                 <fieldset>
                     <legend>
@@ -170,11 +170,11 @@
                     {% field credit_form.expire_month %}
                     {% field credit_form.expire_year %}
                 </fieldset>
+            {% endif %}
             <div class="controls">
                 <button class="action" name="submit">Submit Order</button>
             </div>
         </form>
-        {% endif %}
     </div>
 {% endblock %}
 

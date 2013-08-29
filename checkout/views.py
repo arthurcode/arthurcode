@@ -818,15 +818,16 @@ class Checkout:
         order.save()
 
          # extract payment information
-        payment = CreditCardPayment()
-        payment.order = order
-        cd = payment_form.cleaned_data
-        payment.card_type = cd['card_type']
-        payment.amount = payment_form.amount
-        payment.transaction_id = payment_form.transaction_id
-        payment.status = CreditCardPayment.AUTHORIZED
-        payment.token = cd['card_number'].strip()[-4:]  # only store the last 4 digits of the card
-        payment.save()
+        if payment_form.is_credit():
+            payment = CreditCardPayment()
+            payment.order = order
+            cd = payment_form.cleaned_data
+            payment.card_type = cd['card_type']
+            payment.amount = payment_form.amount
+            payment.transaction_id = payment_form.transaction_id
+            payment.status = CreditCardPayment.AUTHORIZED
+            payment.token = cd['card_number'].strip()[-4:]  # only store the last 4 digits of the card
+            payment.save()
 
         shipping_address = pyOrder.shipping_address.as_address(OrderShippingAddress)
         shipping_address.order = order

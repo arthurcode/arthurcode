@@ -65,6 +65,14 @@ class PaymentInfoForm(forms.Form):
         self.amount = amount
         super(PaymentInfoForm, self).__init__(*args, **kwargs)
 
+        if self.amount <= 0:
+            # no credit card information is necessary
+            self.fields['card_type'].required = False
+            self.fields['card_number'].required = False
+            self.fields['expire_month'].required = False
+            self.fields['expire_year'].required = False
+            self.fields['cvv'].required = False
+
     def clean_card_number(self):
         cc_number = self.cleaned_data.get('card_number', None)
         if cc_number:
@@ -87,9 +95,16 @@ class PaymentInfoForm(forms.Form):
 
     def clean(self):
         cd = super(PaymentInfoForm, self).clean()
-        # authorize the funds
-        self.transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
+
+        if self.is_credit():
+            # authorize the funds
+            self.transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
+
+        # TODO: gift card processing
         return cd
+
+    def is_credit(self):
+        return self.amount > 0
 
 
 class AddGiftCardForm(forms.Form):
