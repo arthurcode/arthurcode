@@ -5,6 +5,7 @@ from django import forms
 from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
 from orders.models import CreditCardPayment
+from credit_card import authorize
 
 
 def cc_expire_years():
@@ -78,6 +79,12 @@ class PaymentInfoForm(forms.Form):
             except ValueError:
                 raise ValidationError(error)
         return cvv
+
+    def clean(self):
+        cd = super(PaymentInfoForm, self).clean()
+        # authorize the funds
+        self.transaction_id = authorize(cd['card_type'], cd['total'], None)  #TODO: include billing address
+        return cd
 
 
 class ChooseAddressForm(forms.Form):

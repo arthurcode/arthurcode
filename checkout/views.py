@@ -4,7 +4,7 @@ from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
-from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname
+from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -756,9 +756,19 @@ class Checkout:
         order.phone = pyOrder.phone
         order.contact_method = pyOrder.contact_method
 
-        # contact paypal to authorize the transfer of funds
         order.shipping_charge = pyOrder.shipping_charge
         order.save()
+
+         # extract payment information
+        payment = CreditCardPayment()
+        payment.order = order
+        cd = payment_form.cleaned_data
+        payment.card_type = cd['card_type']
+        payment.amount = cd['total']
+        payment.transaction_id = payment_form.transaction_id
+        payment.status = CreditCardPayment.AUTHORIZED
+        payment.token = cd['card_number'].strip()[-4:]  # only store the last 4 digits of the card
+        payment.save()
 
         shipping_address = pyOrder.shipping_address.as_address(OrderShippingAddress)
         shipping_address.order = order
