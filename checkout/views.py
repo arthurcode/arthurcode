@@ -758,8 +758,6 @@ class Checkout:
 
         # contact paypal to authorize the transfer of funds
         order.shipping_charge = pyOrder.shipping_charge
-        order.transaction_id = 00000  # TODO: FIX THIS
-        order.payment_status = Order.FUNDS_AUTHORIZED
         order.save()
 
         shipping_address = pyOrder.shipping_address.as_address(OrderShippingAddress)

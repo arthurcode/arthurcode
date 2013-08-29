@@ -27,16 +27,6 @@ class Order(models.Model):
                       (SHIPPED, 'Shipped'),
                       (CANCELLED, 'Cancelled'))
 
-    NEEDS_PAYMENT = 1       # no cash has been received, no credit card transaction has been authorized
-    FUNDS_AUTHORIZED = 2    # a credit card transaction has been authorized
-    PAID = 3                # funds have been captured or cash has been recieved
-    CANCELLED = 4           # the order was cancelled before any money changed hands
-
-    PAYMENT_STATUSES = ((NEEDS_PAYMENT, 'Payment Required'),
-                        (FUNDS_AUTHORIZED, 'Authorized'),
-                        (PAID, 'Paid in full'),
-                        (CANCELLED, 'Cancelled'))
-
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
     user = models.ForeignKey(User, null=True, blank=True)
     first_name = models.CharField('first name', max_length=30, blank=True, null=True, validators=[not_blank])
@@ -48,8 +38,6 @@ class Order(models.Model):
     date = models.DateTimeField(auto_now_add=True)
     last_updated = models.DateTimeField(auto_now=True)
     status = models.SmallIntegerField(choices=ORDER_STATUSES, default=SUBMITTED)
-    payment_status = models.IntegerField(choices=PAYMENT_STATUSES, default=NEEDS_PAYMENT)
-    transaction_id = models.CharField(max_length=20)
     ip_address = models.IPAddressField(default="0.0.0.0")  # https://code.djangoproject.com/ticket/5622
 
     is_pickup = models.BooleanField(default=False)
@@ -130,7 +118,7 @@ class Order(models.Model):
         signal_order_cancelled.send(sender=self)
 
     def can_be_canceled(self):
-        return self.status in [Order.SUBMITTED, Order.PROCESSED] and not self.payment_status == Order.PAID
+        return self.status in [Order.SUBMITTED, Order.PROCESSED]
 
 
 class OrderItem(models.Model):
@@ -181,3 +169,36 @@ class OrderTax(models.Model):
     name = models.CharField(max_length=20)
     rate = models.DecimalField(max_digits=7, decimal_places=4, validators=[MinValueValidator(0.0)])  # percentage
     total = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
+
+
+class PaymentMethod(models.Model):
+
+    amount = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.01)])
+
+    class Meta:
+        abstract = True
+
+
+class CreditCardPayment(PaymentMethod):
+    """
+    Represents a credit-card payment processed through this site.
+    """
+    AUTHORIZED = 1    # funds have been authorized
+    CAPTURED = 2      # funds have been captured
+    CANCELLED = 3     # the order was cancelled before any money changed hands
+
+    PAYMENT_STATUSES = ((AUTHORIZED, 'Funds Authorized'),
+                        (CAPTURED, 'Funds Captured'),
+                        (CANCELLED, 'Transaction Cancelled'))
+
+    MASTERCARD = 1
+    VISA = 2
+
+    CARD_TYPES = ((MASTERCARD, 'MasterCard'),
+                  (VISA, 'VISA'))
+
+    order = models.OneToOneField(Order)  # an order can have at most one credit-card payment
+    transaction_id = models.CharField(max_length=20, validators=[not_blank])
+    token = models.CharField(max_length=4, validators=[not_blank], help_text="The last 4 digits of the credit card")
+    status = models.SmallIntegerField(choices=PAYMENT_STATUSES)
+    card_type = models.SmallIntegerField(choices=CARD_TYPES)

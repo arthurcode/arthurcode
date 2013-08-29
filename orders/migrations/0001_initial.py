@@ -20,8 +20,6 @@ class Migration(SchemaMigration):
             ('date', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('last_updated', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('status', self.gf('django.db.models.fields.SmallIntegerField')(default=1)),
-            ('payment_status', self.gf('django.db.models.fields.IntegerField')(default=1)),
-            ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
             ('ip_address', self.gf('django.db.models.fields.IPAddressField')(default='0.0.0.0', max_length=15)),
             ('is_pickup', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('shipping_charge', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
@@ -78,6 +76,18 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('orders', ['OrderTax'])
 
+        # Adding model 'CreditCardPayment'
+        db.create_table('orders_creditcardpayment', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('amount', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
+            ('order', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['orders.Order'], unique=True)),
+            ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('token', self.gf('django.db.models.fields.CharField')(max_length=4)),
+            ('status', self.gf('django.db.models.fields.SmallIntegerField')()),
+            ('card_type', self.gf('django.db.models.fields.SmallIntegerField')()),
+        ))
+        db.send_create_signal('orders', ['CreditCardPayment'])
+
 
     def backwards(self, orm):
         # Deleting model 'Order'
@@ -94,6 +104,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'OrderTax'
         db.delete_table('orders_ordertax')
+
+        # Deleting model 'CreditCardPayment'
+        db.delete_table('orders_creditcardpayment')
 
 
     models = {
@@ -212,6 +225,16 @@ class Migration(SchemaMigration):
             'model': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '100'})
         },
+        'orders.creditcardpayment': {
+            'Meta': {'object_name': 'CreditCardPayment'},
+            'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
+            'card_type': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'order': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['orders.Order']", 'unique': 'True'}),
+            'status': ('django.db.models.fields.SmallIntegerField', [], {}),
+            'token': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
+            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+        },
         'orders.order': {
             'Meta': {'object_name': 'Order'},
             'contact_method': ('django.db.models.fields.SmallIntegerField', [], {'default': '2'}),
@@ -223,11 +246,9 @@ class Migration(SchemaMigration):
             'is_pickup': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'last_name': ('django.db.models.fields.CharField', [], {'max_length': '30', 'null': 'True', 'blank': 'True'}),
             'last_updated': ('django.db.models.fields.DateTimeField', [], {'auto_now': 'True', 'blank': 'True'}),
-            'payment_status': ('django.db.models.fields.IntegerField', [], {'default': '1'}),
             'phone': ('django.db.models.fields.CharField', [], {'max_length': '20', 'null': 'True', 'blank': 'True'}),
             'shipping_charge': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {'default': '1'}),
-            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True', 'blank': 'True'})
         },
         'orders.orderbillingaddress': {

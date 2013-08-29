@@ -4,6 +4,7 @@ import re
 from django import forms
 from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
+from orders.models import CreditCardPayment
 
 
 def cc_expire_years():
@@ -22,12 +23,6 @@ def cc_expire_months():
         #months.append((numeric, datetime.date(2009, month, 1).strftime('%B')))
         months.append((numeric, numeric))
     return months
-
-
-CARD_TYPES = (
-    ('Mastercard', 'Mastercard'),
-    ('VISA', 'VISA'),
-)
 
 
 NON_NUMBERS = re.compile('\D')
@@ -55,7 +50,7 @@ def cardLuhnChecksumIsValid(card_number):
 
 
 class PaymentInfoForm(forms.Form):
-    card_type = forms.ChoiceField(choices=CARD_TYPES, widget=forms.RadioSelect, label='Credit Card Type')
+    card_type = forms.ChoiceField(choices=CreditCardPayment.CARD_TYPES, widget=forms.RadioSelect, label='Credit Card Type')
     card_number = forms.CharField(label='Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}))
     expire_month = forms.ChoiceField(choices=add_empty_choice(cc_expire_months(), '-'), label='Month')
     expire_year = forms.ChoiceField(choices=add_empty_choice(cc_expire_years(), '-'), label='Year')
