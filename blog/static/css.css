@@ -2144,3 +2144,7 @@ form.ship-to .required-text {
 .checkout div.cancel button {
     color: blue;
 }
+
+.receipt .payment dl dt {
+    width: 20em;
+}

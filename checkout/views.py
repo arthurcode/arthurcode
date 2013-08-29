@@ -477,14 +477,12 @@ class ReviewStep(Step):
     data_key = 'review'
 
     def _get(self):
-        form = PaymentInfoForm()
+        order = self.checkout.build_order()
+        # for now just put the full amount on the credit card
+        form = PaymentInfoForm(order, order.total())
         return self._render_form(form)
 
     def _render_form(self, form):
-        order = self.checkout.build_order()
-        if not form.is_bound:
-            form.fields['total'].initial = order.total
-
         context = {
             'form': form,
         }
@@ -494,7 +492,8 @@ class ReviewStep(Step):
 
     def _post(self):
         data = self.request.POST.copy()
-        form = PaymentInfoForm(data)
+        order = self.checkout.build_order()
+        form = PaymentInfoForm(order, order.total(), data=data)
         if form.is_valid():
             success = self.checkout.process_order(form)
             if success:
@@ -764,7 +763,7 @@ class Checkout:
         payment.order = order
         cd = payment_form.cleaned_data
         payment.card_type = cd['card_type']
-        payment.amount = cd['total']
+        payment.amount = payment_form.amount
         payment.transaction_id = payment_form.transaction_id
         payment.status = CreditCardPayment.AUTHORIZED
         payment.token = cd['card_number'].strip()[-4:]  # only store the last 4 digits of the card

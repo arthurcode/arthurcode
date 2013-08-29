@@ -132,7 +132,15 @@
 
         <div class="payment">
             <h3>Payment Details</h3>
-            TBD
+            <dl class="horizontal">
+            {% if order.creditcardpayment %}
+                {% with order.creditcardpayment as credit %}
+                    <dt>{{ credit.get_card_type_display }} xxxx xxxx xxxx {{ credit.token }}</dt>
+                    <dd>{{ credit.amount|currency }} {% if not receipt %}({{ credit.get_status_display }}){% endif %}</dd>
+                {% endwith %}
+            {% endif %}
+            </dl>
+            <p class="subtle">Your credit card will be charged when your order is shipped.</p>
         </div>
     </div>
 

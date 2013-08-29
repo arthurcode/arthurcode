@@ -58,7 +58,11 @@ class PaymentInfoForm(forms.Form):
     cvv = forms.CharField(label='CVV', max_length=3,
                           help_text="<a href='http://www.cvvnumber.com/cvv.html' target='_blank' style='font-size:11px'>What is my CVV code?</a>",
                           widget=forms.TextInput(attrs={'size': 3, 'maxlength': 3}))  # most are 3 digits, american-express is 4 digits
-    total = forms.DecimalField(decimal_places=2, max_digits=9, widget=forms.HiddenInput, min_value=0.00)
+
+    def __init__(self, pyOrder, amount, *args, **kwargs):
+        self.pyOrder = pyOrder
+        self.amount = amount
+        super(PaymentInfoForm, self).__init__(*args, **kwargs)
 
     def clean_card_number(self):
         cc_number = self.cleaned_data.get('card_number', None)
@@ -83,7 +87,7 @@ class PaymentInfoForm(forms.Form):
     def clean(self):
         cd = super(PaymentInfoForm, self).clean()
         # authorize the funds
-        self.transaction_id = authorize(cd['card_type'], cd['total'], None)  #TODO: include billing address
+        self.transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
         return cd
 
 
