@@ -517,6 +517,9 @@ class ReviewStep(Step):
             if gift_card_form.is_valid():
                 self._save_gift_card(gift_card_form)
                 return HttpResponseRedirect(self.request.path)
+        elif 'remove-gift-card' in data:
+            card_number = data['number']
+            self._remove_gift_card(card_number)
         else:
             # we must be checking out
             order = self.checkout.build_order()
@@ -537,6 +540,14 @@ class ReviewStep(Step):
             card_number = form.cleaned_data['card_number']
             existing_cards.append(card_number)
             self.save(self.gift_card_key, existing_cards)
+
+    def _remove_gift_card(self, number):
+        existing_cards = self._get_gift_cards()
+        try:
+            existing_cards.remove(number)
+            self.save(self.gift_card_key, existing_cards)
+        except:
+            pass
 
     def _get_gift_cards(self):
         return self.get(self.gift_card_key, [])

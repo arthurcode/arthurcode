@@ -2173,3 +2173,12 @@ form.ship-to .required-text {
     color: midnightblue;
     font-weight: bolder;
 }
+
+form.remove-gift-card {
+    clear: none;
+}
+
+form.remove-gift-card button {
+    color: blue !important;
+    clear: none !important;
+}

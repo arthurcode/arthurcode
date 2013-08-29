@@ -129,6 +129,13 @@
                 {% for card,balance in gift_cards %}
                     <dt>{{ card }}</dt>
                     <dd>{{ balance|currency }}</dd>
+                    <dd>
+                        <form method="post" class="remove-gift-card no-help subtle">
+                            {% csrf_token %}
+                            <input type="hidden" id="id_number" name="number" value="{{ card }}">
+                            <button type="submit" name="remove-gift-card" class="link">(remove)</button>
+                        </form>
+                    </dd>
                 {% endfor %}
             </dl>
         {% endif %}
