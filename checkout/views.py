@@ -75,6 +75,17 @@ class PyOrder(object):
             total += tax[2]
         return total
 
+    def get_balance_remaining(self):
+        """
+        Returns the amount that remains to be paid for after the gift certificates (if any)
+        """
+        gc_total = Decimal('0')
+        for (card, balance) in self.gift_cards:
+            gc_total += balance
+        return max(Decimal('0'), self.total() - gc_total)
+
+
+
 class Step(object):
 
     data_key = 'step'
@@ -490,7 +501,7 @@ class ReviewStep(Step):
     def _get(self):
         order = self.checkout.build_order()
         # for now just put the full amount on the credit card
-        credit_form = PaymentInfoForm(order, self.get_balance_remaining())
+        credit_form = PaymentInfoForm(order)
         add_gift_card_form = AddGiftCardForm()
         return self._render_form(credit_form, add_gift_card_form)
 
@@ -523,7 +534,7 @@ class ReviewStep(Step):
         else:
             # we must be checking out
             order = self.checkout.build_order()
-            credit_form = PaymentInfoForm(order, self.get_balance_remaining(), data=data)
+            credit_form = PaymentInfoForm(order, data=data)
             if credit_form.is_valid():
                 success = self.checkout.process_order(credit_form)
                 if success:
@@ -531,7 +542,7 @@ class ReviewStep(Step):
                     return HttpResponseRedirect(self.checkout.get_next_url())
 
         gift_card_form = gift_card_form or AddGiftCardForm()
-        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order(), self.get_balance_remaining())
+        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order())
         return self._render_form(credit_form, gift_card_form)
 
     def _save_gift_card(self, form):
@@ -555,18 +566,6 @@ class ReviewStep(Step):
     def get_gift_cards_with_balance(self):
         # make sure the order is preserved
         return [(n, get_gift_card_balance(n)) for n in self._get_gift_cards()]
-
-    def get_balance_remaining(self):
-        """
-        Returns the amount that remains to be paid for after the gift certificates (if any)
-        """
-        order = self.checkout.build_order()
-        total = order.total()
-
-        gc_total = Decimal('0')
-        for (card, balance) in self.get_gift_cards_with_balance():
-            gc_total += balance
-        return max(Decimal('0'), total - gc_total)
 
     def _visit(self, pyOrder):
         """

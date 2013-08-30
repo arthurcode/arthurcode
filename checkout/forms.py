@@ -60,9 +60,9 @@ class PaymentInfoForm(forms.Form):
                           help_text="<a href='http://www.cvvnumber.com/cvv.html' target='_blank' style='font-size:11px'>What is my CVV code?</a>",
                           widget=forms.TextInput(attrs={'size': 3, 'maxlength': 3}))  # most are 3 digits, american-express is 4 digits
 
-    def __init__(self, pyOrder, amount, *args, **kwargs):
+    def __init__(self, pyOrder, *args, **kwargs):
         self.pyOrder = pyOrder
-        self.amount = amount
+        self.amount = pyOrder.get_balance_remaining()
         super(PaymentInfoForm, self).__init__(*args, **kwargs)
 
         if self.amount <= 0:
