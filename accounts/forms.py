@@ -32,6 +32,7 @@ DEFAULT_NAME_WIDGET = forms.TextInput(attrs={'size': FIRST_NAME_INPUT_SIZE, 'max
 DEFAULT_PHONE_WIDGET = forms.TextInput(attrs={'size': PHONE_INPUT_SIZE, 'maxlength': PHONE_MAXLENGTH})
 DEFAULT_PASSWORD_WIDGET = forms.PasswordInput(attrs={'size': 30, 'maxlength': 125})
 DEFAULT_NICKNAME_WIDGET = forms.TextInput(attrs={'size': 30, 'maxlength': CustomerShippingAddress.NICKNAME_MAX_LENGTH})
+DEFAULT_PROFILE_USERNAME_WIDGET = forms.TextInput(attrs={'size': 30, 'maxlength': PublicProfile.NAME_LENGTH})
 
 
 def username_from_email(email):
@@ -153,12 +154,16 @@ class CustomerAuthenticationForm(AuthenticationForm):
 
 class CreatePublicProfileForm(forms.Form):
     username = forms.CharField(max_length=PublicProfile.NAME_LENGTH, validators=[not_blank],
-                               help_text="will be displayed publicly on your reviews and comments.")
+                               help_text="%d characters max, including spaces" % PublicProfile.NAME_LENGTH,
+                               widget=DEFAULT_PROFILE_USERNAME_WIDGET)
     description = forms.CharField(max_length=PublicProfile.DESCRIPTION_LENGTH, required=False,
-                                  help_text="describe yourself in %d characters or less.  "
-                                            "Example: 'artist and mother of 2'" % PublicProfile.DESCRIPTION_LENGTH)
+                                  help_text="Describe yourself in %d characters or less.  "
+                                            "Example: 'artist and mother of two'" % PublicProfile.DESCRIPTION_LENGTH,
+                                  widget=forms.Textarea(attrs={'maxlength': PublicProfile.DESCRIPTION_LENGTH,
+                                                               'rows': 3, 'cols': 30}))
     location = forms.CharField(max_length=PublicProfile.LOCATION_LENGTH, required=False,
-                               help_text="Examples: 'Edmonton, AB', 'Saskatchewan'")
+                               help_text="Examples: 'Edmonton, AB' or 'Saskatchewan'",
+                               widget=forms.TextInput(attrs={'size': 30, 'maxlength': PublicProfile.LOCATION_LENGTH}))
 
     def __init__(self, request, *args, **kwargs):
         super(CreatePublicProfileForm, self).__init__(*args, **kwargs)

@@ -34,6 +34,10 @@ h2 {
     padding-bottom: 10px;
 }
 
+p, div, span {
+    line-height: 1.3em;
+}
+
 .title-bar {
     color: white;
     background: rgb(63,76,107); /* Old browsers */
@@ -2221,4 +2225,12 @@ span.toggle-gift-card {
     float: left;
     clear: both;
     text-decoration: underline;
+}
+
+form.create-public-profile {
+    width: 70%;
+}
+
+form.create-public-profile span.optional-text {
+    display: none;
 }

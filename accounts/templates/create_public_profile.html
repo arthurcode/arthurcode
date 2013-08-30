@@ -5,16 +5,16 @@
 
 {% block body %}
     <h2>Create Your Public Profile</h2>
-    <p>
-        This is the information that will appear alongside any public content you contribute to our site.  Examples
-        include product reviews and blog comments.  Only a username is required.
+    <p class="subtle">
+        This is the information that will appear beside<br> any <em>public</em> content you contribute to our site,<br>
+        such as <em>product reviews</em>.
     </p>
     {% form_errors form %}
-    <form method=post action="{% if next %}?next={{ next }}{% endif %}">
+    <form method=post class="create-public-profile" action="{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         {% field form.username %}
-        {% field form.description %}
         {% field form.location %}
+        {% field form.description %}
         <div class="controls">
             <button class="action" type="submit" name="submit">Create Profile</button>
         </div>
