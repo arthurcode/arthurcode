@@ -503,15 +503,16 @@ class ReviewStep(Step):
         # for now just put the full amount on the credit card
         credit_form = PaymentInfoForm(order)
         add_gift_card_form = AddGiftCardForm()
-        return self._render_form(credit_form, add_gift_card_form)
+        return self._render_form(order, credit_form, add_gift_card_form)
 
-    def _render_form(self, credit_form, add_gift_card_form):
+    def _render_form(self, order, credit_form, add_gift_card_form):
+        balance_remaining = order.get_balance_remaining()
         context = {
             'credit_form': credit_form,
             'gift_card_form': add_gift_card_form,
-            'gift_cards': self.get_gift_cards_with_balance(),
-            'gc_total': credit_form.pyOrder.total() - credit_form.amount,
-            'balance_remaining': credit_form.amount
+            'gift_cards': order.gift_cards,
+            'gc_total': order.total() - balance_remaining,
+            'balance_remaining': balance_remaining
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
@@ -519,6 +520,7 @@ class ReviewStep(Step):
 
     def _post(self):
         data = self.request.POST.copy()
+        order = self.checkout.build_order()
         gift_card_form = None
         credit_form = None
 
@@ -533,17 +535,15 @@ class ReviewStep(Step):
             return HttpResponseRedirect(self.request.path)
         else:
             # we must be checking out
-            order = self.checkout.build_order()
             credit_form = PaymentInfoForm(order, data=data)
             if credit_form.is_valid():
-                success = self.checkout.process_order(credit_form)
+                success = self.checkout.process_order(order, credit_form)
                 if success:
                     self.checkout._mark_step_complete(self)
                     return HttpResponseRedirect(self.checkout.get_next_url())
-
         gift_card_form = gift_card_form or AddGiftCardForm()
-        credit_form = credit_form or PaymentInfoForm(self.checkout.build_order())
-        return self._render_form(credit_form, gift_card_form)
+        credit_form = credit_form or PaymentInfoForm(order)
+        return self._render_form(order, credit_form, gift_card_form)
 
     def _save_gift_card(self, form):
         existing_cards = self._get_gift_cards()
@@ -805,7 +805,7 @@ class Checkout:
         if Checkout.DATA_KEY in self.request.session:
             del self.request.session[Checkout.DATA_KEY]
 
-    def process_order(self, payment_form):
+    def process_order(self, pyOrder, payment_form):
         """
         Takes the following steps:
         1.  Locks the products in the cart, read-only access only (TBD, I have no idea how to do this ATM)
@@ -818,7 +818,6 @@ class Checkout:
         6.  Unlock the products that were locked in step 1
         7.  Redirect the user to a receipt page
         """
-        pyOrder = self.build_order()  # python class
         order = Order()               # db class
 
         if not payment_form.is_valid():
