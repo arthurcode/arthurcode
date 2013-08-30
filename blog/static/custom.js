@@ -29,9 +29,9 @@ YUI.add('custom', function(Y) {
         },
 
         get_radio_image_display: function(radio_image) {
-            var text = radio_image.one('span').getHTML();
+            var text = radio_image.one('span.name').getHTML();
             if (radio_image.hasClass('unavailable')) {
-                text = text + " <span class='error'>(unavailable)</span>";
+                text = text + " <span class='error'>(sold out)</span>";
             }
             return text;
         },

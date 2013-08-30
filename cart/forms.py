@@ -28,7 +28,7 @@ class ProductAddToCartForm(forms.Form):
                 choices = [(o.id, o.name) for o in options]
                 required_error = u"You must choose a %s" % category.lower()
                 self.fields[category] = forms.ChoiceField(choices=choices,
-                                                          label=category.capitalize(), widget=forms.RadioSelect,
+                                                          label="Select a %s" % category.capitalize(), widget=forms.RadioSelect,
                                                           required=True,
                                                           error_messages={'required': required_error})
                 self.extra_fields.append(category)

@@ -512,7 +512,7 @@ ul.feeds li {
     padding-left: 20px;
 }
 
-span.error img.error {
+span img.error {
     height: 15px;
     width: 15px;
     padding-right: 4px;
@@ -1915,6 +1915,7 @@ div.receipt {
 
 .radio-images {
     clear: both;
+    padding-bottom: 10px;
 }
 
 .radio-image {
@@ -1931,10 +1932,6 @@ div.receipt {
 
 .radio-image.selected {
     border: 2px solid black;
-}
-
-.radio-image.unavailable {
-
 }
 
 .radio-image.selected.unavailable {
@@ -1955,6 +1952,10 @@ div.receipt {
     font-style: italic;
     float: left;
     clear: both;
+}
+
+.chosen-radio span.error {
+    display: inline;
 }
 
 .fb-like {

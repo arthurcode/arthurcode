@@ -1,4 +1,9 @@
 <div class="radio-image hidden" id="{{ option.id }}" style="background-color:{{ background_color }}">
-    {{ text }}
+    {% if is_color %}
+        {# required for display purposes #}
+        <span class="invisible">M</span>
+    {% else %}
+        {{ text }}
+    {% endif %}
     <span class="name hidden">{{ option.name|lower }}</span>
 </div>
