@@ -40,6 +40,7 @@ class PyOrder(object):
         self.phone = None
         self.contact_method = None
         self.shipping_charge = None
+        self.gift_cards = []           # [ (gc number, balance), ...]
 
     def tax_breakdown(self):
         """
@@ -115,6 +116,11 @@ class Step(object):
         return self._get_data().get(key, default)
 
     def visit(self, order):
+        if self.visit_if_complete() and not self.is_complete():
+            return
+        return self._visit(order)
+
+    def _visit(self, order):
         """
         Transfer the data collected in this step to the order object.
         Subclasses should override.
@@ -128,6 +134,9 @@ class Step(object):
         highest_completed_step = self.checkout.get_completed_step()
         this_step_num = self.checkout.get_step_number(self)
         return this_step_num <= highest_completed_step
+
+    def visit_if_complete(self):
+            return True
 
 
 class ContactInfoStep(Step):
@@ -220,7 +229,7 @@ class ContactInfoStep(Step):
         profile.full_clean()
         profile.save()
 
-    def visit(self, order):
+    def _visit(self, order):
         """
         Transfer contact information to the order object.
         """
@@ -351,7 +360,7 @@ class ShippingInfoStep(Step):
             context.update(self.checkout.extra_context)
         return render_to_response('shipping_form.html', context, context_instance=RequestContext(self.request))
 
-    def visit(self, order):
+    def _visit(self, order):
         order.shipping_address = self.get_address()
         order.shipping_charge = decimal.Decimal('5')
 
@@ -459,7 +468,7 @@ class BillingInfoStep(Step):
         if form.is_valid():
             return form.save(self.addr_clazz, commit=False)
 
-    def visit(self, order):
+    def _visit(self, order):
         order.billing_address = self.get_address()
 
     def save_address_to_profile(self):
@@ -559,6 +568,17 @@ class ReviewStep(Step):
             gc_total += balance
         return max(Decimal('0'), total - gc_total)
 
+    def _visit(self, pyOrder):
+        """
+        Add gift certificate information to the order
+        """
+        pyOrder.gift_cards = self.get_gift_cards_with_balance()
+
+    def visit_if_complete(self):
+        """
+        This step can have saved information even if it is partially complete.  (Eg. Gift Certificates)
+        """
+        return False
 
 
 class CreateAccount(Step):
@@ -870,7 +890,7 @@ class Checkout:
         if completed_step is None:
             return order
 
-        for i in range(completed_step):
+        for i in range(completed_step + 1):
             STEPS[i][0](self).visit(order)
         self._order = order
         return order
