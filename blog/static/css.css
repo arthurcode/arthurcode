@@ -1915,27 +1915,56 @@ div.receipt {
 
 .radio-images {
     clear: both;
-    padding-bottom: 10px;
+    padding: 10px 0;
 }
 
 .radio-image {
-    min-height: 15px;
-    min-width: 15px;
+    min-height: 20px;
+    min-width: 20px;
     display: inline-block;
-    border: 2px solid gray;
-    padding: 3px;
+    border: 1px dotted black;
+    padding: 0.2em;
     text-align: center;
     line-height: 1em;
     margin-right: 5px;
     cursor: pointer;
+    position: relative;
+    font-size: larger;
 }
 
 .radio-image.selected {
-    border: 2px solid black;
+    border: 1px solid black;
 }
 
 .radio-image.selected.unavailable {
-    border: 2px solid red;
+    border: 1px solid red;
+}
+
+.radio-image.unavailable:before {
+    content: "X";
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 0.8em;
+    width: 100%;
+    padding: 0;
+    font-size: 2.1em;
+    opacity: 0.5;
+    color: black;
+}
+
+.radio-image.unavailable:after {
+    content: "X";
+    position: absolute;
+    top: 0;
+    left: 0;
+    line-height: 0.8em;
+    width: 100%;
+    padding: 0;
+    font-size: 2.1em;
+    opacity: 0.5;
+    color: white;
+    font-weight: bolder;
 }
 
 .field.radio legend {
@@ -1949,9 +1978,9 @@ div.receipt {
 }
 
 .chosen-radio {
-    font-style: italic;
     float: left;
     clear: both;
+    font-weight: bolder;
 }
 
 .chosen-radio span.error {
