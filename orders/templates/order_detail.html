@@ -139,6 +139,10 @@
                     <dd>{{ credit.amount|currency }} {% if not receipt %}({{ credit.get_status_display }}){% endif %}</dd>
                 {% endwith %}
             {% endif %}
+            {% for gc in order.gift_cards.all %}
+                <dt>Gift Card xxxx xxxx xxxx {{ gc.card_number|slice:"-4:" }}</dt>
+                <dd>{{ gc.amount|currency }}</dd>
+            {% endfor %}
             </dl>
             <p class="subtle">Your credit card will be charged when your order is shipped.</p>
         </div>

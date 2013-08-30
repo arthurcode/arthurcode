@@ -4,7 +4,7 @@ import re
 from django import forms
 from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
-from orders.models import CreditCardPayment
+from orders.models import CreditCardPayment, GiftCardPayment
 from credit_card import authorize, get_gift_card_balance
 from utils.validators import not_blank
 
@@ -95,13 +95,48 @@ class PaymentInfoForm(forms.Form):
 
     def clean(self):
         cd = super(PaymentInfoForm, self).clean()
+        self.cc = None
 
         if self.is_credit():
             # authorize the funds
-            self.transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
+            transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
+            cc = CreditCardPayment()
+            cc.card_type = cd['card_type']
+            cc.amount = self.amount
+            cc.transaction_id = transaction_id
+            cc.status = CreditCardPayment.AUTHORIZED
+            cc.token = cd['card_number'].strip()[-4:]  # only store the last 4 digits of the card
+            self.cc = cc
 
-        # TODO: gift card processing
+        # process gift cards in the order that they are added
+        gc_total = self.pyOrder.total() - self.amount
+        i = 0
+        self.gift_cards = []
+
+        while gc_total > 0 and i < len(self.pyOrder.gift_cards):
+            (gc_number, balance) = self.pyOrder.gift_cards[i]
+            amount = min(balance, gc_total)
+            gc = GiftCardPayment()
+            gc.status = GiftCardPayment.AUTHORIZED
+            gc.card_number = gc_number
+            gc.amount = amount
+            gc.transaction_id = '000000000'
+            self.gift_cards.append(gc)
+            gc_total -= amount
+            i += 1
         return cd
+
+    def save(self, order):
+        # save the payment details to the Order model
+        if self.cc:
+            self.cc.order = order
+            self.cc.full_clean()
+            self.cc.save()
+
+        for gc in self.gift_cards:
+            gc.order = order
+            gc.full_clean()
+            gc.save()
 
     def is_credit(self):
         return self.amount > 0
@@ -111,7 +146,9 @@ class AddGiftCardForm(forms.Form):
     card_number = forms.CharField(label='Gift Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}),
                                   validators=[not_blank])
 
-    def __init__(self, existing_gcs=[], *args, **kwargs):
+    def __init__(self, existing_gcs=None, *args, **kwargs):
+        if existing_gcs is None:
+            existing_gcs = []
         self.existing_gcs = existing_gcs
         super(AddGiftCardForm, self).__init__(*args, **kwargs)
 

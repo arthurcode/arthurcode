@@ -218,7 +218,7 @@ class GiftCardPayment(PaymentMethod):
                         (CAPTURED, 'Funds Captured'),
                         (CANCELLED, 'Transaction Cancelled'))
 
-    order = models.ForeignKey(Order)
+    order = models.ForeignKey(Order, related_name='gift_cards')
     transaction_id = models.CharField(max_length=20, validators=[not_blank])  # assumption
     status = models.SmallIntegerField(choices=PAYMENT_STATUSES)
     card_number = models.CharField(max_length=16, validators=[not_blank])     # not sure if we'll have to store the entire card number
