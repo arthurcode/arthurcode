@@ -281,7 +281,7 @@
                             var selected = fieldset.one('.radio-image.selected');
                             if (!selected) {
                                 found_error = true;
-                                var message = "Please choose a " + fieldset.one('legend').getHTML().toLowerCase();
+                                var message = "Please " + fieldset.one('legend').getHTML().toLowerCase();
                                 Y.Custom.setFieldError(fieldset.ancestor('.field'), message, true);
                             }
                         });
