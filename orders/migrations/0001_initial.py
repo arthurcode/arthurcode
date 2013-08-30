@@ -88,6 +88,17 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('orders', ['CreditCardPayment'])
 
+        # Adding model 'GiftCardPayment'
+        db.create_table('orders_giftcardpayment', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('amount', self.gf('django.db.models.fields.DecimalField')(max_digits=9, decimal_places=2)),
+            ('order', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['orders.Order'])),
+            ('transaction_id', self.gf('django.db.models.fields.CharField')(max_length=20)),
+            ('status', self.gf('django.db.models.fields.SmallIntegerField')()),
+            ('card_number', self.gf('django.db.models.fields.CharField')(max_length=16)),
+        ))
+        db.send_create_signal('orders', ['GiftCardPayment'])
+
 
     def backwards(self, orm):
         # Deleting model 'Order'
@@ -107,6 +118,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'CreditCardPayment'
         db.delete_table('orders_creditcardpayment')
+
+        # Deleting model 'GiftCardPayment'
+        db.delete_table('orders_giftcardpayment')
 
 
     models = {
@@ -233,6 +247,15 @@ class Migration(SchemaMigration):
             'order': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['orders.Order']", 'unique': 'True'}),
             'status': ('django.db.models.fields.SmallIntegerField', [], {}),
             'token': ('django.db.models.fields.CharField', [], {'max_length': '4'}),
+            'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
+        },
+        'orders.giftcardpayment': {
+            'Meta': {'object_name': 'GiftCardPayment'},
+            'amount': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
+            'card_number': ('django.db.models.fields.CharField', [], {'max_length': '16'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'order': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['orders.Order']"}),
+            'status': ('django.db.models.fields.SmallIntegerField', [], {}),
             'transaction_id': ('django.db.models.fields.CharField', [], {'max_length': '20'})
         },
         'orders.order': {

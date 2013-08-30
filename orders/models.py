@@ -202,3 +202,23 @@ class CreditCardPayment(PaymentMethod):
     token = models.CharField(max_length=4, validators=[not_blank], help_text="The last 4 digits of the credit card")
     status = models.SmallIntegerField(choices=PAYMENT_STATUSES)
     card_type = models.SmallIntegerField(choices=CARD_TYPES)
+
+
+class GiftCardPayment(PaymentMethod):
+    """
+    Represents a gift-card payment.
+    """
+    AUTHORIZED = 1
+    CAPTURED = 2
+    CANCELLED = 3
+
+    # I am assuming that a gift card transaction can have the same states as a credit card transaction.  I suspect that
+    # this is not exactly true, but it's a starting point.
+    PAYMENT_STATUSES = ((AUTHORIZED, 'Funds Authorized'),
+                        (CAPTURED, 'Funds Captured'),
+                        (CANCELLED, 'Transaction Cancelled'))
+
+    order = models.ForeignKey(Order)
+    transaction_id = models.CharField(max_length=20, validators=[not_blank])  # assumption
+    status = models.SmallIntegerField(choices=PAYMENT_STATUSES)
+    card_number = models.CharField(max_length=16, validators=[not_blank])     # not sure if we'll have to store the entire card number
