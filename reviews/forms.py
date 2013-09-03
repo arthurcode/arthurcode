@@ -2,12 +2,13 @@ from django import forms
 from django.core.exceptions import ValidationError
 from reviews.models import Review, ReviewFlag
 from utils.validators import not_blank
+from utils.forms import add_empty_choice
 import arthurcode.settings as settings
 from reviews.signals import review_edited
 from reviews.email import notify_managers_review_deleted_by_admin, notify_author_review_deleted_by_admin
 
 class ReviewForm(forms.Form):
-    rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating", help_text="5 stars = extremely satisfied")
+    rating = forms.ChoiceField(choices=add_empty_choice(Review.RATING_CHOICES), label="Your Rating", help_text="5 stars = extremely satisfied")
     summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
                               help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH,
                               widget=forms.Textarea(attrs={'maxlength': Review.SUMMARY_LENGTH, 'rows': 2, 'cols': 50}))

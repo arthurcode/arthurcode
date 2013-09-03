@@ -1566,6 +1566,10 @@ form.review .column2 {
     width: 25%;
 }
 
+form.review select {
+    width: 8em;
+}
+
 body.reviewing .left-col a img {
     width: 100%;
 }
