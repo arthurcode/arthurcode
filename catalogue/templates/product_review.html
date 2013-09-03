@@ -22,12 +22,6 @@
 
     <div class="right-col">
         {% block right-col %}
-            {% block action-message %}
-                <p>{% if deleted %}Your review was successfully deleted.{% endif %}</p>
-            {% endblock %}
-
-            {% block review-preview %}{% endblock %}
-
             {% form_errors form %}
             <form class="review {% block form-class %}{% endblock %}" method="post" action="">
                 {% csrf_token %}

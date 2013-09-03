@@ -58,8 +58,6 @@ def edit_review(request, product_slug):
             review.delete()
             review_deleted.send(sender=review)
             return HttpResponseRedirect(review.after_delete_url())
-        if "cancel" in post_data:
-            return HttpResponseRedirect(reverse('create_product_review', kwargs={'slug': product.slug}))
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             form.edit_review()
