@@ -49,8 +49,8 @@
                     <li>
                         <div>
                             <img src="{{ STATIC_URL }}products/example.jpg"/>
-                            <a href="{% url product_review product.slug %}">{{ product.name }}</a>
-                            <a class="action" href="{% url product_review product.slug %}">Review</a>
+                            <a href="{% url create_product_review product.slug %}">{{ product.name }}</a>
+                            <a class="action" href="{% url create_product_review product.slug %}">Review</a>
                         </div>
                     </li>
                 {% endfor %}

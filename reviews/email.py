@@ -78,7 +78,7 @@ def notify_author_review_deleted_by_admin(request, review, reason):
         'product': review.product,
         'reason': reason,
         'review': review.as_text(),
-        'link': get_full_url(reverse('product_review', kwargs={'product_slug': review.product.slug}), request)
+        'link': get_full_url(reverse('create_product_review', kwargs={'product_slug': review.product.slug}), request)
     })
     content = EMAIL_AUTHOR_REVIEW_DELETED_BY_ADMIN % data
     recipients = [review.user.email]

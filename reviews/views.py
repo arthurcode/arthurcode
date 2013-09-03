@@ -14,7 +14,7 @@ from accounts.decorators import non_lazy_login_required, public_profile_required
 
 @non_lazy_login_required()
 @public_profile_required()
-def review_view(request, product_slug):
+def create_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     review = None
     try:
@@ -58,7 +58,7 @@ def _edit_review(request, review, product, context):
             review_deleted.send(sender=review)
             return HttpResponseRedirect(review.after_delete_url())
         if "cancel" in post_data:
-            return HttpResponseRedirect(reverse('product_review', kwargs={'slug': product.slug}))
+            return HttpResponseRedirect(reverse('create_product_review', kwargs={'slug': product.slug}))
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             form.edit_review()

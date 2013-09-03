@@ -37,25 +37,25 @@ class Review(models.Model, AkismetMixin):
         """
         The url at which this review can be edited (can only be edited by the user that created the review)
         """
-        return reverse('product_review', kwargs={'product_slug': self.product.slug}) + "?edit=True"
+        return reverse('create_product_review', kwargs={'product_slug': self.product.slug}) + "?edit=True"
 
     def after_delete_url(self):
         """
         The url to redirect users to after they have deleted a review
         """
-        return reverse('product_review', kwargs={'product_slug': self.product.slug}) + "?deleted=True"
+        return reverse('create_product_review', kwargs={'product_slug': self.product.slug}) + "?deleted=True"
 
     def after_create_url(self):
         """
         The url to redirect users to after they have created a review
         """
-        return reverse('product_review', kwargs={'product_slug': self.product.slug}) + "?created=True"
+        return reverse('create_product_review', kwargs={'product_slug': self.product.slug}) + "?created=True"
 
     def after_edit_url(self):
         """
         The url to redirect users to after they have edited a review
         """
-        return reverse('product_review', kwargs={'product_slug': self.product.slug}) + "?edited=True"
+        return reverse('create_product_review', kwargs={'product_slug': self.product.slug}) + "?edited=True"
 
     def was_edited(self):
         """

@@ -43,7 +43,7 @@
             {% if avg_rating %}
                 ({{ reviews.count }} <a class="tabview subtle" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
             {% else %}
-                <a class="subtle" href="{% url product_review product.slug %}">(be the first to write a review)</a>
+                <a class="subtle" href="{% url create_product_review product.slug %}">(be the first to write a review)</a>
             {% endif %}
             {% if not product.in_stock %}
                 <span class="out-of-stock">Out Of Stock</span>
