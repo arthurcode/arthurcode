@@ -1,10 +1,11 @@
 from django.conf.urls import patterns, url
-from reviews.views import create_review, flag, admin_delete
+from reviews.views import create_review, flag, admin_delete, edit_review
 
 urlpatterns = patterns('',
                     url(r'^flag/(?P<id>\d+)$', flag, name="flag_review"),
                     url(r'^admin-delete/(?P<id>\d+)$', admin_delete, name="admin_delete_review"),
                     url(r'^create/(?P<product_slug>[-\w]*)$', create_review, name="create_product_review"),
+                    url(r'^edit/(?P<product_slug>[-\w]*)$', edit_review, name="edit_product_review"),
 )
 
 

@@ -16,24 +16,13 @@ from accounts.decorators import non_lazy_login_required, public_profile_required
 @public_profile_required()
 def create_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
-    review = None
     try:
-        review = Review.objects.select_related('user__public_profile', 'product').get(product=product, user=request.user)
+        Review.objects.get(product=product, user=request.user)
+        # A review already exists, forward them to the edit url
+        return HttpResponseRedirect(edit_review_url(product))
     except Review.DoesNotExist:
         pass
 
-    context = {
-        'product': product,
-        'review': review,
-        'needing_review': get_products_needing_review(request).exclude(id=product.id)
-    }
-
-    if not review:
-        return _add_review(request, product, context)
-    return _edit_review(request, review, product, context)
-
-
-def _add_review(request, product, context):
     if request.method == "POST":
         post_data = request.POST.copy()
         form = AddReviewForm(request, product, data=post_data)
@@ -41,14 +30,26 @@ def _add_review(request, product, context):
             review = form.create_review()
             return HttpResponseRedirect(review.after_create_url())
     else:
-        context.update(request.GET.copy())
         form = AddReviewForm(request, product)
 
-    context['form'] = form
+    context = {
+        'product': product,
+        'needing_review': get_products_needing_review(request).exclude(id=product.id),
+        'form': form,
+    }
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
 
 
-def _edit_review(request, review, product, context):
+@non_lazy_login_required()
+@public_profile_required()
+def edit_review(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
+    try:
+        review = Review.objects.select_related('user__public_profile', 'product').get(product=product, user=request.user)
+    except Review.DoesNotExist:
+        # there is no review to edit, forward them to the create-review url
+        return HttpResponseRedirect(create_review_url(product))
+
     if request.method == "POST":
         post_data = request.POST.copy()
         if "delete" in post_data:
@@ -65,10 +66,23 @@ def _edit_review(request, review, product, context):
             return HttpResponseRedirect(review.after_edit_url())
     else:
         form = EditReviewForm(request, review)
-        context.update(request.GET.copy())
 
-    context['form'] = form
+    context = {
+        'form': form,
+        'product': product,
+        'review': review,
+        'needing_review': get_products_needing_review(request).exclude(id=product.id)
+    }
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
+
+
+
+def create_review_url(product):
+    return reverse('create_product_review', kwargs={'product_slug': product.slug})
+
+
+def edit_review_url(product):
+    return reverse('edit_product_review', kwargs={'product_slug': product.slug})
 
 
 @allow_lazy_user
