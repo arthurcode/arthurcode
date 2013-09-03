@@ -2232,3 +2232,15 @@ form.create-public-profile {
 form.create-public-profile span.optional-text {
     display: none;
 }
+
+p.action-message {
+    padding: 10px;
+    border: 4px solid limegreen;
+    margin-bottom: 20px;
+    float: left;
+    clear: both;
+}
+
+p.action-message img {
+    width: 30px;
+}

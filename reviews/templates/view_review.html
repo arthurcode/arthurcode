@@ -3,17 +3,33 @@
 {% load user_content %}
 
 {% block title %}Your Review{% endblock %}
-{% block main-header %}Your Review{% endblock %}
+{% block main-header %}
+    {% if created %}
+        Review Added
+    {% elif deleted %}
+        Review Deleted
+    {% elif edited %}
+        Review Edited
+    {% else %}
+        Your Review
+    {% endif %}
+{% endblock %}
 
 {% block right-col %}
-    <p>
-        {% if created %}
-            That you for your review!
-        {% elif deleted %}
-            Your review was successfully deleted
-        {% elif edited %}
-            Your review was successfully edited
-        {% endif %}
-    </p>
-    {% review review %}
+    {% if created or deleted or edited %}
+        <p class="action-message">
+            <img src="{{ STATIC_URL }}icons/tick.png">
+            {% if created %}
+                That you for your review!
+            {% elif deleted %}
+                Your review was successfully deleted<br>
+                <a class="standard subtle" href="{% url create_product_review product.slug %}">write a new review</a>
+            {% elif edited %}
+                Your review was successfully edited
+            {% endif %}
+        </p>
+    {% endif %}
+    {% if not deleted %}
+        {% review review %}
+    {% endif %}
 {% endblock %}
