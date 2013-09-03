@@ -93,7 +93,10 @@ def view_review(request, product_slug):
     try:
         review = Review.objects.get(product=product, user=request.user)
     except Review.DoesNotExist:
-        return HttpResponseRedirect(create_review_url(product))
+        was_deleted = request.GET.get('deleted', False)
+        if not was_deleted:
+            return HttpResponseRedirect(create_review_url(product))
+        review = None
 
     context = {
         'product': product,
