@@ -1,0 +1,42 @@
+{% extends 'base_catalogue.html' %}
+{% load ratings %}
+
+{% block body_class %}reviewing{% endblock %}
+
+{% block body %}
+    <h2>{% block main-header %}{% endblock %}: {{ product.name }}</h2>
+
+    <div class="left-col subtle">
+        <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
+        {% with product.get_rating as rating %}
+            {% if rating %}
+                Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
+            {% else %}
+                {% rating rating %} (this product has not yet been rated)
+            {% endif %}
+        {% endwith %}
+    </div>
+
+    <div class="right-col">
+        {% block right-col %}
+        {% endblock %}
+    </div>
+
+    {% if needing_review %}
+        <div class="needing-review">
+            <h3>Other Products Awaiting Your Review</h3>
+            <ul>
+                {% for to_review in needing_review %}
+                    <li>
+                        <div>
+                            <img src="{{ STATIC_URL }}products/example.jpg"/>
+                            <a href="{% url create_product_review product.slug %}">{{ product.name }}</a>
+                            <a class="action" href="{% url create_product_review product.slug %}">Review</a>
+                        </div>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+    {% endif %}
+
+{% endblock %}

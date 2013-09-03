@@ -1,18 +1,19 @@
-{% extends 'base_catalogue.html' %}
+{% extends 'base_review.html' %}
 
 {% load user_content %}
 
 {% block title %}Your Review{% endblock %}
+{% block main-header %}Your Review{% endblock %}
 
-{% block body %}
-    {% if created %}
-        That you for your review!
-    {% elif deleted %}
-        Your review was successfully deleted
-    {% elif edited %}
-        Your review was successfully edited
-    {% else %}
-        Your Review
-    {% endif %}
+{% block right-col %}
+    <p>
+        {% if created %}
+            That you for your review!
+        {% elif deleted %}
+            Your review was successfully deleted
+        {% elif edited %}
+            Your review was successfully edited
+        {% endif %}
+    </p>
     {% review review %}
 {% endblock %}
