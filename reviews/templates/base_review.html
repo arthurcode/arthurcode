@@ -4,8 +4,6 @@
 {% block body_class %}reviewing{% endblock %}
 
 {% block body %}
-    <h2>{% block main-header %}{% endblock %}: {{ product.name }}</h2>
-
     <div class="left-col subtle">
         <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
         {% with product.get_rating as rating %}
@@ -18,6 +16,7 @@
     </div>
 
     <div class="right-col">
+        <h2>{% block main-header %}{% endblock %} | {{ product.name }}</h2>
         {% block right-col %}
         {% endblock %}
     </div>
