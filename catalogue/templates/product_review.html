@@ -7,10 +7,9 @@
 {% block body_class %}reviewing{% endblock %}
 
 {% block body %}
-    <h1>{% block main-header %}Write a Review{% endblock %}</h1>
-    <h2>{{ product.name }}</h2>
+    <h2>{% block main-header %}Write a Review{% endblock %}: {{ product.name }}</h2>
 
-    <div class="left-col">
+    <div class="left-col subtle">
         <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
         {% with product.get_rating as rating %}
             {% if rating %}
@@ -30,8 +29,7 @@
             {% block review-preview %}{% endblock %}
 
             {% form_errors form %}
-            <form class="{% block form-class %}{% endblock %}" method="post" action="">
-                <legend>{% block form-title %}{% if deleted %}Add a New Review{% else %}Write Your Review{% endif %}{% endblock %}</legend>
+            <form class="review {% block form-class %}{% endblock %}" method="post" action="">
                 {% csrf_token %}
                 {% field form.rating %}
                 {% field form.summary %}

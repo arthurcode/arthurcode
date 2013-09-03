@@ -1545,19 +1545,25 @@ div.quick-links a {
 }
 
 /* product review styles */
-body.reviewing #bd h1 {
-    padding-top: 10px;
-}
 
 body.reviewing .left-col {
-    width: 30%;
+    width: 15%;
     display: inline-block;
 }
 
 body.reviewing .right-col {
-    width: 68%;
+    width: 80%;
     display: inline-block;
     float: right;
+}
+
+
+form.review {
+    width: 35em;
+}
+
+form.review .column2 {
+    width: 25%;
 }
 
 body.reviewing .left-col a img {
@@ -1566,18 +1572,6 @@ body.reviewing .left-col a img {
 
 body.reviewing #bd .required-text {
     display: none;
-}
-
-body.reviewing #bd form select {
-    width: 6em;
-}
-
-body.reviewing #bd form input#id_summary {
-    width: 70%;
-}
-
-body.reviewing #bd form textarea {
-    width: 73%;
 }
 
 div#reviews {

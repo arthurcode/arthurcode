@@ -7,10 +7,11 @@ from reviews.signals import review_edited
 from reviews.email import notify_managers_review_deleted_by_admin, notify_author_review_deleted_by_admin
 
 class ReviewForm(forms.Form):
-    rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating")
+    rating = forms.ChoiceField(choices=Review.RATING_CHOICES, label="Your Rating", help_text="5 stars = extremely satisfied")
     summary = forms.CharField(max_length=Review.SUMMARY_LENGTH, validators=[not_blank],
-                              help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH)
-    review = forms.CharField(widget=forms.Textarea, label="Detailed Review", required=False)
+                              help_text="summarize your review in %d characters or less" % Review.SUMMARY_LENGTH,
+                              widget=forms.Textarea(attrs={'maxlength': Review.SUMMARY_LENGTH, 'rows': 2, 'cols': 50}))
+    review = forms.CharField(widget=forms.Textarea(attrs={'cols': 50}), label="Detailed Review", required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(ReviewForm, self).__init__(*args, **kwargs)
