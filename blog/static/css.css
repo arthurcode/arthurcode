@@ -2244,3 +2244,8 @@ p.action-message {
 p.action-message img {
     width: 30px;
 }
+
+ul.links {
+    float: left;
+    clear: both;
+}

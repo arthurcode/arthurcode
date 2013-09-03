@@ -20,10 +20,9 @@
         <p class="action-message">
             <img src="{{ STATIC_URL }}icons/tick.png">
             {% if created %}
-                That you for your review!
+                Thank you for your review!
             {% elif deleted %}
                 Your review was successfully deleted<br>
-                <a class="standard subtle" href="{% url create_product_review product.slug %}">write a new review</a>
             {% elif edited %}
                 Your review was successfully edited
             {% endif %}
@@ -31,5 +30,11 @@
     {% endif %}
     {% if not deleted %}
         {% review review %}
+    {% endif %}
+{% endblock %}
+
+{% block links %}
+    {% if deleted %}
+        <li><a class="standard subtle" href="{% url create_product_review product.slug %}">write a new review</a></li>
     {% endif %}
 {% endblock %}

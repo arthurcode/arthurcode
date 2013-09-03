@@ -19,6 +19,11 @@
         <h2>{% block main-header %}{% endblock %} | {{ product.name }}</h2>
         {% block right-col %}
         {% endblock %}
+
+        <ul class="links">
+            {% block links %}
+            {% endblock %}
+        </ul>
     </div>
 
     {% if needing_review %}
