@@ -24,11 +24,8 @@
 
 {% block moderation %}
     {% if request.user == content.user %}
-        <form method="post" action="{{ content.get_edit_url }}">
-            {% csrf_token %}
-            <button class="link" type="submit" name="delete">delete</button>
-        </form>
-        <a href="{{ content.get_edit_url }}">edit</a>
+        <a href="{% url delete_product_review content.product.slug %}">delete</a>
+        <a href="{% url edit_product_review content.product.slug %}">edit</a>
     {% else %}
         {% if request.user.is_staff %}
             <a href="{% url admin_delete_review content.id %}">delete review</a>

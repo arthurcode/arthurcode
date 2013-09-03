@@ -3,7 +3,6 @@ from django.template import RequestContext
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
-from django.http import HttpResponseForbidden
 from catalogue.models import Product
 from reviews.forms import AddReviewForm, EditReviewForm, FlagReviewForm, AdminDeleteReviewForm
 from reviews.models import Review
@@ -52,16 +51,10 @@ def edit_review(request, product_slug):
 
     if request.method == "POST":
         post_data = request.POST.copy()
-        if "delete" in post_data:
-            if not request.user == review.user:
-                return HttpResponseForbidden(u'You do not have permission to delete this review.')
-            review.delete()
-            review_deleted.send(sender=review)
-            return HttpResponseRedirect(review.after_delete_url())
         form = EditReviewForm(request, review, data=post_data)
         if form.is_valid():
             form.edit_review()
-            return HttpResponseRedirect(review.after_edit_url())
+            return HttpResponseRedirect(get_view_url(product, edited=True))
     else:
         form = EditReviewForm(request, review)
 
@@ -74,6 +67,41 @@ def edit_review(request, product_slug):
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
 
+@non_lazy_login_required()
+def delete_review(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
+    try:
+        review = Review.objects.get(product=product, user=request.user)
+    except Review.DoesNotExist:
+        return HttpResponseRedirect(create_review_url(product))
+
+    if request.method == "POST":
+        review.delete()
+        review_deleted.send(sender=review)
+        return HttpResponseRedirect(get_view_url(product, deleted=True))
+
+    context = {
+        'product': product,
+        'review': review,
+    }
+    return render_to_response('delete_review.html', context, context_instance=RequestContext(request))
+
+
+@non_lazy_login_required()
+def view_review(request, product_slug):
+    product = get_object_or_404(Product, slug=product_slug)
+    try:
+        review = Review.objects.get(product=product, user=request.user)
+    except Review.DoesNotExist:
+        return HttpResponseRedirect(create_review_url(product))
+
+    context = {
+        'product': product,
+        'review': review,
+    }
+    context.update(request.GET.copy())  # state cues
+    return render_to_response('view_review.html', context, context_instance=RequestContext(request))
+
 
 def create_review_url(product):
     return reverse('create_product_review', kwargs={'product_slug': product.slug})
@@ -82,6 +110,18 @@ def create_review_url(product):
 def edit_review_url(product):
     return reverse('edit_product_review', kwargs={'product_slug': product.slug})
 
+
+def get_view_url(product, edited=False, created=False, deleted=False):
+    path = reverse('your_review', kwargs={'product_slug': product.slug})
+    if edited or created or deleted:
+        path += '?'
+        if edited:
+            path += 'edited=True'
+        if created:
+            path += 'created=True'
+        if deleted:
+            path += 'deleted=True'
+    return path
 
 @allow_lazy_user
 def flag(request, id):
