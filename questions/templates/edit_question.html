@@ -1,19 +1,22 @@
-{% extends "base_catalogue.html" %}
+{% extends "base_question.html" %}
 {% load user_content %}
 {% load form_tags %}
 
 {% block title %}Edit Question{% endblock %}
 
-{% block body %}
-    <h2>Edit Your Question</h2>
-    {% question question %}
+{% block main-header %}Edit Question{% endblock %}
 
+{% block extra_breadcrumbs %}
+    <a href="{% url show_question question.id %}">question #{{ question.id }}</a> >
+    edit
+{% endblock %}
+
+{% block right-col %}
     {% form_errors form %}
     <form method="post" action="">
         {% csrf_token %}
         {% field form.comment %}
         <div class="controls">
-            <a class="action" href="{{ question.get_absolute_url }}">Cancel</a>
             <button class="action" type="submit" name="edit">Save Changes</button>
         </div>
     </form>

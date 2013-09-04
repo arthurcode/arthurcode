@@ -1,9 +1,9 @@
 {% extends "base_question.html" %}
 {% load user_content %}
 
-{% block title %}View Question{% endblock %}
+{% block title %}Question #{{ question.id }}{% endblock %}
 
-{% block main-header %}Question{% endblock %}
+{% block main-header %}Question #{{ question.id }}{% endblock %}
 
 {% block right-col %}
     {% question question %}

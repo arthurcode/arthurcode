@@ -2245,6 +2245,6 @@ ul.links {
     clear: both;
 }
 
-body.reviewing div.review {
+body.reviewing div.review, body.ask-question div.question {
     margin: 10px 0 20px 0;
 }

@@ -64,6 +64,7 @@ def edit_view(request, id):
     context = {
         'question': question,
         'form': form,
+        'product': question.content_object,
     }
     return render_to_response('edit_question.html', context, context_instance=RequestContext(request))
 
@@ -79,6 +80,7 @@ def delete_view(request, id):
 
     context = {
         'question': question,
+        'product': question.content_object,
     }
     return render_to_response('delete_question.html', context, context_instance=RequestContext(request))
 

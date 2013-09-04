@@ -13,7 +13,7 @@
         {% endfor %}
         <a href="{% go_to_product product %}">{{ product.name }}</a> >
         {% block extra_breadcrumbs %}
-            {% if question %}question # {{ question.id }}{% endif %}
+            {% if question %}question #{{ question.id }}{% endif %}
         {% endblock %}
     </div>
 
