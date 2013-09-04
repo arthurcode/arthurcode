@@ -621,11 +621,16 @@ form {
                      override this value so that the form is pleasing to the eye. */
 }
 
-form input, form select {
+form input, form select, form textarea {
     border-radius: 0;
     padding: 4px 10px;
     border-top: 2px solid gray;
     border-left: 2px solid gray;
+}
+
+form textarea {
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
 }
 
 form input.quantity {
