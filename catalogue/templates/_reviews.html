@@ -2,10 +2,10 @@
 {% load user_content %}
 
 {% if avg_rating %}
-    Average rating: {% rating avg_rating %} ({{ avg_rating|floatformat }} out of 5)
-    <a class="subtle" href="{% url create_product_review product.slug %}">write a review</a>
+    Average rating: {% rating avg_rating %} ({{ avg_rating|floatformat }} out of 5)<br>
+    <a class="subtle standard" href="{% url create_product_review product.slug %}">write a review</a>
 {% else %}
-    <a class="subtle" href="{% url create_product_review product.slug %}">be the first to write a review</a>
+    <a class="subtle standard" href="{% url create_product_review product.slug %}">be the first to write a review</a>
 {% endif %}
 
 <ul>

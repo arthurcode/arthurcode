@@ -5,7 +5,7 @@
 {% get_comment_list for product as comments %}
 
 {% if comments %}
-    <a class="subtle" href="{% url ask_question product.slug %}">Ask A Question</a>
+    <a class="subtle standard" href="{% url ask_question product.slug %}">Ask A Question</a>
 
     <ul class="comments">
         {% recursetree comments %}
@@ -22,5 +22,5 @@
         {% endrecursetree %}
     </ul>
 {% else %}
-    <p class="subtle">Be the first to <a href="{% url ask_question product.slug %}">ask a question</a></p>
+    <p class="subtle">Be the first to <a class="standard" href="{% url ask_question product.slug %}">ask a question</a></p>
 {% endif %}

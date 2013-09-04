@@ -26,7 +26,7 @@
 
 {% block right-col %}
     {% if created or deleted or edited %}
-        <p class="action-message">
+        <p class="action-message subtle">
             <img src="{{ STATIC_URL }}icons/tick.png">
             {% if created %}
                 Thank you for your question.  A staff member will answer your question within the next 24 hours and you will be notified via email.
@@ -44,7 +44,9 @@
 {% endblock %}
 
 {% block links %}
-    {% if deleted %}
-        <a class="standard subtle" href="{% url ask_question product.slug %}">ask another question</a>
+    {% if question %}
+        <ul><a class="standard subtle" href="{% url edit_question question.id %}">edit this question</a></ul>
+        <ul><a class="standard subtle" href="{% url delete_question question.id%}">delete this question</a></ul>
     {% endif %}
+    <ul><a class="standard subtle" href="{% url ask_question product.slug %}">ask another question</a></ul>
 {% endblock %}

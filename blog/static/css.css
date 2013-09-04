@@ -862,6 +862,7 @@ form.stacked span.error, form.stacked span.help-text {
     padding: 10px 0;
     margin: 0;
     display: inline-block;
+    line-height: 2em;
 }
 
 .breadcrumbs a:link, .breadcrumbs a:visited {
@@ -873,8 +874,8 @@ form.stacked span.error, form.stacked span.help-text {
 }
 
 .breadcrumbs .filters a {
-    font-size: 70%;
-    color: gray;
+    font-size: smaller;
+    color: blue;
 }
 
 body.products #bd .search h2 {
@@ -1659,9 +1660,8 @@ div.rating img {
 }
 
 .user-content .moderation {
-    font-size: small;
     float: right;
-    color: steelblue;
+    color: blue;
 }
 
 .user-content .moderation a {
@@ -2247,4 +2247,8 @@ ul.links {
 
 body.reviewing div.review, body.ask-question div.question {
     margin: 10px 0 20px 0;
+}
+
+.reviewing .moderation, .ask-question .moderation {
+    display: none;
 }
