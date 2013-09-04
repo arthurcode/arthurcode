@@ -193,7 +193,7 @@ body {
     width: 960px;
     margin: 0 auto;
     background-color: white;
-    font-family: 'Droid Sans', sans-serif;
+    font-family: 'Open Sans', sans-serif;
     font-size: large;
     line-height: 1.5em;
 }
@@ -223,6 +223,7 @@ body.products #bd {
 
 #ft {
     font-size: smaller;
+    font-weight: lighter;
     color: white;
     clear:both;
     text-align: center;
@@ -586,7 +587,6 @@ div#comments > ul {
 
 .comment .moderation {
     font-size: 90%;
-    font-style: italic;
     color: steelblue;
     float: right;
 }
