@@ -132,6 +132,7 @@ def flag(request, id):
     Flags the given review for removal.
     """
     review = get_object_or_404(Review, id=id)
+    form = None
 
     if request.method == "POST":
         post_data = request.POST.copy()
@@ -140,14 +141,13 @@ def flag(request, id):
             if form.is_valid():
                 form.do_flag()
                 return HttpResponseRedirect(review.get_absolute_url())
-        else:
-            return HttpResponseRedirect(review.get_absolute_url())
-    else:
-        form = FlagReviewForm(request, review)
+
+    form = form or FlagReviewForm(request, review)
 
     context = {
         'review': review,
         'form': form,
+        'product': review.product,
     }
     return render_to_response("flag_review.html", context, context_instance=RequestContext(request))
 

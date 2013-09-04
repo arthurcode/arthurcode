@@ -1,20 +1,24 @@
-{% extends "base_catalogue.html" %}
+{% extends "base_review.html" %}
 {% load form_tags %}
 {% load user_content %}
 
 {% block title %}Report an Inappropriate Review{% endblock %}
 
-{% block body_class %}flag-review{% endblock %}
+{% block main-header %}Report Review{% endblock %}
 
-{% block body %}
-    <h2>Report the following review as inappropriate?</h2>
+{% block extra_breadcrumbs %}
+    report review
+{% endblock %}
+
+{% block right-col %}
+    <h3>Report the following review as inappropriate?</h3>
     <div class="review">{% review review %}</div>
 
     {% form_errors form %}
     <form method="post" action="">
         {% csrf_token %}
         <div class="controls">
-            <button type="submit" name="no" class="action">Cancel</button>
+            <a class="action" href="{{ review.get_absolute_url }}">Cancel</a>
             <button type="submit" name="yes" class="action">Yes</button>
         </div>
     </form>
