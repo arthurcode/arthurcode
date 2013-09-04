@@ -50,7 +50,7 @@ def product_detail_view(request, slug=""):
         form = ProductAddToCartForm(product, request=request)
     # set the test cookie on our first GET request
     request.session.set_test_cookie()
-    breadcrumbs = product.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
+    breadcrumbs = product.get_breadcrumbs()
     meta_description = product.short_description
     reviews = product.reviews.select_related('product', 'user__public_profile').\
         prefetch_related('flags').order_by('-last_modified')

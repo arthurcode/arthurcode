@@ -1,9 +1,22 @@
 {% extends 'base_catalogue.html' %}
 {% load ratings %}
+{% load urls %}
 
 {% block body_class %}reviewing{% endblock %}
 
 {% block body %}
+
+    <div class="breadcrumbs">
+        <a href="{% go_to_category '' %}">All Products</a> >
+        {% for crumb in product.get_breadcrumbs %}
+            <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
+        {% endfor %}
+        <a href="{% go_to_product product %}">{{ product.name }}</a> >
+        {% block extra_breadcrumbs %}
+            review
+        {% endblock %}
+    </div>
+
     <div class="left-col subtle">
         <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
         {% with product.get_rating as rating %}

@@ -227,6 +227,13 @@ class Product(models.Model):
             option_map[category].append(option)
         return option_map
 
+    def get_breadcrumbs(self):
+        """
+        Returns the category breadcrumbs for this product, in order of most general category to the most specific
+        category.
+        """
+        return self.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
+
 
 class ProductOption(models.Model):
     """

@@ -62,7 +62,7 @@ def edit_review(request, product_slug):
         'form': form,
         'product': product,
         'review': review,
-        'needing_review': get_products_needing_review(request).exclude(id=product.id)
+        'needing_review': get_products_needing_review(request).exclude(id=product.id),
     }
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
