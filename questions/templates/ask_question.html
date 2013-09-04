@@ -1,12 +1,14 @@
-{% extends 'base_catalogue.html' %}
+{% extends 'base_question.html' %}
 {% load form_tags %}
 
 {% block title %}Ask A Question{% endblock %}
 
-{% block body %}
-    <h2>Ask A Question: {{ product.name }}</h2>
+{% block main-header %}Ask A Question{% endblock %}
 
-    <p>
+{% block extra_breadcrumbs %}ask a question{% endblock %}
+
+{% block right-col %}
+    <p class="subtle">
         After your question has been posted you can expect it to be answered within 1-2 working days by a staff member.
         You will be contacted via email once the question has been answered.
     </p>

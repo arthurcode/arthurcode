@@ -1552,20 +1552,20 @@ div.quick-links a {
 
 /* product review styles */
 
-body.reviewing .left-col {
+body.reviewing .left-col, body.ask-question .left-col {
     width: 15%;
     display: inline-block;
     float: left;
     clear: both;
 }
 
-body.reviewing .right-col {
+body.reviewing .right-col, body.ask-question .right-col {
     width: 80%;
     display: inline-block;
     float: right;
 }
 
-body.reviewing .breadcrumbs {
+body.reviewing .breadcrumbs, body.ask-question .breadcrumbs {
     float: left;
 }
 
@@ -1582,11 +1582,11 @@ form.review select {
     width: 8em;
 }
 
-body.reviewing .left-col a img {
+body.reviewing .left-col a img, body.ask-question .left-col a img {
     width: 100%;
 }
 
-body.reviewing #bd .required-text {
+body.reviewing #bd .required-text, body.ask-question #bd .required-text {
     display: none;
 }
 
