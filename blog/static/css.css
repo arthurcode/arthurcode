@@ -469,7 +469,6 @@ body.cart div.cart-summary {
 div.cart-summary {
     display: inline-block;
     float: right;
-    font-size: 80%;
 }
 
 .action {
@@ -486,14 +485,16 @@ div.cart-summary {
     padding: 0.25em 0.5em;
 }
 
+button.action {
+    padding: 0.3em 0.5em 0.28em 0.5em;
+}
+
 a.action {
     text-decoration: none;
 }
 
 div.cart-summary a {
-    padding: 0.2em 0.4em;
     display: inline-block;
-    text-decoration: none;
 }
 
 div.cart-summary img {
@@ -2248,4 +2249,8 @@ p.action-message img {
 ul.links {
     float: left;
     clear: both;
+}
+
+body.reviewing div.review {
+    margin: 10px 0 20px 0;
 }
