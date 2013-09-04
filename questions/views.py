@@ -11,6 +11,7 @@ from django.views.decorators.http import require_GET
 from comments.views.comment import CommentPostBadRequest
 from accounts.decorators import public_profile_required_for_regular_users, lazy_users_choose_guest
 from django.contrib.admin.views.decorators import staff_member_required
+from urllib import urlencode
 
 
 @allow_lazy_user
@@ -117,14 +118,18 @@ def answer_view(request, id):
 
 def show_question_url(qid, created=False, deleted=False, edited=False, product_id=None):
     path = reverse('show_question', kwargs={'id': qid})
-    if created or deleted or edited:
-        path += "?"
-        if created:
-            path += "created=True"
-        if deleted:
-            path += "deleted=True&product_id=%s" % product_id
-        if edited:
-            path += "edited=True"
+    params = {}
+
+    if created:
+        params['created'] = True
+    if deleted:
+        params['deleted'] = True
+        params['product_id'] = product_id
+    if edited:
+        params['edited'] = True
+
+    if params:
+        path += "?" + urlencode(params)
     return path
 
 
