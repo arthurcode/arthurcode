@@ -41,7 +41,9 @@ def ask_view(request, product_slug):
 @require_GET
 def show_view(request, id):
     question = get_object_or_404(MPTTComment, id=id)
-    context = {'question': question}
+    context = {'question': question,
+               'product': question.content_object
+               }
     return render_to_response('show_question.html', context, context_instance=RequestContext(request))
 
 

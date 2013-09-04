@@ -14,6 +14,7 @@ from django.utils.text import get_text_list
 from django.utils import timezone
 from django.utils.translation import ungettext, ugettext, ugettext_lazy as _
 from django.core.exceptions import ValidationError
+from accounts.forms import DEFAULT_EMAIL_WIDGET
 
 COMMENT_MAX_LENGTH = getattr(settings,'COMMENT_MAX_LENGTH', 3000)
 
@@ -209,6 +210,7 @@ class MPTTCommentForm(CommentForm):
         """
         super(MPTTCommentForm, self).__init__(*args, **kwargs)
         self.fields['url'].widget = HiddenInput()
+        self.fields['email'].widget = DEFAULT_EMAIL_WIDGET
 
     def get_comment_model(self):
         return MPTTComment
