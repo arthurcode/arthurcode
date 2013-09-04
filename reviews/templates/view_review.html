@@ -36,5 +36,8 @@
 {% block links %}
     {% if deleted %}
         <li><a class="standard subtle" href="{% url create_product_review product.slug %}">write a new review</a></li>
+    {% else %}
+        <li><a class="standard subtle" href="{% url edit_product_review product.slug %}">edit review</a></li>
+        <li><a class="standard subtle" href="{% url delete_product_review product.slug %}">delete review</a></li>
     {% endif %}
 {% endblock %}
