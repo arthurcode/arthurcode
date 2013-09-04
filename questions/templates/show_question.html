@@ -3,8 +3,40 @@
 
 {% block title %}Question #{{ question.id }}{% endblock %}
 
-{% block main-header %}Question #{{ question.id }}{% endblock %}
+{% block main-header %}
+    {% if created %}
+        Question Asked
+    {% elif deleted %}
+        Queston Deleted
+    {% elif edited %}
+        Question Edited
+    {% else %}
+        Question #{{ question.id }}
+    {% endif %}
+
+{% endblock %}
 
 {% block right-col %}
-    {% question question %}
+    {% if created or deleted or edited %}
+        <p class="action-message">
+            <img src="{{ STATIC_URL }}icons/tick.png">
+            {% if created %}
+                Thank you for your question.  A staff member will answer your question within the next 24 hours and you will be notified via email.
+            {% elif deleted %}
+                Your question was successfully deleted.
+            {% elif edited %}
+                Your question was successfully edited.
+            {% endif %}
+        </p>
+    {% endif %}
+
+    {% if question %}
+        {% question question %}
+    {% endif %}
+{% endblock %}
+
+{% block links %}
+    {% if deleted %}
+        <a class="standard subtle" href="{% url ask_question product.slug %}">ask another question</a>
+    {% endif %}
 {% endblock %}

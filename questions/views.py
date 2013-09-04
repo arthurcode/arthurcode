@@ -25,7 +25,7 @@ def ask_view(request, product_slug):
         if form.is_valid():
             question = form.get_comment_object()
             question.save()
-            return HttpResponseRedirect(reverse('show_question', kwargs={'id': question.id}))
+            return HttpResponseRedirect(show_question_url(question.id, created=True))
         elif form.security_errors():
             return CommentPostBadRequest(u"Security errors in form.")
     else:
@@ -40,10 +40,18 @@ def ask_view(request, product_slug):
 
 @require_GET
 def show_view(request, id):
-    question = get_object_or_404(MPTTComment, id=id)
-    context = {'question': question,
-               'product': question.content_object
-               }
+    if request.GET.get('deleted', False):
+        question = None
+        product = get_object_or_404(Product, id=request.GET.get('product_id', None))
+    else:
+        question = get_object_or_404(MPTTComment, id=id)
+        product = question.content_object
+
+    context = {
+        'question': question,
+        'product': product,
+    }
+    context.update(request.GET.copy())
     return render_to_response('show_question.html', context, context_instance=RequestContext(request))
 
 
@@ -57,7 +65,7 @@ def edit_view(request, id):
         form = EditQuestionForm(request, question, data=post_data)
         if form.is_valid():
             form.save_changes()
-            return HttpResponseRedirect(reverse('show_question', kwargs={'id': question.id}))
+            return HttpResponseRedirect(show_question_url(id, edited=True))
     else:
         form = EditQuestionForm(request, question)
 
@@ -76,7 +84,7 @@ def delete_view(request, id):
 
     if request.method == "POST":
         question.delete()
-        return HttpResponseRedirect(question.content_object.get_absolute_url())
+        return HttpResponseRedirect(show_question_url(id, deleted=True, product_id=question.object_pk))
 
     context = {
         'question': question,
@@ -105,5 +113,18 @@ def answer_view(request, id):
         'form': form,
     }
     return render_to_response('answer_question.html', context, context_instance=RequestContext(request))
+
+
+def show_question_url(qid, created=False, deleted=False, edited=False, product_id=None):
+    path = reverse('show_question', kwargs={'id': qid})
+    if created or deleted or edited:
+        path += "?"
+        if created:
+            path += "created=True"
+        if deleted:
+            path += "deleted=True&product_id=%s" % product_id
+        if edited:
+            path += "edited=True"
+    return path
 
 
