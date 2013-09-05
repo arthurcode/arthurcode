@@ -17,6 +17,7 @@ em {
     height: 100%;
     margin: 0 auto -4em;
 }
+
 .footer, .push {
     height: 4em;
 }
@@ -373,6 +374,10 @@ body.products #bd {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
 }
 
+#primary-navigation .blog a {
+    margin-right: 0;  /* the right-most button doesn't need a right margin */
+}
+
 #primary-navigation a:link, #primary-navigation a:visited {
     color: black;
 }
@@ -452,7 +457,7 @@ form#search fieldset input, form#search fieldset button {
 form#search fieldset input {
     border-radius: 0;
     border-right: none;
-    width: 10em;
+    width: 11.3em;
 }
 
 form#search fieldset button {
