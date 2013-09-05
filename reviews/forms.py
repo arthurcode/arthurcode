@@ -111,7 +111,10 @@ class FlagReviewForm(forms.Form):
 class AdminDeleteReviewForm(forms.Form):
 
     email_author = forms.BooleanField(label="Send Email to Author?", initial=True, required=False)
-    reason = forms.CharField(max_length=1000, widget=forms.Textarea, validators=[not_blank])
+    reason = forms.CharField(max_length=1000, validators=[not_blank],
+                             widget=forms.Textarea(attrs={'maxlength': 1000, 'cols': 40}),
+                             help_text="1000 characters max.  This reason will be included in email sent to staff "
+                                       "members as well as the customer (if applicable)")
 
     def __init__(self, request, review, *args, **kwargs):
         super(AdminDeleteReviewForm, self).__init__(*args, **kwargs)
