@@ -144,6 +144,8 @@ def flag(request, id):
             if form.is_valid():
                 form.do_flag()
                 return HttpResponseRedirect(review.get_absolute_url())
+        else:
+            return HttpResponseRedirect(review.get_absolute_url())
 
     form = form or FlagReviewForm(request, review)
 

@@ -18,7 +18,7 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="controls">
-            <a class="action" href="{{ review.get_absolute_url }}">Cancel</a>
+            <button class="action" name="no" type="submit">Cancel</button>
             <button type="submit" name="yes" class="action">Yes</button>
         </div>
     </form>
