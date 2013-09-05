@@ -8,8 +8,10 @@
             {% if profile.description %}<span class="self-description">description: {{ profile.description }}</span>{% endif %}
         {% endwith %}
     </div>
-    <div class="content">
-        {% block main-content %}{% endblock %}
+    <div class="right-col">
+        <div class="content">
+            {% block main-content %}{% endblock %}
+        </div>
 
         <div class="moderation subtle">
             {% block moderation %}{% endblock %}

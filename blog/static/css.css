@@ -1597,7 +1597,6 @@ div#reviews h3 {
 
 .user-content {
     float: left;
-    padding: 10px;
     border: 1px solid lightgray;
 }
 
@@ -1629,13 +1628,18 @@ div#reviews h3 {
 .user-content .metadata {
     float: left;
     width: 30%;
+    padding: 10px;
+}
+
+.user-content .right-col {
+    float: right;
+    width: 64%;
+    border-left: 1px solid lightgray;
 }
 
 .user-content .content {
-    float: left;
-    width: 67%;
-    padding-left: 2%;
-    border-left: 1px solid lightgray;
+    padding: 10px;
+    padding-bottom: 0;
 }
 
 .user-content p {
@@ -1652,7 +1656,8 @@ div.rating img {
 }
 
 .user-content .moderation {
-    float: right;
+    padding: 10px;
+    text-align: right;
 }
 
 .user-content .moderation form {
