@@ -176,6 +176,7 @@ def admin_delete(request, id):
     context = {
         'review': review,
         'form': form,
+        'product': review.product,
     }
     return render_to_response("admin_delete_review.html", context, context_instance=RequestContext(request))
 
