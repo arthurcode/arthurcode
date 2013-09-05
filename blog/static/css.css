@@ -2264,6 +2264,16 @@ body.reviewing div.review, body.ask-question div.question {
     white-space: nowrap;
 }
 
-.user-content span.flagged {
+.user-content.flagged {
+    border: 2px solid red;
+}
+
+.user-content p.flagged {
+    font-weight: bolder;
+    font-style: italic;
     color: red;
+}
+
+.user-content p img {
+    margin-right: 5px;
 }

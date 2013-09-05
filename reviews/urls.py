@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
-from reviews.views import create_review, flag, admin_delete, edit_review, delete_review, view_review
+from reviews.views import create_review, flag, admin_delete, edit_review, delete_review, view_review, approve, \
+    withdraw_approval
 
 urlpatterns = patterns('',
                     url(r'^flag/(?P<id>\d+)$', flag, name="flag_review"),
@@ -7,7 +8,9 @@ urlpatterns = patterns('',
                     url(r'^view/(?P<product_slug>[-\w]*)', view_review, name="your_review"),
                     url(r'^create/(?P<product_slug>[-\w]*)$', create_review, name="create_product_review"),
                     url(r'^edit/(?P<product_slug>[-\w]*)$', edit_review, name="edit_product_review"),
-                    url(r'^delete/(?P<product_slug>[-\w]*)$', delete_review, name="delete_product_review")
+                    url(r'^delete/(?P<product_slug>[-\w]*)$', delete_review, name="delete_product_review"),
+                    url(r'^approve/(?P<id>\d+)$', approve, name="approve_product_review"),
+                    url(r'^withdraw-approval/(?P<id>\d+)', withdraw_approval, name="withdraw_approval_product_review")
 )
 
 

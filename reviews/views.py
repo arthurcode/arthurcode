@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 from catalogue.models import Product
 from reviews.forms import AddReviewForm, EditReviewForm, FlagReviewForm, AdminDeleteReviewForm
-from reviews.models import Review
+from reviews.models import Review, ReviewFlag
 from utils.storeutils import get_products_needing_review
 from reviews.signals import review_deleted
 from lazysignup.decorators import allow_lazy_user
@@ -155,6 +155,28 @@ def flag(request, id):
         'product': review.product,
     }
     return render_to_response("flag_review.html", context, context_instance=RequestContext(request))
+
+
+@staff_member_required
+def approve(request, id):
+    review = get_object_or_404(Review, id=id)
+    if not review.is_approved():
+        if request.method == "POST":
+            flag = ReviewFlag(user=request.user, flag=ReviewFlag.MODERATOR_APPROVAL, review=review)
+            flag.full_clean()
+            flag.save()
+    return HttpResponseRedirect(review.get_absolute_url())
+
+
+@staff_member_required
+def withdraw_approval(request, id):
+    review = get_object_or_404(Review, id=id)
+    if review.is_approved():
+        if request.method == "POST":
+            flag = review.get_approval_flag()
+            if flag:
+                flag.delete()
+    return HttpResponseRedirect(review.get_absolute_url())
 
 
 @staff_member_required

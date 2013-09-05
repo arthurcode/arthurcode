@@ -46,6 +46,12 @@ class Review(models.Model, AkismetMixin):
     def is_approved(self):
         return self.has_flag(ReviewFlag.MODERATOR_APPROVAL)
 
+    def get_approval_flag(self):
+        for flag in self.flags.all():
+            if flag.flag == ReviewFlag.MODERATOR_APPROVAL:
+                return flag
+        return None
+
     def has_flag(self, flag_name):
         # assume that self.flags.all() has been pre-fetched
         for flag in self.flags.all():

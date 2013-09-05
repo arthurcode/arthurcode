@@ -1,9 +1,10 @@
 {% extends "_user_content.html" %}
 {% load ratings %}
+{% load static %}
 
 {% block anchor-id %}{{ content.anchor }}{% endblock %}
 
-{% block type %}review{% endblock %}
+{% block type %}review{% if content.is_flagged_for_removal and not content.is_approved %} flagged{% endif %}{% endblock %}
 
 {% block date %}
     {% if content.was_edited %}
@@ -15,6 +16,9 @@
 {% endblock %}
 
 {% block main-content %}
+    {% if content.is_flagged_for_removal and not content.is_approved %}
+        <p class="flagged"><img src="{% get_static_prefix %}icons/error.png">This review has been flagged for removal</p>
+    {% endif %}
     {% rating content.rating %}
     <h4><a href="{{ content.get_absolute_url }}">{{ content.summary }}</a></h4>
     {% if content.review %}
@@ -28,16 +32,26 @@
         <a href="{% url edit_product_review content.product.slug %}">edit</a>
     {% else %}
         {% if request.user.is_staff %}
-            <a href="{% url admin_delete_review content.id %}">delete review</a>
+            {% if content.is_approved %}
+                {% with content.get_approval_flag as flag %}
+                    <span class="approved">approved by {{ flag.user.username }} {{ flag.flag_date|timesince }} ago</span>
+                    <form class="no-help" method="post" action="{% url withdraw_approval_product_review content.id %}">
+                        {% csrf_token %}
+                        <button class="link" type="submit" name="submit">withdraw approval</button>
+                    </form>
+                {% endwith %}
+            {% else %}
+                <form class="no-help" method="post" action="{% url approve_product_review content.id %}">
+                    {% csrf_token %}
+                    <button class="link" type="submit" name="submit">approve</button>
+                </form>
+                <a href="{% url admin_delete_review content.id %}">delete review</a>
+            {% endif %}
         {% else %}
             {% if content.is_approved %}
-                <span>moderator approved</span>
-            {% else %}
-                {% if content.is_flagged_for_removal %}
-                    <span class="flagged">reported as inappropriate</span>
-                {% else %}
-                    <a href="{% url flag_review content.id %}">report as inappropriate</a>
-                {% endif %}
+                <span class="approved">moderator approved</span>
+            {% elif not content.is_flagged_for_removal %}
+                <a href="{% url flag_review content.id %}">report as inappropriate</a>
             {% endif %}
         {% endif %}
     {% endif %}
