@@ -266,7 +266,7 @@ body.products #bd {
 }
 
 .header-bar {
-    padding-bottom: 3px;
+    padding-bottom: 10px;
     float: left;
     clear: both;
     width: 100%;
@@ -277,6 +277,7 @@ body.products #bd {
     padding: 0;
     float: left;
     display: inline-block;
+    margin-top: 0.9em;
 }
 
 #hd {
@@ -466,6 +467,7 @@ form#search fieldset button {
 
 form#search .field {
     margin-top: 0 !important;
+    margin-bottom: 0 !important;
 }
 
 body.cart div.cart-summary {
