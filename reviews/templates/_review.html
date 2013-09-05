@@ -30,7 +30,15 @@
         {% if request.user.is_staff %}
             <a href="{% url admin_delete_review content.id %}">delete review</a>
         {% else %}
-            <a href="{% url flag_review content.id %}">report as inappropriate</a>
+            {% if content.is_approved %}
+                <span>moderator approved</span>
+            {% else %}
+                {% if content.is_flagged_for_removal %}
+                    <span class="flagged">reported as inappropriate</span>
+                {% else %}
+                    <a href="{% url flag_review content.id %}">report as inappropriate</a>
+                {% endif %}
+            {% endif %}
         {% endif %}
     {% endif %}
 {% endblock %}

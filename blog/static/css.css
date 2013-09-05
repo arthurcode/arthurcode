@@ -2263,3 +2263,7 @@ body.reviewing div.review, body.ask-question div.question {
 #reviews > p, #qa > p {
     white-space: nowrap;
 }
+
+.user-content span.flagged {
+    color: red;
+}
