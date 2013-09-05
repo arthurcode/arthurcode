@@ -41,9 +41,9 @@
             <h1>{{ product.name }}{% if product.sale_price %} <span class="sale">(On Sale!)</span>{% endif %}</h1>
             {% rating avg_rating %}
             {% if avg_rating %}
-                ({{ reviews.count }} <a class="tabview subtle" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)
+                <span class="subtle">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
             {% else %}
-                <a class="subtle" href="{% url create_product_review product.slug %}">(be the first to write a review)</a>
+                <span class="subtle">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
             {% endif %}
             {% if not product.in_stock %}
                 <span class="out-of-stock">Out Of Stock</span>
