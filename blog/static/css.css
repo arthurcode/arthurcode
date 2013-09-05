@@ -2259,3 +2259,7 @@ body.reviewing div.review, body.ask-question div.question {
 .reviewing .moderation, .ask-question .moderation {
     display: none;
 }
+
+#reviews > p, #qa > p {
+    white-space: nowrap;
+}

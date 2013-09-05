@@ -5,7 +5,7 @@
     Average rating: {% rating avg_rating %} ({{ avg_rating|floatformat }} out of 5)<br>
     <a class="subtle standard" href="{% url create_product_review product.slug %}">write a review</a>
 {% else %}
-    <a class="subtle standard" href="{% url create_product_review product.slug %}">be the first to write a review</a>
+    <p class="subtle">Be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a></p>
 {% endif %}
 
 <ul>
