@@ -84,8 +84,11 @@ def delete_view(request, id):
         return HttpResponseForbidden(u"You do not have permission to delete this question.")
 
     if request.method == "POST":
-        question.delete()
-        return HttpResponseRedirect(show_question_url(id, deleted=True, product_id=question.object_pk))
+        if "yes" in request.POST:
+            question.delete()
+            return HttpResponseRedirect(show_question_url(id, deleted=True, product_id=question.object_pk))
+        else:
+            return HttpResponseRedirect(show_question_url(id))
 
     context = {
         'question': question,

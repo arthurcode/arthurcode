@@ -16,8 +16,8 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="controls">
-            <a class="action" href="{% url show_question question.id %}">Cancel</a>
-            <button class="action" type="submit" name="delete">Delete</button>
+            <button class="action" type="submit" name="no">Cancel</button>
+            <button class="action" type="submit" name="yes">Delete</button>
         </div>
     </form>
 {% endblock %}
