@@ -52,7 +52,9 @@
                         <button type="submit" name="Checkout" class="action">Checkout Now</button>
                     </form>
                     {% if continue_shopping_url %}
-                        <a class="action continue-shopping" href="{{ continue_shopping_url }}">Continue Shopping</a>
+                        <form method="GET" action="{{ continue_shopping_url }}" class="no-help">
+                            <button type="submit" class="action">Continue Shopping</button>
+                        </form>
                     {% endif %}
                 </th>
             </tr>
