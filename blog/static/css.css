@@ -592,20 +592,6 @@ div#comments > ul {
     margin-left: 1em;
 }
 
-.comment .moderation {
-    font-size: 90%;
-    color: steelblue;
-    float: right;
-}
-
-.comment .moderation a:link, .comment .moderation a:visited {
-    color: steelblue;
-}
-
-.comment .moderation .flagged {
-    color: red;
-}
-
 .comment button#reply {
     color: steelblue;
     background-color: transparent;
@@ -1643,7 +1629,6 @@ div#reviews h3 {
 .user-content .metadata {
     float: left;
     width: 30%;
-    line-height: 1.2em;
 }
 
 .user-content .content {
@@ -1668,11 +1653,18 @@ div.rating img {
 
 .user-content .moderation {
     float: right;
+}
+
+.user-content .moderation form {
+    float: right;
+}
+
+.user-content .moderation a:link, .user-content .moderation a:visited {
     color: blue;
 }
 
-.user-content .moderation a {
-    color: inherit;
+.user-content .moderation button.link {
+    color: blue;
 }
 
 .user-content form {

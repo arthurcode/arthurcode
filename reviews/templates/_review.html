@@ -34,7 +34,7 @@
         {% if request.user.is_staff %}
             {% if content.is_approved %}
                 {% with content.get_approval_flag as flag %}
-                    <span class="approved">approved by {{ flag.user.username }} {{ flag.flag_date|timesince }} ago</span>
+                    <span class="approved">approved by <em>{{ flag.user.username }}</em> {{ flag.flag_date|timesince }} ago</span>
                     <form class="no-help" method="post" action="{% url withdraw_approval_product_review content.id %}">
                         {% csrf_token %}
                         <button class="link" type="submit" name="submit">withdraw approval</button>
