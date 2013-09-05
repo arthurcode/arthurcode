@@ -12,3 +12,7 @@
 {% block form-controls %}
     <button class="action" type="submit" name="submit">Save Changes</button>
 {% endblock %}
+
+{% block links %}
+    <li><a class="subtle standard" href="{% url delete_product_review product.slug %}">delete review</a></li>
+{% endblock %}

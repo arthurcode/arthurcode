@@ -21,3 +21,7 @@
         </div>
     </form>
 {% endblock %}
+
+{% block links %}
+    <li><a class="subtle standard" href="{% url delete_question question.id %}">delete question</a></li>
+{% endblock %}
