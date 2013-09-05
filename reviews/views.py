@@ -76,9 +76,12 @@ def delete_review(request, product_slug):
         return HttpResponseRedirect(create_review_url(product))
 
     if request.method == "POST":
-        review.delete()
-        review_deleted.send(sender=review)
-        return HttpResponseRedirect(get_view_url(product, deleted=True))
+        if "yes" in request.POST:
+            review.delete()
+            review_deleted.send(sender=review)
+            return HttpResponseRedirect(get_view_url(product, deleted=True))
+        else:
+            return HttpResponseRedirect(get_view_url(product))
 
     context = {
         'product': product,
