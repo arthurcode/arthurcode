@@ -21,7 +21,9 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="controls">
-            <a class="action" href="{% url your_review product.slug %}">Cancel</a>
+            <form method="GET" action="{% url your_review product.slug %}" class="no-help">
+                <button class="action" type="submit">Cancel</button>
+            </form>
             <button type="submit" name="yes" class="action">Delete Review</button>
         </div>
     </form>
