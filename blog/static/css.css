@@ -2282,6 +2282,6 @@ body.reviewing div.review, body.ask-question div.question {
     margin-right: 5px;
 }
 
-ul .review {
+ul .review, ul .question {
     margin-bottom: 5px;
 }

@@ -9,7 +9,7 @@
 {% endblock %}
 
 {% block main-content %}
-    <h4><a href="#c{{ content.id }}">Question:</a></h4>
+    <h4><a href="{{ content.get_absolute_url }}">Question:</a></h4>
     <p class="subtle whitespace">{{ content.comment }}</p>
 {% endblock %}
 

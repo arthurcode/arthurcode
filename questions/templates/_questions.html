@@ -7,16 +7,16 @@
 {% if comments %}
     <a class="subtle standard" href="{% url ask_question product.slug %}">Ask A Question</a>
 
-    <ul class="comments">
+    <ul class="threaded">
         {% recursetree comments %}
-            <li class="comment">
+            <li class="thread">
                 {% if not node.parent %}
                     {% question node %}
                 {% else %}
                     {% answer node %}
                 {% endif %}
                 {% if not node.is_leaf_node %}
-                    <ul class="comments">{{ children }}</ul>
+                    <ul class="threaded">{{ children }}</ul>
                 {% endif %}
             </li>
         {% endrecursetree %}
