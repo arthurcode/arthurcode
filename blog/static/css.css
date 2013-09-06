@@ -39,6 +39,10 @@ p, div, span {
     line-height: 1.3em;
 }
 
+.whitespace {
+    white-space: pre-wrap;
+}
+
 .title-bar {
     color: white;
     background: rgb(63,76,107); /* Old browsers */
@@ -1657,11 +1661,13 @@ div.rating img {
 
 .user-content .moderation {
     padding: 10px;
-    text-align: right;
+    text-align: left;
+    float: left;
+    clear: both;
 }
 
 .user-content .moderation form {
-    float: right;
+    float: left;
 }
 
 .user-content .moderation a:link, .user-content .moderation a:visited {

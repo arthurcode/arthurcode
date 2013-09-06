@@ -22,7 +22,7 @@
     {% rating content.rating %}
     <h4><a href="{{ content.get_absolute_url }}">{{ content.summary }}</a></h4>
     {% if content.review %}
-        <p>{{ content.review }}</p>
+        <p class="whitespace subtle">{{ content.review }}</p>
     {% endif %}
 {% endblock %}
 
