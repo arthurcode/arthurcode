@@ -1626,15 +1626,15 @@ div#reviews h3 {
 }
 
 .user-content .metadata {
-    float: left;
+    float: right;
     width: 25%;
     padding: 10px;
 }
 
-.user-content .right-col {
-    float: right;
+.user-content .content-col {
+    float: left;
     width: 70%;
-    border-left: 1px solid lightgray;
+    border-right: 1px solid lightgray;
 }
 
 .user-content .content {

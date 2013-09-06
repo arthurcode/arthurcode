@@ -2,6 +2,16 @@
 
 <div class="user-content {% block type %}generic{% endblock %}">
     <a id="{% block anchor-id %}{% endblock %}"></a>
+
+    <div class="content-col">
+        <div class="content">
+            {% block main-content %}{% endblock %}
+        </div>
+
+        <div class="moderation subtle">
+            {% block moderation %}{% endblock %}
+        </div>
+    </div>
     <div class="metadata subtle">
         <span class="name">{% block name %}{% firstof content.user.public_name "anonymous user" %}{% endblock %}</span>
         {% block date %}{% endblock %}
@@ -14,14 +24,5 @@
                 {% endif %}
             {% endif %}
         {% endwith %}
-    </div>
-    <div class="right-col">
-        <div class="content">
-            {% block main-content %}{% endblock %}
-        </div>
-
-        <div class="moderation subtle">
-            {% block moderation %}{% endblock %}
-        </div>
     </div>
 </div>
