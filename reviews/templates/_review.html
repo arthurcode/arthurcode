@@ -28,8 +28,8 @@
 
 {% block moderation %}
     {% if request.user == content.user %}
-        <a href="{% url delete_product_review content.product.slug %}">delete</a>
-        <a href="{% url edit_product_review content.product.slug %}">edit</a>
+        <a class="subtle" href="{% url delete_product_review content.product.slug %}">delete</a>
+        <a class="subtle" href="{% url edit_product_review content.product.slug %}">edit</a>
     {% else %}
         {% if request.user.is_staff %}
             {% if content.is_approved %}
@@ -45,13 +45,13 @@
                     {% csrf_token %}
                     <button class="link" type="submit" name="submit">approve</button>
                 </form>
-                <a href="{% url admin_delete_review content.id %}">delete review</a>
+                <a class="subtle" href="{% url admin_delete_review content.id %}">delete review</a>
             {% endif %}
         {% else %}
             {% if content.is_approved %}
-                <span class="approved">moderator approved</span>
+                <span class="approved subtle">moderator approved</span>
             {% elif not content.is_flagged_for_removal %}
-                <a href="{% url flag_review content.id %}">report as inappropriate</a>
+                <a class="subtle" href="{% url flag_review content.id %}">report as inappropriate</a>
             {% endif %}
         {% endif %}
     {% endif %}

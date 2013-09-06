@@ -1633,12 +1633,13 @@ div#reviews h3 {
     float: right;
     width: 25%;
     padding: 10px;
+    background-color: #f0f0f0;
+    text-align: center;
 }
 
 .user-content .content-col {
     float: left;
     width: 70%;
-    border-right: 1px solid lightgray;
 }
 
 .user-content .content {
@@ -2279,4 +2280,8 @@ body.reviewing div.review, body.ask-question div.question {
 
 .user-content p img {
     margin-right: 5px;
+}
+
+ul .review {
+    margin-bottom: 5px;
 }
