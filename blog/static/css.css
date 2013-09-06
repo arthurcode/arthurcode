@@ -2282,6 +2282,17 @@ body.reviewing div.review, body.ask-question div.question {
     margin-right: 5px;
 }
 
-ul .review, ul .question {
+ul .review, ul .question, ul .answer {
     margin-bottom: 5px;
+}
+
+/* In a threaded list, indent each child ul by 10px */
+
+ul.threaded {
+    padding-left: 20px;
+}
+
+/* don't indent the parent ul in a threaded list */
+div > ul.threaded {
+    padding-left: 0;
 }

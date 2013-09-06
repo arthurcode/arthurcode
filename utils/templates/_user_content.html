@@ -15,14 +15,16 @@
     <div class="metadata subtle">
         <span class="name">{% block name %}{% firstof content.user.public_name "anonymous" %}{% endblock %}</span>
         {% block date %}{% endblock %}
-        {% with content.user.get_public_profile as profile %}
-            {% if profile %}
-                {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
-                {% if profile.description %}<br><span class="self-description">"{{ profile.description }}"</span>{% endif %}
-                {% if request.user == content.user %}
-                    <a class="subtle standard" href="{% url edit_public_profile %}{% add_get next=content.get_absolute_url %}">edit public profile</a>
+        {% block profile %}
+            {% with content.user.get_public_profile as profile %}
+                {% if profile %}
+                    {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
+                    {% if profile.description %}<br><span class="self-description">"{{ profile.description }}"</span>{% endif %}
+                    {% if request.user == content.user %}
+                        <a class="subtle standard" href="{% url edit_public_profile %}{% add_get next=content.get_absolute_url %}">edit public profile</a>
+                    {% endif %}
                 {% endif %}
-            {% endif %}
-        {% endwith %}
+            {% endwith %}
+        {% endblock %}
     </div>
 </div>

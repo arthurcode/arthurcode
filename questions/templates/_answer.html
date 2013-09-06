@@ -4,14 +4,16 @@
 
 {% block name %}Customer Service{% endblock %}
 
+{% block profile %}{% endblock %}
+
 {% block main-content %}
-    <h4><a href="#c{{ content.id }}">Answer:</a></h4>
-    <p>{{ content.comment }}</p>
+    <h4><a href="{{ content.get_absolute_url }}">Answer</a></h4>
+    <p class="subtle whitespace">{{ content.comment }}</p>
 {% endblock %}
 
 {% block moderation %}
     {% if request.user.is_staff %}
-        <a href="{% url delete_question content.id %}">delete</a>
-        <a href="{% url edit_question content.id %}">edit</a>
+        <a class="subtle" href="{% url delete_question content.id %}">delete</a>
+        <a class="subtle" href="{% url edit_question content.id %}">edit</a>
     {% endif %}
 {% endblock %}
