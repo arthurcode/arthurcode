@@ -13,7 +13,7 @@
         </div>
     </div>
     <div class="metadata subtle">
-        <span class="name">{% block name %}{% firstof content.user.public_name "anonymous user" %}{% endblock %}</span>
+        <span class="name">{% block name %}{% firstof content.user.public_name "anonymous" %}{% endblock %}</span>
         {% block date %}{% endblock %}
         {% with content.user.get_public_profile as profile %}
             {% if profile %}
