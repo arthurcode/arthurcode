@@ -1621,19 +1621,19 @@ div#reviews h3 {
 }
 
 .review, .question, .answer {
-    width: 35em;
+    width: 40em;
     clear: both;
 }
 
 .user-content .metadata {
     float: left;
-    width: 30%;
+    width: 25%;
     padding: 10px;
 }
 
 .user-content .right-col {
     float: right;
-    width: 64%;
+    width: 70%;
     border-left: 1px solid lightgray;
 }
 

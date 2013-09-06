@@ -1,11 +1,16 @@
 <div class="user-content {% block type %}generic{% endblock %}">
     <a id="{% block anchor-id %}{% endblock %}"></a>
-    <div class="metadata">
+    <div class="metadata subtle">
         <span class="name">{% block name %}{% firstof content.user.public_name "anonymous user" %}{% endblock %}</span>
         {% block date %}{% endblock %}
         {% with content.user.get_public_profile as profile %}
-            {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
-            {% if profile.description %}<span class="self-description">description: {{ profile.description }}</span>{% endif %}
+            {% if profile %}
+                {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
+                {% if profile.description %}<br><span class="self-description">"{{ profile.description }}"</span>{% endif %}
+                {% if request.user == content.user %}
+                    <a class="subtle standard" href="{% url edit_public_profile %}">edit public profile</a>
+                {% endif %}
+            {% endif %}
         {% endwith %}
     </div>
     <div class="right-col">
