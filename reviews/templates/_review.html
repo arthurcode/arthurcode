@@ -8,8 +8,8 @@
 
 {% block date %}
     {% if content.was_edited %}
-        <span class="date">submitted: {{ content.date_added|date:"M j, Y" }}</span>
-        <span class="date">updated: {{ content.last_modified|date:"M j, Y" }}</span>
+        <span class="date">submitted {{ content.date_added|date:"M j, Y" }}</span>
+        <span class="date">updated {{ content.last_modified|date:"M j, Y" }}</span>
     {% else %}
         <span class="date">{{ content.date_added|date:"M j, Y" }}</span>
     {% endif %}
