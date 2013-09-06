@@ -1,3 +1,5 @@
+{% load extras %}
+
 <div class="user-content {% block type %}generic{% endblock %}">
     <a id="{% block anchor-id %}{% endblock %}"></a>
     <div class="metadata subtle">
@@ -8,7 +10,7 @@
                 {% if profile.location %}<span class="location">{{ profile.location }}</span>{% endif %}
                 {% if profile.description %}<br><span class="self-description">"{{ profile.description }}"</span>{% endif %}
                 {% if request.user == content.user %}
-                    <a class="subtle standard" href="{% url edit_public_profile %}">edit public profile</a>
+                    <a class="subtle standard" href="{% url edit_public_profile %}{% add_get next=content.get_absolute_url %}">edit public profile</a>
                 {% endif %}
             {% endif %}
         {% endwith %}
