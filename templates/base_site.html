@@ -10,7 +10,7 @@
             <span class="canadian">Proudly Canadian</span>
             <span class="contact">1-800-664-9741</span>
             {% block account_links %}
-                <a class="account" href="{% url account_orders %}">my account</a>
+                <a class="account" href="{% url account_personal %}">my account</a>
                 {% if user.is_authenticated and not user|is_lazy_user %}
                     <a class="logout" href="{% url logout %}?next={{ request.path }}">log out</a>
                     <span class="welcome">Welcome, {% firstof user.public_name user.first_name user.email %}</span>
