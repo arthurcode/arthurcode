@@ -108,6 +108,21 @@
                     selectTab(tab);
                 }
             }
+
+            // automatically hide/show (required) & (optional) text in visible form fields
+            Y.all('form').each(function(form) {
+                var required = form.all('.required-text');
+                var optional = form.all('.optional-text');
+                if (required.size() > optional.size()) {
+                    required.each(function(span) {
+                        span.addClass('hidden');
+                    });
+                } else {
+                    optional.each(function(span) {
+                        span.addClass('hidden');
+                    });
+                }
+            });
         });
     </script>
 {% endblock %}
