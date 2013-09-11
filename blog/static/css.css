@@ -1791,6 +1791,32 @@ body.account div.views {
     border: none;
 }
 
+body.account div.address {
+    padding: 15px;
+    float: left;
+    margin-right: 10px;
+    border: 1px solid lightgray;
+}
+
+body.account div.address p.address, body.account div.address h3, body.account div.address form {
+    float: left;
+    clear: both;
+}
+
+body.account div.address p.address {
+    margin-bottom: 10px;
+}
+
+body.account div.address .nickname {
+    font-weight: bolder;
+    padding-bottom: 10px;
+}
+
+body.account div#shipping a {
+    float: left;
+    clear: both;
+}
+
 body.receipt #bd div {
     clear: both;
 }

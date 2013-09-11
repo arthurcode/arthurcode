@@ -181,9 +181,21 @@ def view_orders(request):
 def view_personal(request):
     public_profile = request.user.get_public_profile()
     customer_profile = request.user.get_customer_profile()
+    shipping_addresses = None
+    billing_address = None
+
+    if customer_profile:
+        shipping_addresses = customer_profile.shipping_addresses.order_by('nickname')
+        try:
+            billing_address = customer_profile.billing_address
+        except CustomerBillingAddress.DoesNotExist:
+            pass
+
     context = {
         'public_profile': public_profile,
-        'customer_profile': customer_profile
+        'customer_profile': customer_profile,
+        'shipping_addresses': shipping_addresses,
+        'billing_address': billing_address,
     }
     return render_to_response('personal.html', context, context_instance=RequestContext(request))
 
