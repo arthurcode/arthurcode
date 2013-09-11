@@ -5,7 +5,8 @@
 {% block title %}Log In{% endblock %}
 
 {% block body %}
-    <div class="login">
+    <div class="login-wrapper">
+    <div class="login shadow-box">
         <h2>Log In</h2>
         <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}{% if next %}?nex={{ next }}{% endif %}">Create an Account</a>)</span>
         {% form_errors auth_form %}
@@ -27,5 +28,6 @@
                 {% block guest_extra %}{% endblock %}
             </div>
         {% endblock %}
+    </div>
     </div>
 {% endblock %}
