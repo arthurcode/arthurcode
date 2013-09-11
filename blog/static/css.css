@@ -880,11 +880,6 @@ body.products #bd .search h2 {
     display: inline-block;
 }
 
-body.products #bd .search a {
-    font-size: 80%;
-    color: gray;
-}
-
 div.refine {
     width: 17%;
     font-size: 80%;
