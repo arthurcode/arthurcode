@@ -19,19 +19,19 @@
             <div class="view" id="account">
                 <h2>Account</h2>
                 <ul>
-                    <li><a href="{% url account_change_email %}">change your email address</a></li>
-                    <li><a href="{% url account_change_password %}">change your password</a></li>
+                    <li><a class="subtle standard" href="{% url account_change_email %}">change your email address</a></li>
+                    <li><a class="subtle standard" href="{% url account_change_password %}">change your password</a></li>
                 </ul>
             </div>
             <div class="view hide-initially" id="contact">
                 <h2>Contact Information</h2>
-                <a href="{% url account_edit_contact_info %}">edit contact info</a>
+                <a class="subtle standard" href="{% url account_edit_contact_info %}">edit contact info</a>
                 {% include "_contact_info.html" %}
             </div>
             <div class="view hide-initially" id="public">
                 <h2>Public Profile</h2>
                 {% if public_profile %}
-                    <a href="{% url edit_public_profile %}">edit public profile</a>
+                    <a class="subtle standard" href="{% url edit_public_profile %}">edit public profile</a>
                     {% include "_public_profile.html" %}
                 {% else %}
                     <a href="{% url create_public_profile %}?next={{ request.path }}">create your public profile</a>
@@ -39,7 +39,7 @@
             </div>
             <div class="view hide-initially" id="shipping">
                 <h2>Shipping Addresses</h2>
-                <a href="{% url add_shipping_address %}">add new address</a>
+                <a class="subtle standard" href="{% url add_shipping_address %}">add new address</a>
                 {% if customer_profile %}
                     {% for address in customer_profile.shipping_addresses.all %}
                         <h3>{{ address.nickname }}</h3>
@@ -53,7 +53,7 @@
             </div>
             <div class="view hide-initially" id="billing">
                 <h2>Billing Addresses</h2>
-                <a href="{% url add_billing_address %}">add new address</a>
+                <a class="subtle standard" href="{% url add_billing_address %}">add new address</a>
                 {% if customer_profile and customer_profile.billing_address %}
                     {% with customer_profile.billing_address as address %}
                         {% include "_address.html" %}
