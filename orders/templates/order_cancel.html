@@ -11,8 +11,8 @@
         <form method="post" action="">
             {% csrf_token %}
             <div class="controls">
-                <button class="action" type="submit" name="cancel">Cancel</button>
-                <button class="action" type="submit" name="confirm">Yes</button>
+                <button class="action" type="submit" name="cancel">No, Don't Cancel</button>
+                <button class="action" type="submit" name="confirm">Yes, Cancel Order</button>
             </div>
         </form>
     {% else %}
