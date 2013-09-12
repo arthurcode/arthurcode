@@ -1497,15 +1497,8 @@ div.contact-info form .column2 {
     clear: left;
 }
 
-.order-summary dl.horizontal dt {
-    float: left;
-    clear: left;
-    width: 6em;
+.order-summary dl.horizontal dt, .order-summary dl.horizontal dd {
     text-align: right;
-}
-
-.order-summary dd {
-    float: left;
 }
 
 .order-summary .total {
