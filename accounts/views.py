@@ -347,32 +347,43 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, i
 
 @non_lazy_login_required()
 def edit_shipping_address(request, address_id):
-    profile = request.user.get_customer_profile()
+    redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#shipping'
+    template_name = "edit_shipping_address.html"
+    model_clazz = CustomerShippingAddress
+    form_clazz = CustomerShippingAddressForm
+    return _edit_address(request, address_id, model_clazz, form_clazz, redirect_to, template_name)
 
-    if not profile:
-        # this person couldn't have any existing shipping addresses, redirect them
-        return HttpResponseRedirect(reverse('add_shipping_address'))
 
-    address = get_object_or_404(CustomerShippingAddress, id=address_id)
-    if not address.customer == profile:
-        return HttpResponseForbidden(u"You are not permitted to edit another customer's shipping address")
+@non_lazy_login_required()
+def edit_billing_address(request, address_id):
+    redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#billing'
+    template_name = "edit_billing_address.html"
+    model_clazz = CustomerBillingAddress
+    form_clazz = CustomerBillingAddressForm
+    return _edit_address(request, address_id, model_clazz, form_clazz, redirect_to, template_name)
 
-    if request.method == "POST":
-        data = request.POST.copy()
-        data['address_id'] = address_id
-        form = CustomerShippingAddressForm(customer=profile, address_id=address_id, data=data)
-        if form.is_valid():
-            form.save(CustomerShippingAddress, commit=True)
-            redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#shipping'
-            return HttpResponseRedirect(redirect_to)
-    else:
-        form = CustomerShippingAddressForm(customer=profile, address_id=address_id, initial=address.as_dict())
 
-    context = {
-        'form': form,
-    }
-    return render_to_response('edit_shipping_address.html', context, context_instance=RequestContext(request))
+def _edit_address(request, address_id, address_clazz, form_clazz, redirect_to, template_name):
+        profile = request.user.get_customer_profile()
+        address = get_object_or_404(address_clazz, id=address_id)
 
+        if not address.customer.user == request.user:
+            return HttpResponseForbidden(u"You are not permitted to edit another customer's address")
+
+        if request.method == "POST":
+            data = request.POST.copy()
+            data['address_id'] = address_id
+            form = form_clazz(customer=profile, address_id=address_id, data=data)
+            if form.is_valid():
+                form.save(address_clazz, commit=True)
+                return HttpResponseRedirect(redirect_to)
+        else:
+            form = form_clazz(customer=profile, address_id=address_id, initial=address.as_dict())
+
+        context = {
+            'form': form,
+        }
+        return render_to_response(template_name, context, context_instance=RequestContext(request))
 
 
 @non_lazy_login_required()

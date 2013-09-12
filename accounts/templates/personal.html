@@ -57,7 +57,7 @@
                     {% with billing_address as address %}
                         <div class="address">
                             {% include "_address.html" %}
-                            <a class="subtle standard" href="">edit</a>
+                            <a class="subtle standard" href="{% url edit_billing_address address.id %}">edit</a>
                             <a class="subtle standard" href="{% url delete_billing_address address.id %}">delete</a>
                         </div>
                     {% endwith %}

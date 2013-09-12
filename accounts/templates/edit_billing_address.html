@@ -1,0 +1,24 @@
+{% extends "base_account.html" %}
+{% load form_tags %}
+
+{% block root-category %}personal{% endblock %}
+{% block title %}Edit Billing Address{% endblock %}
+
+{% block body %}
+    <h2>Edit Billing Address</h2>
+
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% field form.name %}
+        {% field form.line1 %}
+        {% field form.line2 %}
+        {% field form.city %}
+        {% field form.region %}
+        {% field form.post_code %}
+        {% field form.country %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Edit Address</button>
+        </div>
+    </form>
+{% endblock %}
