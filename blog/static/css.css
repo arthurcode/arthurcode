@@ -1781,7 +1781,8 @@ table.shopping-cart dl.horizontal dd {
 }
 
 body.account #bd {
-    padding: 40px 0 0 20px;
+    /* because this view is so busy  we need more whitespace */
+    padding-top: 30px;
 }
 
 body.account ul.tabcol {
@@ -1809,6 +1810,7 @@ body.account div.address p.address, body.account div.address h3, body.account di
 
 body.account div.address p.address {
     margin-bottom: 10px;
+    font-size: 80%;
 }
 
 body.account div.address .nickname {
