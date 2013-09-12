@@ -220,6 +220,7 @@ class ChooseShippingAddressByNickname(forms.Form):
         address_book_choices.extend([(n, n) for n in nicknames if n != self.ME_NICKNAME])
         choices.append(("Address Book", address_book_choices))
         choices.append(("Other", ((self.NEW_ADDRESS_NICKNAME, 'New Address'),)))
+        choices = add_empty_choice(choices)
 
         self.fields[self.SHIP_TO_KEY] = forms.ChoiceField(choices=choices, widget=forms.Select,
                                                                                label="Ship To", required=True)
