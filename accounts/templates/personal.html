@@ -34,7 +34,7 @@
                     <a class="subtle standard" href="{% url edit_public_profile %}">edit public profile</a>
                     {% include "_public_profile.html" %}
                 {% else %}
-                    <a href="{% url create_public_profile %}?next={{ request.path }}">create your public profile</a>
+                    <a class="subtle standard" href="{% url create_public_profile %}?next={{ request.path }}">create your public profile</a>
                 {% endif %}
             </div>
             <div class="view hide-initially" id="shipping">
