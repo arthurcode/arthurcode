@@ -2331,7 +2331,7 @@ body.reviewing div.review, body.ask-question div.question {
     margin: 10px 0 20px 0;
 }
 
-.reviewing .moderation, .ask-question .moderation {
+.ask-question .moderation {
     display: none;
 }
 
