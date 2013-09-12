@@ -346,6 +346,36 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, i
 
 
 @non_lazy_login_required()
+def edit_shipping_address(request, address_id):
+    profile = request.user.get_customer_profile()
+
+    if not profile:
+        # this person couldn't have any existing shipping addresses, redirect them
+        return HttpResponseRedirect(reverse('add_shipping_address'))
+
+    address = get_object_or_404(CustomerShippingAddress, id=address_id)
+    if not address.customer == profile:
+        return HttpResponseForbidden(u"You are not permitted to edit another customer's shipping address")
+
+    if request.method == "POST":
+        data = request.POST.copy()
+        data['address_id'] = address_id
+        form = CustomerShippingAddressForm(customer=profile, address_id=address_id, data=data)
+        if form.is_valid():
+            form.save(CustomerShippingAddress, commit=True)
+            redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#shipping'
+            return HttpResponseRedirect(redirect_to)
+    else:
+        form = CustomerShippingAddressForm(customer=profile, address_id=address_id, initial=address.as_dict())
+
+    context = {
+        'form': form,
+    }
+    return render_to_response('edit_shipping_address.html', context, context_instance=RequestContext(request))
+
+
+
+@non_lazy_login_required()
 @require_POST
 def delete_shipping_address(request, address_id, redirect_to=None):
     return _delete_address(request, address_id, CustomerShippingAddress, redirect_to)

@@ -48,6 +48,7 @@
                             {% csrf_token %}
                             <button type="submit" name="submit" class="action">Delete</button>
                         </form>
+                        <a class="subtle standard" href="{% url edit_shipping_address address.id %}">edit</a>
                     </div>
                 {% endfor %}
             </div>

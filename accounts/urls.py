@@ -2,7 +2,8 @@ from django.conf.urls import patterns, url
 from accounts.views import login_or_create_account, view_orders, view_personal, view_wishlists, view_reviews,\
     create_public_profile, change_email, change_password, change_password_done, logout, reset_password, \
     reset_password_done, reset_password_confirm, reset_password_complete, edit_contact_info, edit_public_profile, \
-    add_shipping_address, add_billing_address, delete_shipping_address, delete_billing_address, create_account
+    add_shipping_address, add_billing_address, delete_shipping_address, delete_billing_address, create_account, \
+    edit_shipping_address
 
 urlpatterns = patterns('',
                        url(r'^login/$', login_or_create_account, name="login_or_create_account"),
@@ -26,5 +27,6 @@ urlpatterns = patterns('',
                        url(r'^add-billing-address/$', add_billing_address, name="add_billing_address"),
                        url(r'^delete-shipping-address/(\d+)$', delete_shipping_address, name="delete_shipping_address"),
                        url(r'^delete-billing-address/(\d+)$', delete_billing_address, name="delete_billing_address"),
+                       url(r'^edit-shipping-address/(\d+)$', edit_shipping_address, name="edit_shipping_address"),
                        )
 
