@@ -33,7 +33,6 @@ def create_review(request, product_slug):
 
     context = {
         'product': product,
-        'needing_review': get_products_needing_review(request).exclude(id=product.id),
         'form': form,
     }
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
@@ -62,7 +61,6 @@ def edit_review(request, product_slug):
         'form': form,
         'product': product,
         'review': review,
-        'needing_review': get_products_needing_review(request).exclude(id=product.id),
     }
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
@@ -104,6 +102,7 @@ def view_review(request, product_slug):
     context = {
         'product': product,
         'review': review,
+        'needing_review': get_products_needing_review(request).exclude(id=product.id),
     }
     context.update(request.GET.copy())  # state cues
     return render_to_response('view_review.html', context, context_instance=RequestContext(request))
