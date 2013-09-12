@@ -1,0 +1,19 @@
+{% extends "base_account.html" %}
+
+{% block title %}Delete Shipping Address{% endblock %}
+
+{% block root-category %}personal{% endblock %}
+
+{% block body %}
+    <h2>Are you sure you want to delete this shipping address?</h2>
+
+    <div class="address">
+        <h3><em>{{ address.nickname }}</em></h3>
+        {% include "_address.html" %}
+    </div>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button class="action" type="submit" name="no">Cancel</button>
+        <button class="action" type="submit" name="yes">Delete Address</button>
+    </form>
+{% endblock %}

@@ -376,18 +376,20 @@ def edit_shipping_address(request, address_id):
 
 
 @non_lazy_login_required()
-@require_POST
 def delete_shipping_address(request, address_id, redirect_to=None):
-    return _delete_address(request, address_id, CustomerShippingAddress, redirect_to)
+    redirect_to = redirect_to or request.GET.get('next', None) or reverse('account_personal') + '#shipping'
+    template_name = 'delete_shipping_address.html'
+    return _delete_address(request, address_id, CustomerShippingAddress, redirect_to, template_name)
 
 
 @non_lazy_login_required()
-@require_POST
 def delete_billing_address(request, address_id, redirect_to=None):
-    return _delete_address(request, address_id, CustomerBillingAddress, redirect_to)
+    redirect_to = redirect_to or request.GET.get('next', None) or reverse('account_personal') + '#billing'
+    template_name = 'delete_billing_address.html'
+    return _delete_address(request, address_id, CustomerBillingAddress, redirect_to, template_name)
 
 
-def _delete_address(request, address_id, model_clazz, redirect_to):
+def _delete_address(request, address_id, model_clazz, redirect_to, template_name):
     """
     Addresses can only be deleted by the user that 'owns' them.  Staff members can delete addresses through the admin
     interface if need be.
@@ -395,16 +397,15 @@ def _delete_address(request, address_id, model_clazz, redirect_to):
     address = get_object_or_404(model_clazz, id=address_id)
     if not address.customer.user == request.user:
         return HttpResponseForbidden(u"You do not have permission to delete this address.")
-    redirect_to = redirect_to or request.GET.get('next', None)
 
-    if not redirect_to:
-        if model_clazz == CustomerShippingAddress:
-            redirect_to = reverse('account_personal') + '#shipping'
-        else:
-            redirect_to = reverse('account_personal') + '#billing'
-
-    address.delete()
-    return HttpResponseRedirect(redirect_to)
+    if request.method == "POST":
+        if "yes" in request.POST:
+            address.delete()
+        return HttpResponseRedirect(redirect_to)
+    context = {
+        'address': address,
+    }
+    return render_to_response(template_name, context, context_instance=RequestContext(request))
 
 
 

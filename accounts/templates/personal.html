@@ -44,11 +44,8 @@
                     <div class="address">
                         <h3 class="nickname">{{ address.nickname }}</h3>
                         {% include "_address.html" %}
-                        <form method="post" action="{% url delete_shipping_address address.id %}" class="no-help">
-                            {% csrf_token %}
-                            <button type="submit" name="submit" class="action">Delete</button>
-                        </form>
                         <a class="subtle standard" href="{% url edit_shipping_address address.id %}">edit</a>
+                        <a class="subtle standard" href="{% url delete_shipping_address address.id %}">delete</a>
                     </div>
                 {% endfor %}
             </div>
@@ -59,11 +56,9 @@
                 {% if billing_address %}
                     {% with billing_address as address %}
                         <div class="address">
-                        {% include "_address.html" %}
-                        <form method="post" action="{% url delete_billing_address address.id %}" class="no-help">
-                            {% csrf_token %}
-                            <button type="submit" name="submit" class="action">Delete</button>
-                        </form>
+                            {% include "_address.html" %}
+                            <a class="subtle standard" href="">edit</a>
+                            <a class="subtle standard" href="{% url delete_billing_address address.id %}">delete</a>
                         </div>
                     {% endwith %}
                 {% endif %}

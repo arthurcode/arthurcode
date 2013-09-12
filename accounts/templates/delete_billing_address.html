@@ -1,0 +1,18 @@
+{% extends "base_account.html" %}
+
+{% block title %}Delete Billing Address{% endblock %}
+
+{% block root-category %}personal{% endblock %}
+
+{% block body %}
+    <h2>Are you sure you want to delete your billing address?</h2>
+
+    <div class="address">
+        {% include "_address.html" %}
+    </div>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button class="action" type="submit" name="no">Cancel</button>
+        <button class="action" type="submit" name="yes">Delete Address</button>
+    </form>
+{% endblock %}
