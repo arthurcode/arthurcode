@@ -187,11 +187,15 @@ class Product(models.Model):
     def is_award_winner(self):
         return self.awards and self.awards.count() > 0
 
+    rating = None
+
     def get_rating(self):
         """
         Returns this product's average review rating.  Returns None if there are no reviews.
         """
-        return self.reviews.aggregate(models.Avg('rating'))['rating__avg']
+        if self.rating is None:
+            self.rating = self.reviews.aggregate(models.Avg('rating'))['rating__avg']
+        return self.rating
 
     @classmethod
     def select_current_price(cls, queryset):
