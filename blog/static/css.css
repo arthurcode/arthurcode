@@ -1696,22 +1696,6 @@ div.rating img {
     display: inline-block;
 }
 
-.needing-review {
-    padding-top: 20px;
-    float: left;
-    clear: both;
-    font-size: smaller;
-}
-
-.needing-review li {
-    width: 11em;
-    text-align: center;
-}
-
-.needing-review img {
-    width: 100%;
-}
-
 #feedback {
     clear: both;
     padding-top: 20px;
@@ -1836,6 +1820,26 @@ body.account div.address .nickname {
 body.account div#shipping a {
     float: left;
     clear: both;
+}
+
+body.account div.your-reviews {
+    float: left;
+    clear: both;
+    padding-top: 20px;
+}
+
+div.needing-review {
+    float: left;
+    clear: both;
+}
+
+body.reviewing div.needing-review {
+    padding-top: 60px;
+}
+
+body.reviewing div.needing-review h3 {
+    padding-bottom: 10px;
+    font-weight: bolder;
 }
 
 body.receipt #bd div {
@@ -2362,4 +2366,32 @@ ul.threaded {
 /* don't indent the parent ul in a threaded list */
 div > ul.threaded {
     padding-left: 0;
+}
+
+table.reviews .thumbnail {
+    height: auto;
+}
+
+table.reviews .review, table.reviews .thumbnail {
+    border: none;
+}
+
+table.reviews thead {
+    font-weight: bolder;
+}
+
+table.reviews thead td {
+    padding: 10px 5px;
+    text-align: center;
+    background-color: #f0f0f0;
+}
+
+table.reviews {
+    border-collapse: collapse;
+    border: 1px solid gray;
+}
+
+table.reviews td {
+    border: 1px solid gray;
+    vertical-align: top;
 }
