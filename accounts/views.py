@@ -330,7 +330,7 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, i
 
     if request.method == "POST":
         post_data = request.POST.copy()
-        form = form_clazz(profile, data=post_data)
+        form = form_clazz(customer=profile, data=post_data)
         if form.is_valid():
             if save_profile:
                 profile.full_clean()
@@ -338,7 +338,7 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, i
             form.save(model_clazz, commit=True)
             return HttpResponseRedirect(redirect_to)
     else:
-        form = form_clazz(profile, initial=initial_data)
+        form = form_clazz(customer=profile, initial=initial_data)
     context = {
         'form': form,
     }
