@@ -23,6 +23,8 @@ from orders.models import Order
 from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout, \
     password_reset, password_reset_done, password_reset_confirm, password_reset_complete
 from accounts.models import CustomerShippingAddress, CustomerProfile, CustomerBillingAddress
+from utils.storeutils import get_products_needing_review
+from reviews.models import Review
 
 @sensitive_post_parameters()
 @csrf_protect
@@ -205,7 +207,13 @@ def view_wishlists(request):
 
 @non_lazy_login_required()
 def view_reviews(request):
-    return render_to_response('reviews.html', {}, context_instance=RequestContext(request))
+    reviews = Review.objects.filter(user=request.user)
+    needing_review = get_products_needing_review(request)
+    context = {
+        'reviews': reviews,
+        'needing_review': needing_review,
+    }
+    return render_to_response('reviews.html', context, context_instance=RequestContext(request))
 
 @non_lazy_login_required()
 @sensitive_post_parameters()

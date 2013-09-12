@@ -1,9 +1,49 @@
 {% extends "base_account.html" %}
+{% load user_content %}
 
 {% block title %}Reviews{% endblock %}
 
 {% block root-category %}reviews{% endblock %}
 
 {% block body %}
-    REVIEWS TBD
+    {% if needing_review %}
+        <div class="needing-review">
+            <h2>Products Awaiting Your Review <span class="subtle">({{ needing_review.count }})</span></h2>
+            {% for product in needing_review %}
+                {% include "_thumbnail.html" %}
+            {% endfor %}
+        </div>
+    {% endif %}
+
+    {% if reviews %}
+        <div class="your-reviews">
+            <h2>Your Reviews <span class="subtle">({{ reviews.count }})</span></h2>
+            <table class="reviews">
+                <thead>
+                <td>Product</td>
+                <td>Your Review</td>
+                </thead>
+
+                {% for review in reviews %}
+                    <tr>
+                        <td>
+                            {% with review.product as product %}
+                                {% include "_thumbnail.html" %}
+                            {% endwith %}
+                        </td>
+                        <td>
+                            {% review review %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </table>
+        </div>
+    {% endif %}
+
+    {% if not reviews and not needing_review %}
+        <p>To write a product review, navigate to the product you wish to review in our catalogue and then click on the
+           "write a review" link.
+        </p>
+    {% endif %}
+
 {% endblock %}
