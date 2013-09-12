@@ -1,8 +1,8 @@
-<dl class="horizontal">
-    <dt>Pseudonym</dt>
+<dl class="horizontal public-profile">
+    <dt class="even">Pseudonym</dt>
     <dd>{% firstof public_profile.username "-" %}</dd>
     <dt>Description</dt>
     <dd>{% firstof public_profile.description "-" %}</dd>
-    <dt>Location</dt>
+    <dt class="even">Location</dt>
     <dd>{% firstof public_profile.location "-" %}</dd>
 </dl>

@@ -1770,8 +1770,25 @@ dl.horizontal dt {
 
 dl.horizontal dd {
     float: left;
-    padding-left: 10px;
+    padding-left: 2%;
     width: 48%;
+}
+
+dt.even, dt.even + dd {
+    background-color: #f0f0f0;
+}
+
+dl.contact-info dd, dl.contact-info dt, dl.public-profile dd, dl.public-profile dt {
+    padding-top: 5px;
+    padding-bottom: 5px;
+}
+
+dl.public-profile dt {
+    width: 25%;
+}
+
+dl.public-profile dd {
+    width: 73%;
 }
 
 table.shopping-cart dl.horizontal dt {
