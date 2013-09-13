@@ -50,9 +50,8 @@
 
     <div class="positioning">
         <div class="refine">
-            <h2 class="title-bar">Filter Results</h2>
             {% if child_categories %}
-                <h3>By Category</h3>
+                <h3>Shop By Category</h3>
                 <ul>
                     {% for category in child_categories %}
                         <li><a href="{% go_to_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
@@ -60,7 +59,7 @@
                 </ul>
             {% endif %}
             {% if brands %}
-                <h3>By Brand</h3>
+                <h3>Shop By Brand</h3>
                 <ul>
                     {% for brand in brands %}
                         <li{% if brand.active_filter %} class="selected"{% endif %}><a href="{% if brand.active_filter %}{% remove_filter brand %}{% else %}{% add_filter brand %}{% endif %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
@@ -68,7 +67,7 @@
                 </ul>
             {% endif %}
             {% if themes %}
-                <h3>By Theme</h3>
+                <h3>Shop By Theme</h3>
                 <ul>
                     {% for theme in themes %}
                         <li{% if theme.active_filter %} class="selected"{% endif %}><a href="{% if theme.active_filter %}{% remove_filter theme %}{% else %}{% add_filter theme %}{% endif %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
@@ -76,7 +75,7 @@
                 </ul>
             {% endif %}
             {% if prices %}
-                <h3>By Price</h3>
+                <h3>Shop By Price</h3>
                 <ul>
                 {% for price in prices %}
                     <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
@@ -84,7 +83,7 @@
                 </ul>
             {% endif %}
             {% if features %}
-                <h3>By Feature</h3>
+                <h3>Shop By Feature</h3>
                 <ul>
                 {% for feature in features %}
                     <li{% if feature.active_filter %} class="selected"{% endif %}><a href="{% if feature.active_filter %}{% remove_filter feature %}{% else %}{% add_filter feature %}{% endif %}">{{ feature }} ({{ feature.product_count }})</a></li>
