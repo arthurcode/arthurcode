@@ -175,6 +175,12 @@ class CreatePublicProfileForm(forms.Form):
             raise ValidationError(u"You must be logged-in to create a public profile.")
         return data
 
+    def clean_username(self):
+        username = self.cleaned_data.get('username', None)
+        if username and PublicProfile.objects.filter(username=username).exclude(user=self.request.user).exists():
+            raise ValidationError(u"Sorry, this pseudonym is already taken")
+        return username
+
     def create_profile(self, commit=True):
         profile = PublicProfile(user=self.request.user)
         profile.username = self.cleaned_data['username']
