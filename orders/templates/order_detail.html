@@ -9,6 +9,12 @@
 {% block root-category %}orders{% endblock %}
 
 {% block body %}
+
+    <div class="breadcrumbs">
+        <a href="{% url account_orders %}">my orders</a> >
+        order #{{ order.id }}
+    </div>
+
     <h2>Order Detail</h2>
     {% order order %}
     {% if order.can_be_canceled %}

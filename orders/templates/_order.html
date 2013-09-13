@@ -127,7 +127,7 @@
             {% if order.creditcardpayment %}
                 {% with order.creditcardpayment as credit %}
                     <dt>{{ credit.get_card_type_display }} xxxx xxxx xxxx {{ credit.token }}</dt>
-                    <dd>{{ credit.amount|currency }} {% if not receipt %}({{ credit.get_status_display }}){% endif %}</dd>
+                    <dd>{{ credit.amount|currency }}</dd>
                 {% endwith %}
             {% endif %}
             {% for gc in order.gift_cards.all %}
