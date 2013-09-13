@@ -1,5 +1,7 @@
 {% extends "base_account.html" %}
 {% load user_content %}
+{% load review_extras %}
+{% load catalogue_extras %}
 
 {% block title %}Reviews{% endblock %}
 
@@ -10,7 +12,7 @@
         <div class="needing-review">
             <h2>Products Awaiting Your Review <span class="subtle">({{ needing_review.count }})</span></h2>
             {% for product in needing_review %}
-                {% include "_thumbnail.html" %}
+                {% review_thumb product %}
             {% endfor %}
         </div>
     {% endif %}
@@ -27,9 +29,7 @@
                 {% for review in reviews %}
                     <tr>
                         <td>
-                            {% with review.product as product %}
-                                {% include "_thumbnail.html" %}
-                            {% endwith %}
+                            {% thumb review.product %}
                         </td>
                         <td>
                             {% review review %}

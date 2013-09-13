@@ -1,6 +1,7 @@
 {% extends 'base_catalogue.html' %}
 {% load ratings %}
 {% load urls %}
+{% load review_extras %}
 
 {% block body_class %}reviewing products{% endblock %}
 
@@ -45,7 +46,7 @@
             <ul>
                 {% for product in needing_review %}
                     <li>
-                        {% include "_thumbnail.html" %}
+                        {% review_thumb product %}
                     </li>
                 {% endfor %}
             </ul>
