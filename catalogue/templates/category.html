@@ -1,6 +1,7 @@
 {% extends "base_catalogue.html" %}
 {% load extras %}
 {% load urls %}
+{% load catalogue_extras %}
 
 {% block title %}{% if search_text %}Search Results{% elif category %}{{ category.name }}{% else %}All Products{% endif %}{% endblock %}
 
@@ -139,7 +140,7 @@
             {% if products %}
                 {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
                 {% for product in products %}
-                    {% include "_thumbnail.html" %}
+                    {% thumb product %}
                 {% endfor %}
                 {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
             {% else %}

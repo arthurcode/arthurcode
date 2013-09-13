@@ -1,4 +1,5 @@
 {% extends "base_catalogue.html" %}
+{% load catalogue_extras %}
 
 {% block root-category %}featured{% endblock %}
 {% block title %}Featured Products{% endblock %}
@@ -26,7 +27,7 @@
     {% if featured_products %}
         <div class="featured">
             {% for product in featured_products %}
-                {% include "_thumbnail.html" %}
+                {% thumb product %}
             {% endfor %}
         </div>
     {% endif %}

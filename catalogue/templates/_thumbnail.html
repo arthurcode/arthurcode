@@ -3,9 +3,10 @@
 {% load extras %}
 {% load urls %}
 {% load ratings %}
+{% load static %}
 
 <div class="thumbnail">
-    <a href="{% go_to_product product %}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
+    <a href="{% go_to_product product %}"><img src="{% get_static_prefix %}products/thumbnails/example.jpg" alt="Thumbnail image of {{ product.name }}"/></a>
     <a href="{% go_to_product product %}">{{ product.name }}</a>
     {% rating product.get_rating %}
     {% if product.sale_price %}

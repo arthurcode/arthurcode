@@ -33,3 +33,11 @@ def product_option_field(context, field):
         'field': field,
         'option_id_map': context['option_id_map']
     }
+
+
+@register.inclusion_tag('_thumbnail.html', takes_context=True)
+def thumb(context, product):
+    return {
+        'product': product,
+        'request': context.get('request', None)
+    }
