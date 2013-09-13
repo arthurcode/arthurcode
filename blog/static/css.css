@@ -1729,10 +1729,12 @@ div.rating img {
 
 table.orders {
     width: 80%;
+    border: 1px solid lightgray;
 }
 
 table.orders td, table.orders th {
     text-align: center;
+    padding: 4px;
 }
 
 /* By default the data-type and data definition take up ~50% of the dl width.  This can be modified by specific
@@ -1749,6 +1751,10 @@ dl.horizontal dd {
     float: left;
     padding-left: 2%;
     width: 48%;
+}
+
+tr.even td {
+    background-color: #f0f0f0;
 }
 
 dt.even, dt.even + dd {

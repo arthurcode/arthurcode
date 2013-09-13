@@ -20,7 +20,7 @@
         <tbody>
         {% if orders %}
             {% for order in orders %}
-                <tr>
+                <tr class="{% cycle "even" "odd" %}">
                     <td><a href="{% url order_detail order.id %}">{{ order.id }}</a></td>
                     <td>{{ order.date|date:"M j, Y" }}</td>
                     <td class="right">{{ order.total|currency }}</td>
