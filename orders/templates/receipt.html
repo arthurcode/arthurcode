@@ -1,0 +1,13 @@
+{% extends "base_site.html" %}
+{% load order_extras %}
+
+{% block body_class %}receipt{% endblock %}
+
+{% block title %}Your Receipt{% endblock %}
+
+{% block body %}
+    <p class="thank-you">Thank you for your order!</p>
+    <h2>Your Receipt</h2>
+    <p class="subtle">Please print this receipt for your records.</p>
+    {% order order %}
+{% endblock %}

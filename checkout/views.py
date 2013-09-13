@@ -773,7 +773,7 @@ class Checkout:
         # the step is outside of our expected url range.  We must be finished the checkout process
         order_id = self.get('order', None)
         if order_id:
-            return reverse('order_detail', kwargs={'order_id': order_id})
+            return reverse('order_receipt', kwargs={'order_id': order_id})
         # for some reason there is no saved order id, redirect to the cart page
         return reverse('show_cart')
 
