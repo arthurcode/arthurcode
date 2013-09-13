@@ -15,7 +15,7 @@
     {% endif %}
 {% endblock %}
 
-{% block extra-breadcrumbs %}view review{% endblock %}
+{% block extra-breadcrumbs %}{% if deleted %}review deleted{% else %}view review{% endif %}{% endblock %}
 
 {% block right-col %}
     {% if created or deleted or edited %}
