@@ -2,6 +2,7 @@
 {% load ratings %}
 {% load urls %}
 {% load review_extras %}
+{% load catalogue_extras %}
 
 {% block body_class %}reviewing{% endblock %}
 {% block root-category %}reviews{% endblock %}
@@ -14,14 +15,7 @@
     </div>
 
     <div class="left-col subtle">
-        <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
-        {% with product.get_rating as rating %}
-            {% if rating %}
-                Average rating: {% rating rating %}
-            {% else %}
-                {% rating rating %} (this product has not yet been rated)
-            {% endif %}
-        {% endwith %}
+        {% thumb product %}
     </div>
 
     <div class="right-col">
