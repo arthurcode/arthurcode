@@ -95,6 +95,9 @@ class PaymentInfoForm(forms.Form):
 
     def clean(self):
         cd = super(PaymentInfoForm, self).clean()
+        if self.errors:
+            return
+
         self.cc = None
 
         if self.is_credit():
