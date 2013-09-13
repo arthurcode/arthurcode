@@ -1,20 +1,17 @@
-{% extends "base_site.html" %}
+{% extends "base_account.html" %}
 {% load extras %}
 {% load lazysignup_tags %}
 {% load order_extras %}
 
-{% block title %}{% if receipt %}Your Receipt{% else %}Order Detail{% endif %}{% endblock %}
+{% block title %}Order Detail{% endblock %}
 
-{% block body_class %}receipt{% endblock %}
+{% block body_class %}receipt account{% endblock %}
+{% block root-category %}orders{% endblock %}
 
 {% block body %}
-    {% if receipt %}
-        <p class="thank-you">Thank you for your Order!</p>
-    {% endif %}
+    <h2>Order Detail</h2>
     {% order order %}
     {% if order.can_be_canceled %}
         <div class="actions"><a class="action" href="{% url order_cancel order.id %}">Cancel Order</a></div>
     {% endif %}
-
-
 {% endblock %}

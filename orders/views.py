@@ -4,27 +4,22 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.views.decorators.http import require_GET
+from accounts.decorators import non_lazy_login_required
 
 
 @require_GET
-@login_required
+@non_lazy_login_required()
 def detail_view(request, order_id):
+    """
+    This is the customer's view of their order.  This is not meant to be an admin view.
+    """
     order = get_object_or_404(Order, id=order_id)
-    receipt = False
-    if not request.user.is_staff:
-        # check that this regular user has permission to view this order summary
-        if not order.user or not order.user == request.user:
-            return HttpResponseForbidden(u"You do not have permission to view this order.")
-        receipt = True
-
-    profile = None
-    if order.user:
-        profile = order.user.get_customer_profile()
+    # check that this regular user has permission to view this order summary
+    if not order.user or not order.user == request.user:
+        return HttpResponseForbidden(u"You do not have permission to view this order.")
 
     context = {
         'order': order,
-        'profile': profile,
-        'receipt': receipt
     }
     return render_to_response('order_detail.html', context, context_instance=RequestContext(request))
 
