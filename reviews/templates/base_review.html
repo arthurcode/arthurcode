@@ -7,11 +7,17 @@
 {% block root-category %}reviews{% endblock %}
 
 {% block body %}
+
+    <div class="breadcrumbs">
+        <a href="{% url account_reviews %}">my reviews</a> >
+        {% block extra-breadcrumbs %}{% endblock %}
+    </div>
+
     <div class="left-col subtle">
         <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
         {% with product.get_rating as rating %}
             {% if rating %}
-                Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
+                Average rating: {% rating rating %}
             {% else %}
                 {% rating rating %} (this product has not yet been rated)
             {% endif %}
