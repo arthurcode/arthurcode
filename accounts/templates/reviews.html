@@ -10,7 +10,7 @@
 {% block body %}
     {% if needing_review %}
         <div class="needing-review">
-            <h2>Products Awaiting Your Review <span class="subtle">({{ needing_review.count }})</span></h2>
+            <h2>Products Awaiting My Review <span class="subtle">({{ needing_review.count }})</span></h2>
             {% for product in needing_review %}
                 {% review_thumb product %}
             {% endfor %}
@@ -19,11 +19,11 @@
 
     {% if reviews %}
         <div class="your-reviews">
-            <h2>Your Reviews <span class="subtle">({{ reviews.count }})</span></h2>
+            <h2>My Reviews <span class="subtle">({{ reviews.count }})</span></h2>
             <table class="reviews">
                 <thead>
                 <td>Product</td>
-                <td>Your Review</td>
+                <td>Review</td>
                 </thead>
 
                 {% for review in reviews %}
