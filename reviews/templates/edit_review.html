@@ -4,11 +4,6 @@
 
 {% block main-header %}Edit Your Review{% endblock %}
 
-{% block extra_breadcrumbs %}
-    <a href="{% url your_review product.slug %}">your review</a> >
-    edit
-{% endblock %}
-
 {% block form-controls %}
     <button class="action" type="submit" name="submit">Save Changes</button>
 {% endblock %}

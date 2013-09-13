@@ -3,10 +3,19 @@
 {% load urls %}
 {% load review_extras %}
 
-{% block body_class %}reviewing{% endblock %}
-{% block root-category %}reviews{% endblock %}
+{% block body_class %}reviewing products{% endblock %}
 
 {% block body %}
+    <div class="breadcrumbs">
+        <a href="{% go_to_category '' %}">All Products</a> >
+        {% for crumb in product.get_breadcrumbs %}
+            <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
+        {% endfor %}
+        <a href="{% go_to_product product %}">{{ product.name }}</a> >
+        {% block extra_breadcrumbs %}
+        {% endblock %}
+    </div>
+
     <div class="left-col subtle">
         <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
         {% with product.get_rating as rating %}
@@ -28,18 +37,5 @@
             {% endblock %}
         </ul>
     </div>
-
-    {% if needing_review %}
-        <div class="needing-review">
-            <h3>Other Products Awaiting Your Review:</h3>
-            <ul>
-                {% for product in needing_review %}
-                    <li>
-                        {% review_thumb product %}
-                    </li>
-                {% endfor %}
-            </ul>
-        </div>
-    {% endif %}
 
 {% endblock %}

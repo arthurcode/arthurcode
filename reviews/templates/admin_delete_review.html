@@ -1,4 +1,4 @@
-{% extends "base_review.html" %}
+{% extends "base_catalogue_review.html" %}
 {% load form_tags %}
 {% load user_content %}
 
@@ -6,10 +6,7 @@
 
 {% block main-header %}Delete the Following Review?{% endblock %}
 
-{% block extra_breadcrumbs %}
-    <a href="{{ review.get_absolute_url }}">review</a> >
-    admin-delete
-{% endblock %}
+{% block extra_breadcrumbs %}admin delete{% endblock %}
 
 {% block right-col %}
     <a class="subtle standard" href="{{ review.get_absolute_url }}">click here to cancel</a>
