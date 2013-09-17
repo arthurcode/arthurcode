@@ -4,13 +4,14 @@
     <div class="pagination">
         <span class="previous">
         {% if objects.has_previous %}
-            <a href="{% add_get page=objects.previous_page_number %}"> < Previous</a>
+            <a href="{% add_get page=objects.previous_page_number %}"> < prev</a>
         {% else %}
-            < previous
+            < prev
         {% endif %}
-            | Page:
+            | page:
         </span>
 
+        {% spaceless %}
         <ul class="pages">
             {% for page in objects.paginator.page_range %}
                 <li{% if page == objects.number %} class="current"{% endif %}>
@@ -18,6 +19,7 @@
                 </li>
             {% endfor %}
         </ul>
+        {% endspaceless %}
 
         <span class="next">
             |
