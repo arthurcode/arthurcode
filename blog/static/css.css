@@ -227,6 +227,14 @@ a.standard:link, a.standard:visited {
     color: blue;
 }
 
+.breadcrumbs a.click-to-remove:hover {
+    color: red;
+}
+
+.breadcrumbs a img {
+    width: 14px;
+}
+
 #bd {
     float: left;
     clear: both;
@@ -996,7 +1004,7 @@ div.products .sort-by select {
 }
 
 div.products select {
-    padding: 0;
+    padding: 3px 0;
     border: 1px solid lightgray;
 }
 
