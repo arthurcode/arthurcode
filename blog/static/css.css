@@ -915,11 +915,15 @@ div.refine a:hover {
 
 div.refine li {
     line-height: 1.4em;
-    padding-left: 5px;
+    margin-left: 5px;
+}
+
+div.refine li img {
+    vertical-align: text-bottom;
+    padding-right: 3px;
 }
 
 div.refine li.selected {
-    color: blue;
     text-decoration: underline;
 }
 
