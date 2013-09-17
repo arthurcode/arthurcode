@@ -1,0 +1,30 @@
+<form class="page-size no-help" action="">
+    {% for key, value in request.GET.items %}
+        {% if key != "pageSize" %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    <label>Page Size:
+        <select onchange="this.form.submit()" name="pageSize">
+            {% for size in page_sizes %}
+                <option{% if size == products.paginator.per_page %} selected{% endif %}>{{ size }}</option>
+            {% endfor %}
+            <option{% if showing_all_products %} selected{% endif %}>All</option>
+        </select>
+    </label>
+</form>
+
+<form class="sort-by no-help" action="">
+    {% for key, value in request.GET.items %}
+        {% if key != "sortBy" %}
+            <input type="hidden" name="{{ key }}" value="{{ value }}">
+        {% endif %}
+    {% endfor %}
+    <label>Sort by:
+        <select onchange="this.form.submit()" name="sortBy">
+            {% for key,value in sorts %}
+                <option value="{{ key }}"{% if key == sort_key %} selected{% endif %}>{{ value }}</option>
+            {% endfor %}
+        </select>
+    </label>
+</form>

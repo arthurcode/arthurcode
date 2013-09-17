@@ -962,7 +962,7 @@ div.products .content {
     padding: 10px 0;
 }
 
-div.products .header .page-size {
+div.products .page-size {
     font-size: 80%;
     float: left;
     margin-right: 5px;
@@ -973,20 +973,20 @@ div.products .thumbnails {
     margin-left: 10px;
 }
 
-div.products .header .page-size select {
+div.products .page-size select {
     width: 3em;
 }
 
-div.products .header .sort-by {
+div.products .sort-by {
     font-size: 80%;
     float: left;
 }
 
-div.products .header .sort-by select {
+div.products .sort-by select {
     width: 10em;
 }
 
-div.products .header select {
+div.products select {
     padding: 0;
 }
 
