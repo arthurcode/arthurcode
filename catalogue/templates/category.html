@@ -35,23 +35,20 @@
             {{ category.name }}
         {% endif %}
 
-        <div class="filters{% if not filters %} hidden{% endif %}">
-            <h3>filters:</h3>
-            <ul>
-                {% for filter in filters %}
-                    <li>| {{ filter }} <a href="{% remove_filter filter %}">(remove)</a></li>
-                {% endfor %}
-            </ul>
+        {% if filters %}
+            {% for filter in filters %}
+                 | {{ filter }} <a class="subtle standard" href="{% remove_filter filter %}">(remove)</a>
+            {% endfor %}
             {% if filters|length > 1 %}
-                | <a href="{% remove_all_filters %}">(remove all filters)</a>
+                | <a class="subtle standard" href="{% remove_all_filters %}">(remove all filters)</a>
             {% endif %}
-        </div>
+        {% endif %}
     </div>
 
     <div class="positioning">
         <div class="refine">
             {% if child_categories %}
-                <h3>Shop By Category</h3>
+                <h3>Subcategories</h3>
                 <ul>
                     {% for category in child_categories %}
                         <li><a href="{% go_to_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
