@@ -15,7 +15,7 @@
 
 {% block body %}
     <div class="breadcrumbs">
-        {% if products or parent_categories or category %}
+        {% if products or parent_categories or category or search_text or filters %}
             <a href="{% go_to_category "" %}">All Products</a>{% if parent_categories or category %} >{% endif %}
         {% endif %}
         {% if parent_categories %}
@@ -27,18 +27,22 @@
             {{ category.name }}
         {% endif %}
 
+        {% if search_text %}
+            | search "{{ search_text }}"
+        {% endif %}
+
         {% if filters %}
             {% for filter in filters %}
                 | {{ filter }}
             {% endfor %}
-            {% if filters|length > 1 %}
-                | <a class="subtle standard" href="{% remove_all_filters %}">(remove all filters)</a>
-            {% endif %}
         {% endif %}
     </div>
 
     <div class="positioning">
         <div class="refine">
+            <div class="bulk-ops">
+                {% if products %}<a class="subtle" href="{% remove_all_filters %}">reset filters</a>{% endif %}
+            </div>
             {% if child_categories %}
                 <h3>Subcategories</h3>
                 <ul>
@@ -85,26 +89,26 @@
             <div class="title">
                 <h2>{% if search_text %}Search Results | "{{ search_text }}"{% elif category %}{{ category.name }}{% else %}All Products{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
-                {% if search_text %}<a class="standard subtle" href="{% remove_search %}">(clear search)</a>{% endif %}
+                {% if search_text %}<a class="subtle standard" href="{% remove_search %}">clear search</a>{% endif %}
             </div>
             <div class="content">
                 <div class="header">
                     {% if products %}{% include "_customize.html" %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
                 </div>
 
-                {% if products %}
-                    <div class="thumbnails">
+                <div class="thumbnails">
+                    {% if products %}
                         {% for product in products %}
                             {% thumb product %}
                         {% endfor %}
-                    </div>
-                {% else %}
-                    {% if search_text %}
-                        <p>Sorry, no products matched your search</p>
                     {% else %}
-                        <p>No products to display</p>
+                        {% if search_text %}
+                            <p>Sorry, no products matched your search</p>
+                        {% else %}
+                            <p>No products to display</p>
+                        {% endif %}
                     {% endif %}
-                {% endif %}
+                </div>
                 <div class="bottom">
                     {% if products %}{% include "_customize.html" %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
                 </div>

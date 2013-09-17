@@ -913,6 +913,10 @@ div.refine a:hover {
     text-decoration: underline;
 }
 
+div.refine div.bulk-ops a {
+    text-decoration: underline;
+}
+
 div.refine li {
     line-height: 1.4em;
     margin-left: 5px;
@@ -975,6 +979,7 @@ div.products .page-size {
 
 div.products .thumbnails {
     margin-left: 10px;
+    min-height: 5em;
 }
 
 div.products .page-size select {
@@ -992,6 +997,7 @@ div.products .sort-by select {
 
 div.products select {
     padding: 0;
+    border: 1px solid lightgray;
 }
 
 div.products .thumbnails {
@@ -1024,9 +1030,9 @@ div.products .header, div.products .bottom {
 }
 
 .pagination li.current {
-    background-color: midnightblue;
-    color: white;
+    background-color: white;
     font-weight: bolder;
+    border: 1px solid gray;
 }
 
 .pagination .next {
