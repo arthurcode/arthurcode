@@ -886,8 +886,7 @@ form.stacked span.error, form.stacked span.help-text {
     display: inline-block;
 }
 
-.breadcrumbs .filters a {
-    font-size: smaller;
+.breadcrumbs a.standard {
     color: blue;
 }
 
@@ -902,6 +901,7 @@ div.refine {
     display: inline-block;
     float: left:
     clear: both;
+    padding-top: 2.1em;
 }
 
 div.refine a {
@@ -919,8 +919,7 @@ div.refine li {
 }
 
 div.refine li.selected {
-    color: green;
-    font-weight: bolder;
+    color: blue;
     text-decoration: underline;
 }
 
@@ -928,9 +927,9 @@ div.refine h3 {
     /* make this look like a typical h2 */
     padding-top: 0.5em;
     padding-bottom: 0.25em;
-    font-family: 'Droid Serif', serif;
-    font-size: 130%;
+    font-family: 'Droid Serif', serif;;
     font-weight: bolder;
+    font-size: larger;
     color: midnightblue;
 }
 
@@ -938,34 +937,40 @@ div.refine :first-child {
     padding-top: 0;
 }
 
-div.positioning {
-    border-top: 1px solid lightgray;
-    padding-top: 10px;
-}
-
 div.products {
     display: inline-block;
     float: right;
     clear: right;
-    width: 80%;
+    width: 81%;
 }
 
-div.products .header h2 {
+div.products .title h2 {
     display: inline-block;
     margin-right: 5px;
-    margin-left: 5px;
     margin-bottom: 0;
 }
 
-div.products .header span.now-showing {
+div.products .title span.now-showing {
     font-size: 80%;
-    font-weight: lighter;
+}
+
+div.products .content {
+    background-color: #f0f0f0;
+    border: 1px solid lightgray;
+    float: left;
+    width: 100%;
+    padding: 10px 0;
 }
 
 div.products .header .page-size {
     font-size: 80%;
-    float: right;
-    font-weight: lighter;
+    float: left;
+    margin-right: 5px;
+    margin-left: 10px;
+}
+
+div.products .thumbnails {
+    margin-left: 10px;
 }
 
 div.products .header .page-size select {
@@ -974,9 +979,7 @@ div.products .header .page-size select {
 
 div.products .header .sort-by {
     font-size: 80%;
-    float: right;
-    margin-right: 5px;
-    font-weight: lighter;
+    float: left;
 }
 
 div.products .header .sort-by select {
@@ -987,12 +990,21 @@ div.products .header select {
     padding: 0;
 }
 
-/* pagination styles */
-.pagination {
-    text-align: right;
+div.products .thumbnails {
+    float: left;
+    clear: both;
+}
+
+div.products .header, div.products .bottom {
     float: left;
     clear: both;
     width: 100%;
+}
+
+/* pagination styles */
+.pagination {
+    text-align: left;
+    float: right;
     font-weight: lighter;
     font-size: 80%;
     padding: 0;
@@ -1008,8 +1020,9 @@ div.products .header select {
 }
 
 .pagination li.current {
-    background-color: aliceblue;
-    border: 1px solid midnightblue;
+    background-color: midnightblue;
+    color: white;
+    font-weight: bolder;
 }
 
 .pagination .next {
@@ -1026,9 +1039,10 @@ div.products .header select {
     line-height: 1.2em;
     float: left;
     clear: right;
-    margin-right: 1%;
-    margin-bottom: 1%;
+    margin: 10px;
+    margin-left: 0;
     height: 18em;
+    background-color: white;
 }
 
 .thumbnail a img {

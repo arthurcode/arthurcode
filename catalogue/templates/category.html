@@ -14,14 +14,6 @@
 {% endblock %}
 
 {% block body %}
-
-    {% if search_text %}
-        <div class="search">
-            <h2>You Searched For: "{{ search_text }}"</h2>
-            <a class="standard subtle" href="{% remove_search %}">(remove search)</a>
-        </div>
-    {% endif %}
-
     <div class="breadcrumbs">
         {% if products or parent_categories or category %}
             <a href="{% go_to_category "" %}">All Products</a>{% if parent_categories or category %} >{% endif %}
@@ -37,7 +29,7 @@
 
         {% if filters %}
             {% for filter in filters %}
-                 | {{ filter }} <a class="subtle standard" href="{% remove_filter filter %}">(remove)</a>
+                | {{ filter }} <a class="subtle standard" href="{% remove_filter filter %}">(remove)</a>
             {% endfor %}
             {% if filters|length > 1 %}
                 | <a class="subtle standard" href="{% remove_all_filters %}">(remove all filters)</a>
@@ -74,80 +66,80 @@
             {% if prices %}
                 <h3>Shop By Price</h3>
                 <ul>
-                {% for price in prices %}
-                    <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
-                {% endfor %}
+                    {% for price in prices %}
+                        <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
+                    {% endfor %}
                 </ul>
             {% endif %}
             {% if features %}
                 <h3>Shop By Feature</h3>
                 <ul>
-                {% for feature in features %}
-                    <li{% if feature.active_filter %} class="selected"{% endif %}><a href="{% if feature.active_filter %}{% remove_filter feature %}{% else %}{% add_filter feature %}{% endif %}">{{ feature }} ({{ feature.product_count }})</a></li>
-                {% endfor %}
+                    {% for feature in features %}
+                        <li{% if feature.active_filter %} class="selected"{% endif %}><a href="{% if feature.active_filter %}{% remove_filter feature %}{% else %}{% add_filter feature %}{% endif %}">{{ feature }} ({{ feature.product_count }})</a></li>
+                    {% endfor %}
                 </ul>
             {% endif %}
         </div>
 
         <div class="products">
-            <div class="header">
-                {% if search_text %}
-                    <h2>Search Results</h2>
-                {% elif category %}
-                    <h2>{{ category.name }}</h2>
-                {% else %}
-                    <h2>All Products</h2>
-                {% endif %}
+            <div class="title">
+                <h2>{% if search_text %}Search Results | "{{ search_text }}"{% elif category %}{{ category.name }}{% else %}All Products{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
-
-
-                <form class="page-size no-help" action="">
-                    {% for key, value in request.GET.items %}
-                        {% if key != "pageSize" %}
-                            <input type="hidden" name="{{ key }}" value="{{ value }}">
-                        {% endif %}
-                    {% endfor %}
-                    <label>Items per page:
-                        <select onchange="this.form.submit()" name="pageSize">
-                            {% for size in page_sizes %}
-                                <option{% if size == products.paginator.per_page %} selected{% endif %}>{{ size }}</option>
-                            {% endfor %}
-                            <option{% if showing_all_products %} selected{% endif %}>All</option>
-                        </select>
-                    </label>
-                </form>
-
-                <form class="sort-by no-help" action="">
-                    {% for key, value in request.GET.items %}
-                        {% if key != "sortBy" %}
-                            <input type="hidden" name="{{ key }}" value="{{ value }}">
-                        {% endif %}
-                    {% endfor %}
-                    <label>Sort by:
-                        <select onchange="this.form.submit()" name="sortBy">
-                            {% for key,value in sorts %}
-                                <option value="{{ key }}"{% if key == sort_key %} selected{% endif %}>{{ value }}</option>
-                            {% endfor %}
-                        </select>
-                    </label>
-                </form>
+                {% if search_text %}<a class="standard subtle" href="{% remove_search %}">(clear search)</a>{% endif %}
             </div>
+            <div class="content">
+                <div class="header">
+                    <form class="page-size no-help" action="">
+                        {% for key, value in request.GET.items %}
+                            {% if key != "pageSize" %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                            {% endif %}
+                        {% endfor %}
+                        <label>Page Size:
+                            <select onchange="this.form.submit()" name="pageSize">
+                                {% for size in page_sizes %}
+                                    <option{% if size == products.paginator.per_page %} selected{% endif %}>{{ size }}</option>
+                                {% endfor %}
+                                <option{% if showing_all_products %} selected{% endif %}>All</option>
+                            </select>
+                        </label>
+                    </form>
 
-            {% if products %}
-                {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
-                {% for product in products %}
-                    {% thumb product %}
-                {% endfor %}
-                {% with products as objects %}{% include "_pagination.html" %}{% endwith %}
-            {% else %}
-                <p>
-                {% if search_text %}
-                    <p>Sorry, no products matched your search</p>
+                    <form class="sort-by no-help" action="">
+                        {% for key, value in request.GET.items %}
+                            {% if key != "sortBy" %}
+                                <input type="hidden" name="{{ key }}" value="{{ value }}">
+                            {% endif %}
+                        {% endfor %}
+                        <label>Sort by:
+                            <select onchange="this.form.submit()" name="sortBy">
+                                {% for key,value in sorts %}
+                                    <option value="{{ key }}"{% if key == sort_key %} selected{% endif %}>{{ value }}</option>
+                                {% endfor %}
+                            </select>
+                        </label>
+                    </form>
+
+                    {% if products %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
+                </div>
+
+                {% if products %}
+                    <div class="thumbnails">
+                        {% for product in products %}
+                            {% thumb product %}
+                        {% endfor %}
+                    </div>
                 {% else %}
-                    <p>No products to display</p>
+                    {% if search_text %}
+                        <p>Sorry, no products matched your search</p>
+                    {% else %}
+                        <p>No products to display</p>
+                    {% endif %}
                 {% endif %}
-                </p>
-            {% endif %}
+                <div class="bottom">
+                    {% if products %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
+                </div>
+            </div>
         </div>
     </div>
 {% endblock %}
