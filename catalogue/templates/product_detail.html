@@ -69,19 +69,19 @@
                     {% endif %}
                 </div>
                 {% form_errors form %}
-                {% if product.in_stock %}
-                    <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart no-help">
-                        {% csrf_token %}
-                        {% if form.color %}
-                            {% product_option_field form.color %}
-                        {% endif %}
-                        {% if form.size %}
-                            {% product_option_field form.size %}
-                        {% endif %}
+                <form method="post" action="{% url catalogue_product product.slug %}" class="add-to-cart no-help">
+                    {% csrf_token %}
+                    {% if form.color %}
+                        {% product_option_field form.color %}
+                    {% endif %}
+                    {% if form.size %}
+                        {% product_option_field form.size %}
+                    {% endif %}
+                    {% if product.in_stock %}
                         {% field form.quantity %}
                         <button type="submit" name="submit" class="action">Add to Cart</button>
-                    </form>
-                {% endif %}
+                    {% endif %}
+                </form>
             </div>
         </div>
 
