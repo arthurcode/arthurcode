@@ -309,6 +309,13 @@ class ProductInstance(models.Model):
             return specific_images[0]
         return self.product.images.order_by('-is_primary', 'id')[0]
 
+    @property
+    def name(self):
+        return self.product.name
+
+    def get_absolute_url(self):
+        return self.product.get_absolute_url()
+
 
 class ProductImage(models.Model):
     """

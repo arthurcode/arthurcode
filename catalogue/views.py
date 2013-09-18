@@ -7,13 +7,14 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Count, Sum, Avg
 
-from catalogue.models import Product, Category, Brand, Theme, ProductImage
+from catalogue.models import Product, Category, Brand, Theme, ProductImage, ProductInstance
 from arthurcode import settings
 from cart.forms import ProductAddToCartForm
 from cart import cartutils
 from catalogue import filters
 from search import searchutils
 import json
+from catalogue.forms import RestockNotifyForm
 
 
 DEFAULT_PAGE_SIZE = 16
@@ -369,3 +370,30 @@ def get_features(product_queryset, applied_filters):
         setattr(f, 'active_filter', isinstance(f, applied_filter_types))
         setattr(f, 'product_count', f.apply(product_queryset).count())
     return [f for f in feature_filters if f.product_count > 0 or f.active_filter]
+
+
+def restock_notify_view(request, instance_id):
+    """
+    The customer can sign up to be notified via-email when this product instance comes back into stock.
+    """
+    instance = get_object_or_404(ProductInstance, id=instance_id)
+    if request.method == "POST":
+        data = request.POST.copy()
+        data['instance_id'] = instance_id
+        form = RestockNotifyForm(data=data)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect(instance.get_absolute_url())
+    else:
+        # pre-fill with the logged-in user's email address if it is available
+        email = request.user.email
+        initial = {}
+        if email:
+            initial['email'] = email
+        form = RestockNotifyForm(initial=initial)
+
+    context = {
+        'product': instance,
+        'form': form,
+    }
+    return render_to_response('restock_notify.html', context, context_instance=RequestContext(request))

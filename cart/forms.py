@@ -3,10 +3,13 @@ from catalogue.models import ProductInstance, ProductOption
 from cart.models import CartItem
 import cartutils
 from django.core.exceptions import ValidationError
+from django.core.urlresolvers import reverse
 
 
 class ProductAddToCartForm(forms.Form):
     ERROR_COOKIES_DISABLED = u"Your browser must have cookies enabled in order to shop on this site."
+    ERROR_OUT_OF_STOCK = u"Sorry, this product is out of stock."
+    ERROR_UNAVAILABLE = u"Sorry, this product is unavailable."
 
 
     quantity = forms.IntegerField(widget=forms.TextInput(attrs={'size': '2',
@@ -52,8 +55,17 @@ class ProductAddToCartForm(forms.Form):
                     del(cleaned_data['quantity'])
             elif quantity and all_extra_fields_set:
                 instance = self.get_product_instance(cleaned_data)
+
                 if not instance:
-                    raise ValidationError("Sorry, the requested product is not available.")
+                    raise ValidationError(self.ERROR_UNAVAILABLE)
+
+                if instance.quantity <= 0:
+                    # if the product is completely out of stock make this a general error
+                    url = reverse("restock_notify", args=[instance.id])
+                    error = self.ERROR_OUT_OF_STOCK + \
+                            " <a class='standard' href='%s'>Email me when it becomes available.</a>" % url
+                    raise ValidationError(error)
+
                 error = check_stock(instance, self.request, quantity_to_add=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
@@ -80,13 +92,13 @@ class ProductAddToCartForm(forms.Form):
             return None
         return instances[0]
 
-
     def save(self):
         """
         Adds the product instance to the customer's cart
         """
         instance = self.get_product_instance(self.cleaned_data)
         cartutils.add_to_cart(self.request, instance, self.cleaned_data.get('quantity', 0))
+
 
 
 class UpdateCartItemForm(forms.Form):

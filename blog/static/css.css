@@ -1140,8 +1140,12 @@ div.add-to-cart {
     box-shadow: 3px 3px 3px gray;
 }
 
-div.add-to-cart button {
+div.add-to-cart button.action {
     font-size: 130%;
+}
+
+div.add-to-cart button.link {
+    text-align: left;
 }
 
 div.add-to-cart .price {
@@ -2423,4 +2427,52 @@ table.reviews {
 table.reviews td {
     border: 1px solid gray;
     vertical-align: top;
+}
+
+.out-of-stock .column-1 {
+    width: 25%;
+    float: left;
+    padding-top: 20px;
+}
+
+.out-of-stock .column-2 {
+    width: 70%;
+    float: right;
+    padding-top: 20px;
+}
+
+.out-of-stock .column-1 img {
+    width: 100%;
+}
+
+.out-of-stock .column-1 {
+    text-align: center;
+}
+
+.out-of-stock .column-2 dl {
+    width: 20em;
+    padding-bottom: 10px;
+    float: left;
+    clear: both;
+}
+
+.out-of-stock .column-2 dl dt {
+    width: 25%;
+}
+
+.out-of-stock .column-2 dl dd {
+    width: 73%;
+}
+
+.out-of-stock .column-2 h3 {
+    font-weight: bolder;
+    padding: 10px 0;
+}
+
+.out-of-stock .column-2 form {
+    padding: 10px;
+    background-color: #f0f0f0;
+    float: left;
+    clear: both;
+    border: 1px solid lightgray;
 }
