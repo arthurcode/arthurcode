@@ -1,7 +1,7 @@
 from django.db.models.signals import pre_save
 from catalogue.models import ProductInstance
 from django.dispatch import receiver
-from django.core.mail import send_mass_mail
+from django.core.mail import send_mass_mail, mail_managers
 
 @receiver(pre_save, sender=ProductInstance)
 def on_product_instance_save(sender, instance, **kwargs):
@@ -15,6 +15,9 @@ def on_product_instance_save(sender, instance, **kwargs):
     if current_stock <= 0 and instance.quantity:
         # the product has been re-stocked
         on_product_instance_restock(instance)
+    elif current_stock and instance.quantity <= 0:
+        # this product is now out of stock
+        on_product_out_of_stock(instance)
 
 
 def on_product_instance_restock(instance):
@@ -41,3 +44,13 @@ def on_product_instance_restock(instance):
     # delete the notifications
     for n in notifications:
         n.delete()
+
+
+def on_product_out_of_stock(instance):
+    """
+    Mail site management when a product goes out of stock
+    """
+    # TODO: craft a proper email message
+    subject = "Product out of stock"
+    message = "The product %s is now out of stock." % unicode(instance)
+    mail_managers(subject, message)
