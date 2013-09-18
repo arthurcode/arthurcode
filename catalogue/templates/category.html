@@ -55,7 +55,7 @@
                 <h3>Shop By Brand</h3>
                 <ul>
                     {% for brand in brands %}
-                        {% choose_filter brand %}
+                        {% choose_brand brand %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -79,7 +79,7 @@
                 <h3>Shop By Age</h3>
                 <ul>
                     {% for age in ages %}
-                        {% choose_filter age %}
+                        {% choose_age age %}
                     {% endfor %}
                 </ul>
             {% endif %}

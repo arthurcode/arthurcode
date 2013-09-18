@@ -44,8 +44,21 @@ def thumb(context, product):
 
 
 @register.inclusion_tag('_choose_filter.html', takes_context=True)
-def choose_filter(context, filter):
+def choose_filter(context, filter, display_name=None):
     return {
         'filter': filter,
-        'request': context.get('request', None)
+        'request': context.get('request', None),
+        'display_name': display_name or unicode(filter),
     }
+
+
+@register.inclusion_tag('_choose_filter.html', takes_context=True)
+def choose_age(context, filter):
+    display_name = "%d+" % filter.min_age
+    return choose_filter(context, filter, display_name)
+
+
+@register.inclusion_tag('_choose_filter.html', takes_context=True)
+def choose_brand(context, filter):
+    display_name = filter.name
+    return choose_filter(context, filter, display_name)
