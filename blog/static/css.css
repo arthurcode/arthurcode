@@ -935,6 +935,10 @@ div.refine li img {
     padding-right: 3px;
 }
 
+div.refine span.count {
+    font-weight: lighter;
+}
+
 div.refine li.selected {
     text-decoration: underline;
 }
