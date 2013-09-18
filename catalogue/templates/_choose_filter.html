@@ -1,0 +1,4 @@
+{% load urls %}
+{% load static %}
+
+<li{% if filter.active_filter %} class="selected"{% endif %}><a href="{% if filter.active_filter %}{% remove_filter filter %}{% else %}{% add_filter filter %}{% endif %}"><img src="{% get_static_prefix %}icons/{% if filter.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ filter }} ({{ filter.product_count }})</a></li>

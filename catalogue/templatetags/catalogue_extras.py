@@ -41,3 +41,11 @@ def thumb(context, product):
         'product': product,
         'request': context.get('request', None)
     }
+
+
+@register.inclusion_tag('_choose_filter.html', takes_context=True)
+def choose_filter(context, filter):
+    return {
+        'filter': filter,
+        'request': context.get('request', None)
+    }

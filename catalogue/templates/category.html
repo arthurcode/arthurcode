@@ -55,7 +55,7 @@
                 <h3>Shop By Brand</h3>
                 <ul>
                     {% for brand in brands %}
-                        <li{% if brand.active_filter %} class="selected"{% endif %}><a href="{% if brand.active_filter %}{% remove_filter brand %}{% else %}{% add_filter brand %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if brand.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ brand.name }} ({{ brand.product_count }})</a></li>
+                        {% choose_filter brand %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -63,7 +63,7 @@
                 <h3>Shop By Theme</h3>
                 <ul>
                     {% for theme in themes %}
-                        <li{% if theme.active_filter %} class="selected"{% endif %}><a href="{% if theme.active_filter %}{% remove_filter theme %}{% else %}{% add_filter theme %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if theme.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ theme.name }} ({{ theme.product_count }})</a></li>
+                        {% choose_filter theme %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -71,7 +71,7 @@
                 <h3>Shop By Price</h3>
                 <ul>
                     {% for price in prices %}
-                        <li{% if price.active_filter %} class="selected"{% endif %}><a href="{% if price.active_filter %}{% remove_filter price %}{% else %}{% add_filter price %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if price.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">Under ${{ price.max_price}} ({{ price.product_count }})</a></li>
+                        {% choose_filter price %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -79,7 +79,7 @@
                 <h3>Shop By Age</h3>
                 <ul>
                     {% for age in ages %}
-                        <li{% if age.active_filter %} class="selected"{% endif %}><a href="{% if age.active_filter %}{% remove_filter age %}{% else %}{% add_filter age %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if age.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ age.min_age }}+ ({{ age.product_count }})</a></li>
+                        {% choose_filter age %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -87,7 +87,7 @@
                 <h3>Shop By Feature</h3>
                 <ul>
                     {% for feature in features %}
-                        <li{% if feature.active_filter %} class="selected"{% endif %}><a href="{% if feature.active_filter %}{% remove_filter feature %}{% else %}{% add_filter feature %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if feature.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ feature }} ({{ feature.product_count }})</a></li>
+                        {% choose_filter feature %}
                     {% endfor %}
                 </ul>
             {% endif %}
