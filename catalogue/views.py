@@ -200,6 +200,7 @@ def category_view(request, category_slug=""):
         'brands': get_brands(pre_filter_product_list, final_product_subquery, applied_filters),
         'themes': get_themes(pre_filter_product_list, final_product_subquery, applied_filters),
         'prices': get_prices(pre_filter_product_list, final_product_subquery, applied_filters),
+        'ages': get_ages(pre_filter_product_list, final_product_subquery, applied_filters),
         'features': get_features(final_product_subquery, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
@@ -351,6 +352,34 @@ def get_prices(pre_filter_queryset, final_queryset, request_filters):
             price_filters.append(price_filter)
             last_count = count
     return price_filters
+
+
+def get_ages(pre_filter_queryset, final_queryset, request_filters):
+    queryset = pre_filter_queryset
+    active_filter = None
+
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.MinAgeFilter):
+            active_filter = a_filter
+            continue
+        queryset = a_filter.apply(queryset)
+
+    if not active_filter:
+        # simplification
+        queryset = final_queryset
+
+    age_values = queryset.values('min_age').annotate(count=Count('id')).order_by()
+    age_filters = []
+
+    for age_value in age_values:
+        min_age = age_value['min_age']
+        count = age_value['count']
+        age_filter = filters.MinAgeFilter(min_age)
+        is_active = active_filter and active_filter.min_age == min_age
+        setattr(age_filter, 'active_filter', is_active)
+        setattr(age_filter, 'product_count', count)
+        age_filters.append(age_filter)
+    return age_filters
 
 
 def get_features(product_queryset, applied_filters):

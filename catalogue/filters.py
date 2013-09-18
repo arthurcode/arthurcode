@@ -187,6 +187,23 @@ class MaxPriceFilter(Filter):
         return str(self.max_price)
 
 
+class MinAgeFilter(Filter):
+
+    filter_key = "filterMinAge"
+
+    def __init__(self, min_age):
+        self.min_age = int(min_age)
+
+    def apply(self, queryset):
+        return queryset.filter(min_age__gte=self.min_age)
+
+    def __unicode__(self):
+        return "ages %d and up" % self.min_age
+
+    def value_for_url(self):
+        return str(self.min_age)
+
+
 class RecentlyAddedFilter(Filter):
 
     filter_key = "filterNew"
@@ -214,6 +231,7 @@ FILTERS = {
     ThemeFilter.filter_key: ThemeFilter,
     MaxPriceFilter.filter_key: MaxPriceFilter,
     RecentlyAddedFilter.filter_key: RecentlyAddedFilter,
+    MinAgeFilter.filter_key: MinAgeFilter,
 }
 
 

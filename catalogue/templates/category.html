@@ -75,6 +75,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if ages %}
+                <h3>Shop By Age</h3>
+                <ul>
+                    {% for age in ages %}
+                        <li{% if age.active_filter %} class="selected"{% endif %}><a href="{% if age.active_filter %}{% remove_filter age %}{% else %}{% add_filter age %}{% endif %}"><img src="{{ STATIC_URL }}icons/{% if age.active_filter %}checkbox_yes.png{% else %}checkbox_no.png{% endif %}">{{ age.min_age }}+ ({{ age.product_count }})</a></li>
+                    {% endfor %}
+                </ul>
+            {% endif %}
             {% if features %}
                 <h3>Shop By Feature</h3>
                 <ul>
