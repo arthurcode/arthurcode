@@ -80,6 +80,8 @@ class Migration(SchemaMigration):
             ('created_at', self.gf('django.db.models.fields.DateTimeField')(auto_now_add=True, blank=True)),
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Category'])),
+            ('min_age', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
+            ('max_age', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
         ))
         db.send_create_signal('catalogue', ['Product'])
 
@@ -275,6 +277,8 @@ class Migration(SchemaMigration):
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_green': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'long_description': ('django.db.models.fields.TextField', [], {}),
+            'max_age': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
+            'min_age': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'price': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
             'sale_price': ('django.db.models.fields.DecimalField', [], {'null': 'True', 'max_digits': '9', 'decimal_places': '2', 'blank': 'True'}),

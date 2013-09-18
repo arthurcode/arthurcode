@@ -125,6 +125,7 @@ class Product(models.Model):
     ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
     ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY = "An active product cannot be in an inactive category."
     ERROR_SALE_PRICE_MORE_THAN_PRICE = "The sale price must be less than or equal to the product price."
+    ERROR_MAX_AGE_TOO_SMALL = "The maximum age is smaller than the minimum age."
 
     objects = models.Manager()
     active = ActiveProductsManager()
@@ -156,6 +157,11 @@ class Product(models.Model):
     awards = models.ManyToManyField(AwardInstance, related_name="products", blank=True, null=False)
     themes = models.ManyToManyField(Theme, related_name="products", blank=True, null=False)
 
+    min_age = models.PositiveIntegerField(help_text=u"The minimum age a person should be to use this product",
+                                          default=0)
+    max_age = models.PositiveIntegerField(help_text=u"The product's age limit, if applicable.",
+                                          null=True, blank=True)
+
     def clean(self):
         if not self.is_active and self.category_id and self.category.is_active:
             raise ValidationError(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY)
@@ -165,6 +171,9 @@ class Product(models.Model):
 
         if self.sale_price and self.price and self.sale_price >= self.price:
             raise ValidationError(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE)
+
+        if self.max_age and self.max_age < self.min_age:
+            raise ValidationError(Product.ERROR_MAX_AGE_TOO_SMALL)
 
     def __unicode__(self):
         return self.name

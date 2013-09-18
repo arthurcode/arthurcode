@@ -1309,6 +1309,11 @@ span.out-of-stock {
     display: block;
 }
 
+span.ages {
+    display: block;
+    font-weight: lighter;
+}
+
 div.error-list {
     color: red;
     border: 1px solid red;
