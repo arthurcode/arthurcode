@@ -38,7 +38,7 @@
             {% endif %}
         </div>
         <div class="description">
-            <h1>{{ product.name }}{% if product.sale_price %} <span class="sale">(On Sale!)</span>{% endif %}</h1>
+            <h1>{{ product.name }}</h1>
             {% rating avg_rating %}
             {% if avg_rating %}
                 <span class="subtle">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
