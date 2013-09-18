@@ -10,7 +10,6 @@ from django.db.models import Count, Sum, Avg
 from catalogue.models import Product, Category, Brand, Theme, ProductImage, ProductInstance
 from arthurcode import settings
 from cart.forms import ProductAddToCartForm
-from cart import cartutils
 from catalogue import filters
 from search import searchutils
 import json

@@ -340,6 +340,18 @@ class ProductImage(models.Model):
         return self.path
 
 
+class RestockNotification(models.Model):
+    instance = models.ForeignKey(ProductInstance, related_name="restock_notifications")
+    email = models.EmailField(validators=[not_blank], help_text="The email address to notify when this product instance "
+                                                                "is back in stock.")
+
+    class Meta:
+        unique_together = ('instance', 'email')
+
+    def __unicode__(self):
+        return "%s %s" % (self.instance, self.email)
+
+
 def get_inactive_category():
     """
     Returns a special Category instance that can be used to store products that are no longer active.  We don't want

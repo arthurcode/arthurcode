@@ -107,6 +107,9 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['ProductOption'])
 
+        # Adding unique constraint on 'ProductOption', fields ['category', 'name']
+        db.create_unique('catalogue_productoption', ['category', 'name'])
+
         # Adding model 'Color'
         db.create_table('catalogue_color', (
             ('productoption_ptr', self.gf('django.db.models.fields.related.OneToOneField')(to=orm['catalogue.ProductOption'], unique=True, primary_key=True)),
@@ -151,8 +154,25 @@ class Migration(SchemaMigration):
         ))
         db.send_create_signal('catalogue', ['ProductImage'])
 
+        # Adding model 'RestockNotification'
+        db.create_table('catalogue_restocknotification', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('instance', self.gf('django.db.models.fields.related.ForeignKey')(related_name='restock_notifications', to=orm['catalogue.ProductInstance'])),
+            ('email', self.gf('django.db.models.fields.EmailField')(max_length=75)),
+        ))
+        db.send_create_signal('catalogue', ['RestockNotification'])
+
+        # Adding unique constraint on 'RestockNotification', fields ['instance', 'email']
+        db.create_unique('catalogue_restocknotification', ['instance_id', 'email'])
+
 
     def backwards(self, orm):
+        # Removing unique constraint on 'RestockNotification', fields ['instance', 'email']
+        db.delete_unique('catalogue_restocknotification', ['instance_id', 'email'])
+
+        # Removing unique constraint on 'ProductOption', fields ['category', 'name']
+        db.delete_unique('catalogue_productoption', ['category', 'name'])
+
         # Deleting model 'Category'
         db.delete_table('catalogue_category')
 
@@ -194,6 +214,9 @@ class Migration(SchemaMigration):
 
         # Deleting model 'ProductImage'
         db.delete_table('catalogue_productimage')
+
+        # Deleting model 'RestockNotification'
+        db.delete_table('catalogue_restocknotification')
 
 
     models = {
@@ -279,10 +302,16 @@ class Migration(SchemaMigration):
             'sku': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '10'})
         },
         'catalogue.productoption': {
-            'Meta': {'object_name': 'ProductOption'},
+            'Meta': {'unique_together': "(('category', 'name'),)", 'object_name': 'ProductOption'},
             'category': ('django.db.models.fields.IntegerField', [], {}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'name': ('django.db.models.fields.CharField', [], {'max_length': '50'})
+        },
+        'catalogue.restocknotification': {
+            'Meta': {'unique_together': "(('instance', 'email'),)", 'object_name': 'RestockNotification'},
+            'email': ('django.db.models.fields.EmailField', [], {'max_length': '75'}),
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'instance': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'restock_notifications'", 'to': "orm['catalogue.ProductInstance']"})
         },
         'catalogue.size': {
             'Meta': {'object_name': 'Size', '_ormbases': ['catalogue.ProductOption']},
