@@ -40,19 +40,21 @@
 
     <div class="positioning">
         <div class="refine">
-            <div class="bulk-ops">
-                {% if products %}<a class="subtle" href="{% remove_all_filters %}">reset filters</a>{% endif %}
+            <div class="header primary-box">
+                <h2>Narrow By</h2>
             </div>
+            <div class="content">
+            {% if filters %}<a class="bulk-ops click-to-remove" href="{% remove_all_filters %}">reset all <img src="{{ STATIC_URL }}icons/error_x.png"/></a>{% endif %}
             {% if child_categories %}
-                <h3>Subcategories</h3>
+                <h3>Subcategory</h3>
                 <ul>
                     {% for category in child_categories %}
-                        <li><a href="{% go_to_category category.slug %}">{{ category.name }} ({{ category.product_count }})</a></li>
+                        <li><a href="{% go_to_category category.slug %}">{{ category.name }} <span class="count">({{ category.product_count }})</span></a></li>
                     {% endfor %}
                 </ul>
             {% endif %}
             {% if brands %}
-                <h3>Shop By Brand</h3>
+                <h3>Brand</h3>
                 <ul>
                     {% for brand in brands %}
                         {% choose_brand brand %}
@@ -60,7 +62,7 @@
                 </ul>
             {% endif %}
             {% if themes %}
-                <h3>Shop By Theme</h3>
+                <h3>Theme</h3>
                 <ul>
                     {% for theme in themes %}
                         {% choose_filter theme %}
@@ -68,7 +70,7 @@
                 </ul>
             {% endif %}
             {% if prices %}
-                <h3>Shop By Price</h3>
+                <h3>Price</h3>
                 <ul>
                     {% for price in prices %}
                         {% choose_filter price %}
@@ -76,7 +78,7 @@
                 </ul>
             {% endif %}
             {% if ages %}
-                <h3>Shop By Age</h3>
+                <h3>Age</h3>
                 <ul>
                     {% for age in ages %}
                         {% choose_age age %}
@@ -84,17 +86,18 @@
                 </ul>
             {% endif %}
             {% if features %}
-                <h3>Shop By Feature</h3>
+                <h3>Feature</h3>
                 <ul>
                     {% for feature in features %}
                         {% choose_filter feature %}
                     {% endfor %}
                 </ul>
             {% endif %}
+            </div>
         </div>
 
         <div class="products">
-            <div class="title">
+            <div class="title primary-box">
                 <h2>{% if search_text %}Search Results | "{{ search_text }}"{% elif category %}{{ category.name }}{% else %}All Products{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
                 {% if search_text %}<a class="subtle standard" href="{% remove_search %}">clear search</a>{% endif %}

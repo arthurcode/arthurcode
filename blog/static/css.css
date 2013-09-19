@@ -227,11 +227,11 @@ a.standard:link, a.standard:visited {
     color: blue;
 }
 
-.breadcrumbs a.click-to-remove:hover {
-    color: red;
+a.click-to-remove:hover {
+    color: red !important;
 }
 
-.breadcrumbs a img {
+a.click-to-remove img {
     width: 14px;
 }
 
@@ -393,6 +393,19 @@ body.products #bd {
     border-radius: 3px;
     text-decoration: none;
     display: inline-block;
+    background: rgb(205,235,142); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(205,235,142,1) 0%, rgba(165,201,86,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,235,142,1)), color-stop(100%,rgba(165,201,86,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(205,235,142,1) 0%,rgba(165,201,86,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
+}
+
+.primary-box {
+    border: 1px solid rgba(165,201,86,1);
+    border-radius: 3px;
     background: rgb(205,235,142); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(205,235,142,1) 0%, rgba(165,201,86,1) 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(205,235,142,1)), color-stop(100%,rgba(165,201,86,1))); /* Chrome,Safari4+ */
@@ -909,7 +922,31 @@ div.refine {
     display: inline-block;
     float: left:
     clear: both;
-    padding-top: 2.1em;
+}
+
+div.refine .header {
+    padding: 8px;
+    font-size: larger;
+    margin-bottom: 15px;
+    position: relative;
+    text-align: center;
+}
+
+div.refine .header :before {
+    content: ' ';
+    border: 15px solid transparent;
+    border-top-color: rgba(165,201,86,1);
+    height: 0;
+    position: absolute;
+    width: 0;
+    bottom: -30px;
+    left: 50%;
+    margin-left: -15px;
+}
+
+div.refine .header h2 {
+    color: black;
+    padding-bottom: 0;
 }
 
 div.refine a {
@@ -921,13 +958,13 @@ div.refine a:hover {
     text-decoration: underline;
 }
 
-div.refine div.bulk-ops a {
+div.refine a.bulk-ops {
     text-decoration: underline;
+    font-weight: lighter;
 }
 
 div.refine li {
     line-height: 1.4em;
-    margin-left: 5px;
 }
 
 div.refine li img {
@@ -939,10 +976,6 @@ div.refine span.count {
     font-weight: lighter;
 }
 
-div.refine li.selected {
-    text-decoration: underline;
-}
-
 div.refine h3 {
     /* make this look like a typical h2 */
     padding-top: 0.5em;
@@ -951,10 +984,7 @@ div.refine h3 {
     font-weight: bolder;
     font-size: larger;
     color: midnightblue;
-}
-
-div.refine :first-child {
-    padding-top: 0;
+    border-bottom: 2px solid rgba(165,201,86,1);
 }
 
 div.products {
@@ -964,10 +994,16 @@ div.products {
     width: 81%;
 }
 
+div.products .title {
+    padding: 8px;
+}
+
 div.products .title h2 {
     display: inline-block;
     margin-right: 5px;
     margin-bottom: 0;
+    padding-bottom: 0;
+    color: black;
 }
 
 div.products .title span.now-showing {
@@ -975,8 +1011,6 @@ div.products .title span.now-showing {
 }
 
 div.products .content {
-    background-color: #f0f0f0;
-    border: 1px solid lightgray;
     float: left;
     width: 100%;
     padding: 10px 0;
@@ -986,11 +1020,9 @@ div.products .page-size {
     font-size: 80%;
     float: left;
     margin-right: 5px;
-    margin-left: 10px;
 }
 
 div.products .thumbnails {
-    margin-left: 10px;
     min-height: 5em;
 }
 
