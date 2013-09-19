@@ -122,7 +122,7 @@
                     {% endif %}
                 </div>
                 <div class="bottom">
-                    {% if products %}{% include "_customize.html" %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
+                    {% if products and products|length > 4 %}{% include "_customize.html" %}{% with products as objects %}{% include "_pagination.html" %}{% endwith %}{% endif %}
                 </div>
             </div>
         </div>
