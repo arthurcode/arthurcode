@@ -368,18 +368,36 @@ def get_ages(pre_filter_queryset, final_queryset, request_filters):
         # simplification
         queryset = final_queryset
 
-
     age_bins = [(0, 0), (1, 1), (2, 2), (3, 4), (5, 7), (8, 11), (12, 14), (15, None)]  # age ranges copied from ToysRUs
     age_filters = []
 
+    select = {}
+    fields = []
+    index = 0
+    for min_age, max_age in age_bins:
+        field = "bin%s" % index
+        if max_age is None:
+            params = (min_age, min_age)
+        else:
+            params = (max_age, min_age)
+        select[field] = "sum(case when (min_age <= %d AND (max_age IS NULL OR max_age >= %d)) then 1 else 0 end)" % params
+        fields.append(field)
+        index += 1
+
+    breakdown = queryset.extra(select=select).values(*fields)
+    if not breakdown: return []
+    breakdown = breakdown[0]
+
+    index = 0
     for min_age, max_age in age_bins:
         age_filter = filters.AgeRangeFilter(min_age=min_age, max_age=max_age)
         is_active = active_filter and active_filter.min_age == min_age and active_filter.max_age == max_age
-        count = age_filter.apply(queryset).count()  # TODO: this is horribly inefficient
+        count = breakdown["bin%s" % index]
         setattr(age_filter, 'active_filter', is_active)
         setattr(age_filter, 'product_count', count)
         if count > 0 or is_active:
             age_filters.append(age_filter)
+        index += 1
 
     return age_filters
 
