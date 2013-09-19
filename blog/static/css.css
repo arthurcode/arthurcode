@@ -416,6 +416,11 @@ body.products #bd {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cdeb8e', endColorstr='#a5c956',GradientType=0 ); /* IE6-9 */
 }
 
+.primary-box h2 {
+    font-family: "Open Sans", sans-serif;
+    font-weight: normal;
+}
+
 #primary-navigation .blog a {
     margin-right: 0;  /* the right-most button doesn't need a right margin */
 }
@@ -1008,6 +1013,12 @@ div.products .title h2 {
 
 div.products .title span.now-showing {
     font-size: 80%;
+    font-style: italic;
+}
+
+div.products .title a {
+    font-style: italic;
+    margin-left: 5px;
 }
 
 div.products .content {

@@ -98,9 +98,10 @@
 
         <div class="products">
             <div class="title primary-box">
-                <h2>{% if search_text %}Search Results | "{{ search_text }}"{% elif category %}{{ category.name }}{% else %}All Products{% endif %}</h2>
+                <h2>{% if search_text %}Search Results | '{{ search_text }}'{% elif category %}{{ category.name }}{% else %}All Products{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
-                {% if search_text %}<a class="subtle standard" href="{% remove_search %}">clear search</a>{% endif %}
+                {% if products.paginator.num_pages > 1 %}<a class="subtle" href="{% add_get pageSize="All" %}">view all</a>{% elif products|length > page_sizes.0 %}<a class="subtle" href="{% add_get pageSize=page_sizes.0 %}">view less</a>{% endif %}
+                {% if search_text %}<a class="subtle" href="{% remove_search %}">clear search</a>{% endif %}
             </div>
             <div class="content">
                 <div class="header">
