@@ -1,13 +1,14 @@
 """
 Contains filters for filtering catalogue queries.
 """
-from django.db.models import Count
+from django.db.models import Count, Q
 from catalogue.models import Award, Brand, Theme
 from utils.util import to_bool
 from decimal import Decimal
 from utils.templatetags.extras import currency
 from django.db.models import Model
 from datetime import datetime, timedelta
+from urllib import quote_plus, unquote_plus
 
 WILDCARD = "any"
 
@@ -23,7 +24,7 @@ class Filter(object):
         raise Exception("Subclasses must override")
 
     def as_param(self):
-        return self.filter_key + "=" + self.value_for_url()
+        return self.filter_key + "=" + quote_plus(self.value_for_url())
 
     def value_for_url(self):
         raise Exception("Subclasses must override")
@@ -187,21 +188,60 @@ class MaxPriceFilter(Filter):
         return str(self.max_price)
 
 
-class MinAgeFilter(Filter):
+class AgeRangeFilter(Filter):
 
-    filter_key = "filterMinAge"
+    filter_key = "ageRange"
 
-    def __init__(self, min_age):
-        self.min_age = int(min_age)
+    def __init__(self, value=None, min_age=None, max_age=None):
+        if value is not None:
+            (min_age, max_age) = self.decode_value(value)
+
+        if max_age and max_age < min_age:
+            raise Exception("Max age must be larger than min age.")
+        self.min_age = min_age
+        self.max_age = max_age
 
     def apply(self, queryset):
-        return queryset.filter(min_age__gte=self.min_age)
+        """
+        Return all products that apply to children within the given age range.
+        Given a certain age, n, a product applies to that age if n >= product.min_age and n <= product.max_age.
+        Need to use an OR query
+        """
+        if self.max_age is None:
+            # no maximum age limit, so we want all the toys with a min_age less than or equal to self.min_age and
+            # a maximum age that is larger than or equal to self.min_age
+            queryset = queryset.filter(Q(max_age=None) | Q(max_age__gte=self.min_age), min_age__lte=self.min_age)
+        else:
+            queryset = queryset.filter(Q(max_age=None) | Q(max_age__gte=self.min_age), min_age__lte=self.max_age)
 
-    def __unicode__(self):
-        return "ages %d and up" % self.min_age
+        return queryset
 
     def value_for_url(self):
-        return str(self.min_age)
+        return "%s+%s" % (self.min_age, self.max_age)
+
+    def decode_value(self, value):
+        """
+        Decodes a string of format [num]+[num|None]
+        """
+        tokens = value.split('+')
+        assert(len(tokens) == 2)
+        last_token = None
+        if tokens[1] != 'None':
+            last_token = int(tokens[1])
+        return int(tokens[0]), last_token
+
+    def __unicode__(self):
+        if self.min_age == 0 and self.max_age is None:
+            return "all ages"
+        if self.min_age and self.max_age is None:
+            return "ages %d+" % self.min_age
+        if self.min_age == 0 and self.max_age == 0:
+            return "birth - 12 months"
+        if self.min_age == 1 and self.max_age == 1:
+            return "12 - 24 months"
+        if self.min_age == self.max_age:
+            return "age %s" % self.min_age
+        return "ages %d - %d" % (self.min_age, self.max_age)
 
 
 class RecentlyAddedFilter(Filter):
@@ -231,7 +271,7 @@ FILTERS = {
     ThemeFilter.filter_key: ThemeFilter,
     MaxPriceFilter.filter_key: MaxPriceFilter,
     RecentlyAddedFilter.filter_key: RecentlyAddedFilter,
-    MinAgeFilter.filter_key: MinAgeFilter,
+    AgeRangeFilter.filter_key: AgeRangeFilter,
 }
 
 
@@ -241,7 +281,7 @@ def parse_filters(request):
         if filter_key in FILTERS:
             filter_clazz = FILTERS[filter_key]
             try:
-                filters.append(filter_clazz(value))
+                filters.append(filter_clazz(unquote_plus(value)))
             except:
                 # just ignore the filter, the value may be malformed
                 pass

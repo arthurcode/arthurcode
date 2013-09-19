@@ -54,7 +54,11 @@ def choose_filter(context, filter, display_name=None):
 
 @register.inclusion_tag('_choose_filter.html', takes_context=True)
 def choose_age(context, filter):
-    display_name = "%d+" % filter.min_age
+    display_name = unicode(filter)
+    if display_name.startswith('ages'):
+        display_name = display_name[4:].strip()
+    elif display_name.startswith('age'):
+        display_name = display_name[3:].strip()
     return choose_filter(context, filter, display_name)
 
 

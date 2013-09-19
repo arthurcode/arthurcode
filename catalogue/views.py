@@ -359,7 +359,7 @@ def get_ages(pre_filter_queryset, final_queryset, request_filters):
     active_filter = None
 
     for a_filter in request_filters:
-        if isinstance(a_filter, filters.MinAgeFilter):
+        if isinstance(a_filter, filters.AgeRangeFilter):
             active_filter = a_filter
             continue
         queryset = a_filter.apply(queryset)
@@ -368,19 +368,20 @@ def get_ages(pre_filter_queryset, final_queryset, request_filters):
         # simplification
         queryset = final_queryset
 
-    age_values = queryset.values('min_age').annotate(count=Count('id')).order_by()
+
+    age_bins = [(0, 0), (1, 1), (2, 2), (3, 4), (5, 7), (8, 11), (12, 14), (15, None)]  # age ranges copied from ToysRUs
     age_filters = []
 
-    for age_value in age_values:
-        min_age = age_value['min_age']
-        count = age_value['count']
-        age_filter = filters.MinAgeFilter(min_age)
-        is_active = active_filter and active_filter.min_age == min_age
+    for min_age, max_age in age_bins:
+        age_filter = filters.AgeRangeFilter(min_age=min_age, max_age=max_age)
+        is_active = active_filter and active_filter.min_age == min_age and active_filter.max_age == max_age
+        count = age_filter.apply(queryset).count()  # TODO: this is horribly inefficient
         setattr(age_filter, 'active_filter', is_active)
         setattr(age_filter, 'product_count', count)
-        age_filters.append(age_filter)
-    return age_filters
+        if count > 0 or is_active:
+            age_filters.append(age_filter)
 
+    return age_filters
 
 def get_features(product_queryset, applied_filters):
     """
