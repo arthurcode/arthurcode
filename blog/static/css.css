@@ -1195,7 +1195,7 @@ div#summary {
     line-height: 1.2em;
 }
 
-div.metadata {
+div.description div.metadata {
     font-weight: lighter;
     width: 19em;
     font-size: smaller;
@@ -1208,7 +1208,18 @@ div#more-detail h3 {
 }
 
 div.social-media {
-    width: 10em;
+    float: right;
+    margin-bottom: 10px;
+}
+
+div.social-media h3 {
+    font-weight: lighter;
+    font-size: smaller;
+    text-align: right;
+}
+
+div.social-media .icon {
+    width: 35px;
     float: right;
 }
 
@@ -1399,7 +1410,7 @@ div.metadata .rating {
     margin-right: 8px;
 }
 
-div.metadata span {
+div.description div.metadata span {
     float: left;
 }
 
