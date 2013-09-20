@@ -249,6 +249,12 @@ class Product(models.Model):
         """
         return self.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
 
+    def get_thumbnail(self):
+        thumbs = self.images.exclude(thumb_path='').order_by('-is_primary', 'id')  # choose a primary thumbnail
+        if thumbs.exists():
+            return thumbs[0]
+        return None
+
 
 class ProductOption(models.Model):
     """
@@ -344,6 +350,11 @@ class ProductImage(models.Model):
                             help_text=u"Path to the medium resolution image, relative to the static url")
     detail_path = models.CharField(max_length=PATH_MAX_LENGTH,
                                    help_text=u"Path to the high resolution image, relative to the static url.")
+
+    # not all product images require a corresponding thumbnail image, but a product SHOULD have at least one thumbnail
+    thumb_path = models.CharField(max_length=PATH_MAX_LENGTH,
+                                  help_text=u"Path to the thumbnail sized image, relative to the static url.",
+                                  blank=True)
     alt_text = models.CharField(max_length=ALT_TEXT_MAX_LENGTH, help_text=u"HTML image alt text.")
     option = models.ForeignKey(ProductOption, help_text=u"The product option this image represents (ie. color).", null=True, blank=True)
 

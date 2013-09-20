@@ -85,7 +85,7 @@
                     {% for item in order.items %}
                         <tr>
                             <td>
-                                <a href="{{ item.get_absolute_url }}"><img src="{{ STATIC_URL }}products/thumbnails/example.jpg" alt="{{ item.item.product.name }}"/></a>
+                                <a href="{{ item.get_absolute_url }}"><img src="{{ STATIC_URL }}{{ item.item.product.get_thumbnail }}" alt="{{ item.item.product.name }}"/></a>
                                 <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
                             </td>
                             <td>

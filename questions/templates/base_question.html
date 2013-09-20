@@ -18,14 +18,7 @@
     </div>
 
     <div class="left-col subtle">
-        <a href="{% url catalogue_product product.slug %}"><img src="{{ STATIC_URL }}products/example.jpg"></a>
-        {% with product.get_rating as rating %}
-            {% if rating %}
-                Average rating: {% rating rating %} ({{ rating|floatformat }} out of 5)
-            {% else %}
-                {% rating rating %} (this product has not yet been rated)
-            {% endif %}
-        {% endwith %}
+        {% include "_thumbnail.html" %}
     </div>
 
     <div class="right-col">

@@ -1128,6 +1128,10 @@ div.products .header, div.products .bottom {
     display: block;
 }
 
+.thumbnail .rating {
+    display: block;
+}
+
 .sale-price, .sale {
     color: red;
 }

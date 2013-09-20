@@ -81,7 +81,7 @@ class Migration(SchemaMigration):
             ('updated_at', self.gf('django.db.models.fields.DateTimeField')(auto_now=True, blank=True)),
             ('category', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.Category'])),
             ('min_age', self.gf('django.db.models.fields.PositiveIntegerField')(default=0)),
-            ('max_age', self.gf('django.db.models.fields.PositiveIntegerField')(null=True)),
+            ('max_age', self.gf('django.db.models.fields.PositiveIntegerField')(null=True, blank=True)),
         ))
         db.send_create_signal('catalogue', ['Product'])
 
@@ -151,6 +151,7 @@ class Migration(SchemaMigration):
             ('is_primary', self.gf('django.db.models.fields.BooleanField')(default=False)),
             ('path', self.gf('django.db.models.fields.CharField')(max_length=100)),
             ('detail_path', self.gf('django.db.models.fields.CharField')(max_length=100)),
+            ('thumb_path', self.gf('django.db.models.fields.CharField')(max_length=100, blank=True)),
             ('alt_text', self.gf('django.db.models.fields.CharField')(max_length=200)),
             ('option', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['catalogue.ProductOption'], null=True, blank=True)),
         ))
@@ -277,7 +278,7 @@ class Migration(SchemaMigration):
             'is_featured': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'is_green': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'long_description': ('django.db.models.fields.TextField', [], {}),
-            'max_age': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True'}),
+            'max_age': ('django.db.models.fields.PositiveIntegerField', [], {'null': 'True', 'blank': 'True'}),
             'min_age': ('django.db.models.fields.PositiveIntegerField', [], {'default': '0'}),
             'name': ('django.db.models.fields.CharField', [], {'unique': 'True', 'max_length': '255'}),
             'price': ('django.db.models.fields.DecimalField', [], {'max_digits': '9', 'decimal_places': '2'}),
@@ -295,7 +296,8 @@ class Migration(SchemaMigration):
             'is_primary': ('django.db.models.fields.BooleanField', [], {'default': 'False'}),
             'option': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['catalogue.ProductOption']", 'null': 'True', 'blank': 'True'}),
             'path': ('django.db.models.fields.CharField', [], {'max_length': '100'}),
-            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['catalogue.Product']"})
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'images'", 'to': "orm['catalogue.Product']"}),
+            'thumb_path': ('django.db.models.fields.CharField', [], {'max_length': '100', 'blank': 'True'})
         },
         'catalogue.productinstance': {
             'Meta': {'object_name': 'ProductInstance'},
