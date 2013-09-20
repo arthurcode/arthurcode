@@ -39,16 +39,18 @@
         </div>
         <div class="description">
             <h1>{{ product.name }}</h1>
-            {% rating avg_rating %}
-            {% if avg_rating %}
-                <span class="subtle write-review">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
-            {% else %}
-                <span class="subtle write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
-            {% endif %}
-            <span class="brand subtle">
+
+            <div class="metadata">
+                {% rating avg_rating %}
+                {% if avg_rating %}
+                    <span class="subtle write-review">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
+                {% else %}
+                    <span class="subtle write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
+                {% endif %}
+                <span class="brand subtle">
                 <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
-            </span>
-            <span class="ages subtle">
+                </span>
+                <span class="ages subtle">
                 {% if product.min_age == 0 and not product.max_age %}
                     all ages
                 {% elif product.max_age %}
@@ -60,12 +62,15 @@
                 {% else %}
                     ages {{ product.min_age }} and up
                 {% endif %}
-            </span>
-            {% if not product.in_stock %}
-                <span class="out-of-stock">Out Of Stock</span>
-            {% endif %}
+                </span>
+                {% if not product.in_stock %}
+                    <span class="out-of-stock">Out Of Stock</span>
+                {% endif %}
+            </div>
 
-            <div class="fb-like" data-href="http://developers.facebook.com/docs/reference/plugins/like" data-send="true" data-width="450" data-show-faces="false" data-font="arial" data-layout="button_count"></div>
+            <div class="social-media">
+                <div class="fb-like" data-href="http://developers.facebook.com/docs/reference/plugins/like" data-send="true" data-width="450" data-show-faces="false" data-font="arial" data-layout="button_count"></div>
+            </div>
 
             <div id="summary">
                 {% autoescape off %}
