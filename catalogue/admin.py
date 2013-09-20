@@ -1,4 +1,5 @@
 from django.contrib import admin
+from django import forms
 from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage, ProductInstance, \
     Color, Size
 from mptt.admin import MPTTModelAdmin
@@ -34,7 +35,15 @@ class ProductImageInline(admin.TabularInline):
     model = ProductImage
 
 
+class ProductAdminForm(forms.ModelForm):
+    short_description = forms.CharField(widget=forms.Textarea)
+
+    class Meta:
+        model = Product
+
+
 class ProductAdmin(admin.ModelAdmin):
+    form = ProductAdminForm
     inlines = [
         ProductImageInline,
     ]
