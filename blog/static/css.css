@@ -1183,7 +1183,7 @@ div.product-detail .tabrow {
 div.product-detail .description h1 {
     font-weight: bolder;
     font-size: larger;
-    padding-bottom: 0.5em;
+    padding-bottom: 0.3em;
 }
 
 div#summary {
@@ -1195,8 +1195,21 @@ div#summary {
     line-height: 1.2em;
 }
 
+div.metadata {
+    font-weight: lighter;
+    width: 19em;
+    font-size: smaller;
+    float: left;
+    clear: left;
+}
+
 div#more-detail h3 {
     font-weight: bolder;
+}
+
+div.social-media {
+    width: 10em;
+    float: right;
 }
 
 /* add-to-cart form styles */
@@ -1204,6 +1217,7 @@ div#more-detail h3 {
 div.add-to-cart {
     width: 10em;
     float: right;
+    clear: right;
     padding: 10px;
     border: 1px solid lightgray;
     font-size: smaller;
@@ -1376,21 +1390,21 @@ table.shopping-cart .continue-shopping {
 span.out-of-stock {
     color: red;
     text-transform: uppercase;
-    display: block;
+    clear: both;
+    font-weight: normal;
 }
 
-span.write-review {
-    font-weight: lighter;
+div.metadata .rating {
+    float: left;
+    margin-right: 8px;
 }
 
-span.ages {
-    font-weight: lighter;
-    display: block;
+div.metadata span {
+    float: left;
 }
 
-span.brand {
-    font-weight: lighter;
-    display: block;
+div.metadata .brand, div.metadata .ages {
+    clear: both;
 }
 
 div.error-list {
@@ -2188,6 +2202,7 @@ div.receipt {
 .fb-like {
     float: right;
     width: 150px;  /* fixing the width prevents the page from 'jumping-around' as the fb widget loads */
+    text-align: right;
 }
 
 /* style pop-up form field errors (js)

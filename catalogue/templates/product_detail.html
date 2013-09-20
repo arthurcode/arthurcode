@@ -43,14 +43,14 @@
             <div class="metadata">
                 {% rating avg_rating %}
                 {% if avg_rating %}
-                    <span class="subtle write-review">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
+                    <span class="write-review">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
                 {% else %}
-                    <span class="subtle write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
+                    <span class="write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
                 {% endif %}
-                <span class="brand subtle">
-                <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
+                <span class="brand">
+                brand: <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
                 </span>
-                <span class="ages subtle">
+                <span class="ages">
                 {% if product.min_age == 0 and not product.max_age %}
                     all ages
                 {% elif product.max_age %}
