@@ -159,7 +159,9 @@ class Product(models.Model):
 
     min_age = models.PositiveIntegerField(help_text=u"The minimum age a person should be to use this product",
                                           default=0)
-    max_age = models.PositiveIntegerField(help_text=u"The product's age limit, if applicable.",
+    max_age = models.PositiveIntegerField(help_text=u"The oldest age this product would appeal to."
+                                                    u" Please put some thought into this because it is important "
+                                                    u"for filtering.",
                                           null=True, blank=True)
 
     def clean(self):
