@@ -41,10 +41,13 @@
             <h1>{{ product.name }}</h1>
             {% rating avg_rating %}
             {% if avg_rating %}
-                <span class="subtle">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
+                <span class="subtle write-review">({{ reviews.count }} <a class="tabview follow" href="#reviews">review{{ reviews.count|pluralize:",s" }}</a>)</span>
             {% else %}
-                <span class="subtle">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
+                <span class="subtle write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
             {% endif %}
+            <span class="brand subtle">
+                <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
+            </span>
             <span class="ages subtle">
                 {% if product.min_age == 0 and not product.max_age %}
                     all ages
@@ -68,8 +71,6 @@
                 {% autoescape off %}
                     <div class="text">{{ product.short_description }}</div>
                 {% endautoescape %}
-                <br>
-                <a href="#more-detail">read more</a>
             </div>
 
             <div class="add-to-cart">
@@ -103,7 +104,7 @@
         </div>
 
         <div id="more-detail">
-            <h3><a href="#more-detail">Full Description</a></h3>
+            <h3>Full Description</h3>
             {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
         </div>
     </div>

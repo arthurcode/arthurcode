@@ -276,6 +276,11 @@ body.products #bd {
 
 .text li {
     list-style: disc;
+    margin-top: 0.2em;
+}
+
+.text ul {
+    margin-left: 1em;
 }
 
 #hd #topbar {
@@ -1178,6 +1183,7 @@ div.product-detail .tabrow {
 div.product-detail .description h1 {
     font-weight: bolder;
     font-size: larger;
+    padding-bottom: 0.5em;
 }
 
 div#summary {
@@ -1187,6 +1193,10 @@ div#summary {
     width: 19em;
     font-size: smaller;
     line-height: 1.2em;
+}
+
+div#more-detail h3 {
+    font-weight: bolder;
 }
 
 /* add-to-cart form styles */
@@ -1369,9 +1379,18 @@ span.out-of-stock {
     display: block;
 }
 
-span.ages {
-    display: block;
+span.write-review {
     font-weight: lighter;
+}
+
+span.ages {
+    font-weight: lighter;
+    display: block;
+}
+
+span.brand {
+    font-weight: lighter;
+    display: block;
 }
 
 div.error-list {
