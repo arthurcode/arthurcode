@@ -992,6 +992,15 @@ div.refine h3 {
     border-bottom: 2px solid rgba(165,201,86,1);
 }
 
+div.refine .color {
+    width: 12px;
+    height: 12px;
+    border: 1px solid black;
+    display: inline-block;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+}
+
 div.products {
     display: inline-block;
     float: right;

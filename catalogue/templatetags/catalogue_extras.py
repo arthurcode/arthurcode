@@ -66,3 +66,11 @@ def choose_age(context, filter):
 def choose_brand(context, filter):
     display_name = filter.name
     return choose_filter(context, filter, display_name)
+
+
+@register.inclusion_tag('_choose_color.html', takes_context=True)
+def choose_color(context, filter):
+    return {
+        'filter': filter,
+        'request': context.get('request', None)
+    }

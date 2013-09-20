@@ -85,6 +85,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if colors %}
+                <h3>Color</h3>
+                <ul>
+                    {% for color in colors %}
+                        {% choose_color color %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
             {% if features %}
                 <h3>Feature</h3>
                 <ul>

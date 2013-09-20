@@ -267,7 +267,7 @@ class ColorFilter(Filter):
         return self.name
 
     def __unicode__(self):
-        return "color " + self.name
+        return self.name
 
 
 class RecentlyAddedFilter(Filter):

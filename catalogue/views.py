@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Count, Sum, Avg
 
-from catalogue.models import Product, Category, Brand, Theme, ProductImage, ProductInstance
+from catalogue.models import Product, Category, Brand, Theme, ProductImage, ProductInstance, Color, ProductOption
 from arthurcode import settings
 from cart.forms import ProductAddToCartForm
 from catalogue import filters
@@ -202,6 +202,7 @@ def category_view(request, category_slug=""):
         'prices': get_prices(pre_filter_product_list, final_product_subquery, applied_filters),
         'ages': get_ages(pre_filter_product_list, final_product_subquery, applied_filters),
         'features': get_features(final_product_subquery, applied_filters),
+        'colors': get_colors(pre_filter_product_list, final_product_subquery, applied_filters)
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
@@ -400,6 +401,39 @@ def get_ages(pre_filter_queryset, final_queryset, request_filters):
         index += 1
 
     return age_filters
+
+
+def get_colors(pre_filter_queryset, final_queryset, request_filters):
+    queryset = pre_filter_queryset
+    active_filter = None
+
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.ColorFilter):
+            active_filter = a_filter
+            continue
+        queryset = a_filter.apply(queryset)
+
+    if not active_filter:
+        # simplification
+        queryset = final_queryset
+
+    options = queryset.filter(instances__options__category=ProductOption.COLOR).values('instances__options__name', 'instances__options__color__html').annotate(ocount=Count('instances__options__name'))
+    color_filters = []
+
+    for option_set in options:
+        option_name = option_set['instances__options__name']
+        if option_name is None:
+            continue
+        count = option_set['ocount']
+        is_active = active_filter and active_filter.name == option_name
+        if count or is_active:
+            filter = filters.ColorFilter(option_name)
+            setattr(filter, 'active_filter', is_active)
+            setattr(filter, 'product_count', count)
+            setattr(filter, 'html', option_set['instances__options__color__html'])
+            color_filters.append(filter)
+
+    return color_filters
 
 def get_features(product_queryset, applied_filters):
     """
