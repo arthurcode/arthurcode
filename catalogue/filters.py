@@ -2,7 +2,7 @@
 Contains filters for filtering catalogue queries.
 """
 from django.db.models import Count, Q
-from catalogue.models import Award, Brand, Theme
+from catalogue.models import Award, Brand, Theme, ProductInstance, Color
 from utils.util import to_bool
 from decimal import Decimal
 from utils.templatetags.extras import currency
@@ -244,6 +244,32 @@ class AgeRangeFilter(Filter):
         return "ages %d - %d" % (self.min_age, self.max_age)
 
 
+class ColorFilter(Filter):
+
+    filter_key = "color"
+
+    def __init__(self, name):
+        self.name = name
+
+    def apply(self, queryset):
+        """
+        Returns products that have the given color option.
+        """
+        # get a list of product instances with this color option
+        try:
+            option = Color.objects.get(name=self.name)
+            return queryset.filter(instances__options=option)
+        except Color.DoesNotExist:
+            # bogus color, no products could possibly match
+            return queryset.none()
+
+    def value_for_url(self):
+        return self.name
+
+    def __unicode__(self):
+        return "color " + self.name
+
+
 class RecentlyAddedFilter(Filter):
 
     filter_key = "filterNew"
@@ -272,6 +298,7 @@ FILTERS = {
     MaxPriceFilter.filter_key: MaxPriceFilter,
     RecentlyAddedFilter.filter_key: RecentlyAddedFilter,
     AgeRangeFilter.filter_key: AgeRangeFilter,
+    ColorFilter.filter_key: ColorFilter,
 }
 
 
