@@ -1174,6 +1174,11 @@ div.product-detail #more-detail {
     float: left;
     clear: both;
     padding: 10px;
+    font-size: smaller;
+}
+
+div.product-detail #more-detail dt:after {
+    content: ':';
 }
 
 div.product-detail .tabrow {
@@ -1205,6 +1210,9 @@ div.description div.metadata {
 
 div#more-detail h3 {
     font-weight: bolder;
+    float: left;
+    clear: both;
+    padding: 10px 0 5px 0;
 }
 
 div.social-media {

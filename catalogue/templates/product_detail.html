@@ -114,8 +114,55 @@
         </div>
 
         <div id="more-detail">
-            <h3>Full Description</h3>
-            {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
+            <div id="col1">
+                {% if product.long_description %}
+                    <h3>Description</h3>
+                    {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
+                {% endif %}
+            </div>
+            <div id="col2">
+                <h3>Dimensions & Weight</h3>
+                <dl class="horizontal">
+                    {% if product.length and product.width and product.height %}
+                        <dt>L x W x H</dt>
+                        <dd>{{ product.length|floatformat }} cm x {{ product.width|floatformat }} cm x {{ product.height|floatformat }} cm</dd>
+                    {% else %}
+                        {% if product.length %}
+                            <dt>Length</dt>
+                            <dd>{{ product.length|floatformat }}</dd>
+                        {% endif %}
+
+                        {% if product.width %}
+                            <dt>Width</dt>
+                            <dd>{{ product.width|floatformat }}</dd>
+                        {% endif %}
+
+                        {% if product.height %}
+                            <dt>Height</dt>
+                            <dd>{{ product.height|floatformat }}</dd>
+                        {% endif %}
+                    {% endif %}
+                    <dt>Weight</dt>
+                    <dd>{{ product.weight|floatformat}} kg</dd>
+                </dl>
+
+                <h3>Specifications</h3>
+                <dl class="horizontal">
+                    {% if product.instances.count == 1 %}
+                        <dt>SKU</dt>
+                        <dd>{{ product.instances.all.0.sku }}</dd>
+                    {% endif %}
+                    <dt>Brand</dt>
+                    <dd>{{ product.brand.name }}</dd>
+                    {% for spec in product.specifications.all %}
+                        <dt>{{ spec.key|capfirst }}</dt>
+                        <dd>{{ spec.value }}</dd>
+                    {% endfor %}
+                </dl>
+            </div>
+            <div id="col3">
+
+            </div>
         </div>
     </div>
 
