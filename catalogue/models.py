@@ -162,7 +162,7 @@ class Product(models.Model):
                                           default=0)
     max_age = models.PositiveIntegerField(help_text=u"The oldest age this product would appeal to."
                                                     u" Please put some thought into this because it is important "
-                                                    u"for filtering.",
+                                                    u"for filtering.  Leave blank if there really is no max age",
                                           null=True, blank=True)
 
     # dimensions

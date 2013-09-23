@@ -52,6 +52,30 @@ class ProductAdmin(admin.ModelAdmin):
         ProductImageInline, ProductSpecificationInline
     ]
 
+    fieldsets = (
+        (None, {
+            'fields': ('name', 'slug', 'category', 'brand', 'is_active', 'min_age', 'max_age', 'created_at', 'updated_at')
+        }),
+        ('Pricing', {
+            'fields': ('price', 'sale_price')
+        }),
+        ('Description', {
+            'fields': ('meta_description', 'short_description', 'long_description')
+        }),
+        ('Dimensions', {
+            'fields': ('weight', 'length', 'width', 'height')
+        }),
+        ('Features', {
+            'fields': ('is_bestseller', 'is_featured', 'is_box_stuffer', 'is_green')
+        }),
+        ('Awards', {
+            'fields': ('awards',)
+        }),
+        ('Themes', {
+            'fields': ('themes',)
+        })
+    )
+
     list_display = ('name', 'category', 'price', 'sale_price', 'created_at', 'updated_at', 'is_award_winner')
     list_display_links = ('name', 'category')
     list_per_page = 50
