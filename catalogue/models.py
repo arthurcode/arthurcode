@@ -257,6 +257,17 @@ class Product(models.Model):
         return None
 
 
+class Specification(models.Model):
+    """
+    Holds a product specification.  Could be something like wattage, material construction, unpacked dimensions, etc.
+    Typically product specifications stored here will be things that are not applicable to all products, and thus
+    couldn't be turned into a model field.
+    """
+    product = models.ForeignKey(Product, related_name="specifications")
+    key = models.CharField(max_length=50, validators=[not_blank])
+    value = models.CharField(max_length=75, validators=[not_blank])
+
+
 class ProductOption(models.Model):
     """
     A product option can be something like a size or color option.  This functions more like an abstract base class,

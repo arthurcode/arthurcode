@@ -102,6 +102,15 @@ class Migration(SchemaMigration):
         ))
         db.create_unique('catalogue_product_themes', ['product_id', 'theme_id'])
 
+        # Adding model 'Specification'
+        db.create_table('catalogue_specification', (
+            ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
+            ('product', self.gf('django.db.models.fields.related.ForeignKey')(related_name='specifications', to=orm['catalogue.Product'])),
+            ('key', self.gf('django.db.models.fields.CharField')(max_length=50)),
+            ('value', self.gf('django.db.models.fields.CharField')(max_length=75)),
+        ))
+        db.send_create_signal('catalogue', ['Specification'])
+
         # Adding model 'ProductOption'
         db.create_table('catalogue_productoption', (
             ('id', self.gf('django.db.models.fields.AutoField')(primary_key=True)),
@@ -200,6 +209,9 @@ class Migration(SchemaMigration):
 
         # Removing M2M table for field themes on 'Product'
         db.delete_table('catalogue_product_themes')
+
+        # Deleting model 'Specification'
+        db.delete_table('catalogue_specification')
 
         # Deleting model 'ProductOption'
         db.delete_table('catalogue_productoption')
@@ -326,6 +338,13 @@ class Migration(SchemaMigration):
             'productoption_ptr': ('django.db.models.fields.related.OneToOneField', [], {'to': "orm['catalogue.ProductOption']", 'unique': 'True', 'primary_key': 'True'}),
             'short_name': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
             'sort_index': ('django.db.models.fields.IntegerField', [], {})
+        },
+        'catalogue.specification': {
+            'Meta': {'object_name': 'Specification'},
+            'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
+            'key': ('django.db.models.fields.CharField', [], {'max_length': '50'}),
+            'product': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'specifications'", 'to': "orm['catalogue.Product']"}),
+            'value': ('django.db.models.fields.CharField', [], {'max_length': '75'})
         },
         'catalogue.theme': {
             'Meta': {'object_name': 'Theme'},
