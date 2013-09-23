@@ -51,7 +51,7 @@ def product_detail_view(request, slug=""):
     # set the test cookie on our first GET request
     request.session.set_test_cookie()
     breadcrumbs = product.get_breadcrumbs()
-    meta_description = product.short_description
+    meta_description = product.meta_description
     reviews = product.reviews.select_related('product', 'user__public_profile').\
         prefetch_related('flags').order_by('-last_modified')
     images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list

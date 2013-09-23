@@ -147,7 +147,8 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     is_box_stuffer = models.BooleanField(default=False)
     is_green = models.BooleanField(default=False, help_text='Indicates if this is an eco-friendly product.')
-
+    meta_description = models.CharField(max_length=200, help_text='Text for the meta description tag.',
+                                        validators=[not_blank])
     short_description = models.CharField(max_length=500)
     long_description = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
