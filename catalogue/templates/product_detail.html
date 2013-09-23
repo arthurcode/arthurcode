@@ -24,7 +24,7 @@
             <div id="primary-img">
                 {% if images %}
                     <a href="{% product_img_url product %}{{ images.0.detail_path }}"><img src="{% product_img_url product %}{{ images.0.path }}" alt="{{ images.0.alt_text }}"></a>
-                    <p>click on picture for a larger view</p>
+                    <p class="hidden">click on picture for a larger view</p>
                 {% else %}
                     <img src="{{ STATIC_URL }}products/no_image_available.png" alt="no image available">
                 {% endif %}
@@ -174,14 +174,13 @@
     {{ block.super }}
     <script type="text/javascript">
         YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', 'custom', function(Y) {
-
             // lazy loading of product's images (except for the first, primary image)
             var imageGroup = new Y.ImgLoadGroup({foldDistance: 30});
             // iterate over every image, and register the image-{id} div with the appropriate source image
             {% for image in images %}
                 imageGroup.registerImage({
                     domId: "image-" + "{{ image.id }}",
-                    srcUrl: "{{ STATIC_URL }}{{ image.path }}",
+                    srcUrl: "{% product_img_url product %}{{ image.path }}",
                     setVisible: true
                 });
             {% endfor %}

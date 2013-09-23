@@ -1146,22 +1146,20 @@ div.product-detail .visual {
     clear: both;
     width: 38%;
     display: inline-block;
+    border: 1px solid lightgray;
+}
+
+div.product-detail div.other-views {
+    padding: 8px;
 }
 
 div.product-detail div.other-views img {
-    height: 64px;
+    height: 60px;
     display: inline-block;
 }
 
 #primary-img img {
-    height: 350px;
-}
-
-#primary-img p {
-    font-size: 80%;
-    font-style: italic;
-    color: darkgray;
-    float: right;
+    width: 100%;
 }
 
 div.product-detail .description {
