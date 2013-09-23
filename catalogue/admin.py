@@ -40,6 +40,7 @@ class ProductSpecificationInline(admin.TabularInline):
 
 class ProductAdminForm(forms.ModelForm):
     short_description = forms.CharField(widget=forms.Textarea)
+    meta_description = forms.CharField(widget=forms.Textarea)
 
     class Meta:
         model = Product
