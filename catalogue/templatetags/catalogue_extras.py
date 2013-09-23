@@ -74,3 +74,10 @@ def choose_color(context, filter):
         'filter': filter,
         'request': context.get('request', None)
     }
+
+
+@register.inclusion_tag('_product_img_url.html')
+def product_img_url(product):
+    return {
+        'product': product,
+    }
