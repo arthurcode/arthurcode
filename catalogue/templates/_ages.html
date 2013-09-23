@@ -1,0 +1,11 @@
+{% if product.min_age == 0 and not product.max_age %}
+    all ages
+{% elif product.max_age %}
+    {% if product.max_age == product.min_age %}
+        {{ product.max_age }}
+    {% else %}
+        {{ product.min_age }} - {{ product.max_age }}
+    {% endif %}
+{% else %}
+    {{ product.min_age }} and up
+{% endif %}

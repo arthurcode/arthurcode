@@ -1173,7 +1173,7 @@ div.product-detail .description {
 div.product-detail #more-detail {
     float: left;
     clear: both;
-    padding: 10px;
+    padding: 10px 0;
     font-size: smaller;
 }
 
