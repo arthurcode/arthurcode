@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django import forms
 from catalogue.models import Product, Category, Award, AwardInstance, Brand, Theme, ProductImage, ProductInstance, \
-    Color, Size, Specification
+    Color, Size, Specification, Dimension
 from mptt.admin import MPTTModelAdmin
 
 
@@ -38,6 +38,10 @@ class ProductImageInline(admin.TabularInline):
 class ProductSpecificationInline(admin.TabularInline):
     model = Specification
 
+
+class ProductDimensionInline(admin.TabularInline):
+    model = Dimension
+
 class ProductAdminForm(forms.ModelForm):
     short_description = forms.CharField(widget=forms.Textarea)
     meta_description = forms.CharField(widget=forms.Textarea)
@@ -49,7 +53,7 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
     form = ProductAdminForm
     inlines = [
-        ProductImageInline, ProductSpecificationInline
+        ProductDimensionInline, ProductImageInline, ProductSpecificationInline
     ]
 
     fieldsets = (
@@ -62,9 +66,6 @@ class ProductAdmin(admin.ModelAdmin):
         ('Description', {
             'fields': ('meta_description', 'short_description', 'long_description')
         }),
-        ('Dimensions', {
-            'fields': ('weight', 'length', 'width', 'height')
-        }),
         ('Features', {
             'fields': ('is_bestseller', 'is_featured', 'is_box_stuffer', 'is_green')
         }),
@@ -73,6 +74,9 @@ class ProductAdmin(admin.ModelAdmin):
         }),
         ('Themes', {
             'fields': ('themes',)
+        }),
+        ('Dimensions', {
+            'fields': ('weight',)
         })
     )
 

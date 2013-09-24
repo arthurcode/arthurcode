@@ -271,6 +271,20 @@ class Specification(models.Model):
     value = models.CharField(max_length=75, validators=[not_blank])
 
 
+class Dimension(models.Model):
+    """
+    Holds a product dimension.  The key value pair will typically be displayed as a dt, dd pair in a definition list.
+    The key can be something specific like 'length', or it can be something like 'L x W x H'
+    """
+    class Meta:
+        # we want the dimensions to appear in the same order as they are added on the admin page
+        ordering = ['id']
+
+    product = models.ForeignKey(Product, related_name="dimensions")
+    key = models.CharField(max_length=50, validators=[not_blank])
+    value = models.CharField(max_length=75, validators=[not_blank])
+
+
 class ProductOption(models.Model):
     """
     A product option can be something like a size or color option.  This functions more like an abstract base class,

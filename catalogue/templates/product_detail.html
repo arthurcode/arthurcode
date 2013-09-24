@@ -115,6 +115,10 @@
             <div class="col2">
                 <h3>Dimensions & Weight</h3>
                 <dl class="horizontal">
+                    {% for dimension in product.dimensions.all %}
+                        <dt>{{ dimension.key|capfirst }}</dt>
+                        <dd>{{ dimension.value }}</dd>
+                    {% endfor %}
                     <dt>Weight</dt>
                     <dd>{{ product.weight|floatformat}} kg</dd>
                 </dl>
