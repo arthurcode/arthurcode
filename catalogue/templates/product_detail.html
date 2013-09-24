@@ -133,6 +133,8 @@
                     <dd>{{ product.brand.name }}</dd>
                     <dt>Ages</dt>
                     <dd>{% include "_ages.html" %}</dd>
+                    <dt>Made In</dt>
+                    <dd>{{ product.country_of_origin.name }}</dd>
                     {% for spec in product.specifications.all %}
                         <dt>{{ spec.key|capfirst }}</dt>
                         <dd>{{ spec.value }}</dd>
