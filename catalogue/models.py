@@ -167,12 +167,6 @@ class Product(models.Model):
 
     # dimensions
     weight = models.DecimalField(decimal_places=3, max_digits=6, help_text="The weight of the assembled product, in Kg")
-    length = models.DecimalField(decimal_places=2, max_digits=6, help_text="The length of the assembled product, in cm",
-                                 blank=True, null=True)
-    width = models.DecimalField(decimal_places=2, max_digits=6, help_text="The width of the assembled product, in cm",
-                                blank=True, null=True)
-    height = models.DecimalField(decimal_places=2, max_digits=6, help_text="The height of the assembled product, in cm",
-                                 blank=True, null=True)
 
     def clean(self):
         if not self.is_active and self.category_id and self.category.is_active:
