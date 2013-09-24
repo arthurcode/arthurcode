@@ -115,25 +115,6 @@
             <div class="col2">
                 <h3>Dimensions & Weight</h3>
                 <dl class="horizontal">
-                    {% if product.length and product.width and product.height %}
-                        <dt>L x W x H</dt>
-                        <dd>{{ product.length|floatformat }} cm x {{ product.width|floatformat }} cm x {{ product.height|floatformat }} cm</dd>
-                    {% else %}
-                        {% if product.length %}
-                            <dt>Length</dt>
-                            <dd>{{ product.length|floatformat }}</dd>
-                        {% endif %}
-
-                        {% if product.width %}
-                            <dt>Width</dt>
-                            <dd>{{ product.width|floatformat }}</dd>
-                        {% endif %}
-
-                        {% if product.height %}
-                            <dt>Height</dt>
-                            <dd>{{ product.height|floatformat }}</dd>
-                        {% endif %}
-                    {% endif %}
                     <dt>Weight</dt>
                     <dd>{{ product.weight|floatformat}} kg</dd>
                 </dl>
