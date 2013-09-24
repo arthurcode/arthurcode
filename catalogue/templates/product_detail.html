@@ -20,7 +20,7 @@
     </div>
 
     <div class="product-detail">
-        <div class="visual">
+        <div class="visual col1">
             <div id="primary-img">
                 {% if images %}
                     <a href="{% product_img_url product %}{{ images.0.detail_path }}"><img src="{% product_img_url product %}{{ images.0.path }}" alt="{{ images.0.alt_text }}"></a>
@@ -37,7 +37,7 @@
                 </div>
             {% endif %}
         </div>
-        <div class="description">
+        <div class="description col2">
             <h1>{{ product.name }}</h1>
 
             <div class="metadata">
@@ -58,6 +58,13 @@
                 {% endif %}
             </div>
 
+            <div id="summary">
+                {% autoescape off %}
+                    <div class="text">{{ product.short_description }}</div>
+                {% endautoescape %}
+            </div>
+        </div>
+        <div class="col3">
             <div class="social-media">
                 <h3>Share with a friend ...</h3>
                 <img class="icon" src="{{ STATIC_URL }}icons/email.png">
@@ -67,17 +74,12 @@
                 <img class="icon" src="{{ STATIC_URL }}icons/facebook.png">
             </div>
 
-            <div id="summary">
-                {% autoescape off %}
-                    <div class="text">{{ product.short_description }}</div>
-                {% endautoescape %}
-            </div>
-
             <div class="add-to-cart">
                 <div class="price">
                     {% if product.sale_price %}
+                        <span class="old-price">{{ product.price|currency }}</span>
                         <span class="sale-price">{{ product.sale_price|currency }}</span>
-                        <span class="you-save">Was: <span class="old-price">{{ product.price|currency }}</span> ({{ product.percent_savings|floatformat:0 }}% off!)</span>
+                        <span class="you-save">You save {{ product.percent_savings|floatformat:0 }}%!</span>
                     {% else %}
                         <span class="normal-price">{{ product.price|currency }}</span>
                     {% endif %}
@@ -104,13 +106,13 @@
         </div>
 
         <div id="more-detail">
-            <div id="col1">
+            <div class="col1">
                 {% if product.long_description %}
-                    <h3>Description</h3>
+                    <h3>Full Description</h3>
                     {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
                 {% endif %}
             </div>
-            <div id="col2">
+            <div class="col2">
                 <h3>Dimensions & Weight</h3>
                 <dl class="horizontal">
                     {% if product.length and product.width and product.height %}
@@ -152,7 +154,7 @@
                     {% endfor %}
                 </dl>
             </div>
-            <div id="col3">
+            <div class="col3">
 
             </div>
         </div>

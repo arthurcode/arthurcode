@@ -936,7 +936,6 @@ div.refine {
 
 div.refine .header {
     padding: 8px;
-    font-size: larger;
     margin-bottom: 15px;
     position: relative;
     text-align: center;
@@ -1112,7 +1111,7 @@ div.products .header, div.products .bottom {
 /* thumbnail styles */
 .thumbnail {
     width: 11.9em;
-    border: 1px solid lightgray;
+    /*border: 1px solid lightgray;*/
     text-align: center;
     font-size: 80%;
     line-height: 1.2em;
@@ -1141,11 +1140,25 @@ div.products .header, div.products .bottom {
     color: red;
 }
 
-div.product-detail .visual {
+div.product-detail .col1 {
     float: left;
     clear: both;
     width: 38%;
-    display: inline-block;
+}
+
+div.product-detail .col2 {
+    float: left;
+    width: 38%;
+    margin-left: 3%;
+    margin-right: 1%;
+}
+
+div.product-detail .col3 {
+    width: 19%;
+    float: right;
+}
+
+div.product-detail .visual {
     border: 1px solid lightgray;
 }
 
@@ -1162,17 +1175,25 @@ div.product-detail div.other-views img {
     width: 100%;
 }
 
-div.product-detail .description {
-    float: right;
-    width: 60%;
-    display: inline-block;
-}
-
 div.product-detail #more-detail {
     float: left;
     clear: both;
     padding: 10px 0;
     font-size: smaller;
+    width: 100%;
+}
+
+div.product-detail #more-detail dt {
+    width: 30%;
+}
+
+div.product-detail #more-detail dd {
+    width: 68%;
+}
+
+div.product-detail #more-detail .text {
+    float: left;
+    clear: both;
 }
 
 div.product-detail #more-detail dt:after {
@@ -1258,10 +1279,14 @@ div.add-to-cart .price .old-price {
     text-decoration: line-through;
 }
 
-div.add-to-cart .price .you-save {
+div.add-to-cart .price .you-save, div.add-to-cart .price .old-price {
     font-size: 50%;
     display: block;
     font-weight: normal;
+}
+
+div.add-to-cart .price .you-save {
+    color: red;
 }
 
 div.add-to-cart form {
