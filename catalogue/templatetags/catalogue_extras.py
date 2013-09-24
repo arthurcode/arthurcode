@@ -76,6 +76,12 @@ def choose_color(context, filter):
     }
 
 
+@register.inclusion_tag('_choose_filter.html', takes_context=True)
+def choose_country(context, filter):
+    display_name = filter.country_name
+    return choose_filter(context, filter, display_name)
+
+
 @register.inclusion_tag('_product_img_url.html')
 def product_img_url(product):
     return {

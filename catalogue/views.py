@@ -202,7 +202,8 @@ def category_view(request, category_slug=""):
         'prices': get_prices(pre_filter_product_list, final_product_subquery, applied_filters),
         'ages': get_ages(pre_filter_product_list, final_product_subquery, applied_filters),
         'features': get_features(final_product_subquery, applied_filters),
-        'colors': get_colors(pre_filter_product_list, final_product_subquery, applied_filters)
+        'colors': get_colors(pre_filter_product_list, final_product_subquery, applied_filters),
+        'countries': get_countries(pre_filter_product_list, final_product_subquery, applied_filters),
     }
     return render_to_response("category.html", context, context_instance=RequestContext(request))
 
@@ -434,6 +435,37 @@ def get_colors(pre_filter_queryset, final_queryset, request_filters):
             color_filters.append(filter)
 
     return color_filters
+
+
+def get_countries(pre_filter_queryset, final_queryset, request_filters):
+    queryset = pre_filter_queryset
+    active_filter = None
+
+    for a_filter in request_filters:
+        if isinstance(a_filter, filters.CountryOfOriginFilter):
+            active_filter = a_filter
+            continue
+        queryset = a_filter.apply(queryset)
+
+    if not active_filter:
+        # simplification
+        queryset = final_queryset
+
+    countries_of_interest = ['CA', 'US']
+    countries = queryset.filter(country_of_origin__in=countries_of_interest).values('country_of_origin').annotate(ccount=Count('id'))
+    country_filters = []
+
+    for country_set in countries:
+        country = country_set['country_of_origin']
+        count = country_set['ccount']
+        filter = filters.CountryOfOriginFilter(country)
+        is_active = active_filter and active_filter.country_code == country
+        if is_active or count:
+            setattr(filter, 'product_count', count)
+            setattr(filter, 'active_filter', is_active)
+            country_filters.append(filter)
+    return country_filters
+
 
 def get_features(product_queryset, applied_filters):
     """

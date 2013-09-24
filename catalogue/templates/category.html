@@ -53,6 +53,14 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if countries %}
+                <h3>Made In</h3>
+                <ul>
+                    {% for country in countries %}
+                        {% choose_country country %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
             {% if brands %}
                 <h3>Brand</h3>
                 <ul>

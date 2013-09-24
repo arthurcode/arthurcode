@@ -9,6 +9,7 @@ from utils.templatetags.extras import currency
 from django.db.models import Model
 from datetime import datetime, timedelta
 from urllib import quote_plus, unquote_plus
+from django_countries.countries import OFFICIAL_COUNTRIES
 
 WILDCARD = "any"
 
@@ -287,6 +288,27 @@ class RecentlyAddedFilter(Filter):
         return "new within the last %d days" % self.days
 
 
+class CountryOfOriginFilter(Filter):
+
+    filter_key = "madeIn"
+
+    def __init__(self, country_code):
+        self.country_code = country_code
+
+    def apply(self, queryset):
+        return queryset.filter(country_of_origin=self.country_code)
+
+    @property
+    def country_name(self):
+        return OFFICIAL_COUNTRIES.get(self.country_code, 'unknown').title()
+
+    def __unicode__(self):
+        return "made in %s" % self.country_name
+
+    def value_for_url(self):
+        return self.country_code
+
+
 # manually register our filters
 FILTERS = {
     AwardFilter.filter_key: AwardFilter,
@@ -299,6 +321,7 @@ FILTERS = {
     RecentlyAddedFilter.filter_key: RecentlyAddedFilter,
     AgeRangeFilter.filter_key: AgeRangeFilter,
     ColorFilter.filter_key: ColorFilter,
+    CountryOfOriginFilter.filter_key: CountryOfOriginFilter,
 }
 
 
