@@ -58,7 +58,7 @@ class ProductAdmin(admin.ModelAdmin):
 
     fieldsets = (
         (None, {
-            'fields': ('name', 'slug', 'category', 'brand', 'is_active', 'min_age', 'max_age', 'created_at', 'updated_at')
+            'fields': ('name', 'slug', 'category', 'brand', 'country_of_origin', 'is_active', 'min_age', 'max_age', 'created_at', 'updated_at')
         }),
         ('Pricing', {
             'fields': ('price', 'sale_price')

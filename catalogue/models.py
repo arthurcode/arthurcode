@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
 from django.db.models import Count
+from django_countries import CountryField
 
 from utils.validators import not_blank, valid_sku
 
@@ -147,6 +148,8 @@ class Product(models.Model):
     is_featured = models.BooleanField(default=False)
     is_box_stuffer = models.BooleanField(default=False)
     is_green = models.BooleanField(default=False, help_text='Indicates if this is an eco-friendly product.')
+    country_of_origin = CountryField()
+
     meta_description = models.CharField(max_length=200, help_text='Text for the meta description tag.',
                                         validators=[not_blank])
     short_description = models.CharField(max_length=700)
