@@ -149,7 +149,7 @@ class Product(models.Model):
     is_green = models.BooleanField(default=False, help_text='Indicates if this is an eco-friendly product.')
     meta_description = models.CharField(max_length=200, help_text='Text for the meta description tag.',
                                         validators=[not_blank])
-    short_description = models.CharField(max_length=500)
+    short_description = models.CharField(max_length=700)
     long_description = models.TextField(blank=True)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
