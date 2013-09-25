@@ -136,8 +136,7 @@ class AwardFilter(RelatedModelFilter):
 
     def apply(self, queryset):
         if self.slug == WILDCARD:
-            # return products that have won one or more awards
-            return queryset.annotate(na=Count('awards')).filter(na__ge=1)
+            return queryset.exclude(awards__isnull=True)
         else:
             # return products that have won this specific award
             return queryset.filter(awards__award__slug=self.slug)
