@@ -192,8 +192,8 @@ def category_view(request, category_slug=""):
             ('priceMax', 'Price (High to Low)'),
             ('nameA', 'Name (A to Z)'),
             ('nameZ', 'Name (Z to A)'),
-            ('rating', 'Rating'),
-            ('new', 'Newest')
+            ('rating', 'Top Rated'),
+            ('new', 'Recently Added')
         ],
         'search_text': search_text,
         'filters': applied_filters,
