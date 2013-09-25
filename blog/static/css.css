@@ -993,7 +993,7 @@ div.refine h3 {
     font-weight: bolder;
     font-size: larger;
     color: midnightblue;
-    border-bottom: 2px solid rgba(165,201,86,1);
+    /*border-bottom: 2px solid rgba(165,201,86,1);*/
 }
 
 div.refine .color {
