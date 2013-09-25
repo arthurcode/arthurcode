@@ -1,8 +1,8 @@
 """
 Contains filters for filtering catalogue queries.
 """
-from django.db.models import Count, Q
-from catalogue.models import Award, Brand, Theme, ProductInstance, Color
+from django.db.models import Q
+from catalogue.models import Award, Brand, Theme, Color
 from utils.util import to_bool
 from decimal import Decimal
 from utils.templatetags.extras import currency
