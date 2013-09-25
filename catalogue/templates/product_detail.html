@@ -47,6 +47,9 @@
                 {% else %}
                     <span class="write-review">(be the first to <a class="standard" href="{% url create_product_review product.slug %}">write a review</a>)</span>
                 {% endif %}
+                {% with product.awards.count as count %}
+                    {% if count %}<span class="awards"><img src="{{ STATIC_URL }}icons/award.png" />winner of {{ count }} <a href="#awards">award{{ count|pluralize:",s" }}</a></span>{% endif %}
+                {% endwith %}
                 <span class="brand">
                 brand: <a href="{{ product.brand.get_absolute_url }}">{{ product.brand.name }}</a>
                 </span>
@@ -110,6 +113,14 @@
                 {% if product.long_description %}
                     <h3>Full Description</h3>
                     {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
+                {% endif %}
+                {% if product.awards.count %}
+                    <h3 id="awards">Awards</h3>
+                    <ul class="text">
+                    {% for award in product.awards.all %}
+                        <li><a href="{{ award.award.get_absolute_url }}">{{ award }}</a></li>
+                    {% endfor %}
+                    </ul>
                 {% endif %}
             </div>
             <div class="col2">

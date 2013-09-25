@@ -279,7 +279,7 @@ body.products #bd {
     margin-top: 0.2em;
 }
 
-.text ul {
+.text ul, ul.text {
     margin-left: 1em;
 }
 
@@ -1164,6 +1164,7 @@ div.product-detail .visual {
 
 div.product-detail div.other-views {
     padding: 8px;
+    border-top: 1px solid lightgray;
 }
 
 div.product-detail div.other-views img {
@@ -1225,6 +1226,11 @@ div.description div.metadata {
     font-size: smaller;
     float: left;
     clear: left;
+}
+
+div.description div.metadata span.awards img {
+    height: 24px;
+    vertical-align: text-bottom;
 }
 
 div#more-detail h3 {
