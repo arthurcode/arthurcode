@@ -53,11 +53,35 @@
                     {% endfor %}
                 </ul>
             {% endif %}
+            {% if features %}
+                <h3>Feature</h3>
+                <ul>
+                    {% for feature in features %}
+                        {% choose_filter feature %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
             {% if countries %}
                 <h3>Made In</h3>
                 <ul>
                     {% for country in countries %}
                         {% choose_country country %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+            {% if prices %}
+                <h3>Price</h3>
+                <ul>
+                    {% for price in prices %}
+                        {% choose_filter price %}
+                    {% endfor %}
+                </ul>
+            {% endif %}
+             {% if ages %}
+                <h3>Age</h3>
+                <ul>
+                    {% for age in ages %}
+                        {% choose_age age %}
                     {% endfor %}
                 </ul>
             {% endif %}
@@ -77,35 +101,11 @@
                     {% endfor %}
                 </ul>
             {% endif %}
-            {% if prices %}
-                <h3>Price</h3>
-                <ul>
-                    {% for price in prices %}
-                        {% choose_filter price %}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% if ages %}
-                <h3>Age</h3>
-                <ul>
-                    {% for age in ages %}
-                        {% choose_age age %}
-                    {% endfor %}
-                </ul>
-            {% endif %}
             {% if colors %}
                 <h3>Color</h3>
                 <ul>
                     {% for color in colors %}
                         {% choose_color color %}
-                    {% endfor %}
-                </ul>
-            {% endif %}
-            {% if features %}
-                <h3>Feature</h3>
-                <ul>
-                    {% for feature in features %}
-                        {% choose_filter feature %}
                     {% endfor %}
                 </ul>
             {% endif %}
