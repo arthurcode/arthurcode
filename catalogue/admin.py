@@ -53,7 +53,7 @@ class ProductAdminForm(forms.ModelForm):
 class ProductAdmin(admin.ModelAdmin):
     form = ProductAdminForm
     inlines = [
-        ProductDimensionInline, ProductImageInline, ProductSpecificationInline
+        ProductDimensionInline, ProductSpecificationInline, ProductImageInline
     ]
 
     fieldsets = (
