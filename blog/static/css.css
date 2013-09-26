@@ -2655,3 +2655,8 @@ table.reviews td {
 .related #bd .text {
     padding-bottom: 20px;
 }
+
+li.roll-trigger a {
+    font-style: italic;
+    text-decoration: underline;
+}

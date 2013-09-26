@@ -87,3 +87,13 @@ def product_img_url(product):
     return {
         'product': product,
     }
+
+
+@register.filter
+def any_active(filter_list):
+    if not filter_list:
+        return False
+    for f in filter_list:
+        if f.active_filter:
+            return True
+    return False

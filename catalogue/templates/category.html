@@ -55,7 +55,7 @@
             {% endif %}
             {% if features %}
                 <h3>Feature</h3>
-                <ul>
+                <ul {% if not features|any_active %}class="roll"{% endif %}>
                     {% for feature in features %}
                         {% choose_filter feature %}
                     {% endfor %}
@@ -63,7 +63,7 @@
             {% endif %}
             {% if countries %}
                 <h3>Made In</h3>
-                <ul>
+                <ul {% if not countries|any_active %}class="roll"{% endif %}>
                     {% for country in countries %}
                         {% choose_country country %}
                     {% endfor %}
@@ -71,7 +71,7 @@
             {% endif %}
             {% if prices %}
                 <h3>Price</h3>
-                <ul>
+                <ul {% if not prices|any_active %}class="roll"{% endif %}>
                     {% for price in prices %}
                         {% choose_filter price %}
                     {% endfor %}
@@ -79,7 +79,7 @@
             {% endif %}
              {% if ages %}
                 <h3>Age</h3>
-                <ul>
+                <ul {% if not ages|any_active %}class="roll"{% endif %}>
                     {% for age in ages %}
                         {% choose_age age %}
                     {% endfor %}
@@ -87,7 +87,7 @@
             {% endif %}
             {% if brands %}
                 <h3>Brand</h3>
-                <ul>
+                <ul {% if not brands|any_active %}class="roll"{% endif %}>
                     {% for brand in brands %}
                         {% choose_brand brand %}
                     {% endfor %}
@@ -95,7 +95,7 @@
             {% endif %}
             {% if themes %}
                 <h3>Theme</h3>
-                <ul>
+                <ul {% if not themes|any_active %}class="roll"{% endif %}>
                     {% for theme in themes %}
                         {% choose_filter theme %}
                     {% endfor %}
@@ -103,7 +103,7 @@
             {% endif %}
             {% if colors %}
                 <h3>Color</h3>
-                <ul>
+                <ul {% if not colors|any_active %}class="roll"{% endif %}>
                     {% for color in colors %}
                         {% choose_color color %}
                     {% endfor %}
@@ -143,4 +143,50 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', 'event', function(Y) {
+            // roll up long lists of filters
+            var to_roll = Y.all('ul.roll');
+            var max_allowed = 4;
+
+            function roll(ul) {
+                var items = ul.all('li');
+                if (items.size() > max_allowed + 1) {
+                    // roll it up!
+                    var to_hide = items.slice(max_allowed);
+                    to_hide.each(function(li) {
+                        li.addClass('hidden');
+                    });
+                    var trigger = Y.Node.create('<li class="roll-trigger"><a href="">more choices <span class="count">(' + to_hide.size() + ')</span></a></li>');
+                    ul.appendChild(trigger);
+                    trigger.on('click', function(e) {
+                        e.preventDefault();
+                        ul.removeChild(trigger);
+                        unroll(ul);
+                    });
+                }
+            }
+
+            function unroll(ul) {
+                ul.all('li').each(function(li) {
+                    li.removeClass('hidden');
+                });
+                var trigger = Y.Node.create('<li class="roll-trigger"><a href="">fewer choices</a></li>');
+                ul.appendChild(trigger);
+                trigger.on('click', function(e) {
+                    e.preventDefault();
+                    ul.removeChild(trigger);
+                    roll(ul);
+                });
+            }
+
+            to_roll.each(function(ul) {
+                roll(ul);
+            });
+        });
+    </script>
 {% endblock %}
