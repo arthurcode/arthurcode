@@ -354,6 +354,7 @@ def get_prices(pre_filter_queryset, final_queryset, request_filters):
             setattr(price_filter, 'product_count', count)
             price_filters.append(price_filter)
             last_count = count
+    price_filters.reverse()
     return price_filters
 
 
