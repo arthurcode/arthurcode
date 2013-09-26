@@ -2659,4 +2659,5 @@ table.reviews td {
 li.roll-trigger a {
     font-style: italic;
     text-decoration: underline;
+    font-weight: lighter;
 }
