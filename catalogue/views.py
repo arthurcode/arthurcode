@@ -225,8 +225,8 @@ def _sort(request, queryset):
     """
     By default sort my bestselling products
     """
-    sort_by = request.GET.get('sortBy', 'bestselling')
-    sort_func = PRODUCT_SORTS['bestselling']
+    sort_by = request.GET.get('sortBy', 'priceMax')
+    sort_func = PRODUCT_SORTS['priceMax']
     if sort_by in PRODUCT_SORTS:
         sort_func = PRODUCT_SORTS[sort_by]
     return sort_func(queryset), sort_by
