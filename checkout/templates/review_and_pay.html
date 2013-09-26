@@ -2,6 +2,7 @@
 
 {% load form_tags %}
 {% load extras %}
+{% load catalogue_extras %}
 
 {% block order_summary %}{% endblock %}
 
@@ -85,7 +86,7 @@
                     {% for item in order.items %}
                         <tr>
                             <td>
-                                <a href="{{ item.get_absolute_url }}"><img src="{{ STATIC_URL }}{{ item.item.product.get_thumbnail }}" alt="{{ item.item.product.name }}"/></a>
+                                <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image }}" alt="{{ item.item.product.name }}"/></a>
                                 <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
                             </td>
                             <td>
