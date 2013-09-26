@@ -970,10 +970,16 @@ div.refine a:hover {
 div.refine a.bulk-ops {
     text-decoration: underline;
     font-weight: lighter;
+    color: blue;
 }
 
 div.refine li {
     line-height: 1.4em;
+
+}
+
+div.refine li.selected {
+    color: blue;
 }
 
 div.refine li img {
@@ -1038,6 +1044,7 @@ div.products .content {
     float: left;
     width: 100%;
     padding: 10px 0;
+    border-left: 1px solid lightgray;
 }
 
 div.products .page-size {
@@ -1057,6 +1064,7 @@ div.products .page-size select {
 div.products .sort-by {
     font-size: 80%;
     float: left;
+    padding-left: 10px;
 }
 
 div.products .sort-by select {
@@ -1111,16 +1119,15 @@ div.products .header, div.products .bottom {
 /* thumbnail styles */
 .thumbnail {
     width: 11.9em;
-    /*border: 1px solid lightgray;*/
     text-align: center;
     font-size: 80%;
     line-height: 1.2em;
     float: left;
     clear: right;
-    margin: 10px;
-    margin-left: 0;
     height: 18em;
     background-color: white;
+    padding: 10px;
+    border-bottom: 1px solid lightgray;
 }
 
 .thumbnail a img {
