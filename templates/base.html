@@ -13,7 +13,7 @@
     <script src="http://yui.yahooapis.com/3.8.1/build/yui/yui-min.js"></script>
     <script src="{{ STATIC_URL }}custom.js"></script>
     <title>{% block title %}{% if page_title %}{{ page_title }}{% endif %}{% endblock %} | {{ site_name }}</title>
-    <meta name="description" content="{% firstof meta_description site_description %}" />
+    <meta name="description" content="{% block meta-description %}{% firstof meta_description site_description %}{% endblock %}" />
 </head>
 <body class="{% block body_class %}unknown{% endblock %} yui3-skin-sam">
 
