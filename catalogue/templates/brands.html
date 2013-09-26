@@ -1,0 +1,14 @@
+{% extends "base_catalogue.html" %}
+
+{% block title %}Our Brands{% endblock %}
+
+{% block body_class %}brands{% endblock %}
+
+{% block body %}
+    <h2>Our Brands</h2>
+    <ul class="text">
+    {% for brand in brands %}
+        <li><a href="{{ brand.get_absolute_url }}">{{ brand.name }}</a></li>
+    {% endfor %}
+    </ul>
+{% endblock %}

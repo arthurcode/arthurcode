@@ -510,3 +510,26 @@ def restock_notify_view(request, instance_id):
         'form': form,
     }
     return render_to_response('restock_notify.html', context, context_instance=RequestContext(request))
+
+
+def brands_view(request):
+    # only show brands with active products, display in alphabetical order
+    brands = Brand.objects.filter(products__is_active=True).distinct().order_by('name')
+    context = {
+        'brands': brands,
+    }
+    return render_to_response('brands.html', context, context_instance=RequestContext(request))
+
+
+def brand_view(request, brand_slug):
+    brand = get_object_or_404(Brand, slug=brand_slug)
+    filter = filters.BrandFilter(brand_slug)
+    sort_func = PRODUCT_SORTS['bestselling']
+    bestsellers = sort_func(filter.apply(Product.active.all()))[:5]
+
+    context = {
+        'brand': brand,
+        'filter': filter,
+        'bestsellers': bestsellers,
+    }
+    return render_to_response('brand.html', context, context_instance=RequestContext(request))

@@ -104,11 +104,14 @@ class Brand(models.Model):
     name = models.CharField(max_length=50, validators=[not_blank])
     slug = models.SlugField(max_length=50, unique=True, help_text='Unique value for brand page URL, created from name.',
                             validators=[not_blank])
-    short_description = models.CharField(max_length=500)
+    short_description = models.CharField(max_length=500, help_text='May be used for meta description tags, so no html')
     long_description = models.TextField(help_text='May contain html')
 
     def __unicode__(self):
         return self.name
+
+    def get_absolute_url(self):
+        return reverse('brand', kwargs={'brand_slug': self.slug})
 
 
 class Theme(models.Model):

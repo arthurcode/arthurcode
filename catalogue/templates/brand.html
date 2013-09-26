@@ -1,0 +1,27 @@
+{% extends 'base_catalogue.html' %}
+{% load catalogue_extras %}
+{% load urls %}
+
+{% block title %}{{ brand.name }}{% endblock %}
+{% block body_class %}brands{% endblock %}
+
+{% block body %}
+
+    <div class="breadcrumbs">
+        <a href="{% url brands %}">our brands</a> > {{ brand.name }}
+    </div>
+
+    <h2>Brand Spotlight | {{ brand.name }}</h2>
+    <div class="text">
+        {% autoescape off %}{{ brand.long_description }}{% endautoescape %}
+    </div>
+    {% if bestsellers %}
+        <h3>Bestselling Products from {{ brand.name }}</h3>
+        <div class="thumbnails">
+            {% for product in bestsellers %}
+                {% thumb product %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <a class="subtle standard" href="{% url catalogue_category "" %}{% add_filter filter %}">view all products from {{ brand.name }}</a>
+{% endblock %}

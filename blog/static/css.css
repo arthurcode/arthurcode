@@ -2630,3 +2630,28 @@ table.reviews td {
     clear: both;
     border: 1px solid lightgray;
 }
+
+.brands #bd h3 {
+    float: left;
+    clear: both;
+    font-weight: bolder;
+    color: midnightblue;
+    font-family: 'Droid Serif', serif;
+}
+
+.brands #bd .thumbnails, .brands #bd a.standard {
+    float: left;
+    clear: both;
+}
+
+.brands #bd .thumbnails {
+    border: 1px solid lightgray;
+}
+
+.brands #bd .thumbnail {
+    border: none;
+}
+
+.brands #bd .text {
+    padding-bottom: 20px;
+}
