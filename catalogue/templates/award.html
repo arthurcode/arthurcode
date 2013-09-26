@@ -1,0 +1,27 @@
+{% extends "base_catalogue.html" %}
+{% load urls %}
+{% load catalogue_extras %}
+
+{% block title %}{{ award.name }}{% endblock %}
+{% block body_class %}awards related{% endblock %}
+{% block meta-description %}{{ award.short_description }}{% endblock %}
+
+{% block body %}
+    <div class="breadcrumbs">
+        <a href="{% url awards %}">product awards</a> > {{ award.name }}
+    </div>
+
+    <h2>{{ award.name }}</h2>
+    <div class="text">
+        {% autoescape off %}{{ award.long_description }}{% endautoescape %}
+    </div>
+    {% if bestsellers %}
+        <h3>Bestselling products that have won this award</h3>
+        <div class="thumbnails">
+            {% for product in bestsellers %}
+                {% thumb product %}
+            {% endfor %}
+        </div>
+    {% endif %}
+    <a class="standard subtle" href="{% url catalogue_category "" %}{% add_filter filter %}">view all products with this award</a>
+{% endblock %}

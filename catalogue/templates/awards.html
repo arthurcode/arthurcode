@@ -1,0 +1,12 @@
+{% extends "base_catalogue.html" %}
+{% block title %}Product Awards{% endblock %}
+{% block body_class %}awards related{% endblock %}
+
+{% block body %}
+    <h2>Product Awards</h2>
+    <ul class="text">
+        {% for award in awards %}
+            <li><a href="{{ award.get_absolute_url }}">{{ award.name }}</a></li>
+        {% endfor %}
+    </ul>
+{% endblock %}

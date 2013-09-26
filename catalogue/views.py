@@ -7,7 +7,8 @@ from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect
 from django.db.models import Count, Sum, Avg
 
-from catalogue.models import Product, Category, Brand, Theme, ProductImage, ProductInstance, Color, ProductOption
+from catalogue.models import Product, Category, Brand, Theme, ProductInstance, ProductOption, \
+    Award
 from arthurcode import settings
 from cart.forms import ProductAddToCartForm
 from catalogue import filters
@@ -533,3 +534,26 @@ def brand_view(request, brand_slug):
         'bestsellers': bestsellers,
     }
     return render_to_response('brand.html', context, context_instance=RequestContext(request))
+
+
+def awards_view(request):
+    # get all awards that have been won by active products
+    awards = Award.objects.filter(instances__products__is_active=True).distinct().order_by('name')
+    context = {
+        'awards': awards,
+    }
+    return render_to_response('awards.html', context, context_instance=RequestContext(request))
+
+
+def award_view(request, award_slug):
+    award = get_object_or_404(Award, slug=award_slug)
+    filter = filters.AwardFilter(award_slug)
+    sort_func = PRODUCT_SORTS['bestselling']
+    bestsellers = sort_func(filter.apply(Product.active.all()))[:5]
+
+    context = {
+        'award': award,
+        'filter': filter,
+        'bestsellers': bestsellers,
+    }
+    return render_to_response('award.html', context, context_instance=RequestContext(request))

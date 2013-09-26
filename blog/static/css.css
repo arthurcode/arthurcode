@@ -2631,7 +2631,7 @@ table.reviews td {
     border: 1px solid lightgray;
 }
 
-.brands #bd h3 {
+.related #bd h3 {
     float: left;
     clear: both;
     font-weight: bolder;
@@ -2639,19 +2639,19 @@ table.reviews td {
     font-family: 'Droid Serif', serif;
 }
 
-.brands #bd .thumbnails, .brands #bd a.standard {
+.related #bd .thumbnails, .related #bd a.standard {
     float: left;
     clear: both;
 }
 
-.brands #bd .thumbnails {
+.related #bd .thumbnails {
     border: 1px solid lightgray;
 }
 
-.brands #bd .thumbnail {
+.related #bd .thumbnail {
     border: none;
 }
 
-.brands #bd .text {
+.related #bd .text {
     padding-bottom: 20px;
 }

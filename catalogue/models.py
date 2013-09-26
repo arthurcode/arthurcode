@@ -90,9 +90,12 @@ class Award(models.Model):
     def __unicode__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('award', kwargs={'award_slug': self.slug})
+
 
 class AwardInstance(models.Model):
-    award = models.ForeignKey(Award)
+    award = models.ForeignKey(Award, related_name='instances')
     date = models.DateField(help_text='The date (or year) the award was given out.')
 
     def __unicode__(self):
