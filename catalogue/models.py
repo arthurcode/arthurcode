@@ -149,7 +149,7 @@ class Product(models.Model):
                                      blank=True,
                                      null=True,
                                      validators=[MinValueValidator(0.01)])
-    is_active = models.BooleanField(default=True)
+    is_active = models.BooleanField(default=True, db_index=True)
     is_bestseller = models.BooleanField(default=False)
     is_featured = models.BooleanField(default=False)
     is_box_stuffer = models.BooleanField(default=False)
