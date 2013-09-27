@@ -102,7 +102,7 @@
                         <button type="submit" name="submit" class="action">Add to Cart</button>
                     {% else %}
                         <span class="out-of-stock">OUT OF STOCK</span>
-                        <a class="subtle" href="{% url restock_notify product.instances.all.0.id %}">Email me when this product is back in stock</a>
+                        {% if product.instances.all %}<a class="subtle" href="{% url restock_notify product.instances.all.0.id %}">Email me when this product is back in stock</a>{% endif %}
                     {% endif %}
                 </form>
             </div>
