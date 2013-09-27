@@ -1,6 +1,5 @@
 {% extends 'base_hd_ft.html' %}
 {% load lazysignup_tags %}
-
 {% load cart_tags %}
 
 {% block header %}
@@ -12,7 +11,7 @@
             {% block account_links %}
                 <a class="account" href="{% url account_personal %}">my account</a>
                 {% if user.is_authenticated and not user|is_lazy_user %}
-                    <a class="logout" href="{% url logout %}?next={{ request.path }}">log out</a>
+                    <a class="logout" href="{% url logout %}">log out</a>
                     <span class="welcome">Welcome, {% firstof user.public_name user.first_name user.email %}</span>
                 {% else %}
                     <a class="login" href="{% url login_or_create_account %}">log in</a>
