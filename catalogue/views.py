@@ -4,7 +4,7 @@ from django.shortcuts import get_object_or_404, render_to_response, redirect
 from django.template import RequestContext
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, Http404
 from django.db.models import Count, Sum, Avg
 
 from catalogue.models import Product, Category, Brand, Theme, ProductInstance, ProductOption, \
@@ -33,7 +33,13 @@ def featured_view(request):
 
 
 def product_detail_view(request, slug=""):
-    product = get_object_or_404(Product, slug=slug)
+    try:
+        product = Product.objects.select_related().prefetch_related('instances', 'instances__options',
+                                                                    'instances__options__color', 'awards',
+                                                                    'specifications', 'dimensions').get(slug=slug)
+    except Product.DoesNotExist, e:
+        raise Http404(e)
+
     if request.method == 'POST':
         # add to cart, create the bound form
         postdata = request.POST.copy()
@@ -55,7 +61,7 @@ def product_detail_view(request, slug=""):
     meta_description = product.meta_description
     reviews = product.reviews.select_related('product', 'user__public_profile').\
         prefetch_related('flags').order_by('-last_modified')
-    images = product.images.order_by('-is_primary')           # make sure the primary image(s) appear first in this list
+    images = product.images.order_by('-is_primary').select_related('option') # make sure the primary image(s) appear first in this list
 
     # map from product-option-id --> product-image-id
     option_to_image_map = {}

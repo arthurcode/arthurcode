@@ -227,32 +227,37 @@ class Product(models.Model):
 
     def in_stock(self):
         """
-        Returns True if any of this product's instances (options) are in stock.
+        Returns True if any of this product's instances (options) are in stock.  Assume that self.instances.all()
+        has been pre-fetched or is cached.
         """
-        return self.instances.filter(quantity__gt=0).exists()
+        for instance in self.instances.all():
+            if instance.quantity > 0:
+                return True
+        return False
 
     def has_options(self):
         """
-        Returns True if this product has any options, such as size and/or color.
+        Returns True if this product has any options, such as size and/or color.  Assume that self.instances.all()
+        has been pre-fetched or is cached.
         """
-        return self.instances.count() > 1
+        return len(self.instances.all()) > 0
 
     def get_options(self):
         """
         Returns a mapping from option category --> the unique set of ProductOptions in that category that apply
         to this product.  The size options will be sorted in order of increasing sort-index.
-        """
-        # I need to get all product options that are linked to one or more of self.instances
-        color_options = Color.objects.filter(productinstance__in=self.instances.all()).distinct()
-        size_options = Size.objects.filter(productinstance__in=self.instances.all()).order_by('sort_index').distinct()
-        options = list(color_options) + list(size_options)
 
+        Assumes that product.instances.all() and instance.options.all() have been pre-fetched and are cached.
+        """
         option_map = {}
-        for option in options:
-            category = option.get_category_display()
-            if category not in option_map:
-                option_map[category] = []
-            option_map[category].append(option)
+
+        for instance in self.instances.all():
+            for option in instance.options.all():
+                category = option.get_category_display()
+                if category not in option_map:
+                    option_map[category] = [option]
+                else:
+                    option_map[category].append(option)
         return option_map
 
     def get_breadcrumbs(self):
