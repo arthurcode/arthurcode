@@ -1057,6 +1057,10 @@ div.products .thumbnails {
     min-height: 5em;
 }
 
+div.products .thumbnails p {
+    padding-left: 10px;
+}
+
 div.products .page-size select {
     width: 3em;
 }
