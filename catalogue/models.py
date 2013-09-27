@@ -211,13 +211,13 @@ class Product(models.Model):
     def is_award_winner(self):
         return self.awards and self.awards.count() > 0
 
-    rating = None
+    rating = -1   # None is a valid rating for products without any reviews
 
     def get_rating(self):
         """
         Returns this product's average review rating.  Returns None if there are no reviews.
         """
-        if self.rating is None:
+        if self.rating == -1:
             self.rating = self.reviews.aggregate(models.Avg('rating'))['rating__avg']
         return self.rating
 
@@ -263,10 +263,22 @@ class Product(models.Model):
         return self.category.get_ancestors(ascending=False, include_self=True)  # will always have at least one entry
 
     def get_thumbnail(self):
-        thumbs = self.images.exclude(thumb_path='').order_by('-is_primary', 'id')  # choose a primary thumbnail
-        if thumbs.exists():
+        # assume that self.images.all() has been pre-fetched using the prefetch_related() function
+        # this optimization is very important for the catalogue pages, since we don't want to query the DB for
+        # every single product, looking for its thumbnail image
+        images = self.images.all()
+        thumbs = []
+
+        for image in images:
+            if image.thumb_path:
+                if image.is_primary:
+                    return image
+                thumbs.append(image)
+
+        if thumbs:
             return thumbs[0]
         return None
+
 
 
 class Specification(models.Model):

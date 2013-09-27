@@ -143,6 +143,7 @@ def category_view(request, category_slug=""):
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
     final_product_list, sort_key = _sort(request, final_product_list)
+    final_product_list = final_product_list.prefetch_related('images')  # product.get_thumbnail optimization
     child_categories = child_categories.order_by('name')
 
     # get a finalized list of products in the form of a subquery.  This also forces the final_product_list queryset
