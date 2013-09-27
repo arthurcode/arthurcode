@@ -28,8 +28,7 @@ def _categories(search_words, categories=None):
     if not categories:
         categories = Category.objects.filter(is_active=True)
     for word in search_words:
-        categories = categories.filter(Q(name__icontains=word) |
-                                       Q(description__icontains=word))
+        categories = categories.filter(name__icontains=word)
     return categories
 
 
@@ -45,9 +44,10 @@ def products(search_text, products=Product.active.all()):
     for word in words:
         product_query &= (Q(name__icontains=word) |
                           Q(short_description__icontains=word) |
-                          Q(long_description__icontains=word) |   # TODO: take instance SKUs into account
+                          Q(long_description__icontains=word) |
                           Q(brand__name__icontains=word) |
-                          Q(themes__name__icontains=word))
+                          Q(themes__name__icontains=word) |
+                          Q(instances__sku__iexact=word))
 
     # factor in category matches
     categories = _categories(words)
