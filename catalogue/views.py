@@ -136,10 +136,9 @@ def category_view(request, category_slug=""):
     if search_text:
         # always do the search before the filtering
         pre_filter_product_list = searchutils.products(search_text, pre_filter_product_list)
-
-    # force the evaluation of the pre-filter product list queryset to
-    # avoid running expensive search sub-queries more than once
-    pre_filter_product_list = Product.objects.filter(id__in=[p.id for p in pre_filter_product_list])
+         # force the evaluation of the pre-filter product list queryset to
+        # avoid running expensive search sub-queries more than once
+        pre_filter_product_list = Product.objects.filter(id__in=[p.id for p in pre_filter_product_list])
 
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))

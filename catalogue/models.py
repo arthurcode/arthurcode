@@ -72,11 +72,11 @@ class Category(MPTTModel, models.Model):
 
 class ActiveProductsManager(models.Manager):
     """
-    Select products that are active and have one or more instances for sale.
+    Select products that are active.  Assume that each product has at least one instance associated with it.  It's too
+    expensive to check that the product has instances associated with it every single time.
     """
     def get_query_set(self):
-        return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)\
-            .annotate(num_instances=Count('instances')).filter(num_instances__gt=0)
+        return super(ActiveProductsManager, self).get_query_set().filter(is_active=True)
 
 
 class Award(models.Model):
