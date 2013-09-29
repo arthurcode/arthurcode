@@ -5,6 +5,7 @@
 {% load form_tags %}
 {% load ratings %}
 {% load catalogue_extras %}
+{% load markup %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -62,9 +63,7 @@
             </div>
 
             <div id="summary">
-                {% autoescape off %}
-                    <div class="text">{{ product.short_description }}</div>
-                {% endautoescape %}
+                <div class="text">{{ product.short_description|markdown }}</div>
             </div>
         </div>
         <div class="col3">
@@ -112,7 +111,7 @@
             <div class="col1">
                 {% if product.long_description %}
                     <h3>Full Description</h3>
-                    {% autoescape off %}<div class="text">{{ product.long_description }}</div>{% endautoescape %}
+                    <div class="text">{{ product.long_description|markdown }}</div>
                 {% endif %}
                 {% if product.awards.count %}
                     <h3 id="awards">Awards</h3>

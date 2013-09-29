@@ -158,8 +158,8 @@ class Product(models.Model):
 
     meta_description = models.CharField(max_length=200, help_text='Text for the meta description tag.',
                                         validators=[not_blank])
-    short_description = models.CharField(max_length=700)
-    long_description = models.TextField(blank=True)
+    short_description = models.CharField(max_length=700, help_text='You can use markdown formatting')
+    long_description = models.TextField(blank=True, help_text='You can use markdown formatting')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     category = models.ForeignKey(Category)

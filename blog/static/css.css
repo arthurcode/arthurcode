@@ -279,6 +279,10 @@ body.products #bd {
     margin-top: 0.2em;
 }
 
+.text p + p {
+    padding-top: 1em;
+}
+
 .text ul, ul.text {
     margin-left: 1em;
 }
