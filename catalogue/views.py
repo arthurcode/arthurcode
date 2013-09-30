@@ -222,7 +222,8 @@ PRODUCT_SORTS = {
     'priceMax': lambda q: Product.select_current_price(q).order_by("-current_price"),
     'nameA': lambda q: q.order_by('name'),
     'nameZ': lambda q: q.order_by('-name'),
-    'rating': lambda q: q.order_by('-rating'),  # TODO: this puts NULLS FIRST, need to figure out a way around this
+    'rating': lambda q: q.extra(select={'null_rating': "rating is null"},
+                                order_by=['null_rating', '-rating']),
     'new': lambda q: q.order_by('-created_at'),
 }
 
