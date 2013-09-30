@@ -125,8 +125,7 @@ def product_detail_view(request, slug=""):
 def category_view(request, category_slug=""):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
-        descendant_categories = category.get_descendants(include_self=True)
-        pre_filter_product_list = Product.active.filter(category__in=descendant_categories)
+        pre_filter_product_list = products_in_category(category, Product.active)
         meta_description = category.description
         child_categories = category.get_children()
         parent_categories = category.get_ancestors(ascending=False, include_self=False)
@@ -247,8 +246,7 @@ def add_product_count(category_queryset, product_queryset):
     """
     categories = []
     for category in category_queryset:
-        num_products = product_queryset.filter(category__lft__gte=category.lft, category__rght__lte=category.rght,
-                                               category__tree_id=category.tree_id).count()
+        num_products = products_in_category(category, product_queryset).count()
         if num_products > 0:
             setattr(category, 'product_count', num_products)
             categories.append(category)
@@ -566,3 +564,8 @@ def award_view(request, award_slug):
         'bestsellers': bestsellers,
     }
     return render_to_response('award.html', context, context_instance=RequestContext(request))
+
+
+def products_in_category(category, queryset):
+    return queryset.filter(category__lft__gte=category.lft, category__rght__lte=category.rght,
+                           category__tree_id=category.tree_id)
