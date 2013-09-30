@@ -247,7 +247,8 @@ def add_product_count(category_queryset, product_queryset):
     """
     categories = []
     for category in category_queryset:
-        num_products = category.get_leafnodes(include_self=True).filter(product__in=product_queryset).annotate(product_count=Count('product')).aggregate(Sum('product_count'))['product_count__sum']
+        num_products = product_queryset.filter(category__lft__gte=category.lft, category__rght__lte=category.rght,
+                                               category__tree_id=category.tree_id).count()
         if num_products > 0:
             setattr(category, 'product_count', num_products)
             categories.append(category)
