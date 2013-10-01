@@ -15,6 +15,8 @@ def product_search_view(request):
         q = form.cleaned_data['q']
         category_slug = form.cleaned_data.get('category_slug', '')
         searchutils.store(request, q)
-        return HttpResponseRedirect(reverse('catalogue_category', kwargs={'category_slug': category_slug})
-                                    + "?" + urllib.urlencode({'search': q}))
+        url = reverse('catalogue_category', kwargs={'category_slug': category_slug})
+        params = request.GET.copy()
+        params['search'] = q
+        return HttpResponseRedirect(url + "?" + urllib.urlencode(params))
     return HttpResponseRedirect(post_data['from'])

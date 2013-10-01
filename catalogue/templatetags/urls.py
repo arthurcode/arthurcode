@@ -55,6 +55,12 @@ def remove_search(context):
 
 
 @register.inclusion_tag('_response.html', takes_context=True)
+def go_to_search_url(context):
+    url = reverse('product_search')
+    return preserve_params(context, url)
+
+
+@register.inclusion_tag('_response.html', takes_context=True)
 def preserve_params(context, url):
     """
     Redirects the user to the given url, making sure to preserve any filter and/or sort query parameters.
