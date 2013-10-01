@@ -79,6 +79,8 @@ def query_string(context, add=None, remove=None):
 def get_query_string(p, new_params=None, remove=None):
     """
     Add and remove query parameters. From `django.contrib.admin`.
+    p is a list of existing query params: [(key, value), (key, value) ...]
+    New params are added to the end of the existing query sequence.
     """
     final_params = []
     if new_params is None: new_params = {}
