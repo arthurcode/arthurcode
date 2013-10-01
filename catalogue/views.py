@@ -472,6 +472,17 @@ def get_countries(pre_filter_queryset, final_queryset, request_filters):
             setattr(filter, 'product_count', count)
             setattr(filter, 'active_filter', is_active)
             country_filters.append(filter)
+        countries_of_interest.remove(country)
+
+    for country in countries_of_interest:
+        # these are the countries with no products in our list
+        is_active = active_filter and active_filter.country_code == country
+        if is_active:
+            filter = filters.CountryOfOriginFilter(country)
+            setattr(filter, 'product_count', 0)
+            setattr(filter, 'active_filter', True)
+            country_filters.append(filter)
+
     return country_filters
 
 
