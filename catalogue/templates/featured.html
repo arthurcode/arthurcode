@@ -3,20 +3,23 @@
 
 {% block root-category %}featured{% endblock %}
 {% block title %}Featured Products{% endblock %}
+{% block body_class %}featured products{% endblock %}
 
 {% block body %}
+    <p class="tagline">
+        Bringing <span class="important">Learning</span> to <span class="important">Life!</span>
+    </p>
     <div class="quick-links">
         {% comment %}Shopping links that may be more interesting to customers than the main category links.{% endcomment %}
-        <h2>Quick Links</h2>
         <ul class="quick-links">
-            <li><a href="{% url catalogue_category '' %}">All Products</a></li>
-            <li><a href="/products/?filterNew=60&sortBy=new">New Products</a></li>
-            <li><a>Gift Cards</a></li>
-            <li><a href="/products/?filterAward=any">Award Winning Toys</a></li>
-            <li><a href="/products/?madeIn=CA">Made In Canada</a></li>
-            <li><a href="/products/?filterBoxStuffer=True">Box Stuffers</a></li>
-            <li><a href="/products/?filterGreen=True">Eco Friendly Toys</a></li>
-            <li><a href="/products/?filterOnSale=True">Sale</a></li>
+            <li class="primary-box"><a href="{% url catalogue_category '' %}">All Products</a></li>
+            <li class="primary-box"><a href="/products/?filterNew=60&sortBy=new">New Products</a></li>
+            <li class="primary-box"><a>Gift Cards</a></li>
+            <li class="primary-box"><a href="/products/?filterAward=any">Award Winning Toys</a></li>
+            <li class="primary-box"><a href="/products/?madeIn=CA">Made In Canada</a></li>
+            <li class="primary-box"><a href="/products/?filterBoxStuffer=True">Box Stuffers</a></li>
+            <li class="primary-box"><a href="/products/?filterGreen=True">Eco Friendly Toys</a></li>
+            <li class="primary-box"><a href="/products/?filterOnSale=True">Sale</a></li>
         </ul>
     </div>
 
