@@ -80,11 +80,11 @@
                 Y.Custom.positionFieldError(field);
             });
 
-            // add some simple client-side validation to the search bar
-            var searchButton = Y.one("form#search button");
-            if (searchButton) {
+            // add some simple client-side validation to the search bar(s)
+            Y.all("form#search button").each(function (searchButton) {
                 searchButton.on("click", function(e) {
-                    var searchBox = Y.one("form#search input#id_q");
+                    var form = searchButton.ancestor("form#search");
+                    var searchBox = form.one("input#id_q");
                     var searchText = searchBox.get("value").trim();
                     if (searchText.length <= 2) {
                         // invalid search query
@@ -99,7 +99,7 @@
                         Y.Custom.setFieldError(field, message, true); // error as a popup
                     }
                 });
-            }
+            });
         });
     </script>
 {% endblock %}
