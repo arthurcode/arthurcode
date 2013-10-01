@@ -240,7 +240,7 @@ class Product(models.Model):
         Returns True if this product has any options, such as size and/or color.  Assume that self.instances.all()
         has been pre-fetched or is cached.
         """
-        return len(self.instances.all()) > 0
+        return len(self.instances.all()) > 1
 
     def get_options(self):
         """
