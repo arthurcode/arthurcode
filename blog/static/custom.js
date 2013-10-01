@@ -170,7 +170,6 @@ YUI.add('custom', function(Y) {
             if (!field) {
                 return;
             }
-
             field.addClass("error");
             var errorSpans = field.all("span.error");
             if (errorSpans.size() > 0) {
@@ -201,7 +200,10 @@ YUI.add('custom', function(Y) {
                 return;
             }
             var newErrorSpan = Y.Node.create('<span class="error">' + errorSpan.getHTML() + '</span>');
-            field.one('.column1').appendChild(newErrorSpan);
+            var column1 = field.one('.column1');
+            if (column1) {
+                column1.appendChild(newErrorSpan);
+            }
             errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
         }
     };
