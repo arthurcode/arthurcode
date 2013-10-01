@@ -143,8 +143,8 @@
                             {% thumb product %}
                         {% endfor %}
                     {% else %}
-                        {% if search_text %}
-                            <div class="text subtle">
+                        <div class="text subtle">
+                            {% if search_text %}
                                 <p>
                                     Sorry, there are no products {% if category %}in the <em>{{ category.name }}</em> category{% endif %} that match your search terms{% if filters %} and your product filters{% endif %}.
                                 </p>
@@ -154,10 +154,11 @@
                                     {% if filters %}<li><a class="standard" href="{% remove_all_filters %}">remove your product filters and retry the search</a></li>{% endif %}
                                     <li><a class="standard" href="{% remove_search %}">clear search terms</a></li>
                                 </ul>
-                            </div>
-                        {% else %}
-                            <p>No products to display</p>
-                        {% endif %}
+                                </div>
+                            {% else %}
+                                <p>No products to display</p>
+                            {% endif %}
+                        </div>
                     {% endif %}
                 </div>
                 <div class="bottom">
