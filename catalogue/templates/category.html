@@ -46,7 +46,7 @@
             <div class="content">
             {% if filters or search_text %}<a class="bulk-ops click-to-remove" href="{% remove_all_filters_and_search %}">reset all</a>{% endif %}
             {% if products or search_text %}
-                <h3>{% if search_text %}Refine Search{% else %}Search Within{% endif %}</h3>
+                <h3>{% if search_text %}Refine Search{% else %}Search{% endif %}</h3>
                 <form id="search" class="no-help" method="post" action="{% go_to_search_url %}">
                     {% csrf_token %}
                     <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
