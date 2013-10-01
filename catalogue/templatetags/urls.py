@@ -2,6 +2,7 @@ from utils.templatetags.extras import query_string, get_query_string
 from django.template import Library
 from django.core.urlresolvers import reverse
 from catalogue import filters
+from urlparse import parse_qsl
 
 register = Library()
 
@@ -68,7 +69,8 @@ def preserve_params(context, url):
     """
     to_add = None
     to_remove = "page"
-    params = dict(context['request'].GET.items())
+    request = context['request']
+    params = parse_qsl(request.META['QUERY_STRING'])
     query_string = get_query_string(params, to_add, to_remove)
     if query_string == "?":
         query_string = ""

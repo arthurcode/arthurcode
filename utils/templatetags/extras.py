@@ -3,6 +3,7 @@ from django.template import Library, Node, resolve_variable
 from django.utils.safestring import mark_safe
 import locale
 import urllib
+from urlparse import parse_qsl
 
 register = Library()
 
@@ -62,11 +63,14 @@ def query_string(context, add=None, remove=None):
     http://www.url.com/{% query_string "param_to_add=value, param_to_add=value" "param_to_remove, params_to_remove" %}
     http://www.url.com/{% query_string "" "filter" %}filter={{new_filter}}
     http://www.url.com/{% query_string "sort=value" "sort" %}
+
+    Query parameters are always added to the END of the query string.
     """
     # Written as an inclusion tag to simplify getting the context.
     add = string_to_dict(add)
     remove = string_to_list(remove)
-    params = dict( context['request'].GET.items())
+    request = context['request']
+    params = parse_qsl(request.META['QUERY_STRING'])
     response = get_query_string(params, add, remove)
     return {'response': response }
 
@@ -76,19 +80,25 @@ def get_query_string(p, new_params=None, remove=None):
     """
     Add and remove query parameters. From `django.contrib.admin`.
     """
+    final_params = []
     if new_params is None: new_params = {}
     if remove is None: remove = []
-    for r in remove:
-        for k in p.keys():
-            # the original code was if k.startswith(r), delete, which I DID NOT LIKE
-            if k == r:
-                del p[k]
-    for k, v in new_params.items():
-        if k in p and v is None:
-            del p[k]
-        elif v is not None:
-            p[k] = v
-    return mark_safe("?" + urllib.urlencode(p))
+
+    for (key, value) in p:
+        if key in remove:
+            continue
+        if key in new_params:
+            # use the new value as long as it is not None
+            value = new_params[key]
+            del(new_params[key])
+            if value is None:
+                continue
+        final_params.append((key, value))
+
+    for key, value in new_params.items():
+        if value is not None:
+            final_params.append((key, value))
+    return mark_safe("?" + urllib.urlencode(final_params, doseq=True))
 
 
 def string_to_dict(string):

@@ -9,6 +9,7 @@ from utils.templatetags.extras import currency
 from django.db.models import Model
 from datetime import datetime, timedelta
 from urllib import quote_plus, unquote_plus
+from urlparse import parse_qsl
 from django_countries.countries import OFFICIAL_COUNTRIES
 
 WILDCARD = "any"
@@ -325,8 +326,14 @@ FILTERS = {
 
 
 def parse_filters(request):
+    """
+    Returns a list of filters *IN THE SAME ORDER* as they appear in the query string.
+    """
+    qs = request.META['QUERY_STRING']
+    params = parse_qsl(qs)
     filters = []
-    for filter_key, value in request.GET.items():
+
+    for (filter_key, value) in params:
         if filter_key in FILTERS:
             filter_clazz = FILTERS[filter_key]
             try:
