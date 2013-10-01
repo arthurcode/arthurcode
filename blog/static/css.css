@@ -525,6 +525,15 @@ form#search .field {
     margin-bottom: 0 !important;
 }
 
+div.refine form#search {
+    float: left;
+    font-size: smaller;
+}
+
+div.refine form#search fieldset input{
+    width: 9em;
+}
+
 body.cart div.cart-summary {
     box-shadow: 3px 3px 3px black;
 }
@@ -1036,7 +1045,7 @@ div.products .title h2 {
 
 div.products .title span.now-showing {
     font-size: 80%;
-    font-style: italic;
+    font-weight: lighter;
 }
 
 div.products .title a {
@@ -1057,11 +1066,7 @@ div.products .page-size {
     margin-right: 5px;
 }
 
-div.products .thumbnails {
-    min-height: 5em;
-}
-
-div.products .thumbnails p {
+div.products .thumbnails div {
     padding-left: 10px;
 }
 
