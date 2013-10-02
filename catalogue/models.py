@@ -3,15 +3,12 @@ from django.core.validators import MinValueValidator
 from mptt.models import MPTTModel, TreeForeignKey
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
-from django.db import transaction
 from django_countries import CountryField
 
 from utils.validators import not_blank, valid_sku
 
 
 class Category(MPTTModel, models.Model):
-    ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT = "An inactive category cannot have an active subcategory"
-
     parent = TreeForeignKey('self', null=True, blank=True, related_name='children',
                             help_text='Parent category. Do not re-parent a category unless you REALLY know what you are doing.')
     name = models.CharField(max_length=50, unique=True, validators=[not_blank],
@@ -23,7 +20,6 @@ class Category(MPTTModel, models.Model):
     description = models.TextField(help_text='Content for description meta tag', validators=[not_blank])
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-    is_active = models.BooleanField(default=True)
 
     class Meta:
         verbose_name_plural = 'Categories'
@@ -44,29 +40,6 @@ class Category(MPTTModel, models.Model):
         that are in subcategories of this product.
         """
         return self.product_set.count()
-
-    @transaction.commit_on_success
-    def set_is_active(self, is_active):
-        """
-        When a category is activated or deactivated, all of its subcategories and products must be activated or
-        deactivated as well.
-        """
-        subcategories = self.get_descendants(include_self=True)
-        products = Product.objects.filter(category__in=subcategories)
-
-        for category in subcategories:
-            category.is_active = is_active
-            category.full_clean()
-            category.save()
-
-        for product in products:
-            product.is_active = is_active
-            product.full_clean()
-            product.save()
-
-    def clean(self):
-        if self.parent_id and self.is_active and not self.parent.is_active:
-            raise ValidationError(Category.ERROR_ACTIVE_CATEGORY_INACTIVE_PARENT)
 
 
 class ActiveProductsManager(models.Manager):
@@ -127,7 +100,6 @@ class Theme(models.Model):
 
 
 class Product(models.Model):
-    ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY = "An active product cannot be in an inactive category."
     ERROR_SALE_PRICE_MORE_THAN_PRICE = "The sale price must be less than or equal to the product price."
     ERROR_MAX_AGE_TOO_SMALL = "The maximum age is smaller than the minimum age."
 
@@ -175,9 +147,6 @@ class Product(models.Model):
     weight = models.DecimalField(decimal_places=3, max_digits=6, help_text="The weight of the assembled product, in Kg")
 
     def clean(self):
-        if self.is_active and self.category_id and not self.category.is_active:
-            raise ValidationError(Product.ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY)
-
         if self.sale_price and self.price and self.sale_price >= self.price:
             raise ValidationError(Product.ERROR_SALE_PRICE_MORE_THAN_PRICE)
 

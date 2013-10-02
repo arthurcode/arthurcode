@@ -26,7 +26,7 @@ def categories(search_text, categories=None):
 
 def _categories(search_words, categories=None):
     if not categories:
-        categories = Category.objects.filter(is_active=True)
+        categories = Category.objects.all()
     for word in search_words:
         categories = categories.filter(name__icontains=word)
     return categories
