@@ -4,7 +4,6 @@ from mptt.models import MPTTModel, TreeForeignKey
 from django.core.urlresolvers import reverse
 from django.core.exceptions import ValidationError
 from django.db import transaction
-from django.db.models import Count
 from django_countries import CountryField
 
 from utils.validators import not_blank, valid_sku
@@ -128,8 +127,6 @@ class Theme(models.Model):
 
 
 class Product(models.Model):
-
-    ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY = "An inactive product cannot be in an active category."
     ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY = "An active product cannot be in an inactive category."
     ERROR_SALE_PRICE_MORE_THAN_PRICE = "The sale price must be less than or equal to the product price."
     ERROR_MAX_AGE_TOO_SMALL = "The maximum age is smaller than the minimum age."
@@ -178,9 +175,6 @@ class Product(models.Model):
     weight = models.DecimalField(decimal_places=3, max_digits=6, help_text="The weight of the assembled product, in Kg")
 
     def clean(self):
-        if not self.is_active and self.category_id and self.category.is_active:
-            raise ValidationError(Product.ERROR_INACTIVE_PRODUCT_IN_ACTIVE_CATEGORY)
-
         if self.is_active and self.category_id and not self.category.is_active:
             raise ValidationError(Product.ERROR_ACTIVE_PRODUCT_IN_INACTIVE_CATEGORY)
 
@@ -195,12 +189,6 @@ class Product(models.Model):
 
     def get_absolute_url(self):
         return reverse('catalogue_product', kwargs={'slug': self.slug})
-
-    def deactivate(self):
-        self.category = get_inactive_category()
-        self.is_active = False
-        self.full_clean()
-        self.save()
 
     def percent_savings(self):
         if self.sale_price:
@@ -428,21 +416,5 @@ class RestockNotification(models.Model):
     def __unicode__(self):
         return "%s %s" % (self.instance, self.email)
 
-
-def get_inactive_category():
-    """
-    Returns a special Category instance that can be used to store products that are no longer active.  We don't want
-    inactive products to live in active categories, but we will need to deactivate products and they need to reference
-    a category.
-    """
-    params = {
-        'name': 'Inactive Category',
-        'slug': 'inactive-category',
-        'is_active': False,
-        'description': 'This category stores all products that are no longer active.',
-        'parent': None
-    }
-    category, _ = Category.objects.get_or_create(**params)
-    return category
 
 # register any signals for this app
