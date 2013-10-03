@@ -11,6 +11,7 @@
     {% form_errors form %}
     <form method="post" action="">
         {% csrf_token %}
+        {{ form.instance_id }}
         {% field form.name %}
         {% field form.description %}
         <div class="controls">
