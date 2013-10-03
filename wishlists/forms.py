@@ -3,9 +3,11 @@ from models import WishList
 from accounts.accountutils import is_regular_user
 from django.core.exceptions import ValidationError
 from utils.validators import not_blank
+from catalogue.models import ProductInstance
 
 DEFAULT_NAME_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength': WishList.NAME_MAX_LENGTH})
 DEFAULT_DESCRIPTION_WIDGET = forms.Textarea(attrs={'maxlength': WishList.DESCRIPTION_MAX_LENGTH, 'cols': 40, 'rows': 4})
+
 
 class CreateWishListForm(forms.Form):
 
@@ -15,6 +17,9 @@ class CreateWishListForm(forms.Form):
                                   widget=DEFAULT_DESCRIPTION_WIDGET,
                                   help_text="Extra (optional) information for friends and family members who will "
                                             "be using this list")
+
+    # holds the id of the product instance we should add to this wish list after it is created, if any
+    instance_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
 
     def __init__(self, request, *args, **kwargs):
         super(CreateWishListForm, self).__init__(*args, **kwargs)
@@ -35,9 +40,18 @@ class CreateWishListForm(forms.Form):
     def save(self):
         name = self.cleaned_data.get('name')
         description = self.cleaned_data.get('description', None)
+        instance_id = self.cleaned_data.get('instance_id', None)
+
         wishlist = WishList(user=self.request.user, name=name, description=description)
         wishlist.full_clean()
         wishlist.save()
+        if instance_id:
+            try:
+                product_instance = ProductInstance.objects.get(id=instance_id)
+                wishlist.add_product(product_instance)
+            except ProductInstance.DoesNotExist:
+                pass
+
         return wishlist
 
 
