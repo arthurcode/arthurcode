@@ -10,6 +10,7 @@ import search.urls
 import reviews.urls
 import questions.urls
 import orders.urls
+import wishlists.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -46,4 +47,6 @@ urlpatterns = patterns('',
     url(r'^questions/', include(questions.urls)),
 
     url(r'orders/', include(orders.urls)),
+
+    url(r'wishlists/', include(wishlists.urls)),
 )

@@ -1,0 +1,20 @@
+{% extends "base_wishlist.html" %}
+{% load form_tags %}
+
+{% block title %}Create A Wish List{% endblock %}
+
+{% block body %}
+    <div class="breadcrumbs">
+        <a href="{% url account_wishlists %}">my wish lists</a> > create a new wish list
+    </div>
+    <h2>Create a Wish List</h2>
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% field form.name %}
+        {% field form.description %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Create Wish List</button>
+        </div>
+    </form>
+{% endblock %}

@@ -2,6 +2,7 @@ from django.db import models
 from catalogue.models import ProductInstance
 from django.contrib.auth.models import User
 from utils.validators import not_blank
+from django.core.urlresolvers import reverse
 
 
 class WishList(models.Model):
@@ -15,6 +16,9 @@ class WishList(models.Model):
 
     class Meta:
         unique_together = ('user', 'name')
+
+    def get_absolute_url(self):
+        return reverse('wishlist_view', args=[self.id])
 
 
 class WishListItem(models.Model):

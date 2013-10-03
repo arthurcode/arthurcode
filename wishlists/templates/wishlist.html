@@ -1,0 +1,11 @@
+{% extends "base_wishlist.html" %}
+
+{% block title %}{{ wishlist.name }}{% endblock %}
+
+{% block body %}
+    <div class="breadcrumbs">
+        <a href="{% url account_wishlists %}">my wish lists</a> > {{ wishlist.name }}
+    </div>
+    <h2>{{ wishlist.name }}</h2>
+    TBD
+{% endblock %}
