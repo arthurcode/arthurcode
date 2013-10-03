@@ -7,5 +7,9 @@
         <a href="{% url account_wishlists %}">my wish lists</a> > {{ wishlist.name }}
     </div>
     <h2>{{ wishlist.name }}</h2>
-    TBD
+    <ul>
+        {% for item in wishlist.items.all %}
+            <li>{{ item.instance.name }}</li>
+        {% endfor %}
+    </ul>
 {% endblock %}
