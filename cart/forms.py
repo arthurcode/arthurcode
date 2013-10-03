@@ -39,7 +39,6 @@ class ProductAddToCartForm(forms.Form):
     # custom validation to check for cookies
     def clean(self):
         cleaned_data = super(ProductAddToCartForm, self).clean()
-        quantity = cleaned_data.get('quantity', None)
         all_extra_fields_set = True
         for field in self.extra_fields:
             if cleaned_data.get(field) is None:
@@ -53,23 +52,9 @@ class ProductAddToCartForm(forms.Form):
                 self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
-            elif quantity and all_extra_fields_set:
-                instance = self.get_product_instance(cleaned_data)
-
-                if not instance:
-                    raise ValidationError(self.ERROR_UNAVAILABLE)
-
-                if instance.quantity <= 0:
-                    # if the product is completely out of stock make this a general error
-                    url = reverse("restock_notify", args=[instance.id])
-                    error = self.ERROR_OUT_OF_STOCK + \
-                            " <a class='standard' href='%s'>Email me when it becomes available.</a>" % url
-                    raise ValidationError(error)
-
-                error = check_stock(instance, self.request, quantity_to_add=quantity)
-                if error:
-                    self._errors['quantity'] = self.error_class([error])
-                    del(cleaned_data['quantity'])
+            elif all_extra_fields_set:
+                self.check_available(cleaned_data)
+                self.check_stock(cleaned_data)
         return cleaned_data
 
     def get_product_instance(self, cleaned_data):
@@ -91,6 +76,27 @@ class ProductAddToCartForm(forms.Form):
         if instances.count() == 0:
             return None
         return instances[0]
+
+    def check_available(self, cleaned_data):
+        instance = self.get_product_instance(cleaned_data)
+        if not instance:
+            raise ValidationError(self.ERROR_UNAVAILABLE)
+
+    def check_stock(self, cleaned_data):
+        quantity = cleaned_data.get('quantity', 0)
+        instance = self.get_product_instance(cleaned_data)
+        if instance and quantity:
+            if instance.quantity <= 0:
+                # if the product is completely out of stock make this a general error
+                url = reverse("restock_notify", args=[instance.id])
+                error = self.ERROR_OUT_OF_STOCK + \
+                        " <a class='standard' href='%s'>Email me when it becomes available.</a>" % url
+                raise ValidationError(error)
+
+            error = check_stock(instance, self.request, quantity_to_add=quantity)
+            if error:
+                self._errors['quantity'] = self.error_class([error])
+                del(cleaned_data['quantity'])
 
     def save(self):
         """

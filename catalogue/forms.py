@@ -2,6 +2,8 @@ from django import forms
 from accounts.forms import DEFAULT_EMAIL_WIDGET
 from catalogue.models import ProductInstance, RestockNotification
 from django.core.exceptions import ValidationError
+from cart.forms import ProductAddToCartForm
+from wishlists.models import WishList
 
 
 class RestockNotifyForm(forms.Form):
@@ -45,4 +47,19 @@ class RestockNotifyForm(forms.Form):
         return None
 
 
+class AddToWishListForm(ProductAddToCartForm):
+    """
+    A form that says "Hi, I would like to add this product instance to 'a' wishlist".  The customer will choose which
+    wishlist they would like to add it to at the end of the process.
+    """
 
+    def check_stock(self, cleaned_data):
+        """
+        We can add out-of-stock items to a wish list, so disable this check in the clean routine.
+        """
+        return cleaned_data
+
+
+    def save(self):
+        # this method can't save the product to the wishlist, because we don't know which wishlist to add it to.
+        return None
