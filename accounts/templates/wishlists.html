@@ -5,17 +5,18 @@
 {% block root-category %}wishlists{% endblock %}
 
 {% block body %}
+    <h2>My Wishlists ({{ wishlists|length }})</h2>
     {% if wishlists %}
         {% for wl in wishlists %}
             <ul>
                 <li><a href="{{ wl.get_absolute_url }}">{{ wl.name }}</a></li>
             </ul>
         {% endfor %}
-        <a href="{% url wishlist_create %}">create a new wish list</a>
+        <a class="subtle standard" href="{% url wishlist_create %}">create a new wish list</a>
     {% else %}
         <div class="text">
             <p>You do not have any wish lists.</p>
-            <a href="{% url wishlist_create %}">create your first wish list</a>
+            <a class="subtle standard" href="{% url wishlist_create %}">create your first wish list</a>
         </div>
     {% endif %}
 {% endblock %}
