@@ -111,11 +111,11 @@
                     {% endif %}
                     {% if form.wishlist %}
                         {% if form.wishlist.field.choices|length > 1 %}
-                            {% field form.wishlist %}
+                            {% field form.wishlist 'wishlist'%}
                         {% else %}
-                            {% field form.wishlist 'hidden'%}
+                            {% field form.wishlist 'hidden wishlist'%}
                         {% endif %}
-                        <button type="submit" name="add-to-wishlist" class="action wishlist">Add to Wish List</button>
+                        <button id="add-to-wishlist" type="submit" name="add-to-wishlist" class="action wishlist">Add to Wish List</button>
                     {% endif %}
                 </form>
                 {% if not request.user.is_authenticated or request.user|is_lazy_user %}
@@ -394,6 +394,60 @@
                 form.all('.field.error').each(function(field) {
                     Y.Custom.popupFieldError(field);
                 });
+            }
+
+            // wishlist popup select
+            var wishlist_button = Y.one('button#add-to-wishlist');
+            if (wishlist_button) {
+                var wishlist_field = Y.one('.field.wishlist');
+                if (wishlist_field) {
+                    wishlist_field.addClass('hidden');
+                    var options = wishlist_field.all('option');
+
+                    // when there is only one option available the user should be able to simply click on the
+                    // 'Add to Wish List' button and have the form submit, no extra javascript required.
+                    if (options.size() > 1) {
+                        // make a copy of the submit button visible, hide the original
+                        var wishlist_button_copy = wishlist_button.cloneNode(true);
+                        var add_to_cart_form = wishlist_button.ancestor('form');
+                        wishlist_button.addClass('hidden');
+                        add_to_cart_form.appendChild(wishlist_button_copy);
+
+                        var panel_div = Y.Node.create('<div></div>');
+                        // when the "Add to Wish List" button is clicked, prompt the user to choose from the available
+                        // wishlists, or create a new one.
+                        // When they click on a choice the corresponding option should be selected, AND the form
+                        // should be submitted.
+                        options.each(function(option) {
+                            var button = Y.Node.create('<button>' + option.getHTML() + '</button>');
+                            button.on('click', function(e) {
+                                option.setAttribute('selected', 'true');
+                                wishlist_button.simulate('click');
+                            });
+                            panel_div.appendChild(button);
+                        });
+
+                        var panel = new Y.Panel({
+                            headerContent: 'Select A Wish List',
+                            srcNode: panel_div,
+                            centered: true,
+                            render: true,
+                            visible: false,
+
+                            hideOn: [
+                                {
+                                    eventName: 'clickoutside'
+                                }
+                            ]
+                        });
+                        panel.align(wishlist_button_copy, [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]);
+
+                        wishlist_button_copy.on('click', function(e) {
+                            e.preventDefault();
+                            panel.show();
+                        })
+                    }
+                }
             }
         });
     </script>

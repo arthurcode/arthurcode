@@ -569,7 +569,7 @@ div.cart-summary {
     padding: 0.25em 0.5em;
 }
 
-.wishlist {
+button.wishlist {
     background: #f0f9ff; /* Old browsers */
     background: -moz-linear-gradient(top,  #f0f9ff 0%, #cbebff 47%, #a1dbff 100%); /* FF3.6+ */
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#f0f9ff), color-stop(47%,#cbebff), color-stop(100%,#a1dbff)); /* Chrome,Safari4+ */
