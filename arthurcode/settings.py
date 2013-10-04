@@ -123,6 +123,7 @@ INSTALLED_APPS = (
     'django.contrib.admin',
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',
+    'django.contrib.markup',
     'south', # schema migrations
     'blog',
     'mptt',
@@ -141,6 +142,7 @@ INSTALLED_APPS = (
     'debug_toolbar',
     'reviews',
     'questions',
+    'wishlists',
 )
 
 # A sample logging configuration. The only tangible logging
