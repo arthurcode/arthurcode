@@ -7,6 +7,9 @@
 {% block body_class %}products out-of-stock{% endblock %}
 
 {% block body %}
+    <div class="breadcrumbs">
+        <a href="{{ product.get_absolute_url }}">{{ product.name }}</a> > back-in-stock notification
+    </div>
     <div class="columns-2">
         <div class="column-1">
             {% thumb product.product product.get_best_image %}
