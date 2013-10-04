@@ -6,6 +6,8 @@ from forms import CreateWishListForm
 from django.http import HttpResponseRedirect
 from models import WishList
 
+PRODUCT_INSTANCE_KEY = 'addProduct'
+
 @non_lazy_login_required
 def create_wishlist(request):
     if request.method == "POST":
@@ -15,7 +17,14 @@ def create_wishlist(request):
             wishlist = form.save()
             return HttpResponseRedirect(wishlist.get_absolute_url())
     else:
-        form = CreateWishListForm(request)
+        instance_id = request.GET.get(PRODUCT_INSTANCE_KEY, None)
+        initial = {}
+        if instance_id:
+            try:
+                initial['instance_id'] = int(instance_id)
+            except:
+                pass
+        form = CreateWishListForm(request, initial=initial)
 
     context = {
         'form': form,

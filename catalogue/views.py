@@ -15,6 +15,8 @@ from catalogue import filters
 from search import searchutils
 import json
 from catalogue.forms import RestockNotifyForm
+from urllib import urlencode
+from wishlists.views import PRODUCT_INSTANCE_KEY
 
 
 DEFAULT_PAGE_SIZE = 16
@@ -43,15 +45,27 @@ def product_detail_view(request, slug=""):
     if request.method == 'POST':
         # add to cart, create the bound form
         postdata = request.POST.copy()
+        # add to cart
         form = ProductAddToCartForm(product, request, postdata)
         # check if posted data is valid
         if form.is_valid():
-            #add to cart and redirect to cart page
-            form.save()
             # if test cookie worked, get rid of it
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
-            return HttpResponseRedirect(reverse('show_cart'))
+
+            if 'add-to-wishlist' in postdata:
+                wishlist_id = form.cleaned_data.get('wishlist')
+
+                if wishlist_id == str(form.NEW_WISHLIST_ID):
+                    instance = form.get_product_instance(form.cleaned_data)
+                    url = reverse('wishlist_create') + '?' + urlencode({PRODUCT_INSTANCE_KEY: instance.id})
+                    return HttpResponseRedirect(url)
+                else:
+                    wishlist = form.add_to_wishlist()
+                    return HttpResponseRedirect(wishlist.get_absolute_url())
+            else:
+                form.add_to_cart()
+                return HttpResponseRedirect(reverse('show_cart'))
     else:
         # it's a GET, create the unbound form.  Note request as a kwarg
         form = ProductAddToCartForm(product, request=request)
@@ -117,6 +131,7 @@ def product_detail_view(request, slug=""):
         'option_id_map': option_id_map,
         'option_to_stock_map': option_to_stock_map,
         'option_to_image_map': json.dumps(option_to_image_map),  # now a json string
+        'can_add_to_cart': product.has_options() or product.in_stock(),
     }
 
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
