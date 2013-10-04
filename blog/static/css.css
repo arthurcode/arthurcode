@@ -1772,26 +1772,8 @@ div.quick-links a {
 
 /* product review styles */
 
-body.reviewing .left-col, body.ask-question .left-col {
-    width: 15%;
-    display: inline-block;
-    float: left;
-    clear: both;
-}
-
-body.reviewing .right-col, body.ask-question .right-col {
-    width: 80%;
-    display: inline-block;
-    float: right;
-}
-
-body.reviewing .breadcrumbs, body.ask-question .breadcrumbs {
-    float: left;
-}
-
-
 form.review {
-    width: 35em;
+    width: 38em;
 }
 
 form.review .column2 {
@@ -1800,14 +1782,6 @@ form.review .column2 {
 
 form.review select {
     width: 8em;
-}
-
-body.reviewing .left-col a img, body.ask-question .left-col a img {
-    width: 100%;
-}
-
-body.reviewing #bd .required-text, body.ask-question #bd .required-text {
-    display: none;
 }
 
 div#reviews {
@@ -2683,4 +2657,22 @@ li.roll-trigger a {
     font-style: italic;
     text-decoration: underline;
     font-weight: lighter;
+}
+
+
+/* some basic 2 column layouts */
+
+div.columns-2 {
+    float: left;
+    clear: both
+}
+
+div.columns-2 .column-1 {
+    float: left;
+    width: 28%;
+}
+
+div.columns-2 .column-2 {
+    float: right;
+    width: 70%;
 }
