@@ -99,7 +99,7 @@
                     {% if can_add_to_cart %}
                         {% field form.quantity %}
                     {% else %}
-                        <div class="hidden">{% field form.quantity %}</div>
+                        {% field form.quantity 'hidden'%}
                     {% endif %}
 
                     {% if can_add_to_cart %}
@@ -109,7 +109,11 @@
                         {% if product.instances.all %}<a class="subtle" href="{% url restock_notify product.instances.all.0.id %}">Email me when this product is back in stock</a>{% endif %}
                     {% endif %}
                     {% if form.wishlist %}
-                        {% field form.wishlist %}
+                        {% if form.wishlist.field.choices|length > 1 %}
+                            {% field form.wishlist %}
+                        {% else %}
+                            {% field form.wishlist 'hidden'%}
+                        {% endif %}
                         <button type="submit" name="add-to-wishlist" class="action wishlist">Add to Wish List</button>
                     {% endif %}
                 </form>

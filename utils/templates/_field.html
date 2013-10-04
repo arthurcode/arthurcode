@@ -1,6 +1,6 @@
 {% load form_tags %}
 
-<div class="field {% field_class field %}{% if field.errors %} error{% endif %}">
+<div class="field {% field_class field %}{% if field.errors %} error{% endif %}{% if class %} {{ class }}{% endif %}">
     <div class="column1">
         {% if field|is_checkbox %}
             {# easier to style if the input comes before the label #}

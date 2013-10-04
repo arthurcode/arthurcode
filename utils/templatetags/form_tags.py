@@ -94,8 +94,11 @@ def is_radio(field):
 
 
 @register.inclusion_tag("_field.html")
-def field(field):
-    return {'field': field}
+def field(field, extra_class=None):
+    return {
+        'field': field,
+        'class': extra_class,
+    }
 
 
 @register.inclusion_tag("_form_errors.html")
