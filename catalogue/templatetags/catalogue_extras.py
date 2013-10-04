@@ -36,10 +36,14 @@ def product_option_field(context, field):
 
 
 @register.inclusion_tag('_thumbnail.html', takes_context=True)
-def thumb(context, product):
+def thumb(context, product, image=None):
+    if image is None:
+        image = product.get_thumbnail()
+
     return {
         'product': product,
-        'request': context.get('request', None)
+        'request': context.get('request', None),
+        'image': image.thumb_path or image.path,
     }
 
 

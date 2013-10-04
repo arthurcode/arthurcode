@@ -1,5 +1,6 @@
 {% extends "base_catalogue.html" %}
 {% load form_tags %}
+{% load catalogue_extras %}
 
 {% block title %}Back-In-Stock Notification{% endblock %}
 
@@ -7,10 +8,7 @@
 
 {% block body %}
     <div class="column-1">
-        {% with product.get_best_image as image %}
-            <a href="{{ product.get_absolute_url }}"><img src="{{ STATIC_URL }}{{ image.path }}" alt="{{ image.alt_text }}"></a>
-        {% endwith %}
-        <a class="subtle" href="{{ product.get_absolute_url }}">{{ product.name }}</a>
+        {% thumb product.product product.get_best_image %}
     </div>
 
     <div class="column-2">

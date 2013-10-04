@@ -7,7 +7,7 @@
 {% load catalogue_extras %}
 
 <div class="thumbnail">
-    <a href="{% go_to_product product %}"><img src="{% product_img_url product %}{{ product.get_thumbnail }}" alt="Thumbnail image of {{ product.name }}"/></a>
+    <a href="{% go_to_product product %}"><img src="{% product_img_url product %}{{ image }}" alt="Thumbnail image of {{ product.name }}"/></a>
     <a href="{% go_to_product product %}">{{ product.name }}</a>
     {% rating product.get_rating %}
     {% if product.sale_price %}

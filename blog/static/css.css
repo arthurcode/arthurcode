@@ -1163,7 +1163,13 @@ div.products .header, div.products .bottom {
     height: 18em;
     background-color: white;
     padding: 10px;
-    border-bottom: 1px solid lightgray;
+    border: 1px solid lightgray;
+}
+
+div.products .thumbnail {
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
 
 .thumbnail a img {
@@ -2614,10 +2620,6 @@ table.reviews td {
     width: 70%;
     float: right;
     padding-top: 20px;
-}
-
-.out-of-stock .column-1 img {
-    width: 100%;
 }
 
 .out-of-stock .column-1 {
