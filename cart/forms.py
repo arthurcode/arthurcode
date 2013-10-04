@@ -41,10 +41,9 @@ class ProductAddToCartForm(forms.Form):
 
         if is_regular_user(self.request.user):
             wishlists = WishList.objects.filter(user=request.user)
-            if wishlists:
-                choices = [(w.id, w.name) for w in wishlists]
-                choices.append((self.NEW_WISHLIST_ID, 'New Wish List'))
-                self.fields['wishlist'] = forms.ChoiceField(choices=choices, required=False)
+            choices = [(w.id, w.name) for w in wishlists]
+            choices.append((self.NEW_WISHLIST_ID, 'New Wish List'))
+            self.fields['wishlist'] = forms.ChoiceField(choices=choices)
 
     # custom validation to check for cookies
     def clean(self):

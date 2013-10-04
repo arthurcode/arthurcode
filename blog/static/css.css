@@ -1396,8 +1396,10 @@ div.add-to-cart form input, div.add-to-cart form label {
     display: inline-block;
 }
 
-div.add-to-cart form span.required-text, form.update-cart span.required-text {
-    display: none;  /* it's obvious that the quantity is required */
+div.add-to-cart select#id_wishlist {
+    font-size: smaller;
+    width: 100%;
+    padding-left: 0;
 }
 
 form.update-cart span.label {
