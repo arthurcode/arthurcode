@@ -1,6 +1,7 @@
 {% extends 'base_catalogue.html' %}
 {% load ratings %}
 {% load urls %}
+{% load catalogue_extras %}
 
 {% block body_class %}ask-question products{% endblock %}
 
@@ -17,18 +18,20 @@
         {% endblock %}
     </div>
 
-    <div class="left-col subtle">
-        {% include "_thumbnail.html" %}
-    </div>
+    <div class="columns-2">
+        <div class="column-1">
+            {% thumb product %}
+        </div>
 
-    <div class="right-col">
-        <h2>{% block main-header %}{% endblock %} | {{ product.name }}</h2>
-        {% block right-col %}
-        {% endblock %}
-
-        <ul class="links">
-            {% block links %}
+        <div class="column-2">
+            <h2>{% block main-header %}{% endblock %} | {{ product.name }}</h2>
+            {% block right-col %}
             {% endblock %}
-        </ul>
+
+            <ul class="links">
+                {% block links %}
+                {% endblock %}
+            </ul>
+        </div>
     </div>
 {% endblock %}

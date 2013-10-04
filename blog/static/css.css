@@ -2676,3 +2676,9 @@ div.columns-2 .column-2 {
     float: right;
     width: 70%;
 }
+
+div.columns-2 .thumbnail {
+    max-width: 400px;
+    width: 90%;
+    height: auto;
+}
