@@ -1513,10 +1513,6 @@ div.error-list {
 
 /* account login styles */
 
-form.create-account .required-text, form.login .required-text {
-    display: none;
-}
-
 form.login {
     clear: both;
 }
@@ -1585,12 +1581,6 @@ ul#secondary-navigation.checkout img {
     top: 0;
     right: 0;
     z-index: -999;
-}
-
-
-div.contact-info .required-text, form.address-form .required-text, div.billing-info .required-text,
-div.payment-info .required-text, div.verify-contact-info .required-text {
-    display: none;
 }
 
 div.checkout-nav {
@@ -2357,14 +2347,6 @@ yui3-panel
     left: -12px;
 }
 
-form.shipping .required-text {
-    display: None;
-}
-
-form.billing .required-text {
-    display: None;
-}
-
 form.ship-to {
     clear: both;
     margin-bottom: 20px;
@@ -2398,10 +2380,6 @@ form.ship-to button {
     margin-left: 5px;
 }
 
-form.ship-to .required-text {
-    display: None;
-}
-
 .checkout form {
     clear: both;
 }
@@ -2432,10 +2410,6 @@ form.ship-to .required-text {
 .checkout div.convert-account p {
     font-size: 80%;
     line-height: 1.3em;
-}
-
-.checkout div.convert-account .required-text {
-    display: none;
 }
 
 .checkout div.cancel {
