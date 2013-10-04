@@ -2584,22 +2584,6 @@ table.reviews td {
     vertical-align: top;
 }
 
-.out-of-stock .column-1 {
-    width: 25%;
-    float: left;
-    padding-top: 20px;
-}
-
-.out-of-stock .column-2 {
-    width: 70%;
-    float: right;
-    padding-top: 20px;
-}
-
-.out-of-stock .column-1 {
-    text-align: center;
-}
-
 .out-of-stock .column-2 dl {
     width: 20em;
     padding-bottom: 10px;

@@ -7,31 +7,33 @@
 {% block body_class %}products out-of-stock{% endblock %}
 
 {% block body %}
-    <div class="column-1">
-        {% thumb product.product product.get_best_image %}
-    </div>
-
-    <div class="column-2">
-        <h2>Back-In-Stock Notification</h2>
-        <div class="subtle">
-            Enter your e-mail address in the form below to be notified when this product is back in stock.<br>
-            We apologize for the inconvenience.
-            <h3>Product Details</h3>
-            <dl class="horizontal">
-                <dt>Name:</dt><dd>{{ product.name }}</dd>
-                <dt>SKU:</dt><dd>{{ product.sku }}</dd>
-                {% for option in product.options.all %}
-                    <dt>{{ option.get_category_display|capfirst }}:</dt><dd>{{ option.name}}</dd>
-                {% endfor %}
-            </dl>
+    <div class="columns-2">
+        <div class="column-1">
+            {% thumb product.product product.get_best_image %}
         </div>
-        {% form_errors form %}
-        <form method="post" action="" class="no-help">
-            {% csrf_token %}
-            {% field form.email %}
-            <div class="controls">
-                <button type="submit" name="submit" class="action">Email Me When This Product is Back in Stock</button>
+
+        <div class="column-2">
+            <h2>Back-In-Stock Notification</h2>
+            <div class="subtle">
+                Enter your e-mail address in the form below to be notified when this product is back in stock.<br>
+                We apologize for the inconvenience.
+                <h3>Product Details</h3>
+                <dl class="horizontal">
+                    <dt>Name:</dt><dd>{{ product.name }}</dd>
+                    <dt>SKU:</dt><dd>{{ product.sku }}</dd>
+                    {% for option in product.options.all %}
+                        <dt>{{ option.get_category_display|capfirst }}:</dt><dd>{{ option.name}}</dd>
+                    {% endfor %}
+                </dl>
             </div>
-        </form>
+            {% form_errors form %}
+            <form method="post" action="" class="no-help">
+                {% csrf_token %}
+                {% field form.email %}
+                <div class="controls">
+                    <button type="submit" name="submit" class="action">Email Me When This Product is Back in Stock</button>
+                </div>
+            </form>
+        </div>
     </div>
 {% endblock %}
