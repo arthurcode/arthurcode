@@ -6,6 +6,7 @@
 {% load ratings %}
 {% load catalogue_extras %}
 {% load markup %}
+{% load lazysignup_tags %}
 
 {% block title %}{{ product.name }}{% endblock %}
 
@@ -117,6 +118,12 @@
                         <button type="submit" name="add-to-wishlist" class="action wishlist">Add to Wish List</button>
                     {% endif %}
                 </form>
+                {% if not request.user.is_authenticated or request.user|is_lazy_user %}
+                    <form class="no-help" method="get" action="{% url login_or_create_account %}">
+                        <input type="hidden" name="next" value="{{ request.path }}" />
+                        <button type="submit" class="action wishlist">Log In For Wish Lists</button>
+                    </form>
+                {% endif %}
             </div>
         </div>
 
