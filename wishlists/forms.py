@@ -1,5 +1,5 @@
 from django import forms
-from models import WishList
+from models import WishList, WishListItem
 from accounts.accountutils import is_regular_user
 from django.core.exceptions import ValidationError
 from utils.validators import not_blank
@@ -53,5 +53,30 @@ class CreateWishListForm(forms.Form):
                 pass
 
         return wishlist
+
+
+class RemoveFromWishList(forms.Form):
+
+    instance_id = forms.IntegerField(widget=forms.HiddenInput)
+
+    def __init__(self, request, *args, **kwargs):
+        super(RemoveFromWishList, self).__init__(*args, **kwargs)
+        self.request = request
+
+    def clean(self):
+        cd = super(RemoveFromWishList, self).clean()
+        instance_id = cd.get('instance_id', None)
+        if instance_id:
+            item = WishListItem.objects.get(id=instance_id)
+            if self.request.user != item.wish_list.user:
+                return ValidationError(u"You do not have permission to delete this wish list item.")
+        return cd
+
+    def save(self):
+        # TODO: under certain conditions we may not want to allow the user to delete items from their lists
+        instance_id = self.cleaned_data.get('instance_id')
+        item = WishListItem.objects.get(id=instance_id)
+        item.delete()
+
 
 

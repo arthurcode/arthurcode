@@ -45,7 +45,11 @@
                     {% endif %}
                 </td>
                 <td>
-                    <a class="standard" href="">remove</a>
+                    <form class="no-help" method="post">
+                        {% csrf_token %}
+                        <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
+                        <button class="link" type="submit" name="remove">remove</button>
+                    </form>
                 </td>
                 <td>
                     {% if item.instance.quantity > 0 %}
