@@ -20,46 +20,50 @@
         </tr>
         </thead>
         <tbody>
-        {% for item in wishlist.items.all %}
-            <tr>
-                <td>
-                    <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
-                    <a href="{{ item.instance.get_absolute_url }}" class="cart">{{ item.instance.name }}</a>
-                </td>
-                <td>
-                    <dl class="horizontal">
-                        {% for option in item.instance.options.all %}
-                            <dt>{{ option.get_category_display|capfirst }}:</dt>
-                            <dd>{{ option.name|lower }}</dd>
-                        {% endfor %}
-                        <dt>SKU:</dt>
-                        <dd>{{ item.instance.sku }}</dd>
-                    </dl>
-                </td>
-                <td class="right">
-                    {% if item.instance.product.sale_price %}
-                        <span class="sale-price">Sale: {{ item.instance.product.sale_price|currency }}</span><br>
-                        <span class="old-price">Was: <del>{{ item.instance.product.price }}</del></span>
-                    {% else %}
-                        {{ item.instance.product.price|currency }}
-                    {% endif %}
-                </td>
-                <td>
-                    <form class="no-help" method="post">
-                        {% csrf_token %}
-                        <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
-                        <button class="link" type="submit" name="remove">remove</button>
-                    </form>
-                </td>
-                <td>
-                    {% if item.instance.quantity > 0 %}
-                        <a class="standard" href="">Add to Cart</a>
-                    {% else %}
-                        Out of Stock
-                    {% endif %}
-                </td>
-            </tr>
-        {% endfor %}
+        {% if wishlist.items.all %}
+            {% for item in wishlist.items.all %}
+                <tr>
+                    <td>
+                        <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
+                        <a href="{{ item.instance.get_absolute_url }}" class="cart">{{ item.instance.name }}</a>
+                    </td>
+                    <td>
+                        <dl class="horizontal">
+                            {% for option in item.instance.options.all %}
+                                <dt>{{ option.get_category_display|capfirst }}:</dt>
+                                <dd>{{ option.name|lower }}</dd>
+                            {% endfor %}
+                            <dt>SKU:</dt>
+                            <dd>{{ item.instance.sku }}</dd>
+                        </dl>
+                    </td>
+                    <td class="right">
+                        {% if item.instance.product.sale_price %}
+                            <span class="sale-price">Sale: {{ item.instance.product.sale_price|currency }}</span><br>
+                            <span class="old-price">Was: <del>{{ item.instance.product.price }}</del></span>
+                        {% else %}
+                            {{ item.instance.product.price|currency }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        <form class="no-help" method="post">
+                            {% csrf_token %}
+                            <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
+                            <button class="link" type="submit" name="remove">remove</button>
+                        </form>
+                    </td>
+                    <td>
+                        {% if item.instance.quantity > 0 %}
+                            <a class="standard" href="">Add to Cart</a>
+                        {% else %}
+                            Out of Stock
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="5">No Items</td></tr>
+        {% endif %}
         </tbody>
     </table>
 {% endblock %}
