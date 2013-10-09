@@ -2,7 +2,7 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required, public_profile_required
 from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from models import WishList
 from django.core.urlresolvers import reverse
 
@@ -34,6 +34,9 @@ def create_wishlist(request):
 
 @non_lazy_login_required
 def view_wishlist(request, wishlist_id):
+    wishlist = get_object_or_404(WishList, id=wishlist_id)
+    if request.user != wishlist.user:
+        return HttpResponseForbidden(u"You do not have permission to view this wish list.")
 
     if request.method == "POST":
         data = request.POST.copy()
@@ -48,7 +51,6 @@ def view_wishlist(request, wishlist_id):
                 form.save()
                 return HttpResponseRedirect(reverse('show_cart'))
 
-    wishlist = get_object_or_404(WishList, id=wishlist_id)
     context = {
         'wishlist': wishlist,
     }
