@@ -54,7 +54,11 @@
                     </td>
                     <td>
                         {% if item.instance.quantity > 0 %}
-                            <a class="standard" href="">Add to Cart</a>
+                            <form class="no-help" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.instance.id }}" />
+                                <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
+                            </form>
                         {% else %}
                             Out of Stock
                         {% endif %}

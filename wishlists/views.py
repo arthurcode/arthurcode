@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required, public_profile_required
-from forms import CreateWishListForm, RemoveFromWishList
+from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart
 from django.http import HttpResponseRedirect
 from models import WishList
 from django.core.urlresolvers import reverse
@@ -42,6 +42,11 @@ def view_wishlist(request, wishlist_id):
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(reverse('wishlist_view', args=[wishlist_id]))
+        elif "add-to-cart" in data:
+            form = AddWishListItemToCart(request, data=data)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse('show_cart'))
 
     wishlist = get_object_or_404(WishList, id=wishlist_id)
     context = {
