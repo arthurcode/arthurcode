@@ -56,6 +56,33 @@ class CreateWishListForm(forms.Form):
         return wishlist
 
 
+class EditWishListForm(CreateWishListForm):
+
+    def __init__(self, request, wishlist, *args, **kwargs):
+        self.wishlist = wishlist
+        initial = kwargs.get('initial', None)
+        if initial is None:
+            initial = {}
+        initial['name'] = wishlist.name
+        initial['description'] = wishlist.description
+        kwargs['initial'] = initial
+        super(EditWishListForm, self).__init__(request, *args, **kwargs)
+
+    def clean_name(self):
+        name = self.cleaned_data.get('name', None)
+        if name:
+            if WishList.objects.filter(user=self.request.user, name=name).exclude(id=self.wishlist.id).exists():
+                raise ValidationError(u"You already have a wish list with this name.")
+        return name
+
+    def save(self):
+        self.wishlist.name = self.cleaned_data.get('name')
+        self.wishlist.description = self.cleaned_data.get('description', None)
+        self.wishlist.full_clean()
+        self.wishlist.save()
+        return self.wishlist
+
+
 class RemoveFromWishList(forms.Form):
 
     instance_id = forms.IntegerField(widget=forms.HiddenInput)

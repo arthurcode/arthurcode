@@ -9,6 +9,8 @@
         <a href="{% url account_wishlists %}">my wish lists</a> > {{ wishlist.name }}
     </div>
     <h2>{{ wishlist.name }} Wish List</h2>
+    {% if wishlist.description %}<p class="subtle">{{ wishlist.description }}</p><br>{% endif %}
+    <a class="standard subtle" href="{% url wishlist_edit wishlist.id %}">edit wish list</a>
     <table class="shopping-cart">
         <thead>
         <tr>
@@ -70,4 +72,5 @@
         {% endif %}
         </tbody>
     </table>
+
 {% endblock %}

@@ -1,0 +1,17 @@
+{% extends 'base_wishlist.html' %}
+{% load form_tags %}
+
+{% block title %}Edit Wish List{% endblock %}
+
+{% block body %}
+    <h2>Edit Wish List</h2>
+    {% form_errors form %}
+    <form method="post">
+        {% csrf_token %}
+        {% field form.name %}
+        {% field form.description %}
+        <div class="controls">
+            <button class="action" type="submit" name="submit">Edit Wish List</button>
+        </div>
+    </form>
+{% endblock %}
