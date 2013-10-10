@@ -4,6 +4,11 @@
 {% block title %}Edit Wish List{% endblock %}
 
 {% block body %}
+
+    <div class="breadcrumbs">
+        <a href="{% url account_wishlists %}">my wish lists</a> > <a href="{% url wishlist_view wishlist.id %}">{{ wishlist.name }}</a> > edit
+    </div>
+
     <h2>Edit Wish List</h2>
     {% form_errors form %}
     <form method="post">
