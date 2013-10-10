@@ -2,9 +2,10 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required, public_profile_required
 from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart, EditWishListForm
-from django.http import HttpResponseRedirect, HttpResponseForbidden
+from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from models import WishList
 from django.core.urlresolvers import reverse
+from django.core.signing import Signer, BadSignature
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -78,3 +79,20 @@ def edit_wishlist(request, wishlist_id):
         'wishlist': wishlist,
     }
     return render_to_response('edit_wishlist.html', context, context_instance=RequestContext(request))
+
+
+def shop_wishlist(request, token):
+    signer = Signer()
+
+    try:
+        wishlist_id = signer.unsign(token)
+    except BadSignature:
+        raise Http404("Unrecognized Wish List")
+
+    wishlist = get_object_or_404(WishList, id=wishlist_id)
+
+    context = {
+        'wishlist': wishlist,
+    }
+    return render_to_response('shop_wishlist.html', context, context_instance=RequestContext(request))
+
