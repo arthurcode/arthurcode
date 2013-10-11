@@ -81,6 +81,12 @@ def edit_wishlist(request, wishlist_id):
     return render_to_response('edit_wishlist.html', context, context_instance=RequestContext(request))
 
 
+def _get_wishlist_url(request, wishlist):
+    signer = Signer()
+    wishlist_url = reverse('wishlist_shop', args=[signer.sign(wishlist.id)])
+    return request.build_absolute_uri(wishlist_url)
+
+
 def shop_wishlist(request, token):
     signer = Signer()
 
