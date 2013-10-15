@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required, public_profile_required
-from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart, EditWishListForm
+from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart, EditWishListForm, EditWishListItemNote
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from models import WishList
 from django.core.urlresolvers import reverse
@@ -36,6 +36,9 @@ def create_wishlist(request):
 @non_lazy_login_required
 def view_wishlist(request, wishlist_id):
     wishlist = get_object_or_404(WishList, id=wishlist_id)
+    bound_form = None
+    instance_id = None
+
     if request.user != wishlist.user:
         return HttpResponseForbidden(u"You do not have permission to view this wish list.")
 
@@ -51,9 +54,27 @@ def view_wishlist(request, wishlist_id):
             if form.is_valid():
                 form.save()
                 return HttpResponseRedirect(reverse('show_cart'))
+        elif "edit-note" in data:
+            form = EditWishListItemNote(request, data=data)
+            if form.is_valid():
+                form.save()
+                return HttpResponseRedirect(reverse('wishlist_view', args=[wishlist_id]))
+            else:
+                bound_form = form
+                instance_id = data.get('instance_id', None)
+
+    items = wishlist.items.all()
+    for item in items:
+        if bound_form and str(item.id) == instance_id:
+            form = bound_form
+        else:
+            form = EditWishListItemNote(request, item)
+        arg_name = 'note_form'
+        setattr(item, arg_name, form)
 
     context = {
         'wishlist': wishlist,
+        'items': items,
     }
     return render_to_response('wishlist.html', context, context_instance=RequestContext(request))
 

@@ -119,3 +119,47 @@ class AddWishListItemToCart(forms.Form):
         instance_id = self.cleaned_data.get('instance_id')
         instance = ProductInstance.objects.get(id=instance_id)
         add_to_cart(self.request, instance, 1)
+
+
+class EditWishListItemNote(forms.Form):
+
+    instance_id = forms.IntegerField(widget=forms.HiddenInput)
+    note = forms.CharField(
+        widget=forms.Textarea(attrs={'max_length': WishListItem.NOTE_MAX_LENGTH, 'cols': 20, 'rows': 4}),
+        max_length=WishListItem.NOTE_MAX_LENGTH
+    )
+
+    def __init__(self, request, item=None, *args, **kwargs):
+        if item:
+            initial = kwargs.get('initial', None)
+            if initial is None:
+                initial = {}
+
+            initial.update({
+                'note': item.note,
+                'instance_id': item.id,
+            })
+
+            kwargs['initial'] = initial
+        super(EditWishListItemNote, self).__init__(*args, **kwargs)
+        self.request = request
+        self.item = item
+
+    def clean(self):
+        cd = super(EditWishListItemNote, self).clean()
+        instance_id = cd.get('instance_id', None)
+
+        if instance_id:
+            item = WishListItem.objects.get(id=instance_id)
+            if item.wish_list.user != self.request.user:
+                raise ValidationError(u"You do not have permission to edit this wish list note.")
+
+        return cd
+
+    def save(self):
+        note = self.cleaned_data.get('note')
+        instance_id = self.cleaned_data.get('instance_id')
+        item = WishListItem.objects.get(id=instance_id)
+        item.note = note
+        item.full_clean()
+        item.save()

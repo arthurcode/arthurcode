@@ -1,6 +1,7 @@
 {% extends "base_wishlist.html" %}
 {% load catalogue_extras %}
 {% load extras %}
+{% load form_tags %}
 
 {% block title %}{{ wishlist.name }}{% endblock %}
 
@@ -17,13 +18,14 @@
             <td>Item Name</td>
             <td>Details</td>
             <td>Price</td>
+            <td>Notes</td>
             <td></td>
             <td></td>
         </tr>
         </thead>
         <tbody>
-        {% if wishlist.items.all %}
-            {% for item in wishlist.items.all %}
+        {% if items %}
+            {% for item in items %}
                 <tr>
                     <td>
                         <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
@@ -48,6 +50,19 @@
                         {% endif %}
                     </td>
                     <td>
+                        {% with item.note_form as form %}
+                            <div class="note-form{% if form.is_bound %} bound{% endif %}">
+                                {% form_errors form %}
+                                <form method="post" class="no-help">
+                                    {% csrf_token %}
+                                    {{ form.instance_id }}
+                                    {% field form.note %}
+                                    <button class="action" type="submit" name="edit-note">Edit Note</button>
+                                </form>
+                            </div>
+                        {% endwith %}
+                    </td>
+                    <td>
                         <form class="no-help" method="post">
                             {% csrf_token %}
                             <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
@@ -68,9 +83,8 @@
                 </tr>
             {% endfor %}
         {% else %}
-            <tr><td colspan="5">No Items</td></tr>
+            <tr><td colspan="6">No Items</td></tr>
         {% endif %}
         </tbody>
     </table>
-
 {% endblock %}
