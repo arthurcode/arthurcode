@@ -49,7 +49,7 @@
                             {{ item.instance.product.price|currency }}
                         {% endif %}
                     </td>
-                    <td>
+                    <td class="note">
                         {% with item.note_form as form %}
                             <div class="note-form{% if form.is_bound %} bound{% endif %}">
                                 {% form_errors form %}
@@ -57,7 +57,7 @@
                                     {% csrf_token %}
                                     {{ form.instance_id }}
                                     {% field form.note %}
-                                    <button class="action" type="submit" name="edit-note">Edit Note</button>
+                                    <button class="action" type="submit" name="edit-note">{% if item.note %}Edit Note{% else %}Add Note{% endif %}</button>
                                 </form>
                             </div>
                         {% endwith %}
@@ -87,4 +87,45 @@
         {% endif %}
         </tbody>
     </table>
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    <script type="text/javascript">
+        YUI().use('node', 'event', 'node-event-simulate', function(Y) {
+            Y.all('div.note-form').each(function(div) {
+                if (div.hasClass('bound')) {
+                    return;
+                }
+                // the form section is unbound, and should be hidden.
+                var cell = div.ancestor('td');
+                var note = div.one('textarea#id_note');
+
+                if (cell && note) {
+                    div.addClass('hidden');
+                    var noteSpan = Y.Node.create('<span class="note">' + note.getHTML() + '</span>');
+                    cell.appendChild(noteSpan);
+                    var toggleText = '';
+                    if (note.getHTML()) {
+                        toggleText = 'edit';
+                    } else {
+                        toggleText = 'add a note';
+                    }
+                    var toggle = Y.Node.create('<a class="toggle subtle" href="">' + toggleText + '</a>');
+                    cell.appendChild(toggle);
+
+                    toggle.on('click', function(e) {
+                        e.preventDefault();
+                        noteSpan.toggleClass('hidden');
+                        div.toggleClass('hidden');
+                        if (noteSpan.hasClass('hidden')) {
+                            toggle.setHTML('cancel');
+                        } else {
+                            toggle.setHTML(toggleText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 {% endblock %}

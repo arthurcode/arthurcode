@@ -104,6 +104,10 @@ button.link {
     cursor: pointer;
 }
 
+button.link.standard {
+    color: blue;
+}
+
 .shadow-box {
     box-shadow: 5px 5px 5px darkgray;
 }
@@ -2639,4 +2643,16 @@ div.columns-2 .thumbnail {
     max-width: 400px;
     width: 90%;
     height: auto;
+}
+
+div.note-form form, td.note {
+    width: 12em;
+}
+
+td.note a.toggle {
+    display: block;
+}
+
+td.note span.note {
+    font-style: italic;
 }
