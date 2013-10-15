@@ -8,7 +8,7 @@
     <h2>My Wishlists ({{ wishlists|length }})</h2>
     {% if wishlists %}
         {% for wl in wishlists %}
-            <ul>
+            <ul class="text">
                 <li><a href="{{ wl.get_absolute_url }}">{{ wl.name }}</a></li>
             </ul>
         {% endfor %}
