@@ -8,6 +8,9 @@
         shop wish lists > {{ wishlist.name }}
     </div>
     <h2>{{ wishlist.name }}</h2>
+    {% if wishlist.description %}
+        <p class="subtle">{{ wishlist.description }}</p>
+    {% endif %}
     <span class="subtle">created on {{ wishlist.created_at|date }} by {% firstof wishlist.user.first_name wishlist.user.public_name wishlist.user.email %}</span>
 
     <table class="shopping-cart">
