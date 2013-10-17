@@ -1,7 +1,59 @@
 {% extends "base_catalogue.html" %}
-
+{% load catalogue_extras %}
+{% load extras %}
 {% block title %}Shop Wish List{% endblock %}
 
 {% block body %}
-    <h2>Shop Wish List | {{ wishlist.name }}</h2>
+    <div class="breadcrumbs">
+        shop wish lists > {{ wishlist.name }}
+    </div>
+    <h2>{{ wishlist.name }}</h2>
+    <span class="subtle">created on {{ wishlist.created_at|date }} by {% firstof wishlist.user.first_name wishlist.user.public_name wishlist.user.email %}</span>
+
+    <table class="shopping-cart">
+        <thead>
+        <tr>
+            <td>Item</td>
+            <td>Price</td>
+            <td>Notes</td>
+            <td></td>
+        </tr>
+        </thead>
+        <tbody>
+        {% if wishlist.items.all %}
+            {% for item in wishlist.items.all %}
+                <tr>
+                    <td>
+                        <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
+                        <a href="{{ item.instance.get_absolute_url }}" class="cart">{{ item.instance.name }}</a>
+                    </td>
+                    <td class="right">
+                        {% if item.instance.product.sale_price %}
+                            <span class="sale-price">Sale: {{ item.instance.product.sale_price|currency }}</span><br>
+                            <span class="old-price">Was: <del>{{ item.instance.product.price }}</del></span>
+                        {% else %}
+                            {{ item.instance.product.price|currency }}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if item.note %}{{ item.note }}{% endif %}
+                    </td>
+                    <td>
+                        {% if item.instance.quantity > 0 %}
+                            <form class="no-help" method="post">
+                                {% csrf_token %}
+                                <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
+                                <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
+                            </form>
+                        {% else %}
+                            Out of Stock
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        {% else %}
+            <tr><td colspan="4">No Items</td></tr>
+        {% endif %}
+        </tbody>
+    </table>
 {% endblock %}

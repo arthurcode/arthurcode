@@ -3,7 +3,7 @@ from catalogue.models import ProductInstance
 from django.contrib.auth.models import User
 from utils.validators import not_blank
 from django.core.urlresolvers import reverse
-from django.db.models.aggregates import Max
+from cart.models import CartItem
 
 
 class WishList(models.Model):
@@ -35,3 +35,13 @@ class WishListItem(models.Model):
     instance = models.ForeignKey(ProductInstance)
     note = models.CharField(max_length=NOTE_MAX_LENGTH, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
+
+
+class WishListItemToCartItem(models.Model):
+    """
+    A class to link wish list items to cart items.  Both wish list items and cart items are highly transient, so this
+    should be thought of as a highly transient class.  It should be deleted as soon as the related wish list item or
+    cart item is deleted. TODO: confirm that this is the case.
+    """
+    wishlist_item = models.ForeignKey(WishListItem)
+    cart_item = models.ForeignKey(CartItem)

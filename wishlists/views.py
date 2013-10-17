@@ -3,9 +3,10 @@ from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required, public_profile_required
 from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart, EditWishListForm, EditWishListItemNote
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
-from models import WishList
+from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
-from django.core.signing import Signer, BadSignature
+from django.core.signing import Signer
+from cart.cartutils import add_wishlist_item_to_cart
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -109,14 +110,25 @@ def _get_wishlist_url(request, wishlist):
 
 
 def shop_wishlist(request, token):
-    signer = Signer()
+    #signer = Signer()
+    #
+    #try:
+    #    wishlist_id = signer.unsign(token)
+    #except BadSignature:
+    #    raise Http404("Unrecognized Wish List")
 
-    try:
-        wishlist_id = signer.unsign(token)
-    except BadSignature:
-        raise Http404("Unrecognized Wish List")
+    #wishlist = get_object_or_404(WishList, id=wishlist_id)
 
-    wishlist = get_object_or_404(WishList, id=wishlist_id)
+    # TODO: encrypt the token.  For now it is easier to test without encryption.
+    wishlist = get_object_or_404(WishList, id=token)
+
+    if request.method == "POST":
+        data = request.POST.copy()
+        item_id = data.get('instance_id', None)
+        if item_id:
+            wishlist_item = get_object_or_404(WishListItem, id=item_id)
+            add_wishlist_item_to_cart(request, wishlist_item)
+            return HttpResponseRedirect(reverse('show_cart'))
 
     context = {
         'wishlist': wishlist,

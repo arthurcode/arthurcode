@@ -1,8 +1,8 @@
 from cart.models import CartItem
-from catalogue.models import Product
 from django.shortcuts import get_object_or_404
 import decimal
 from exceptions import ValueError
+from wishlists.models import WishListItemToCartItem
 
 CART_ID_SESSION_KEY = 'cart_id'
 
@@ -27,19 +27,32 @@ def add_to_cart(request, product_instance, quantity):
 
     # get products in cart
     cart_items = get_cart_items(request)
-    item_in_cart = False
+
     # check to see if item is already in cart
     for cart_item in cart_items:
         if cart_item.item.id == product_instance.id:
             cart_item.augment_quantity(quantity)
-            item_in_cart = True
-    if not item_in_cart:
-        # create and save a new cart item
-        ci = CartItem()
-        ci.item = product_instance
-        ci.quantity = quantity
-        ci.cart_id = _cart_id(request)
-        ci.save()
+            return cart_item
+
+    # create and save a new cart item
+    ci = CartItem()
+    ci.item = product_instance
+    ci.quantity = quantity
+    ci.cart_id = _cart_id(request)
+    ci.save()
+    return ci
+
+
+def add_wishlist_item_to_cart(request, wishlist_item):
+    product_instance = wishlist_item.instance
+    cart_item = add_to_cart(request, product_instance, 1)
+    # link the wish list item to the cart item
+    link = WishListItemToCartItem(
+        wishlist_item=wishlist_item,
+        cart_item=cart_item,
+    )
+    link.full_clean()
+    link.save()
 
 
 # returns the total number of items in the user's cart:
