@@ -53,7 +53,8 @@ def show_cart(request):
             'cart_subtotal': cart_subtotal,
             'continue_shopping_url': continue_shopping_url,
             'cart_items': cart_items,
-            'checkout_errors': checkout_errors
+            'checkout_errors': checkout_errors,
+            'wishlists': cartutils.get_wishlists(request),
         }
 
         return render_to_response('cart.html', context, context_instance=RequestContext(request))

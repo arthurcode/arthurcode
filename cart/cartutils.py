@@ -2,7 +2,7 @@ from cart.models import CartItem
 from django.shortcuts import get_object_or_404
 import decimal
 from exceptions import ValueError
-from wishlists.models import WishListItemToCartItem
+from wishlists.models import WishListItemToCartItem, WishList
 
 CART_ID_SESSION_KEY = 'cart_id'
 
@@ -96,6 +96,7 @@ def remove_from_cart(request):
     item_id = postdata['item_id']
     cart_item = get_single_item(request, item_id)
     if cart_item:
+        # this should also delete any linked WishListToCartItem links
         cart_item.delete()
 
 
@@ -110,3 +111,10 @@ def cart_subtotal(request):
 def clear_cart(request):
     for item in get_cart_items(request):
         item.delete()
+
+
+def get_wishlists(request):
+    # returns a list of wish lists that the user has been shopping from
+    cart_id = _cart_id(request)
+    wishlist_item_ids = WishListItemToCartItem.objects.filter(cart_item__cart_id=cart_id).values_list('wishlist_item')
+    return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()

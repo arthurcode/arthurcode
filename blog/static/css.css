@@ -1435,6 +1435,7 @@ table .left {
 
 table.shopping-cart {
     min-width: 70%;
+    margin-bottom: 20px;
 }
 
 table.shopping-cart tbody {

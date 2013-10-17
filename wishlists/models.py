@@ -27,6 +27,10 @@ class WishList(models.Model):
         item.save()
         return item
 
+    def get_shop_url(self):
+        # TODO: use encryption eventually
+        return reverse("wishlist_shop", args=[self.id])
+
 
 class WishListItem(models.Model):
     NOTE_MAX_LENGTH = 75

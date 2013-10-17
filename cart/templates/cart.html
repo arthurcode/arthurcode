@@ -127,6 +127,15 @@
         {% endif %}
         </tbody>
     </table>
+
+    {% if wishlists %}
+        <h2>Active Wish Lists</h2>
+        <ul>
+            {% for wishlist in wishlists %}
+                <li><a href="{{ wishlist.get_shop_url }}">{{ wishlist.name }}</a></li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}
