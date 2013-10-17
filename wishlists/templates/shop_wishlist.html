@@ -42,7 +42,7 @@
                         {% if item.order_item %}
                             <del>Purchased</del>
                         {% elif item.in_cart %}
-                            <em>In Cart</em><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
+                            <a href="{% url show_cart %}"><em>In Cart</em></a><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
                         {% elif item.instance.quantity > 0 %}
                             <form class="no-help" method="post">
                                 {% csrf_token %}
