@@ -46,6 +46,8 @@ def show_cart(request):
                 form = UpdateCartItemForm(request)
                 form.fields['item_id'].widget.attrs['value'] = cart_item.id
             setattr(cart_item, 'update_form', form)
+            setattr(cart_item, 'wishlists', cartutils.get_wishlists_for_item(cart_item))
+
         cart_subtotal = cartutils.cart_subtotal(request)
         continue_shopping_url = get_continue_shopping_url(request)
 
@@ -68,8 +70,8 @@ def show_cart(request):
 def get_continue_shopping_url(request):
     """
     Returns a url that can be used in a 'continue-shopping' link from the shopping cart page.  By default the method
-    will return the root products url: /products/.  The referrer url will be used iff it extends from /products/.  Any
-    get query parameters in the referrer url will be preserved if it is used.
+    will return the root products url: /products/.  The referrer url will be used iff it extends from /products/ or
+    /wishlists/shop.  Any get query parameters in the referrer url will be preserved if it is used.
     """
     default_continue_shopping_url = reverse('catalogue_category', kwargs={'category_slug': ''})
     last_url = request.META.get('HTTP_REFERER', None)  # (sic)
@@ -80,7 +82,7 @@ def get_continue_shopping_url(request):
     if last_url:
         pr = urlparse(last_url)
         path = pr[2]
-        if path.startswith(default_continue_shopping_url):
+        if path.startswith(default_continue_shopping_url) or path.startswith('/wishlists/shop/'):
             return last_url
     return default_continue_shopping_url
 

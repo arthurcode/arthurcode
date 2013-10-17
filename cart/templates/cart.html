@@ -28,6 +28,7 @@
         <thead class="title-bar">
         <tr>
             <th scope="col">Product</th>
+            {% if wishlists %}<th scope="col">Wish List</th>{% endif %}
             <th scope="col">Details</th>
             <th class="right" scope="col">Item Price</th>
             <th class="right" scope="col">Quantity</th>
@@ -38,7 +39,7 @@
         </thead>
         <tfoot>
         <tr>
-            <th class="right" colspan="6">
+            <th class="right" colspan="{% if wishlists %}7{% else %}6{% endif %}">
                 Cart Subtotal:
             </th>
             <th class="right">
@@ -47,7 +48,7 @@
         </tr>
         {% if cart_items %}
             <tr>
-                <th colspan="7">
+                <th colspan="{% if wishlists %}8{% else %}7{% endif %}">
                     <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
                         <button type="submit" name="Checkout" class="action">Checkout Now</button>
@@ -69,6 +70,13 @@
                         <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image.path }}" alt="{{ item }}"/></a>
                         <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
                     </td>
+                    {% if wishlists %}
+                        <td>
+                            {% for wishlist in item.wishlists %}
+                                <a href="{{ wishlist.get_shop_url }}">{{ wishlist.name }}</a>
+                            {% endfor %}
+                        </td>
+                    {% endif %}
                     <td>
                         <dl class="horizontal">
                             {% for option in item.item.options.all %}
@@ -120,22 +128,13 @@
             {% endfor %}
         {% else %}
             <tr>
-                <td class="left" colspan="7">
+                <td class="left" colspan="{% if wishlists %}8{% else %}7{% endif %}">
                     your cart is empty
                 </td>
             </tr>
         {% endif %}
         </tbody>
     </table>
-
-    {% if wishlists %}
-        <h2>Active Wish Lists</h2>
-        <ul>
-            {% for wishlist in wishlists %}
-                <li><a href="{{ wishlist.get_shop_url }}">{{ wishlist.name }}</a></li>
-            {% endfor %}
-        </ul>
-    {% endif %}
 {% endblock %}
 
 {% block javascript %}
