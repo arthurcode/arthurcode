@@ -4,6 +4,7 @@ from django.contrib.auth.models import User
 from utils.validators import not_blank
 from django.core.urlresolvers import reverse
 from cart.models import CartItem
+from orders.models import OrderItem
 
 
 class WishList(models.Model):
@@ -39,6 +40,8 @@ class WishListItem(models.Model):
     instance = models.ForeignKey(ProductInstance)
     note = models.CharField(max_length=NOTE_MAX_LENGTH, null=True, blank=True)
     created_at = models.DateField(auto_now_add=True)
+    order_item = models.ForeignKey(OrderItem, null=True, blank=True,
+                                   help_text=u"The purchasing order item, if applicable.")
 
 
 class WishListItemToCartItem(models.Model):
@@ -48,4 +51,4 @@ class WishListItemToCartItem(models.Model):
     cart item is deleted. TODO: confirm that this is the case.
     """
     wishlist_item = models.ForeignKey(WishListItem)
-    cart_item = models.ForeignKey(CartItem)
+    cart_item = models.ForeignKey(CartItem, related_name="wishlist_links")

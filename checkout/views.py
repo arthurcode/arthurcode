@@ -849,9 +849,16 @@ class Checkout:
         for order_item in pyOrder.items:
             order_item.order = order
             order_item.save()
+            # decrement stock
             in_stock = order_item.item.quantity
             order_item.item.quantity = max(0, in_stock - order_item.quantity)
             order_item.item.save()
+            # mark wish list items as sold
+            wishlist_links = order_item.cart_item.wishlist_links.all()
+            for link in wishlist_links:
+                link.wishlist_item.order_item = order_item
+                link.wishlist_item.full_clean()
+                link.wishlist_item.save()
 
         for (name, rate, total) in pyOrder.tax_breakdown():
             orderTax = OrderTax(name=name, rate=rate, total=total, order=order)
@@ -906,6 +913,8 @@ class Checkout:
             order_item.item = cart_item.item
             order_item.quantity = cart_item.quantity
             order_item.price = cart_item.price
+            # link the cart_item this order item was derived from
+            setattr(order_item, 'cart_item', cart_item)
             # don't save them yet
             order_items.append(order_item)
         return order_items
