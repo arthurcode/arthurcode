@@ -20,8 +20,8 @@
         </tr>
         </thead>
         <tbody>
-        {% if wishlist.items.all %}
-            {% for item in wishlist.items.all %}
+        {% if items %}
+            {% for item in items %}
                 <tr>
                     <td>
                         <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
@@ -39,14 +39,16 @@
                         {% if item.note %}{{ item.note }}{% endif %}
                     </td>
                     <td>
-                        {% if item.instance.quantity > 0 %}
+                        {% if item.in_cart %}
+                            <em>In Cart</em><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
+                        {% elif item.instance.quantity > 0 %}
                             <form class="no-help" method="post">
                                 {% csrf_token %}
                                 <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
                                 <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
                             </form>
                         {% else %}
-                            Out of Stock
+                            <del>Out of Stock</del>
                         {% endif %}
                     </td>
                 </tr>

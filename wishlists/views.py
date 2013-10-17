@@ -6,7 +6,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
 from django.core.signing import Signer
-from cart.cartutils import add_wishlist_item_to_cart
+from cart.cartutils import add_wishlist_item_to_cart, is_wishlist_item_in_cart
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -130,8 +130,14 @@ def shop_wishlist(request, token):
             add_wishlist_item_to_cart(request, wishlist_item)
             return HttpResponseRedirect(reverse('show_cart'))
 
+    items = wishlist.items.all()
+
+    for item in items:
+        setattr(item, 'in_cart', is_wishlist_item_in_cart(request, item))
+
     context = {
         'wishlist': wishlist,
+        'items': items,
     }
     return render_to_response('shop_wishlist.html', context, context_instance=RequestContext(request))
 

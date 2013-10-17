@@ -1438,6 +1438,13 @@ table.shopping-cart {
     margin-bottom: 20px;
 }
 
+table.shopping-cart img.tick {
+    width: 2em;
+    display: inline;
+    vertical-align: text-bottom;
+    padding-left: 5px;
+}
+
 table.shopping-cart tbody {
     font-size: 80%;
 }
