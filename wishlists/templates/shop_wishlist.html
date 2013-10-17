@@ -3,15 +3,14 @@
 {% load extras %}
 {% block title %}Shop Wish List{% endblock %}
 
+{% block body_class %}shop-wishlist{% endblock %}
+
 {% block body %}
-    <div class="breadcrumbs">
-        shop wish lists > {{ wishlist.name }}
-    </div>
-    <h2>{{ wishlist.name }}</h2>
+    <h2>Shop Wish List | {{ wishlist.name }}</h2>
     {% if wishlist.description %}
         <p class="subtle">{{ wishlist.description }}</p>
     {% endif %}
-    <span class="subtle">created on {{ wishlist.created_at|date }} by {% firstof wishlist.user.first_name wishlist.user.public_name wishlist.user.email %}</span>
+    <span class="subtle metadata">- created on {{ wishlist.created_at|date }} by {% firstof wishlist.user.first_name wishlist.user.public_name wishlist.user.email %}</span>
 
     <table class="shopping-cart">
         <thead>
@@ -45,7 +44,7 @@
                         {% if item.order_item %}
                             <del>Purchased</del>
                         {% elif item.in_cart %}
-                            <a href="{% url show_cart %}"><em>In Cart</em></a><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
+                            <a href="{% url show_cart %}"><em>In Your Cart</em></a><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
                         {% elif item.instance.quantity > 0 %}
                             <form class="no-help" method="post">
                                 {% csrf_token %}

@@ -2664,3 +2664,8 @@ td.note a.toggle {
 td.note span.note {
     font-style: italic;
 }
+
+body.shop-wishlist span.metadata {
+    font-style: italic;
+    font-weight: lighter;
+}
