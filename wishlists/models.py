@@ -42,9 +42,13 @@ class WishListItem(models.Model):
     wish_list = models.ForeignKey(WishList, related_name="items")
     instance = models.ForeignKey(ProductInstance)
     note = models.CharField(max_length=NOTE_MAX_LENGTH, null=True, blank=True)
-    created_at = models.DateField(auto_now_add=True)
+    created_at = models.DateTimeField(auto_now_add=True)
     order_item = models.ForeignKey(OrderItem, null=True, blank=True,
                                    help_text=u"The purchasing order item, if applicable.")
+
+    class Meta:
+        # by default display wish list items in the order they were added to the list
+        ordering = ['created_at']
 
 
 class WishListItemToCartItem(models.Model):
