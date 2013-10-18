@@ -123,8 +123,3 @@ def get_wishlists(request):
 def get_wishlists_for_item(cart_item):
     wishlist_item_ids = cart_item.wishlist_links.values_list('wishlist_item')
     return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()
-
-
-def is_wishlist_item_in_cart(request, wishlist_item):
-    cart_id = _cart_id(request)
-    return WishListItemToCartItem.objects.filter(cart_item__cart_id=cart_id, wishlist_item=wishlist_item).exists()

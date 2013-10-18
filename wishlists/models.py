@@ -57,5 +57,5 @@ class WishListItemToCartItem(models.Model):
     should be thought of as a highly transient class.  It should be deleted as soon as the related wish list item or
     cart item is deleted. TODO: confirm that this is the case.
     """
-    wishlist_item = models.ForeignKey(WishListItem)
+    wishlist_item = models.ForeignKey(WishListItem, related_name="cart_links")
     cart_item = models.ForeignKey(CartItem, related_name="wishlist_links")
