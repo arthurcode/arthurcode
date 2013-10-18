@@ -7,6 +7,7 @@ from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
 from django.core.signing import Signer
 from cart.cartutils import add_wishlist_item_to_cart, is_wishlist_item_in_cart
+from wishlists import signals
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
