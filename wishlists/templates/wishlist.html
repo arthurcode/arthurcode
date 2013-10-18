@@ -10,7 +10,7 @@
         <a href="{% url account_wishlists %}">my wish lists</a> > {{ wishlist.name }}
     </div>
     <div class="inline">
-        <h2>{{ wishlist.name }} Wish List</h2>
+        <h2>{{ wishlist.name }}</h2>
         <a class="standard subtle" href="{% url wishlist_edit wishlist.id %}">(edit)</a>
         <a class="standard subtle" href="{% url wishlist_delete wishlist.id %}">(delete)</a>
     </div>
