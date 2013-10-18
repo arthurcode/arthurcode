@@ -2669,3 +2669,14 @@ body.shop-wishlist span.metadata {
     font-style: italic;
     font-weight: lighter;
 }
+
+/* by default center form elements within their cells */
+
+table form {
+    float: none;
+    margin: 0 auto;
+}
+
+table form.continue-shopping {
+    float: left;
+}
