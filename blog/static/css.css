@@ -2680,3 +2680,13 @@ table form {
 table form.continue-shopping {
     float: left;
 }
+
+div.inline {
+    float: left;
+    width: 100%;
+}
+
+div.inline h2, div.inline a {
+    float: left;
+    padding-left: 5px;
+}
