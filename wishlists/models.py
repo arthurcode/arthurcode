@@ -32,6 +32,9 @@ class WishList(models.Model):
         # TODO: use encryption eventually
         return reverse("wishlist_shop", args=[self.id])
 
+    def get_purchased_items(self):
+        return self.items.exclude(order_item__isnull=True)
+
 
 class WishListItem(models.Model):
     NOTE_MAX_LENGTH = 75
