@@ -4,7 +4,6 @@ from accounts.accountutils import is_regular_user
 from django.core.exceptions import ValidationError
 from utils.validators import not_blank
 from catalogue.models import ProductInstance
-from cart.cartutils import add_to_cart
 
 DEFAULT_NAME_WIDGET = forms.TextInput(attrs={'size': 40, 'maxlength': WishList.NAME_MAX_LENGTH})
 DEFAULT_DESCRIPTION_WIDGET = forms.Textarea(attrs={'maxlength': WishList.DESCRIPTION_MAX_LENGTH, 'cols': 40, 'rows': 4})
@@ -105,20 +104,6 @@ class RemoveFromWishList(forms.Form):
         instance_id = self.cleaned_data.get('instance_id')
         item = WishListItem.objects.get(id=instance_id)
         item.delete()
-
-
-class AddWishListItemToCart(forms.Form):
-
-    instance_id = forms.IntegerField(widget=forms.HiddenInput)
-
-    def __init__(self, request, *args, **kwargs):
-        super(AddWishListItemToCart, self).__init__(*args, **kwargs)
-        self.request = request
-
-    def save(self):
-        instance_id = self.cleaned_data.get('instance_id')
-        instance = ProductInstance.objects.get(id=instance_id)
-        add_to_cart(self.request, instance, 1)
 
 
 class EditWishListItemNote(forms.Form):

@@ -1,7 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from accounts.decorators import non_lazy_login_required, public_profile_required
-from forms import CreateWishListForm, RemoveFromWishList, AddWishListItemToCart, EditWishListForm, EditWishListItemNote
+from accounts.decorators import non_lazy_login_required
+from forms import CreateWishListForm, RemoveFromWishList, EditWishListForm, EditWishListItemNote
 from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
@@ -53,9 +53,10 @@ def view_wishlist(request, wishlist_id):
                 form.save()
                 return HttpResponseRedirect(reverse('wishlist_view', args=[wishlist_id]))
         elif "add-to-cart" in data:
-            form = AddWishListItemToCart(request, data=data)
-            if form.is_valid():
-                form.save()
+            item_id = data.get('instance_id', None)
+            if item_id:
+                wishlist_item = get_object_or_404(WishListItem, id=item_id)
+                add_wishlist_item_to_cart(request, wishlist_item)
                 return HttpResponseRedirect(reverse('show_cart'))
         elif "edit-note" in data:
             form = EditWishListItemNote(request, data=data)
@@ -125,6 +126,9 @@ def shop_wishlist(request, token):
 
     # TODO: encrypt the token.  For now it is easier to test without encryption.
     wishlist = get_object_or_404(WishList, id=token)
+    if wishlist.user == request.user:
+        # redirect them to their editable wish list page
+        return HttpResponseRedirect(wishlist.get_absolute_url())
 
     if request.method == "POST":
         data = request.POST.copy()

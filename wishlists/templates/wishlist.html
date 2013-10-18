@@ -85,11 +85,7 @@
                         {% if item.order_item %}
                             <del>purchased</del>
                         {% elif item.instance.quantity > 0 %}
-                            <form class="no-help" method="post">
-                                {% csrf_token %}
-                                <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.instance.id }}" />
-                                <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
-                            </form>
+                            {% include "_add_to_cart.html" %}
                         {% else %}
                             <del>Out of Stock</del>
                         {% endif %}
