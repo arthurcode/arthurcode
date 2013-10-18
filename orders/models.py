@@ -47,7 +47,7 @@ class Order(models.Model):
     def merchandise_total(self):
         total = Decimal('0.00')
         for item in self.items.all():
-            total += item.price
+            total += item.price*item.quantity
         return total
 
     def get_shipping_address(self):
