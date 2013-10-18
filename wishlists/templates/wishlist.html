@@ -96,6 +96,13 @@
         {% endif %}
         </tbody>
     </table>
+    {% if items %}
+        {% with items|last as last_added %}
+            <a class="action" href="{{ last_added.instance.get_absolute_url }}">Continue Shopping</a>
+        {% endwith %}
+    {% else %}
+        <a class="action" href="{% url catalogue_category '' %}">Start Shopping</a>
+    {% endif %}
 {% endblock %}
 
 {% block javascript %}

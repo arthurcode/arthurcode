@@ -76,7 +76,7 @@ def view_wishlist(request, wishlist_id):
 
     context = {
         'wishlist': wishlist,
-        'items': items,
+        'items': list(items),   # so that I can use the 'last' template tag on it
     }
     return render_to_response('wishlist.html', context, context_instance=RequestContext(request))
 
