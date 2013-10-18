@@ -142,3 +142,23 @@ def shop_wishlist(request, token):
     }
     return render_to_response('shop_wishlist.html', context, context_instance=RequestContext(request))
 
+
+@non_lazy_login_required
+def delete_wishlist(request, id):
+    wishlist = get_object_or_404(WishList, id=id)
+    if wishlist.user != request.user:
+        return HttpResponseForbidden("You do not have permission to delete this wish list.")
+
+    if request.method == "POST":
+        data = request.POST.copy()
+        if 'cancel' in data:
+            return HttpResponseRedirect(wishlist.get_absolute_url())
+        else:
+            wishlist.delete()
+            return HttpResponseRedirect(reverse('account_wishlists'))
+
+    context = {
+        'wishlist': wishlist,
+    }
+    return render_to_response('delete_wishlist.html', context, context_instance=RequestContext(request))
+

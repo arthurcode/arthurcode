@@ -1,0 +1,15 @@
+{% extends "base_wishlist.html" %}
+
+{% block title %}Delete Wish List{% endblock %}
+
+{% block body %}
+    <h2>Delete your wish list '{{ wishlist.name }}'?</h2>
+    <p>If you have shared this list with friends and family members they will no longer be able to make purchases from it.</p>
+    <br>
+
+    <form method="POST" class="no-help">
+        {% csrf_token %}
+        <button class="action" type="submit" name="cancel">Cancel</button>
+        <button class="action" type="submit" name="delete">Delete</button>
+    </form>
+{% endblock %}

@@ -12,6 +12,7 @@
     <h2>{{ wishlist.name }} Wish List</h2>
     {% if wishlist.description %}<p class="subtle">{{ wishlist.description }}</p><br>{% endif %}
     <a class="standard subtle" href="{% url wishlist_edit wishlist.id %}">edit wish list</a>
+    <a class="standard subtle" href="{% url wishlist_delete wishlist.id %}">delete wish list</a>
     <div class="social-media">
         <h3>Share with a friend ...</h3>
         <img class="icon" src="{{ STATIC_URL }}icons/email.png">
