@@ -1,0 +1,12 @@
+{{ object.title }}
+
+{{ object.short_description }}
+
+{{ object.long_description }}
+
+Specifications
+==============
+Category: {{ object.category.name }}
+Brand: {{ object.brand.name }}
+Made In: {{ object.country_of_origin.name }}
+SKU: {% for instance in object.instances.all %}{{ instance.sku }} {% endfor %}

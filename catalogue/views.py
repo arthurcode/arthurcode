@@ -17,6 +17,7 @@ import json
 from catalogue.forms import RestockNotifyForm
 from urllib import urlencode
 from wishlists.views import PRODUCT_INSTANCE_KEY
+from haystack.query import SearchQuerySet
 
 
 DEFAULT_PAGE_SIZE = 16
@@ -154,11 +155,10 @@ def category_view(request, category_slug=""):
     # implement a product search
     search_text = request.GET.get('search', None)
     if search_text:
-        # always do the search before the filtering
-        pre_filter_product_list = searchutils.products(search_text, pre_filter_product_list)
-         # force the evaluation of the pre-filter product list queryset to
+        sqs = SearchQuerySet().auto_query(search_text)
+        # force the evaluation of the pre-filter product list queryset to
         # avoid running expensive search sub-queries more than once
-        pre_filter_product_list = Product.objects.filter(id__in=[p.id for p in pre_filter_product_list])
+        pre_filter_product_list = pre_filter_product_list.filter(id__in=[p.pk for p in sqs])
 
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
