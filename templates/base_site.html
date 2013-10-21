@@ -11,6 +11,7 @@
             <span class="contact">1-800-664-9741</span>
             {% block account_links %}
                 {% cache 1000 account request.user.username %}
+                    <a class="wishlists" href="{% url account_wishlists %}">wish lists</a>
                     <a class="account" href="{% url account_personal %}">my account</a>
                     {% if user.is_authenticated and not user|is_lazy_user %}
                         <a class="logout" href="{% url logout %}">log out</a>

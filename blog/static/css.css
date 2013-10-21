@@ -356,6 +356,10 @@ body.products #bd {
     color: greenyellow;
 }
 
+#hd #topbar a.wishlists {
+    margin-left: 15px;
+}
+
 #hd #topbar a.account {
     margin-left: 15px;
 }
