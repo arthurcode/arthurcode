@@ -20,6 +20,13 @@ DATABASES = {
     }
 }
 
+HAYSTACK_CONNECTIONS = {
+    'default': {
+        'ENGINE': 'haystack.backends.solr_backend.SolrEngine',
+        'URL': 'http://127.0.0.1:8983/solr',
+    }
+}
+
 # Hosts/domain names that are valid for this site; required if DEBUG is False
 # See https://docs.djangoproject.com/en//ref/settings/#allowed-hosts
 ALLOWED_HOSTS = []
@@ -99,7 +106,7 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.messages.middleware.MessageMiddleware',
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',           # order is important, must come after middleware that encodes content, such as GZIP
+    #'debug_toolbar.middleware.DebugToolbarMiddleware',           # order is important, must come after middleware that encodes content, such as GZIP
 )
 
 ROOT_URLCONF = 'arthurcode.urls'
@@ -125,6 +132,7 @@ INSTALLED_APPS = (
     # 'django.contrib.admindocs',
     'django.contrib.markup',
     'south', # schema migrations
+    'haystack',
     'blog',
     'mptt',
     'comments',
