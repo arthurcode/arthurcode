@@ -154,8 +154,10 @@ def category_view(request, category_slug=""):
 
     # implement a product search
     search_text = request.GET.get('search', None)
+    spelling_suggestion = None
     if search_text:
-        sqs = SearchQuerySet().auto_query(search_text)
+        sqs = SearchQuerySet().auto_query(search_text).models(Product)
+        spelling_suggestion = sqs.spelling_suggestion()
         # force the evaluation of the pre-filter product list queryset to
         # avoid running expensive search sub-queries more than once
         pre_filter_product_list = pre_filter_product_list.filter(id__in=[p.pk for p in sqs])
@@ -164,8 +166,8 @@ def category_view(request, category_slug=""):
 
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
-    final_product_list, sort_key = _sort(request, final_product_list)
     final_product_list = final_product_list.prefetch_related('images')  # product.get_thumbnail optimization
+    final_product_list, sort_key = _sort(request, final_product_list)
     child_categories = child_categories.order_by('name')
 
     # get a finalized list of products in the form of a subquery.  This also forces the final_product_list queryset
@@ -219,6 +221,7 @@ def category_view(request, category_slug=""):
             ('new', 'Recently Added')
         ],
         'search_text': search_text,
+        'spelling_suggestion': spelling_suggestion,  # will be None if there was no search
         'filters': applied_filters,
         'brands': get_brands(pre_filter_product_list, final_product_subquery, applied_filters),
         'themes': get_themes(pre_filter_product_list, final_product_subquery, applied_filters),
@@ -248,8 +251,9 @@ def _sort(request, queryset):
     """
     By default sort my bestselling products
     """
-    sort_by = request.GET.get('sortBy', 'priceMax')
-    sort_func = PRODUCT_SORTS['priceMax']
+    default_sort = 'priceMax'
+    sort_by = request.GET.get('sortBy', default_sort)
+    sort_func = PRODUCT_SORTS[default_sort]
     if sort_by in PRODUCT_SORTS:
         sort_func = PRODUCT_SORTS[sort_by]
     return sort_func(queryset), sort_by

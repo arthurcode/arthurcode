@@ -150,6 +150,7 @@
                                 </p>
                                 <br>
                                 <ul>
+                                    {% if spelling_suggestion %}<li>Did you mean <a class="standard" href="{% add_get search=spelling_suggestion %}">{{ spelling_suggestion }}</a>?</li>{% endif %}
                                     {% if category %}<li><a class="standard" href="{% go_to_category '' %}">retry your search in <em>All Products</em></a></li>{% endif %}
                                     {% if filters %}<li><a class="standard" href="{% remove_all_filters %}">remove your product filters and retry the search</a></li>{% endif %}
                                     <li><a class="standard" href="{% remove_search %}">clear search terms</a></li>
