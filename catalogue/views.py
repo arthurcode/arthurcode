@@ -171,7 +171,7 @@ def category_view(request, category_slug=""):
         # avoid running expensive search sub-queries more than once
         pre_filter_product_list = pre_filter_product_list.filter(id__in=[p.pk for p in sqs])
         # log the search query
-        searchutils.store(request, search_text)
+        searchutils.store(request, search_text, sqs.count())
 
         # build up a map of product id --> search score
         for p in sqs:

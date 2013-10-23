@@ -3,8 +3,7 @@ from search.models import SearchTerm
 
 
 class SearchTermAdmin(admin.ModelAdmin):
-    list_display = ('__unicode__', 'ip_address', 'search_date')
-    list_filter = ('ip_address', 'user', 'q')
+    list_display = ('__unicode__', 'hits', 'ip_address', 'search_date')
     exclude = ('user',)
 
 
