@@ -87,17 +87,23 @@
                     var form = searchButton.ancestor("form#search");
                     var searchBox = form.one("input#id_q");
                     var searchText = searchBox.get("value").trim();
+                    var error = null;
+
                     if (searchText.length <= 1) {
                         // invalid search query
                         e.preventDefault();
-                        var message = "";
                         if (searchText.length == 0) {
-                            message = "Enter a search word or phrase";
+                            error = "Enter a search word or phrase";
                         } else {
-                            message = "Type at least 2 characters in the search box";
+                            error = "Type at least 2 characters in the search box";
                         }
+                    } else if (searchText.length > 50) {
+                        error = "Too many characters.  Max is 50, you entered " + searchText.length
+                    }
+                    if (error) {
+                        e.preventDefault();
                         var field = searchBox.ancestor(".field");
-                        Y.Custom.setFieldError(field, message, true); // error as a popup
+                        Y.Custom.setFieldError(field, error, true); // error as a popup
                     }
                 });
             });
