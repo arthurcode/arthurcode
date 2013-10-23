@@ -128,7 +128,7 @@
 
         <div class="products">
             <div class="title primary-box">
-                <h2>{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% if search_text %} | '{{ search_text }}'{% endif %}</h2>
+                <h2>{% if search_text %}Search {% endif %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% if search_text %} | "{{ search_text }}"{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
                 {% if products.paginator.num_pages > 1 %}<a class="subtle" href="{% query_string "pageSize=All" "page" %}">view all</a>{% elif products|length > page_sizes.0 %}<a class="subtle" href="{% query_string "" "pageSize" %}">view less</a>{% endif %}
             </div>
@@ -150,7 +150,7 @@
                                 </p>
                                 <br>
                                 <ul>
-                                    {% if spelling_suggestion %}<li>Did you mean <a class="standard" href="{% add_get search=spelling_suggestion %}">{{ spelling_suggestion }}</a>?</li>{% endif %}
+                                    {% if spelling_suggestion %}<li><a class="standard" href="{% add_get search=spelling_suggestion %}">Did you mean <em>{{ spelling_suggestion }}</em>?</a></li>{% endif %}
                                     {% if category %}<li><a class="standard" href="{% go_to_category '' %}">retry your search in <em>All Products</em></a></li>{% endif %}
                                     {% if filters %}<li><a class="standard" href="{% remove_all_filters %}">remove your product filters and retry the search</a></li>{% endif %}
                                     <li><a class="standard" href="{% remove_search %}">clear search terms</a></li>
