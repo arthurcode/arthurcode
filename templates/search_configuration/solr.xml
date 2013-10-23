@@ -150,6 +150,9 @@
 {% endfor %}
     <!-- added by Rhyan see https://github.com/toastdriven/django-haystack/issues/671 -->
     <field name="_version_" type="long" indexed="true" stored ="true"/>
+    <!-- enable spellcheck on a copy of the main text field -->
+    <field name="spell" type="text_general" indexed="true" stored="true"/>
+    <copyField source="text" dest="spell"/>
   </fields>
 
   <!-- field to use to determine and enforce document uniqueness. -->
