@@ -1,4 +1,5 @@
 {{ object.title }}
+==================
 
 {{ object.short_description }}
 
@@ -10,3 +11,6 @@ Category: {{ object.category.name }}
 Brand: {{ object.brand.name }}
 Made In: {{ object.country_of_origin.name }}
 SKU: {% for instance in object.instances.all %}{{ instance.sku }} {% endfor %}
+{% for spec in object.specifications.all %}
+{{ spec.key }}: {{ spec.value }}
+{% endfor %}
