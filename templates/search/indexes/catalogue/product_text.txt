@@ -5,6 +5,16 @@
 
 {{ object.long_description }}
 
+{% with object.awards.all as awards %}
+    {% if awards %}
+Awards
+======
+       {% for award in awards %}
+{{ award.award.name }}
+       {% endfor %}
+    {% endif %}
+{% endwith %}
+
 Specifications
 ==============
 Category: {{ object.category.name }}
