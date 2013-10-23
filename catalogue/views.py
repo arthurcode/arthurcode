@@ -138,6 +138,10 @@ def product_detail_view(request, slug=""):
     return render_to_response("product_detail.html", context, context_instance=RequestContext(request))
 
 
+def _search_text(request):
+    return request.GET.get('search', None)
+
+
 def category_view(request, category_slug=""):
     if category_slug:
         category = get_object_or_404(Category, slug=category_slug)
@@ -153,8 +157,10 @@ def category_view(request, category_slug=""):
         child_categories = Category.objects.root_nodes()
 
     # implement a product search
-    search_text = request.GET.get('search', None)
+    search_text = _search_text(request)
     spelling_suggestion = None
+    score_map = {}
+
     if search_text:
         sqs = SearchQuerySet().auto_query(search_text).models(Product)
         spelling_suggestion = sqs.spelling_suggestion()
@@ -167,10 +173,14 @@ def category_view(request, category_slug=""):
         # log the search query
         searchutils.store(request, search_text)
 
+        # build up a map of product id --> search score
+        for p in sqs:
+            score_map[int(p.pk)] = p.score
+
     final_product_list, applied_filters = filters.filter_products(request, pre_filter_product_list)
     final_product_list = final_product_list.annotate(rating=Avg('reviews__rating'))
     final_product_list = final_product_list.prefetch_related('images')  # product.get_thumbnail optimization
-    final_product_list, sort_key = _sort(request, final_product_list)
+    final_product_list, sort_key = _sort(request, final_product_list, score_map)
     child_categories = child_categories.order_by('name')
 
     # get a finalized list of products in the form of a subquery.  This also forces the final_product_list queryset
@@ -221,7 +231,8 @@ def category_view(request, category_slug=""):
             ('nameA', 'Name (A to Z)'),
             ('nameZ', 'Name (Z to A)'),
             ('rating', 'Top Rated'),
-            ('new', 'Recently Added')
+            ('new', 'Recently Added'),
+            ('bestMatch', 'Best Match'),
         ],
         'search_text': search_text,
         'spelling_suggestion': spelling_suggestion,  # will be None if there was no search
@@ -250,16 +261,34 @@ PRODUCT_SORTS = {
 }
 
 
-def _sort(request, queryset):
+def _sort_by_best_match(queryset, score_map):
     """
-    By default sort my bestselling products
+    WARNING: this will force the evaluation of the queryset
     """
-    default_sort = 'priceMax'
-    sort_by = request.GET.get('sortBy', default_sort)
-    sort_func = PRODUCT_SORTS[default_sort]
+    if not score_map:
+        return queryset
+    q = list(queryset)
+    q.sort(cmp=lambda x,y: cmp(score_map.get(y.id, 0), score_map.get(x.id, 0)))
+    return q
+
+
+def _sort(request, queryset, score_map=None):
+
+    sort_by = request.GET.get('sortBy', None)
+    if sort_by == 'bestMatch' or (sort_by is None and _search_text(request) is not None):
+        # sort by bestMatch, which cannot be done using a queryset evaluator
+        sort_by = 'bestMatch'
+        return _sort_by_best_match(queryset, score_map), sort_by
+
+    if sort_by is None:
+        sort_by = 'priceMax'
+
     if sort_by in PRODUCT_SORTS:
         sort_func = PRODUCT_SORTS[sort_by]
-    return sort_func(queryset), sort_by
+        return sort_func(queryset), sort_by
+
+    # no matching sort function, shouldn't happen
+    return queryset
 
 
 def add_product_count(category_queryset, product_queryset):
