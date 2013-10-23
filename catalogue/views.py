@@ -158,6 +158,9 @@ def category_view(request, category_slug=""):
     if search_text:
         sqs = SearchQuerySet().auto_query(search_text).models(Product)
         spelling_suggestion = sqs.spelling_suggestion()
+        if isinstance(spelling_suggestion, dict):
+            # for some reason solr sometimes returns a dict, so we need to grab the 'suggestion' list
+            spelling_suggestion = spelling_suggestion['suggestion'][0]
         # force the evaluation of the pre-filter product list queryset to
         # avoid running expensive search sub-queries more than once
         pre_filter_product_list = pre_filter_product_list.filter(id__in=[p.pk for p in sqs])
