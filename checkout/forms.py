@@ -6,7 +6,8 @@ from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
 from orders.models import CreditCardPayment, GiftCardPayment
 from credit_card import authorize, get_gift_card_balance
-from utils.validators import not_blank
+from giftcards.validators import validate_gc_number
+from giftcards.forms import DEFAULT_GC_WIDGET
 
 
 def cc_expire_years():
@@ -146,8 +147,8 @@ class PaymentInfoForm(forms.Form):
 
 
 class AddGiftCardForm(forms.Form):
-    card_number = forms.CharField(label='Gift Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}),
-                                  validators=[not_blank])
+    card_number = forms.CharField(label='Gift Card Number', widget=DEFAULT_GC_WIDGET,
+                                  validators=[validate_gc_number])
 
     def __init__(self, existing_gcs=None, *args, **kwargs):
         if existing_gcs is None:

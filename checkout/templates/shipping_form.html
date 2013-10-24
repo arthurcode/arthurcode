@@ -4,7 +4,7 @@
 {% block forms %}
 
     <h2 class="form-h">Choose Shipping Destination</h2>
-    <form class="ship-to no-help" action="">
+    <form class="ship-to no-help single-field-pop" action="">
         {% field select_form.ship_to %}
         <button type="submit" class="action">{% if selected_nickname %}Change{% else %}Choose{% endif %}</button>
     </form>

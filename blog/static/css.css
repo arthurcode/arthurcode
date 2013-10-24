@@ -2365,37 +2365,46 @@ yui3-panel
     left: -12px;
 }
 
-form.ship-to {
-    clear: both;
-    margin-bottom: 20px;
+form.single-field-pop {
     padding: 20px;
     background-color: #f0f0f0;
     border: 1px solid gray;
 }
 
-form.ship-to label {
+form.single-field-pop label {
     float: left;
     margin-right: 10px;
-    font-size: 150%;
 }
 
-form.ship-to select {
+form.single-field-pop select, form.single-field-pop input {
     float: left;
     clear: none;
+}
+
+form.single-field-pop select {
     height: 2em;
 }
 
-form.ship-to .field {
+form.single-field-pop .field {
     float: left;
     width: auto;
     margin: 0 !important;
 }
 
-form.ship-to button {
+form.single-field-pop button {
     float: left;
     clear: none;
     height: 2em;
     margin-left: 5px;
+}
+
+form.ship-to {
+    clear: both;
+    margin-bottom: 20px;
+}
+
+form.ship-to label {
+    font-size: 150%;
 }
 
 .checkout form {
@@ -2695,4 +2704,26 @@ div.inline {
 div.inline h2, div.inline a {
     float: left;
     padding-right: 5px;
+}
+
+p.balance-report {
+    font-size: 150%;
+}
+
+span.balance {
+    font-weight: bolder;
+}
+
+span.balance.ok {
+    color: green;
+}
+
+span.balance.error {
+    color: red;
+}
+
+form.check-balance {
+    float: left;
+    clear: both;
+    margin-top: 20px;
 }

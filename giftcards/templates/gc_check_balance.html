@@ -1,7 +1,21 @@
 {% extends "base_gc.html" %}
+{% load form_tags %}
+{% load extras %}
 {% block title %}Check Gift Card Balance{% endblock %}
 
 {% block body %}
     <div class="breadcrumbs"><a href="{% url gc_home %}">gift card home</a> > check your balance</div>
     <h2>Check Gift Card Balance</h2>
+    {% if balance != None %}
+        <p class="balance-report">Your balance is <span class="balance {% if balance > 0 %}ok{% else %}error{% endif %}">{{ balance|currency }}</span></p>
+        {% if balance > 0 %}
+            <p class="subtle">You can redeem this gift card when you check out.</p>
+        {% endif %}
+    {% endif %}
+    {% form_errors form %}
+    <form method="post" action="" class="check-balance single-field-pop no-help">
+        {% csrf_token %}
+        {% field form.number %}
+        <button type="submit" name="submit" class="action">Check Balance</button>
+    </form>
 {% endblock %}
