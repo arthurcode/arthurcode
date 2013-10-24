@@ -148,7 +148,7 @@ class UpdateCartItemForm(forms.Form):
         item_id = cleaned_data.get('item_id', None)
 
         if quantity and item_id:
-            item = CartItem.objects.get(id=item_id)
+            item = cartutils.get_base_item(item_id)
             if item:
                 error = check_stock(item.item, self.request, final_quantity=quantity)
                 if error:

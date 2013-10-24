@@ -1,4 +1,4 @@
-from cart.models import CartItem
+from cart.models import CartItem, ProductCartItem
 from django.shortcuts import get_object_or_404
 import decimal
 from exceptions import ValueError
@@ -14,9 +14,16 @@ def _cart_id(request):
     return request.session[CART_ID_SESSION_KEY]
 
 
-# return all items from the current user's cart
 def get_cart_items(request):
-    return CartItem.objects.filter(cart_id=_cart_id(request))
+    return get_cart_products(request)
+
+
+def get_cart_products(request):
+    """
+    Returns the subset of items in the cart that are linked to products (as opposed to gift certificates).
+    The instances are of model class ProductCartItem
+    """
+    return ProductCartItem.objects.filter(cart_id=_cart_id(request))
 
 
 # add a product instance to the customer's cart
@@ -26,19 +33,20 @@ def add_to_cart(request, product_instance, quantity):
         return
 
     # get products in cart
-    cart_items = get_cart_items(request)
+    cart_products = get_cart_products(request)
 
     # check to see if item is already in cart
-    for cart_item in cart_items:
+    for cart_item in cart_products:
         if cart_item.item.id == product_instance.id:
             cart_item.augment_quantity(quantity)
             return cart_item
 
     # create and save a new cart item
-    ci = CartItem()
+    ci = ProductCartItem()
     ci.item = product_instance
     ci.quantity = quantity
     ci.cart_id = _cart_id(request)
+    ci.full_clean()
     ci.save()
     return ci
 
@@ -59,8 +67,9 @@ def add_wishlist_item_to_cart(request, wishlist_item):
 def cart_distinct_item_count(request):
     return get_cart_items(request).count()
 
+
 def get_single_item(request, item_id):
-    return get_object_or_404(CartItem, id=item_id, cart_id=_cart_id(request))
+    return as_base_item(get_object_or_404(CartItem, id=item_id, cart_id=_cart_id(request)))
 
 
 def get_item_for_product(request, item):
@@ -68,7 +77,7 @@ def get_item_for_product(request, item):
     Returns the cart-item corresponding to the given product, if one exists.  Returns None if the product is not
     yet in the cart.
     """
-    items = get_cart_items(request).filter(item_id=item.id)
+    items = get_cart_products(request).filter(item_id=item.id)
     if not items:
         return None
     return items[0]
@@ -102,8 +111,8 @@ def remove_from_cart(request):
 
 def cart_subtotal(request):
     cart_total = decimal.Decimal('0.00')
-    cart_products = get_cart_items(request)
-    for cart_item in cart_products:
+    cart_items = get_cart_items(request)
+    for cart_item in cart_items:
         cart_total += cart_item.total()
     return cart_total
 
@@ -123,3 +132,20 @@ def get_wishlists(request):
 def get_wishlists_for_item(cart_item):
     wishlist_item_ids = cart_item.wishlist_links.values_list('wishlist_item')
     return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()
+
+
+def get_base_item(id):
+    """
+    Returns the ProductCartItem object with the given id.  Will no return an instance of CartItem, since this is
+    too generic of a model to be useful in most cases.
+    """
+    cart_item = CartItem.objects.get(id=id)
+    return as_base_item(cart_item)
+
+def as_base_item(cart_item):
+    """
+    Cast a generic CartItem to an instance of ProductCartItem.
+    """
+    if isinstance(cart_item, ProductCartItem):
+        return cart_item
+    return cart_item.productcartitem
