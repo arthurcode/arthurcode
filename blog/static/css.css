@@ -2739,6 +2739,11 @@ div.gift-card-thumb {
     font-weight: bolder;
 }
 
+div.gift-card-thumb a {
+    color: inherit;
+    text-decoration: none;
+}
+
 div.gift-card-thumb span.value {
     display: block;
     font-size: larger;
