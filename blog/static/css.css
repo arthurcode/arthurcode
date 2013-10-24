@@ -492,7 +492,9 @@ ul#secondary-navigation.outdoor li.outdoor,
 ul#secondary-navigation.orders li.orders,
 ul#secondary-navigation.personal li.personal,
 ul#secondary-navigation.wishlists li.wishlists,
-ul#secondary-navigation.reviews li.reviews {
+ul#secondary-navigation.reviews li.reviews,
+ul#secondary-navigation.giftcards li.giftcards
+{
     /* make the selected tab pop out */
     background: none;
     background-color: white;
