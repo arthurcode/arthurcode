@@ -45,7 +45,7 @@ class CartItem(models.Model):
         raise self.SUBCLASS_ERROR
 
     def __unicode__(self):
-        raise self.SUBCLASS_ERROR
+        return u'cart item %d' % self.id
 
     @classmethod
     def generate_cart_id(cls):
