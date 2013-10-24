@@ -1,11 +1,12 @@
 from django import forms
-from catalogue.models import ProductInstance, ProductOption
-from cart.models import CartItem
+from catalogue.models import ProductInstance
+from cart.models import CartItem, GiftCardCartItem
 import cartutils
 from django.core.exceptions import ValidationError
 from django.core.urlresolvers import reverse
 from wishlists.models import WishList
 from accounts.accountutils import is_regular_user
+from cart.models import ProductCartItem
 
 
 class ProductAddToCartForm(forms.Form):
@@ -149,12 +150,21 @@ class UpdateCartItemForm(forms.Form):
 
         if quantity and item_id:
             item = cartutils.get_base_item(item_id)
-            if item:
+            if item and isinstance(item, ProductCartItem):
                 error = check_stock(item.item, self.request, final_quantity=quantity)
                 if error:
                     self._errors['quantity'] = self.error_class([error])
                     del(cleaned_data['quantity'])
         return cleaned_data
+
+
+class AddGiftCardToCartForm(forms.Form):
+    value = forms.IntegerField(min_value=GiftCardCartItem.MIN_VALUE, max_value=GiftCardCartItem.MAX_VALUE,
+                               help_text="Any amount between $%d and $%d" % (GiftCardCartItem.MIN_VALUE, GiftCardCartItem.MAX_VALUE))
+
+    def save(self, request):
+        value = self.cleaned_data.get('value')
+        cartutils.add_gift_card_to_cart(request, value, 1)
 
 
 def check_stock(item, request, final_quantity=None, quantity_to_add=0):

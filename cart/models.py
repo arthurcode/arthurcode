@@ -1,7 +1,8 @@
 from django.db import models
 from catalogue.models import ProductInstance
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 import random
+from decimal import Decimal
 
 
 class CartItem(models.Model):
@@ -43,6 +44,12 @@ class CartItem(models.Model):
 
     def check_stock(self):
         raise self.SUBCLASS_ERROR
+
+    def is_product(self):
+        return False
+
+    def is_gift_card(self):
+        return False
 
     def __unicode__(self):
         return u'cart item %d' % self.id
@@ -96,3 +103,38 @@ class ProductCartItem(CartItem):
 
     def __unicode__(self):
         return unicode(self.item)
+
+    def is_product(self):
+        return True
+
+
+class GiftCardCartItem(CartItem):
+
+    MAX_VALUE = 250
+    MIN_VALUE = 1
+
+    value = models.IntegerField(max_length=3, validators=[MinValueValidator(MIN_VALUE), MaxValueValidator(MAX_VALUE)])
+
+    def name(self):
+        return "$%d Gift Card" % self.value
+
+    @property
+    def price(self):
+        return Decimal(str(self.value))
+
+    @property
+    def sale_price(self):
+        return None
+
+    @property
+    def sku(self):
+        return "GIFTCARD"
+
+    def check_stock(self):
+        return None
+
+    def __unicode__(self):
+        return self.name()
+
+    def is_gift_card(self):
+        return True

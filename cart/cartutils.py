@@ -1,4 +1,4 @@
-from cart.models import CartItem, ProductCartItem
+from cart.models import CartItem, ProductCartItem, GiftCardCartItem
 from django.shortcuts import get_object_or_404
 import decimal
 from exceptions import ValueError
@@ -15,7 +15,7 @@ def _cart_id(request):
 
 
 def get_cart_items(request):
-    return get_cart_products(request)
+    return list(get_cart_products(request)) + list(get_cart_gift_cards(request))
 
 
 def get_cart_products(request):
@@ -24,6 +24,10 @@ def get_cart_products(request):
     The instances are of model class ProductCartItem
     """
     return ProductCartItem.objects.filter(cart_id=_cart_id(request))
+
+
+def get_cart_gift_cards(request):
+    return GiftCardCartItem.objects.filter(cart_id=_cart_id(request))
 
 
 # add a product instance to the customer's cart
@@ -63,9 +67,27 @@ def add_wishlist_item_to_cart(request, wishlist_item):
     link.save()
 
 
+def add_gift_card_to_cart(request, value, quantity):
+    gcs = get_cart_gift_cards(request)
+    for gc in gcs:
+        if gc.value == value:
+            gc.augment_quantity(quantity)
+            return gc
+    gc = GiftCardCartItem()
+    gc.value = value
+    gc.quantity = quantity
+    gc.cart_id = _cart_id(request)
+    gc.full_clean()
+    gc.save()
+    return gc
+
+
 # returns the total number of items in the user's cart:
 def cart_distinct_item_count(request):
-    return get_cart_items(request).count()
+    count = 0
+    for ci in get_cart_items(request):
+        count += ci.quantity
+    return count
 
 
 def get_single_item(request, item_id):
@@ -146,6 +168,9 @@ def as_base_item(cart_item):
     """
     Cast a generic CartItem to an instance of ProductCartItem.
     """
-    if isinstance(cart_item, ProductCartItem):
+    if isinstance(cart_item, (ProductCartItem, GiftCardCartItem)):
         return cart_item
-    return cart_item.productcartitem
+    try:
+        return cart_item.productcartitem
+    except ProductCartItem.DoesNotExist:
+        return cart_item.giftcardcartitem

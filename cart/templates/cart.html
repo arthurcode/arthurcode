@@ -67,8 +67,12 @@
             {% for item in cart_items %}
                 <tr>
                     <td>
-                        <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image.path }}" alt="{{ item }}"/></a>
-                        <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
+                        {% if item.is_product %}
+                            <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image.path }}" alt="{{ item }}"/></a>
+                            <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>
+                        {% elif item.is_gift_card %}
+                            {% include "_gc_thumbnail.html" %}
+                        {% endif %}
                     </td>
                     {% if wishlists %}
                         <td>
@@ -79,12 +83,17 @@
                     {% endif %}
                     <td>
                         <dl class="horizontal">
+                            {% if item.is_product %}
                             {% for option in item.item.options.all %}
                                 <dt>{{ option.get_category_display|capfirst }}:</dt>
                                 <dd>{{ option.name|lower }}</dd>
                             {% endfor %}
                             <dt>SKU:</dt>
                             <dd>{{ item.sku }}</dd>
+                            {% elif item.is_gift_card %}
+                                <dt>Value:</dt>
+                                <dd>{{ item.value|currency }}</dd>
+                            {% endif %}
                         </dl>
                     </td>
                     <td class="right">

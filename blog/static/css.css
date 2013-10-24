@@ -2728,3 +2728,18 @@ form.check-balance {
     clear: both;
     margin-top: 20px;
 }
+
+div.gift-card-thumb {
+    border-radius: 10px;
+    border: 5px solid steelblue;
+    padding: 10px;
+    text-align: center;
+    line-height: 2em;
+    color: steelblue;
+    font-weight: bolder;
+}
+
+div.gift-card-thumb span.value {
+    display: block;
+    font-size: larger;
+}
