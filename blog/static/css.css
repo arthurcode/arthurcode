@@ -2374,6 +2374,7 @@ form.single-field-pop {
 form.single-field-pop label {
     float: left;
     margin-right: 10px;
+    font-size: 120%;
 }
 
 form.single-field-pop select, form.single-field-pop input {
