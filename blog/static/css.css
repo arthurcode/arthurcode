@@ -2723,7 +2723,7 @@ span.balance.error {
     color: red;
 }
 
-form.check-balance {
+form.check-balance, form.buy-gc {
     float: left;
     clear: both;
     margin-top: 20px;

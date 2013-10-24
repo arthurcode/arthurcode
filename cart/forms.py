@@ -7,6 +7,7 @@ from django.core.urlresolvers import reverse
 from wishlists.models import WishList
 from accounts.accountutils import is_regular_user
 from cart.models import ProductCartItem
+from giftcards.forms import DEFAULT_GC_VALUE_WIDGET
 
 
 class ProductAddToCartForm(forms.Form):
@@ -160,7 +161,8 @@ class UpdateCartItemForm(forms.Form):
 
 class AddGiftCardToCartForm(forms.Form):
     value = forms.IntegerField(min_value=GiftCardCartItem.MIN_VALUE, max_value=GiftCardCartItem.MAX_VALUE,
-                               help_text="Any amount between $%d and $%d" % (GiftCardCartItem.MIN_VALUE, GiftCardCartItem.MAX_VALUE))
+                               help_text="Any amount between $%d and $%d" % (GiftCardCartItem.MIN_VALUE, GiftCardCartItem.MAX_VALUE),
+                               widget=DEFAULT_GC_VALUE_WIDGET, label="Amount $")
 
     def save(self, request):
         value = self.cleaned_data.get('value')

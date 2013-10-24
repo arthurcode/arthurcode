@@ -3,6 +3,7 @@ from giftcards.validators import validate_gc_number
 from decimal import Decimal
 
 DEFAULT_GC_WIDGET = forms.TextInput(attrs={'size': 19, 'maxlength': 25})
+DEFAULT_GC_VALUE_WIDGET = forms.TextInput(attrs={'size': 3, 'maxlength': 3})
 
 
 class CheckBalanceForm(forms.Form):
