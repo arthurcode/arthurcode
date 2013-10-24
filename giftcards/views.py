@@ -7,4 +7,4 @@ def home_view(request):
 
 
 def check_balance_view(request):
-    return render_to_response('gc_check_balance.html', {}, context_intsance=RequestContext(request))
+    return render_to_response('gc_check_balance.html', {}, context_instance=RequestContext(request))
