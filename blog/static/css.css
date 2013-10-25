@@ -2737,6 +2737,7 @@ div.gift-card-thumb {
     line-height: 2em;
     color: steelblue;
     font-weight: bolder;
+    min-width: 7em;
 }
 
 div.gift-card-thumb a {
