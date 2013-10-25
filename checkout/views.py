@@ -666,9 +666,7 @@ class Checkout:
         """
         Should be called after the checkout successfully completes.
         """
-        for item in cartutils.get_cart_items(self.request):
-            # empty the customer's cart
-            item.delete()
+        cartutils.clear_cart(self.request)
 
         if not self.is_guest():
             ContactInfoStep(self).save_data_to_profile()
