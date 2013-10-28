@@ -44,11 +44,31 @@ class Order(models.Model):
     is_pickup = models.BooleanField(default=False)
     shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
 
+    def get_products(self):
+        return ProductOrderItem.objects.filter(order=self)
+
+    def get_gift_cards(self):
+        return GiftCardOrderItem.objects.filter(order=self)
+
+    def get_items(self):
+        """
+        Returns a LIST of ProductOrderItem and GiftCardOrderItem models.  The built-in self.items.all() will return
+        a list of generic OrderItem instances.  Use this method if you need the subclass models.
+        """
+        return list(self.get_products()) + list(self.get_gift_cards())
+
     @property
     def merchandise_total(self):
         total = Decimal('0.00')
-        for item in self.items.all():
-            total += item.price*item.quantity
+        for item in self.get_products():
+            total += item.total
+        return total
+
+    @property
+    def gift_card_total(self):
+        total = Decimal('0.00')
+        for item in self.get_gift_cards():
+            total += item.total
         return total
 
     def get_shipping_address(self):
@@ -88,6 +108,7 @@ class Order(models.Model):
         total = self.merchandise_total + self.shipping_charge
         for tax in self.taxes.all():
             total += tax.total
+        total += self.gift_card_total
         return total
 
     def get_absolute_url(self):
@@ -107,7 +128,7 @@ class Order(models.Model):
         self.status = Order.CANCELLED
 
         # increment stock counts
-        for order_item in self.items.all():
+        for order_item in self.get_products():
             order_item.item.quantity += order_item.quantity
             order_item.item.save()
 

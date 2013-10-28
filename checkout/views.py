@@ -8,7 +8,7 @@ from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, Cre
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
-from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem, OrderTax, ProductOrderItem, \
+from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderTax, ProductOrderItem, \
     GiftCardOrderItem
 import decimal
 from utils.util import round_cents
@@ -869,11 +869,15 @@ class Checkout:
 
         for order_item in pyOrder.items:
             order_item.order = order
+            order_item.full_clean()
             order_item.save()
-            # decrement stock
-            in_stock = order_item.item.quantity
-            order_item.item.quantity = max(0, in_stock - order_item.quantity)
-            order_item.item.save()
+
+            # decrement stock for products
+            if order_item.is_product():
+                in_stock = order_item.item.quantity
+                order_item.item.quantity = max(0, in_stock - order_item.quantity)
+                order_item.item.save()
+
             # mark wish list items as sold
             wishlist_links = order_item.cart_item.wishlist_links.all()
             for link in wishlist_links:

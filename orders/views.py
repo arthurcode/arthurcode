@@ -45,6 +45,7 @@ def cancel_view(request, order_id):
 @require_GET
 def receipt_view(request, order_id):
     order = get_object_or_404(Order, id=order_id)
+
     context = {
         'order': order,
     }

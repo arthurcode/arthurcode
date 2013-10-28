@@ -48,12 +48,24 @@
             <tfoot>
             <tr>
                 <th class="right" colspan="4">
-                    Subtotal:
+                    Merchandise Subtotal:
                 </th>
                 <th class="right">
                     {{ order.merchandise_total|currency }}
                 </th>
             </tr>
+            {% with order.gift_card_total as gc_total %}
+                {% if gc_total > 0 %}
+                    <tr>
+                        <th class="right" colspan="4">
+                            Gift Card Total:
+                        </th>
+                        <th class="right">
+                            {{ gc_total|currency }}
+                        </th>
+                    </tr>
+                {% endif %}
+            {% endwith %}
             <tr>
                 <th class="right" colspan="4">
                     + Shipping:
@@ -84,10 +96,14 @@
             </tfoot>
             <tbody>
             {% if order.items.count %}
-                {% for item in order.items.all %}
+                {% for item in order.get_items %}
                     <tr>
                         <td>
-                            <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
+                            {% if item.is_product %}
+                                <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
+                            {% else %}
+                                {{ item.name }}
+                            {% endif %}
                         </td>
                         <td>
                             <dl class="horizontal">
