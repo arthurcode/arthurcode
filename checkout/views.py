@@ -63,8 +63,16 @@ class PyOrder(object):
     def merchandise_total(self):
         total = Decimal('0.00')
         for item in self.items:
-            total += item.total
+            if item.is_product():
+                total += item.total
         return total
+
+    def _non_taxable_total(self):
+        nt_total = Decimal('0.00')
+        for item in self.items:
+            if item.is_gift_card():
+                nt_total += item.total
+        return nt_total
 
     def _taxable_total(self):
         return self.merchandise_total() + self.shipping_charge
@@ -74,6 +82,7 @@ class PyOrder(object):
         tax_breakdown = self.tax_breakdown()
         for tax in tax_breakdown:
             total += tax[2]
+        total += self._non_taxable_total()
         return total
 
     def get_balance_remaining(self):
@@ -374,7 +383,17 @@ class ShippingInfoStep(Step):
 
     def _visit(self, order):
         order.shipping_address = self.get_address()
-        order.shipping_charge = decimal.Decimal('5')
+        charge_shipping = False
+
+        for item in order.items:
+            if item.is_product():
+                charge_shipping = True
+                break
+
+        if charge_shipping:
+            order.shipping_charge = decimal.Decimal('5')
+        else:
+            order.shipping_charge = decimal.Decimal('0.00')
 
     def get_existing_nicknames(self):
         """
