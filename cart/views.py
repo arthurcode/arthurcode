@@ -7,6 +7,9 @@ from cart.forms import UpdateCartItemForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect
 from catalogue.models import ProductInstance
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 def show_cart(request):
@@ -14,7 +17,6 @@ def show_cart(request):
     Show the cart contents on a GET request.  On POST, check if the user is trying to update/remove items from their
     cart, or if they are trying to checkout.
     """
-
     bound_form = None
     bound_form_id = None
     checkout_errors = None
@@ -63,6 +65,7 @@ def show_cart(request):
     except ProductInstance.DoesNotExist:
         # something funny is happened - the user has an item in his cart that for some reason no longer exists in our
         # system.  This should never happen, but I guess you never know.
+        logger.exception("Unknown product instance in cart")
         cartutils.clear_cart(request)
         return HttpResponseRedirect(reverse('show_cart'))
 
