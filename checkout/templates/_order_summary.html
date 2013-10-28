@@ -6,7 +6,7 @@
         <dt>Items:</dt>
         <dd>{{ item_count }}</dd>
         <dt>Subtotal:</dt>
-        <dd>{{ order.merchandise_total|currency }}</dd>
+        <dd>{{ order.subtotal|currency }}</dd>
         {% if order.shipping_charge != None %}
             <dt>+ Shipping:</dt>
             <dd>{% if order.shipping_charge > 0 %}

@@ -74,6 +74,9 @@ class PyOrder(object):
                 nt_total += item.total
         return nt_total
 
+    def subtotal(self):
+        return self.merchandise_total() + self.gift_card_total()
+
     def _non_taxable_total(self):
         return self.gift_card_total()
 
