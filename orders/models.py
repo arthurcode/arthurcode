@@ -1,7 +1,7 @@
 from django.db import models
 from django.db.transaction import commit_on_success
 from catalogue.models import ProductInstance
-from django.core.validators import MinValueValidator
+from django.core.validators import MinValueValidator, MaxValueValidator
 from accounts.models import CustomerProfile
 from utils.models import AbstractAddress
 from utils.validators import is_blank, not_blank
@@ -10,6 +10,7 @@ from django.core.urlresolvers import reverse
 from decimal import Decimal
 from orders.signals import signal_order_cancelled
 from django.contrib.auth.models import User
+from cart.models import GiftCardCartItem
 
 
 class Order(models.Model):
@@ -123,17 +124,27 @@ class Order(models.Model):
 
 class OrderItem(models.Model):
     order = models.ForeignKey(Order, related_name="items")
-    item = models.ForeignKey(ProductInstance)
     quantity = models.IntegerField(validators=[MinValueValidator(1)])
     # I suppose the item could technically be free
     price = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0)])
 
-    def get_absolute_url(self):
-        return self.item.product.get_absolute_url()
-
     @property
     def total(self):
         return self.quantity * self.price
+
+    def is_product(self):
+        return False
+
+    def is_gift_card(self):
+        return False
+
+
+class ProductOrderItem(OrderItem):
+
+    item = models.ForeignKey(ProductInstance)
+
+    def get_absolute_url(self):
+        return self.item.product.get_absolute_url()
 
     @property
     def name(self):
@@ -145,6 +156,33 @@ class OrderItem(models.Model):
 
     def __unicode__(self):
         return self.item.product.name
+
+    def is_product(self):
+        return True
+
+
+class GiftCardOrderItem(OrderItem):
+
+    value = models.IntegerField(max_length=3,
+                                validators=[MinValueValidator(GiftCardCartItem.MIN_VALUE),
+                                            MaxValueValidator(GiftCardCartItem.MAX_VALUE)])
+
+    def get_absolute_url(self):
+        raise Exception("A gift card order item does not have a url")
+
+    @property
+    def name(self):
+        return "$%d Gift Card" % (self.value)
+
+    @property
+    def sku(self):
+        return "GIFTCARD"
+
+    def __unicode__(self):
+        return self.name
+
+    def is_gift_card(self):
+        return True
 
 
 class OrderBillingAddress(AbstractAddress):

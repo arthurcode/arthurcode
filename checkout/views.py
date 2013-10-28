@@ -8,7 +8,8 @@ from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, Cre
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
-from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem, OrderTax
+from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderItem, OrderTax, ProductOrderItem, \
+    GiftCardOrderItem
 import decimal
 from utils.util import round_cents
 from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBillingAddress
@@ -907,8 +908,12 @@ class Checkout:
     def get_order_items(self):
         order_items = []
         for cart_item in cartutils.get_cart_items(self.request):
-            order_item = OrderItem()
-            order_item.item = cart_item.item
+            if cart_item.is_product():
+                order_item = ProductOrderItem()
+                order_item.item = cart_item.item
+            else:
+                order_item = GiftCardOrderItem()
+                order_item.value = cart_item.value
             order_item.quantity = cart_item.quantity
             order_item.price = cart_item.price
             # link the cart_item this order item was derived from

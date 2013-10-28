@@ -37,7 +37,7 @@
                 <caption class="hidden">Order Breakdown</caption>
                 <thead class="title-bar">
                 <tr>
-                    <th scope="col">Product</th>
+                    <th scope="col">Item</th>
                     <th scope="col">Details</th>
                     <th class="right" scope="col">Item Price</th>
                     <th class="right" scope="col">Quantity</th>
@@ -86,17 +86,26 @@
                     {% for item in order.items %}
                         <tr>
                             <td>
+                                {% if item.is_product %}
                                 <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image }}" alt="{{ item.item.product.name }}"/></a>
                                 <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
+                                {% else %}
+                                    {% include "_gc_thumbnail.html" %}
+                                {% endif %}
                             </td>
                             <td>
                                 <dl class="horizontal">
+                                    {% if item.is_product %}
                                     {% for option in item.item.options.all %}
                                         <dt>{{ option.get_category_display|capfirst }}:</dt>
                                         <dd>{{ option.name|lower }}</dd>
                                     {% endfor %}
                                     <dt>SKU:</dt>
                                     <dd>{{ item.sku }}</dd>
+                                    {% else %}
+                                        <dt>Value:</dt>
+                                        <dd>{{ item.value|currency }}</dd>
+                                    {% endif %}
                                 </dl>
                             </td>
                             <td class="right">
