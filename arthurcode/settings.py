@@ -170,7 +170,7 @@ LOGGING = {
     },
     'formatters': {
         'standard': {
-            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] %(message)s",
+            'format' : "[%(asctime)s] %(levelname)s [%(name)s:%(lineno)s] [thread-%(thread)d process-%(process)d] %(message)s",
             'datefmt' : "%d/%b/%Y %H:%M:%S"
         },
     },
