@@ -47,12 +47,24 @@
                 <tfoot>
                 <tr>
                     <th class="right" colspan="4">
-                        Subtotal:
+                        Merchandise Subtotal:
                     </th>
                     <th class="right">
                         {{ order.merchandise_total|currency }}
                     </th>
                 </tr>
+                {% with order.gift_card_total as gc_total %}
+                    {% if gc_total > 0 %}
+                        <tr>
+                            <th class="right" colspan="4">
+                                Gift Card Subtotal:
+                            </th>
+                            <th class="right">
+                                {{ gc_total|currency }}
+                            </th>
+                        </tr>
+                    {% endif %}
+                {% endwith %}
                 <tr>
                     <th class="right" colspan="4">
                         + Shipping:

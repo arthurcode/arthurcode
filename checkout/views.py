@@ -67,12 +67,15 @@ class PyOrder(object):
                 total += item.total
         return total
 
-    def _non_taxable_total(self):
+    def gift_card_total(self):
         nt_total = Decimal('0.00')
         for item in self.items:
             if item.is_gift_card():
                 nt_total += item.total
         return nt_total
+
+    def _non_taxable_total(self):
+        return self.gift_card_total()
 
     def _taxable_total(self):
         return self.merchandise_total() + self.shipping_charge
