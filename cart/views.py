@@ -8,6 +8,7 @@ from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect
 from catalogue.models import ProductInstance
 import logging
+from utils.decorators import ajax_required
 
 logger = logging.getLogger(__name__)
 
@@ -120,3 +121,15 @@ def _get_cart_errors(request):
         if error:
             checkout_errors.append("%s: %s" % (unicode(cart_item), error))
     return checkout_errors
+
+
+@ajax_required
+def cart_summary(request):
+    """
+    Returns a cart summary html snippet that can be used for refreshing the cart-summary div via ajax.
+    """
+    template = "_cart_summary.html"
+    context = {
+        'cart_item_count': cartutils.cart_distinct_item_count(request)
+    }
+    return render_to_response(template, context, context_instance=RequestContext(request))

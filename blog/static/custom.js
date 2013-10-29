@@ -7,6 +7,9 @@
  */
 
 YUI.add('custom', function(Y) {
+
+    var DEFAULT_AJAX_TIMEOUT = 15*1000; // 15 seconds
+
     Y.Custom = {
         messageBox: function(message, header) {
             var panel = new Y.Panel({
@@ -205,8 +208,25 @@ YUI.add('custom', function(Y) {
                 column1.appendChild(newErrorSpan);
             }
             errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
+        },
+
+        ajax_reload: function(node, uri) {
+            /*
+            Uses AJAX to reload the html contents of the given node, from the html response of the given URI.
+            Errors are silently ignored, although some logging may take place on the server side.
+             */
+            var cfg = {
+                timeout: DEFAULT_AJAX_TIMEOUT,
+                context: node,
+                on: {
+                    success: function(id, o, args) {
+                        node.setHTML(o.responseText);
+                    }
+                }
+            };
+            Y.io(uri, cfg);
         }
     };
 }, '0.0.1', {
-    requires: ['node', 'event', 'panel', 'node-event-simulate']
+    requires: ['node', 'event', 'panel', 'node-event-simulate', 'io-base']
 });
