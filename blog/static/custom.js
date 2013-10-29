@@ -8,9 +8,11 @@
 
 YUI.add('custom', function(Y) {
 
-    var DEFAULT_AJAX_TIMEOUT = 15*1000; // 15 seconds
+
 
     Y.Custom = {
+        DEFAULT_AJAX_TIMEOUT: 15*1000,
+
         messageBox: function(message, header) {
             var panel = new Y.Panel({
                 modal: true,
@@ -216,7 +218,7 @@ YUI.add('custom', function(Y) {
             Errors are silently ignored, although some logging may take place on the server side.
              */
             var cfg = {
-                timeout: DEFAULT_AJAX_TIMEOUT,
+                timeout: Y.Custom.DEFAULT_AJAX_TIMEOUT,
                 context: node,
                 on: {
                     success: function(id, o, args) {

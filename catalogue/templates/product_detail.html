@@ -192,7 +192,7 @@
 {% block javascript %}
     {{ block.super }}
     <script type="text/javascript">
-        YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', 'custom', function(Y) {
+        YUI().use('event', 'panel', 'imageloader', 'node-event-simulate', 'custom', 'io-form', function(Y) {
             // lazy loading of product's images (except for the first, primary image)
             var imageGroup = new Y.ImgLoadGroup({foldDistance: 30});
             // iterate over every image, and register the image-{id} div with the appropriate source image
@@ -354,7 +354,7 @@
                 })
             }
 
-            // custom add-to-cart form validation
+            // custom add-to-cart form validation + AJAX
             var form = Y.one('.add-to-cart form');
             if (form) {
                 var button = form.one('button.action');
@@ -386,6 +386,31 @@
                         }
                         if (found_error) {
                             e.preventDefault()
+                        } else {
+                            // there were no errors in the form, submit via ajax
+                            var uri = '{% url ajax_add_product_to_cart %}';
+
+                            var cfg = {
+                                method: 'POST',
+                                sync: true,
+                                timeout: Y.Custom.DEFAULT_AJAX_TIMEOUT,
+                                context: e,
+                                form: {
+                                    id: form
+                                },
+                                data: 'product_id={{ product.id }}',  // extra data not in the add-to-cart form
+                                on: {
+                                    success: function(id, o, args) {
+                                        // only prevent the default form submit if the ajax submit was successful
+                                        e.preventDefault();
+                                        Y.all('.cart-summary').each(function(node) {
+                                            Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
+                                        });
+                                        // TBD: load a panel for the cart summary
+                                    }
+                                }
+                            };
+                            Y.io(uri, cfg);
                         }
                     });
                 }
@@ -449,6 +474,7 @@
                     }
                 }
             }
+
         });
     </script>
 {% endblock %}

@@ -1,14 +1,15 @@
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from cart import cartutils
 from django.core.urlresolvers import reverse
 from urlparse import urlparse
-from cart.forms import UpdateCartItemForm
+from cart.forms import UpdateCartItemForm, ProductAddToCartForm
 from django.utils.http import is_safe_url
 from django.http import HttpResponseRedirect
-from catalogue.models import ProductInstance
+from catalogue.models import ProductInstance, Product
 import logging
 from utils.decorators import ajax_required
+from django.views.decorators.http import require_POST
 
 logger = logging.getLogger(__name__)
 
@@ -133,3 +134,21 @@ def cart_summary(request):
         'cart_item_count': cartutils.cart_distinct_item_count(request)
     }
     return render_to_response(template, context, context_instance=RequestContext(request))
+
+
+@ajax_required
+@require_POST
+def add_product_to_cart(request):
+    data = request.POST.copy()
+    product_id = data.get('product_id')
+    product = get_object_or_404(Product, id=product_id)
+    form = ProductAddToCartForm(product, request, data=data)
+
+    if form.is_valid():
+        form.add_to_cart()
+        context = {
+            'instance': form.get_product_instance(form.cleaned_data),
+        }
+        return render_to_response('post_add_to_cart_summary.html', context, context_instance=RequestContext(request))
+    else:
+        raise Exception("Error in add-to-cart form submitted via ajax")
