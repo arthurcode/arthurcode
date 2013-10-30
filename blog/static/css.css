@@ -2790,3 +2790,7 @@ div.post-add-to-cart p.subtotal {
     text-align: center;
     padding-top: 10px;
 }
+
+div.loader-panel {
+    opacity: 0.5;
+}

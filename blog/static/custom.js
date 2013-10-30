@@ -21,8 +21,10 @@ YUI.add('custom', function(Y) {
                 draggable: false,
                 visible: false,
                 render: true,
-                bodyContent: "Please wait ...",
-                zIndex: 50
+                zIndex: 50,
+                close: false,
+                bodyContent: '<div class="loader-panel"><img src="/static/gifs/ajax-loader.gif" /></div>',
+                buttons: {}
             }),
 
             /* AJAX general event handler */
