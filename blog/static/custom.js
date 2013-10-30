@@ -8,10 +8,37 @@
 
 YUI.add('custom', function(Y) {
 
-
-
     Y.Custom = {
         DEFAULT_AJAX_TIMEOUT: 15*1000,
+
+        AJAX_GH: {
+            /*
+            IO General Event Handler
+             */
+            loadingPanel: new Y.Panel({
+                centered: true,
+                modal: true,
+                draggable: false,
+                visible: false,
+                render: true,
+                bodyContent: "Please wait ...",
+                zIndex: 50
+            }),
+
+            /* AJAX general event handler */
+            start: function(id, args) {
+                this.loadingPanel.show();
+            },
+
+            end: function(id, args) {
+                this.loadingPanel.hide();
+            }
+        },
+
+        init_ajax_general_handler: function() {
+            Y.on('io:start', this.AJAX_GH.start, this.AJAX_GH);
+            Y.on('io:end', this.AJAX_GH.end, this.AJAX_GH);
+        },
 
         messageBox: function(message, header) {
             var panel = new Y.Panel({
