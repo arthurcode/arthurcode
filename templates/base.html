@@ -21,6 +21,7 @@
 <script type="text/javascript">
     YUI().use('node', 'event', 'node-event-simulate', 'io', 'panel', 'custom', 'imageloader', function(Y) {
         {% block javascript %}
+            Y.Custom.init_ajax_general_handler();
             // initially hide elements with the 'hide-initially' class
             Y.all('.hide-initially').each(function(f) {
                 f.addClass('hidden');
@@ -112,8 +113,13 @@
                         span.addClass('hidden');
                     });
                 }
+
+                // when a form submits, display a modal loading panel.
+                form.on('submit', function(e) {
+                    // TODO: could this ever backfire on us and leave a loading panel that will never go away?
+                    Y.Custom.show_loading_panel();
+                });
             });
-            Y.Custom.init_ajax_general_handler();
         {% endblock %}
     });
 </script>

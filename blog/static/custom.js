@@ -42,6 +42,14 @@ YUI.add('custom', function(Y) {
             Y.on('io:end', this.AJAX_GH.end, this.AJAX_GH);
         },
 
+        show_loading_panel: function() {
+            this.AJAX_GH.loadingPanel.show();
+        },
+
+        hide_loading_panel: function() {
+            this.AJAX_GH.loadingPanel.hide();
+        },
+
         messageBox: function(message, header) {
             var panel = new Y.Panel({
                 modal: true,
