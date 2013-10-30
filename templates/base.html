@@ -18,9 +18,9 @@
 <body class="{% block body_class %}unknown{% endblock %} yui3-skin-sam">
 
 {% block site_wrapper %} {% endblock %}
-{% block javascript %}
-    <script type="text/javascript">
-        YUI().use('node', 'event', 'node-event-simulate', function(Y) {
+<script type="text/javascript">
+    YUI().use('node', 'event', 'node-event-simulate', 'io', 'panel', 'custom', 'imageloader', function(Y) {
+        {% block javascript %}
             // initially hide elements with the 'hide-initially' class
             Y.all('.hide-initially').each(function(f) {
                 f.addClass('hidden');
@@ -113,8 +113,8 @@
                     });
                 }
             });
-        });
-    </script>
-{% endblock %}
+        {% endblock %}
+    });
+</script>
 </body>
 </html>
