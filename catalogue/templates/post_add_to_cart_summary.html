@@ -6,7 +6,7 @@
     {% thumb instance.product instance.get_best_image %}
     <p class="subtotal">Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }})</p>
     <div class="controls">
-    <a class="action continue-shopping">Continue Shopping</a>
+    <a class="action continue-shopping close-panel">Continue Shopping</a>
     <a class="action go-to-cart" href="{% url show_cart %}">View Cart</a>
     </div>
 </div>

@@ -596,6 +596,7 @@ button.action {
 
 a.action {
     text-decoration: none;
+    cursor: pointer;
 }
 
 div.cart-summary a {

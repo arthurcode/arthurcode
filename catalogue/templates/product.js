@@ -212,6 +212,10 @@ if (form) {
                                 hideOn: [
                                     {
                                         eventName: 'clickoutside'
+                                    },
+                                    {
+                                        node: panel_div.one('close-panel'),
+                                        eventName: 'click'
                                     }
                                 ]
                             });
