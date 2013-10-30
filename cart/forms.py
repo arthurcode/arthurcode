@@ -10,7 +10,7 @@ from cart.models import ProductCartItem
 from giftcards.forms import DEFAULT_GC_VALUE_WIDGET
 
 
-class ProductAddToCartForm(forms.Form):
+class ProductAddToCartOrWishListForm(forms.Form):
     ERROR_COOKIES_DISABLED = u"Your browser must have cookies enabled in order to shop on this site."
     ERROR_OUT_OF_STOCK = u"Sorry, this product is out of stock."
     ERROR_UNAVAILABLE = u"Sorry, this product is unavailable."
@@ -27,7 +27,7 @@ class ProductAddToCartForm(forms.Form):
     def __init__(self, product, request=None, *args, **kwargs):
         self.product = product
         self.request = request
-        super(ProductAddToCartForm, self).__init__(*args, **kwargs)
+        super(ProductAddToCartOrWishListForm, self).__init__(*args, **kwargs)
         self.extra_fields = []
 
         if self.product.has_options():
@@ -49,7 +49,7 @@ class ProductAddToCartForm(forms.Form):
 
     # custom validation to check for cookies
     def clean(self):
-        cleaned_data = super(ProductAddToCartForm, self).clean()
+        cleaned_data = super(ProductAddToCartOrWishListForm, self).clean()
         all_extra_fields_set = True
         for field in self.extra_fields:
             if cleaned_data.get(field) is None:
@@ -60,16 +60,11 @@ class ProductAddToCartForm(forms.Form):
             if not self.request.session.test_cookie_worked():
                 # even though this is a general form error, associate it with the quantity field.  This makes displaying
                 # the error message a little more automatic.
-                self._errors['quantity'] = self.error_class([ProductAddToCartForm.ERROR_COOKIES_DISABLED])
+                self._errors['quantity'] = self.error_class([ProductAddToCartOrWishListForm.ERROR_COOKIES_DISABLED])
                 if 'quantity' in cleaned_data:
                     del(cleaned_data['quantity'])
             elif all_extra_fields_set:
-                wishlist_id = self.cleaned_data.get('wishlist', None)
                 self.check_available(cleaned_data)
-
-                if not "add-to-wishlist" in self.request.POST:
-                    # the stock not relevant if we are just adding the item to a wish list
-                    self.check_stock(cleaned_data)
         return cleaned_data
 
     def get_product_instance(self, cleaned_data):
@@ -114,9 +109,19 @@ class ProductAddToCartForm(forms.Form):
                 del(cleaned_data['quantity'])
 
 
+class ProductAddToCartForm(ProductAddToCartOrWishListForm):
+
+    def clean(self):
+        cleaned_data = super(ProductAddToCartForm, self).clean()
+        self.check_stock(cleaned_data)
+        return cleaned_data
+
     def add_to_cart(self):
         instance = self.get_product_instance(self.cleaned_data)
         cartutils.add_to_cart(self.request, instance, self.cleaned_data.get('quantity', 0))
+
+
+class ProductAddToWishListForm(ProductAddToCartOrWishListForm):
 
     def add_to_wishlist(self):
         product_instance = self.get_product_instance(self.cleaned_data)
@@ -130,6 +135,9 @@ class ProductAddToCartForm(forms.Form):
             return wishlist
         except WishList.DoesNotExist:
             return None
+
+    def create_new_wishlist(self):
+        return self.cleaned_data.get('wishlist', None) == str(self.NEW_WISHLIST_ID)
 
 
 class UpdateCartItemForm(forms.Form):

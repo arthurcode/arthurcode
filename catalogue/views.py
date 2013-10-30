@@ -10,7 +10,7 @@ from django.db.models import Count, Sum, Avg
 from catalogue.models import Product, Category, Brand, Theme, ProductInstance, ProductOption, \
     Award
 from arthurcode import settings
-from cart.forms import ProductAddToCartForm
+from cart.forms import ProductAddToCartForm, ProductAddToWishListForm, ProductAddToCartOrWishListForm
 from catalogue import filters
 from search import searchutils
 import json
@@ -46,27 +46,28 @@ def product_detail_view(request, slug=""):
     if request.method == 'POST':
         # add to cart, create the bound form
         postdata = request.POST.copy()
-        # add to cart
-        form = ProductAddToCartForm(product, request, postdata)
-        # check if posted data is valid
+
+        if 'add-to-wishlist' in postdata:
+            form = ProductAddToWishListForm(product, request, data=postdata)
+        else:
+            form = ProductAddToCartForm(product, request, data=postdata)
+
         if form.is_valid():
             # if test cookie worked, get rid of it
             if request.session.test_cookie_worked():
                 request.session.delete_test_cookie()
 
-            if 'add-to-wishlist' in postdata:
-                wishlist_id = form.cleaned_data.get('wishlist')
-
-                if wishlist_id == str(form.NEW_WISHLIST_ID):
+            if isinstance(form, ProductAddToCartForm):
+                form.add_to_cart()
+                return HttpResponseRedirect(reverse('show_cart'))
+            else:
+                if form.create_new_wishlist():
                     instance = form.get_product_instance(form.cleaned_data)
                     url = reverse('wishlist_create') + '?' + urlencode({PRODUCT_INSTANCE_KEY: instance.id})
                     return HttpResponseRedirect(url)
                 else:
                     wishlist = form.add_to_wishlist()
                     return HttpResponseRedirect(wishlist.get_absolute_url())
-            else:
-                form.add_to_cart()
-                return HttpResponseRedirect(reverse('show_cart'))
     else:
         # it's a GET, create the unbound form.  Note request as a kwarg
         form = ProductAddToCartForm(product, request=request)
