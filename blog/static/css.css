@@ -2749,3 +2749,44 @@ div.gift-card-thumb span.value {
     display: block;
     font-size: larger;
 }
+
+div.post-add-to-cart {
+    float: left;
+    padding: 20px 30px;
+    background: white;
+}
+
+div.post-add-to-cart h2 {
+    text-align: center;
+}
+
+div.post-add-to-cart h2 img {
+    width: 30px;
+}
+
+div.post-add-to-cart .thumbnail {
+    display: block;
+    float: none;
+    margin: 0 auto;
+}
+
+div.post-add-to-cart .controls {
+    float: left;
+    clear: both;
+    padding-top: 20px;
+}
+
+div.post-add-to-cart .controls a.continue-shopping {
+    float: left;
+    margin-right: 20px;
+}
+
+div.post-add-to-cart .controls a.go-to-cart {
+    float: right;
+}
+
+div.post-add-to-cart p.subtotal {
+    font-weight: bolder;
+    text-align: center;
+    padding-top: 10px;
+}

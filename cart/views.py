@@ -148,6 +148,9 @@ def add_product_to_cart(request):
         form.add_to_cart()
         context = {
             'instance': form.get_product_instance(form.cleaned_data),
+            'items_in_cart': cartutils.cart_distinct_item_count(request),
+            'subtotal': cartutils.cart_subtotal(request),
+            'quantity': form.cleaned_data.get('quantity', None),
         }
         return render_to_response('post_add_to_cart_summary.html', context, context_instance=RequestContext(request))
     else:
