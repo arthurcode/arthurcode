@@ -82,13 +82,7 @@
                         </form>
                     </td>
                     <td>
-                        {% if item.order_item %}
-                            <del>purchased</del>
-                        {% elif item.instance.quantity > 0 %}
-                            {% include "_add_to_cart.html" %}
-                        {% else %}
-                            <del>Out of Stock</del>
-                        {% endif %}
+                        {% include "_add_to_cart.html" %}
                     </td>
                 </tr>
             {% endfor %}

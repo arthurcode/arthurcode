@@ -9,12 +9,12 @@ Y.all('form.add-to-cart').each(function(form) {
             Y.all('.cart-summary').each(function(node) {
                 Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
             });
-            // remove the add-to-cart form and replace it with the 'already in your cart' dialogue
-            // This isn't DRY, is there a way to fix it?
-
-
             var panel = Y.Custom.ajax_result_panel(o);
             panel.render();
+            var parentNode = form.ancestor();
+            var uri = '{% url ajax_wishlist_item_status %}';
+            var instance_id = form.one('input#id_instance_id').getAttribute('value');
+            Y.Custom.ajax_reload(parentNode, uri, 'instance_id=' + instance_id);
         };
         Y.io(uri, cfg);
     });

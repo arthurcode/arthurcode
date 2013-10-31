@@ -249,7 +249,7 @@ YUI.add('custom', function(Y) {
             errorSpan.addClass('hidden');  // TODO: should be visible to screen readers but not occupy space in DOM
         },
 
-        ajax_reload: function(node, uri) {
+        ajax_reload: function(node, uri, extraData) {
             /*
             Uses AJAX to reload the html contents of the given node, from the html response of the given URI.
             Errors are silently ignored, although some logging may take place on the server side.
@@ -261,7 +261,8 @@ YUI.add('custom', function(Y) {
                     success: function(id, o, args) {
                         node.setHTML(o.responseText);
                     }
-                }
+                },
+                data: extraData
             };
             Y.io(uri, cfg);
         },

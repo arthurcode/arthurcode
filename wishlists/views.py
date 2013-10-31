@@ -2,15 +2,15 @@ from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from accounts.decorators import non_lazy_login_required
 from forms import CreateWishListForm, RemoveFromWishList, EditWishListForm, EditWishListItemNote
-from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
+from django.http import HttpResponseRedirect, HttpResponseForbidden
 from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
 from django.core.signing import Signer
-from cart.cartutils import add_wishlist_item_to_cart, cart_distinct_item_count, cart_subtotal
+from cart.cartutils import cart_distinct_item_count, cart_subtotal
+from wishlists.wishutils import add_wishlist_item_to_cart
 from wishlists import signals
-from wishutils import annotate_is_in_cart
 from utils.decorators import ajax_required
-from django.views.decorators.http import require_POST
+from django.views.decorators.http import require_POST, require_GET
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -70,7 +70,6 @@ def view_wishlist(request, wishlist_id):
                 instance_id = data.get('instance_id', None)
 
     items = wishlist.items.all()
-    annotate_is_in_cart(request, items)
 
     for item in items:
         if bound_form and str(item.id) == instance_id:
@@ -141,7 +140,6 @@ def shop_wishlist(request, token):
             return HttpResponseRedirect(reverse('show_cart'))
 
     items = wishlist.items.all()
-    annotate_is_in_cart(request, items)
 
     context = {
         'wishlist': wishlist,
@@ -185,4 +183,22 @@ def add_wish_list_item_to_cart(request):
         'subtotal': cart_subtotal(request),
     }
     return render_to_response('post_add_to_wish_list_summary.html', context, context_instance=RequestContext(request))
+
+
+@ajax_required
+@require_GET
+def get_wish_list_item_status(request):
+    """
+    Returns 'out-of-stock', 'purchased', an add-to-cart form, or an 'already in cart' message depending on the state
+    of the wish list item.  The results of this call would typically be stored in a wish list item table.  Required so
+    that we can refresh the state of the wish list item after it has been added to a user's cart without refreshing the
+    entire page.
+    """
+    data = request.GET.copy()
+    item_id = data.get('instance_id', None)
+    wishlist_item = get_object_or_404(WishListItem, id=item_id)
+    context = {
+        'item': wishlist_item,
+    }
+    return render_to_response('_add_to_cart.html', context, context_instance=RequestContext(request))
 
