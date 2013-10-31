@@ -182,28 +182,19 @@ if (form) {
             } else {
                 // there were no errors in the form, submit via ajax
                 var uri = '{% url ajax_add_product_to_cart %}';
+                var cfg = Y.Custom.ajax_form_submit_cfg(form);
 
-                var cfg = {
-                    method: 'POST',
-                    sync: true,
-                    timeout: Y.Custom.DEFAULT_AJAX_TIMEOUT,
-                    context: e,
-                    form: {
-                        id: form
-                    },
-                    data: 'product_id={{ product.id }}',  // extra data not in the add-to-cart form
-                    on: {
-                        success: function(id, o, args) {
-                            // only prevent the default form submit if the ajax submit was successful
-                            e.preventDefault();
-                            Y.all('.cart-summary').each(function(node) {
-                                Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
-                            });
-                            var panel = Y.Custom.ajax_result_panel(o);
-                            panel.render();
-                        }
-                    }
+                // customize the configuration object
+                cfg.on.success = function(id, o, args) {
+                    // only prevent the default form submit if the ajax submit was successful
+                    e.preventDefault();
+                    Y.all('.cart-summary').each(function(node) {
+                        Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
+                    });
+                    var panel = Y.Custom.ajax_result_panel(o);
+                    panel.render();
                 };
+                cfg.data = 'product_id={{ product.id }}';
                 Y.io(uri, cfg);
             }
         });

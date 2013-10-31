@@ -289,6 +289,20 @@ YUI.add('custom', function(Y) {
                     }
                 ]
             });
+        },
+
+        ajax_form_submit_cfg: function(form) {
+            return {
+                method: 'POST',
+                sync: true,
+                timeout: Y.Custom.DEFAULT_AJAX_TIMEOUT,
+                form: {
+                    id: form
+                },
+                on: {
+
+                }
+            };
         }
     };
 }, '0.0.1', {
