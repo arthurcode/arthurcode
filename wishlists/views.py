@@ -177,12 +177,12 @@ def add_wish_list_item_to_cart(request):
     add_wishlist_item_to_cart(request, wishlist_item)
 
     context = {
+        'quantity': 1,
         'instance': wishlist_item.instance,
-        'wishlist': wishlist_item.wish_list,
         'items_in_cart': cart_distinct_item_count(request),
         'subtotal': cart_subtotal(request),
     }
-    return render_to_response('post_add_to_wish_list_summary.html', context, context_instance=RequestContext(request))
+    return render_to_response('post_add_to_cart_summary.html', context, context_instance=RequestContext(request))
 
 
 @ajax_required
