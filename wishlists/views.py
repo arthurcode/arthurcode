@@ -6,9 +6,11 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden, Http404
 from models import WishList, WishListItem
 from django.core.urlresolvers import reverse
 from django.core.signing import Signer
-from cart.cartutils import add_wishlist_item_to_cart
+from cart.cartutils import add_wishlist_item_to_cart, cart_distinct_item_count, cart_subtotal
 from wishlists import signals
 from wishutils import annotate_is_in_cart
+from utils.decorators import ajax_required
+from django.views.decorators.http import require_POST
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -166,4 +168,21 @@ def delete_wishlist(request, id):
         'wishlist': wishlist,
     }
     return render_to_response('delete_wishlist.html', context, context_instance=RequestContext(request))
+
+
+@ajax_required
+@require_POST
+def add_wish_list_item_to_cart(request):
+    data = request.POST.copy()
+    item_id = data.get('instance_id')
+    wishlist_item = get_object_or_404(WishListItem, id=item_id)
+    add_wishlist_item_to_cart(request, wishlist_item)
+
+    context = {
+        'instance': wishlist_item.instance,
+        'wishlist': wishlist_item.wish_list,
+        'items_in_cart': cart_distinct_item_count(request),
+        'subtotal': cart_subtotal(request),
+    }
+    return render_to_response('post_add_to_wish_list_summary.html', context, context_instance=RequestContext(request))
 

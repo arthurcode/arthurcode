@@ -59,3 +59,8 @@
         </tbody>
     </table>
 {% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    {% include "_add_to_cart.js" %}
+{% endblock %}
