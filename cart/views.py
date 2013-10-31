@@ -1,6 +1,7 @@
 from django.shortcuts import render_to_response, get_object_or_404
 from django.template import RequestContext
 from cart import cartutils
+from wishlists import wishutils
 from django.core.urlresolvers import reverse
 from urlparse import urlparse
 from cart.forms import UpdateCartItemForm, ProductAddToCartForm
@@ -50,7 +51,7 @@ def show_cart(request):
                 form = UpdateCartItemForm(request)
                 form.fields['item_id'].widget.attrs['value'] = cart_item.id
             setattr(cart_item, 'update_form', form)
-            setattr(cart_item, 'wishlists', cartutils.get_wishlists_for_item(cart_item))
+            setattr(cart_item, 'wishlists', wishutils.get_wishlists_for_item(cart_item))
 
         cart_subtotal = cartutils.cart_subtotal(request)
         continue_shopping_url = get_continue_shopping_url(request)
@@ -60,7 +61,7 @@ def show_cart(request):
             'continue_shopping_url': continue_shopping_url,
             'cart_items': cart_items,
             'checkout_errors': checkout_errors,
-            'wishlists': cartutils.get_wishlists(request),
+            'wishlists': wishutils.get_wishlists(request),
         }
 
         return render_to_response('cart.html', context, context_instance=RequestContext(request))

@@ -1,13 +1,26 @@
 from cart import cartutils
+from models import WishListItemToCartItem, WishList
 
 
-def annotate_is_in_cart(request, wish_items):
-    """
-    Annotates an 'in_cart' attribute to each WishListItem in the list.  Will be 'True' if the wish list item is in the
-    customer's cart and False otherwise.
-    """
-    cart_items = cartutils.get_cart_items(request)
-    in_cart = wish_items.filter(cart_links__cart_item__in=cart_items)
+def add_wishlist_item_to_cart(request, wishlist_item):
+    product_instance = wishlist_item.instance
+    cart_item = cartutils.add_to_cart(request, product_instance, 1)
+    # link the wish list item to the cart item
+    link = WishListItemToCartItem(
+        wishlist_item=wishlist_item,
+        cart_item=cart_item,
+    )
+    link.full_clean()
+    link.save()
 
-    for wish_item in wish_items:
-        setattr(wish_item, 'in_cart', wish_item in in_cart)
+
+def get_wishlists(request):
+    # returns a list of wish lists that the user has been shopping from
+    cart_id = cartutils._cart_id(request)
+    wishlist_item_ids = WishListItemToCartItem.objects.filter(cart_item__cart_id=cart_id).values_list('wishlist_item')
+    return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()
+
+
+def get_wishlists_for_item(cart_item):
+    wishlist_item_ids = cart_item.wishlist_links.values_list('wishlist_item')
+    return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()

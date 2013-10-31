@@ -1,14 +1,18 @@
-{% if item.order_item %}
-    <del>Purchased</del>
-{% elif item.in_cart %}
-    <a href="{% url show_cart %}"><em>In Your Cart</em></a><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
-{% elif item.instance.quantity > 0 %}
-    <form class="no-help add-to-cart" method="post">
-        {% csrf_token %}
-        <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
-        <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
-    </form>
-{% else %}
-    <del>Out of Stock</del>
-{% endif %}
+{% load wish_list_extras %}
+
+{% with item|in_cart:request as in_cart %}
+    {% if item.order_item %}
+        <del>Purchased</del>
+    {% elif in_cart %}
+        <a href="{% url show_cart %}"><em>In Your Cart</em></a><img class="tick" src="{{ STATIC_URL }}icons/tick.png" />
+    {% elif item.instance.quantity > 0 %}
+        <form class="no-help add-to-cart" method="post">
+            {% csrf_token %}
+            <input type="hidden" name="instance_id" id="id_instance_id" value="{{ item.id }}" />
+            <button class="action" type="submit" name="add-to-cart">Add to Cart</button>
+        </form>
+    {% else %}
+        <del>Out of Stock</del>
+    {% endif %}
+{% endwith %}
 

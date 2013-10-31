@@ -2,7 +2,6 @@ from cart.models import CartItem, ProductCartItem, GiftCardCartItem
 from django.shortcuts import get_object_or_404
 import decimal
 from exceptions import ValueError
-from wishlists.models import WishListItemToCartItem, WishList
 
 CART_ID_SESSION_KEY = 'cart_id'
 
@@ -53,18 +52,6 @@ def add_to_cart(request, product_instance, quantity):
     ci.full_clean()
     ci.save()
     return ci
-
-
-def add_wishlist_item_to_cart(request, wishlist_item):
-    product_instance = wishlist_item.instance
-    cart_item = add_to_cart(request, product_instance, 1)
-    # link the wish list item to the cart item
-    link = WishListItemToCartItem(
-        wishlist_item=wishlist_item,
-        cart_item=cart_item,
-    )
-    link.full_clean()
-    link.save()
 
 
 def add_gift_card_to_cart(request, value, quantity):
@@ -142,18 +129,6 @@ def cart_subtotal(request):
 def clear_cart(request):
     for item in get_cart_items(request):
         item.delete()
-
-
-def get_wishlists(request):
-    # returns a list of wish lists that the user has been shopping from
-    cart_id = _cart_id(request)
-    wishlist_item_ids = WishListItemToCartItem.objects.filter(cart_item__cart_id=cart_id).values_list('wishlist_item')
-    return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()
-
-
-def get_wishlists_for_item(cart_item):
-    wishlist_item_ids = cart_item.wishlist_links.values_list('wishlist_item')
-    return WishList.objects.filter(items__id__in=wishlist_item_ids).distinct()
 
 
 def get_base_item(id):

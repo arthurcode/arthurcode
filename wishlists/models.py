@@ -5,6 +5,7 @@ from utils.validators import not_blank
 from django.core.urlresolvers import reverse
 from cart.models import CartItem
 from orders.models import OrderItem
+from cart import cartutils
 
 
 class WishList(models.Model):
@@ -49,6 +50,14 @@ class WishListItem(models.Model):
     class Meta:
         # by default display wish list items in the order they were added to the list
         ordering = ['created_at']
+
+    def in_cart(self, request):
+        """
+        Returns True if this wish list item is in the customer's cart.
+        """
+        cart_items = cartutils.get_cart_items(request)
+        # return true if there is a CartLink that links this wish item to any of the given cart_items
+        return WishListItemToCartItem.objects.filter(cart_item__in=cart_items, wishlist_item=self).exists()
 
 
 class WishListItemToCartItem(models.Model):
