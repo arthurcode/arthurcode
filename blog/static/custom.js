@@ -264,6 +264,31 @@ YUI.add('custom', function(Y) {
                 }
             };
             Y.io(uri, cfg);
+        },
+
+        ajax_result_panel: function(o) {
+            /*
+            Returns a Panel object suitable for rendering the responseText of the given ajax result object, o.
+            The panel is modal, centered, and will be closed when clicked outside or on a special button with the
+            'close panel' class.
+             */
+            var panel_div = Y.Node.create('<div class="panel-div">' + o.responseText + '</div>');
+            return new Y.Panel({
+                srcNode: panel_div,
+                centered: true,
+                visible: true,
+                modal: true,
+                zIndex: 100,
+                hideOn: [
+                    {
+                        eventName: 'clickoutside'
+                    },
+                    {
+                        node: panel_div.one('close-panel'),
+                        eventName: 'click'
+                    }
+                ]
+            });
         }
     };
 }, '0.0.1', {

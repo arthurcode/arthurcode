@@ -199,26 +199,8 @@ if (form) {
                             Y.all('.cart-summary').each(function(node) {
                                 Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
                             });
-
-                            // display the response in a new panel
-                            var panel_div = Y.Node.create('<div class="hi">' + o.responseText + '</div>');
-
-                            new Y.Panel({
-                                srcNode: panel_div,
-                                centered: true,
-                                render: true,
-                                modal: true,
-                                zIndex: 100,
-                                hideOn: [
-                                    {
-                                        eventName: 'clickoutside'
-                                    },
-                                    {
-                                        node: panel_div.one('close-panel'),
-                                        eventName: 'click'
-                                    }
-                                ]
-                            });
+                            var panel = Y.Custom.ajax_result_panel(o);
+                            panel.render();
                         }
                     }
                 };
