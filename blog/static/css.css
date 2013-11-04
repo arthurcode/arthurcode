@@ -2755,6 +2755,7 @@ div.post-add-to-container {
     float: left;
     padding: 20px 30px;
     background: white;
+    max-width: 350px;
 }
 
 div.post-add-to-container h2 {
@@ -2775,9 +2776,10 @@ div.post-add-to-container .controls {
     float: left;
     clear: both;
     padding-top: 20px;
+    width: 100%;
 }
 
-div.post-add-to-cart .controls a.close-panel {
+div.post-add-to-container .controls a.close-panel {
     float: left;
     margin-right: 20px;
 }

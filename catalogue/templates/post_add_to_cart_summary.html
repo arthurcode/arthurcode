@@ -2,11 +2,11 @@
 {% load extras %}
 
 <div class="post-add-to-container">
-    <h2>{{ quantity }} Item{{ quantity|pluralize }} Added to Cart <img src="{{ STATIC_URL }}icons/tick.png"></h2>
+    <h2>{{ quantity }} Item{{ quantity|pluralize }} Added to {% block container-name %}Cart{% endblock %} <img src="{{ STATIC_URL }}icons/tick.png"></h2>
     {% thumb instance.product instance.get_best_image %}
-    <p class="container-summary">Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }})</p>
+    <p class="container-summary">{% block container-summary %}Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }}){% endblock %}</p>
     <div class="controls">
-    <a class="action close-panel">Continue Shopping</a>
-    <a class="action go-to-container" href="{% url show_cart %}">View Cart</a>
+    <a class="action close-panel">{% block close-panel %}Continue Shopping{% endblock %}</a>
+    <a class="action go-to-container" {% block  go-to-container-url %}href="{% url show_cart %}"{% endblock %}>{% block go-to-container %}View Cart{% endblock %}</a>
     </div>
 </div>

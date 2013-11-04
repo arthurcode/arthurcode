@@ -220,7 +220,9 @@ def add_product_to_wish_list(request):
         wishlist = form.add_to_wishlist()
         context = {
             'wishlist': wishlist,
-            'item': form.get_product_instance(form.cleaned_data)
+            'instance': form.get_product_instance(form.cleaned_data),
+            'quantity': 1,
+            'items_in_wish_list': wishlist.items.count(),
         }
         return render_to_response('post_add_to_wish_list_summary.html', context, context_instance=RequestContext(request))
 

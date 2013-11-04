@@ -1,1 +1,7 @@
-TBD
+{% extends "post_add_to_cart_summary.html" %}
+
+{% block container-name %}{{ wishlist.name }}{% endblock %}
+{% block container-summary %}{% endblock %}
+{% block go-to-container-url %}"{% url wishlist_view wishlist.id %}"{% endblock %}
+{% block go-to-container %}View Wish List{% endblock %}
+
