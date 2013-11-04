@@ -232,7 +232,19 @@ if (wishlist_button) {
                 var button = Y.Node.create('<button>' + option.getHTML() + '</button>');
                 button.on('click', function(e) {
                     option.setAttribute('selected', 'true');
-                    wishlist_button.simulate('click');
+                    // submit the form via ajax
+                    var cfg = Y.Custom.ajax_form_submit_cfg(add_to_cart_form);
+                    cfg.data = "product_id={{ product.id}}";
+                    cfg.on.success = function(id, o, args) {
+                        // display the HTML result in a panel
+                        var panel = Y.Custom.ajax_result_panel(o);
+                        panel.render();
+                    };
+                    cfg.on.failure = function(id, o, args) {
+                        // go ahead and submit the form normally
+                        wishlist_button.simulate('click');
+                    };
+                    Y.io('{% url ajax_add_item_to_wishlist %}', cfg);
                 });
                 panel_div.appendChild(button);
             });

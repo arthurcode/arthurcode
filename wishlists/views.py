@@ -11,6 +11,8 @@ from wishlists.wishutils import add_wishlist_item_to_cart
 from wishlists import signals
 from utils.decorators import ajax_required
 from django.views.decorators.http import require_POST, require_GET
+from catalogue.models import Product
+from cart.forms import ProductAddToWishListForm
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
@@ -201,4 +203,26 @@ def get_wish_list_item_status(request):
         'item': wishlist_item,
     }
     return render_to_response('_add_to_cart.html', context, context_instance=RequestContext(request))
+
+
+@ajax_required
+@require_POST
+def add_product_to_wish_list(request):
+    """
+    Adds a product instance to a wishlist.
+    """
+    data = request.POST.copy()
+    product_id = data.get('product_id', None)
+    product = get_object_or_404(Product, id=product_id)
+    form = ProductAddToWishListForm(product, request, data=data)
+
+    if form.is_valid():
+        wishlist = form.add_to_wishlist()
+        context = {
+            'wishlist': wishlist,
+            'item': form.get_product_instance(form.cleaned_data)
+        }
+        return render_to_response('post_add_to_wish_list_summary.html', context, context_instance=RequestContext(request))
+
+
 
