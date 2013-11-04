@@ -174,7 +174,7 @@ class AddGiftCardToCartForm(forms.Form):
 
     def save(self, request):
         value = self.cleaned_data.get('value')
-        cartutils.add_gift_card_to_cart(request, value, 1)
+        return cartutils.add_gift_card_to_cart(request, value, 1)
 
 
 def check_stock(item, request, final_quantity=None, quantity_to_add=0):

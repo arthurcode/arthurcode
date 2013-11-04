@@ -18,3 +18,8 @@
         <button type="submit" class="action" name="submit">Add To Cart</button>
     </form>
 {% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    {% include "gc_home.js" %}
+{% endblock %}
