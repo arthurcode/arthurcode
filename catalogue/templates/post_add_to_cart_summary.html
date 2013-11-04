@@ -1,12 +1,12 @@
 {% load catalogue_extras %}
 {% load extras %}
 
-<div class="post-add-to-cart">
+<div class="post-add-to-container">
     <h2>{{ quantity }} Item{{ quantity|pluralize }} Added to Cart <img src="{{ STATIC_URL }}icons/tick.png"></h2>
     {% thumb instance.product instance.get_best_image %}
-    <p class="subtotal">Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }})</p>
+    <p class="container-summary">Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }})</p>
     <div class="controls">
-    <a class="action continue-shopping close-panel">Continue Shopping</a>
-    <a class="action go-to-cart" href="{% url show_cart %}">View Cart</a>
+    <a class="action close-panel">Continue Shopping</a>
+    <a class="action go-to-container" href="{% url show_cart %}">View Cart</a>
     </div>
 </div>
