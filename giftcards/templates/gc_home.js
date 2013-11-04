@@ -16,6 +16,7 @@ if (form) {
                 e.preventDefault();
                 var panel = Y.Custom.ajax_result_panel(o);
                 panel.render();
+                refresh_cart_summary();
             };
             var uri = '{% url ajax_add_gift_card_to_cart %}';
             Y.io(uri, cfg);

@@ -6,9 +6,7 @@ Y.all('form.add-to-cart').each(function(form) {
         var cfg = Y.Custom.ajax_form_submit_cfg(form);
         cfg.on.success = function(id, o, args) {
             e.preventDefault();
-            Y.all('.cart-summary').each(function(node) {
-                Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
-            });
+            refresh_cart_summary();
             var panel = Y.Custom.ajax_result_panel(o);
             panel.render();
             var parentNode = form.ancestor();

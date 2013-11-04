@@ -31,3 +31,10 @@ Y.all("form#search button").each(function (searchButton) {
         }
     });
 });
+
+// create a method to refresh the cart summary box via ajax
+var refresh_cart_summary = function() {
+    Y.all('.cart-summary').each(function(node) {
+        Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
+    });
+};

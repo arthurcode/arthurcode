@@ -188,9 +188,7 @@ if (form) {
                 cfg.on.success = function(id, o, args) {
                     // only prevent the default form submit if the ajax submit was successful
                     e.preventDefault();
-                    Y.all('.cart-summary').each(function(node) {
-                        Y.Custom.ajax_reload(node, '{% url ajax_cart_summary %}');
-                    });
+                    refresh_cart_summary();
                     var panel = Y.Custom.ajax_result_panel(o);
                     panel.render();
                 };
