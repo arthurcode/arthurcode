@@ -16,10 +16,11 @@ from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBi
 from utils.validators import is_blank
 import checkoututils
 from decimal import Decimal
-from django.views.decorators.http import require_GET
+from django.views.decorators.http import require_GET, require_POST
 from accounts.accountutils import is_guest_passthrough
 from django.contrib.auth import login as auth_login, authenticate
 from credit_card import get_gift_card_balance
+from utils.decorators import ajax_required
 
 
 class PyOrder(object):
@@ -118,7 +119,9 @@ class Step(object):
         return self.checkout.request
 
     def process(self):
-        if self.request.method == "POST":
+        if self.request.is_ajax():
+            return self._ajax()
+        elif self.request.method == "POST":
             return self._post()
         return self._get()
 
@@ -130,6 +133,9 @@ class Step(object):
 
     def _post(self):
         raise Exception("Subclasses must override the _post method.")
+
+    def _ajax(self):
+        raise Exception("Ajax handler not defined.")
 
     def _get_data(self):
         return self.checkout.get(self.data_key, None)
@@ -570,6 +576,17 @@ class ReviewStep(Step):
         gift_card_form = gift_card_form or AddGiftCardForm()
         credit_form = credit_form or PaymentInfoForm(order)
         return self._render_form(order, credit_form, gift_card_form)
+
+    def _ajax(self):
+        data = self.request.POST.copy()
+        gift_card_form = AddGiftCardForm(existing_gcs=self._get_gift_cards(), data=data)
+        if gift_card_form.is_valid():
+            self._save_gift_card(gift_card_form)
+            # TODO: return the payment info template snippet.
+            raise Exception("Not implemented")
+        else:
+            raise Exception("form error")
+
 
     def _save_gift_card(self, form):
         existing_cards = self._get_gift_cards()
@@ -1052,3 +1069,14 @@ def create_account(request):
     """
     co = Checkout(request)
     return co.process_step(5)
+
+
+@ajax_required
+@require_POST
+def redeem_gift_card(request):
+    """
+    Adds a user-entered gift card to the saved payment methods.  The gift card is not actually debited at this point,
+    just verified and saved.
+    """
+    co = Checkout(request)
+    return co.process_step(4)
