@@ -144,59 +144,7 @@
     </div>
 
     <div class='payment-info'>
-        <h2>2. Enter Payment Info</h2>
-        {% if gift_cards %}
-            <h3>Gift Cards ({{ gc_total|currency}})</h3>
-            <dl class="horizontal subtle">
-                {% for card,balance in gift_cards %}
-                    <dt>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</dt>
-                    <dd>{{ balance|currency }}</dd>
-                    <dd>
-                        <form method="post" class="remove-gift-card no-help">
-                            {% csrf_token %}
-                            <input type="hidden" id="id_number" name="number" value="{{ card }}">
-                            <button type="submit" name="remove-gift-card" class="link">(remove)</button>
-                        </form>
-                    </dd>
-                {% endfor %}
-            </dl>
-        {% endif %}
-        {% if balance_remaining > 0 %}
-            <div class="needed-for-javascript">
-            <div class="add-gift-card{% if not gift_card_form.is_bound %} hide-initially{% endif %}">
-                {% form_errors gift_card_form unique=1 %}
-                <form method="post" class="no-help" action="">
-                    {% csrf_token %}
-                    {% field gift_card_form.card_number %}
-                    <button type="submit" class="action" name="add-gift-card">Redeem</button>
-                </form>
-            </div>
-            </div>
-        {% endif %}
-
-
-        {% if balance_remaining %}<h3>Credit Card ({{ balance_remaining|currency }})</h3>{% endif %}
-        {% form_errors credit_form %}
-        <form method="post" action="" class="stacked">
-            {% csrf_token %}
-            {% if balance_remaining %}
-                {% field credit_form.card_type %}
-                <p>
-                    {% field credit_form.card_number %}
-                    {% field credit_form.cvv %}
-                </p>
-                <fieldset>
-                    <legend>
-                        Expiry Date
-                    </legend>
-                    {% field credit_form.expire_month %}
-                    {% field credit_form.expire_year %}
-                </fieldset>
-            {% endif %}
-            <div class="controls">
-                <button class="action" name="submit">Submit Order</button>
-            </div>
-        </form>
+        {% include "_payment_info.html" %}
     </div>
 {% endblock %}
 
