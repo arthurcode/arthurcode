@@ -221,13 +221,13 @@ if (wishlist_button) {
             wishlist_button.addClass('hidden');
             add_to_cart_form.appendChild(wishlist_button_copy);
 
-            var panel_div = Y.Node.create('<div></div>');
+            var panel_div = Y.Node.create('<ul></ul>');
             // when the "Add to Wish List" button is clicked, prompt the user to choose from the available
             // wishlists, or create a new one.
             // When they click on a choice the corresponding option should be selected, AND the form
             // should be submitted.
             options.each(function(option) {
-                var button = Y.Node.create('<button>' + option.getHTML() + '</button>');
+                var button = Y.Node.create('<li><button>' + option.getHTML() + '</button></li>');
                 button.on('click', function(e) {
                     option.setAttribute('selected', 'true');
                     // submit the form via ajax
@@ -235,6 +235,7 @@ if (wishlist_button) {
                     cfg.data = "product_id={{ product.id}}";
                     cfg.on.success = function(id, o, args) {
                         // display the HTML result in a panel
+                        e.preventDefault();
                         var panel = Y.Custom.ajax_result_panel(o);
                         panel.render();
                     };
@@ -246,25 +247,12 @@ if (wishlist_button) {
                 });
                 panel_div.appendChild(button);
             });
-
-            var panel = new Y.Panel({
-                headerContent: 'Select A Wish List',
-                srcNode: panel_div,
-                centered: true,
-                render: true,
-                visible: false,
-
-                hideOn: [
-                    {
-                        eventName: 'clickoutside'
-                    }
-                ]
-            });
-            panel.align(wishlist_button_copy, [Y.WidgetPositionAlign.TL, Y.WidgetPositionAlign.BL]);
+            panel_div.addClass('hidden');
+            add_to_cart_form.appendChild(panel_div);
 
             wishlist_button_copy.on('click', function(e) {
                 e.preventDefault();
-                panel.show();
+                panel_div.toggleClass('hidden');
             })
         }
     }
