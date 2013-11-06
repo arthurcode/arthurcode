@@ -2,8 +2,8 @@
 {% load extras %}
 
 <h2>2. Enter Payment Info</h2>
-{% if gift_cards %}
-    <table class="shopping-cart gift-cards">
+<table class="shopping-cart gift-cards">
+    {% if gift_cards %}
         <thead class="title-bar">
         <tr>
             <th>Gift Card</th>
@@ -12,19 +12,21 @@
         </tr>
         </thead>
         <tfoot>
-            <tr>
-                <th colspan="2" class="right">
-                    Gift Card Total:
-                </th>
-                <th class="right">
-                    {{ gc_total|currency }}
-                </th>
-            </tr>
+        <tr>
+            <th colspan="2" class="right">
+                Gift Card Total:
+            </th>
+            <th class="right">
+                {{ gc_total|currency }}
+            </th>
+        </tr>
         </tfoot>
-        <tbody>
+    {% endif %}
+    <tbody>
+    {% if gift_cards %}
         {% for card, balance in gift_cards %}
             <tr>
-                <td>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</td>
+                <td class="left">{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</td>
                 <td>
                     <form method="post" class="remove-gift-card no-help">
                         {% csrf_token %}
@@ -37,21 +39,22 @@
                 </td>
             </tr>
         {% endfor %}
-        </tbody>
-    </table>
-{% endif %}
-{% if balance_remaining > 0 %}
-    <div class="needed-for-javascript">
-        <div class="add-gift-card{% if not gift_card_form.is_bound %} hide-initially{% endif %}">
-            {% form_errors gift_card_form unique=1 %}
-            <form method="post" class="no-help add-gift-card" action="">
-                {% csrf_token %}
-                {% field gift_card_form.card_number %}
-                <button type="submit" class="action" name="add-gift-card">Redeem</button>
-            </form>
-        </div>
-    </div>
-{% endif %}
+    {% endif %}
+    {% if balance_remaining > 0 %}
+        <tr>
+            <td colspan="3" class="left">
+                {% form_errors gift_card_form unique=1 %}
+                <form method="post" class="no-help add-gift-card single-field-pop{% if not gift_card_form.is_bound %} hide-initially{% endif %}" action="">
+                    {% csrf_token %}
+                    {% field gift_card_form.card_number %}
+                    <button type="submit" class="action" name="add-gift-card">Redeem</button>
+                </form>
+            </td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
+
 
 
 {% if balance_remaining %}<h3>Credit Card ({{ balance_remaining|currency }})</h3>{% endif %}

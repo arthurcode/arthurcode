@@ -2461,24 +2461,6 @@ form.ship-to label {
     width: 20em;
 }
 
-.add-gift-card .field {
-    margin: 0 !important;
-}
-
-.add-gift-card button {
-    float: left;
-    margin-top: 1.6em;
-}
-
-div.add-gift-card {
-    padding: 10px;
-    background-color: #f0f0f0;
-    border: 1px solid darkgray;
-    float: left;
-    clear: both;
-    margin: 10px 0;
-}
-
 .payment-info h3 {
     color: midnightblue;
     font-weight: bolder;
@@ -2498,8 +2480,6 @@ form.remove-gift-card button {
 span.toggle-gift-card {
     cursor: pointer;
     color: blue;
-    float: left;
-    clear: both;
     text-decoration: underline;
 }
 
@@ -2804,4 +2784,8 @@ div.post-add-to-container p.container-summary {
 
 div.loader-panel {
     opacity: 0.5;
+}
+
+form.add-gift-card {
+    width: auto;
 }
