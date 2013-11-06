@@ -14,6 +14,7 @@ from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, Cre
     CustomerBillingAddressForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
+from django.contrib.auth import SESSION_KEY
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
 from lazysignup.decorators import is_lazy_user
@@ -43,6 +44,10 @@ def login_or_create_account(request,
         auth_form = CustomerAuthenticationForm(data=postdata)
         if auth_form.is_valid():
             # Okay, security check complete. Log the user in.
+            user = auth_form.get_user()
+            if is_lazy_user(request.user):
+                # Don't cycle the session key! We don't want to lose our cart!
+                request.session[SESSION_KEY] = user.id
             auth_login(request, auth_form.get_user())
 
             if request.session.test_cookie_worked():
