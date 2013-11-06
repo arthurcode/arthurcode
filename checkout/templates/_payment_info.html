@@ -2,7 +2,7 @@
 {% load extras %}
 
 <h2>2. Enter Payment Info</h2>
-<table class="shopping-cart gift-cards">
+<table class="gift-cards{% if gift_cards %} shopping-cart{% endif %}">
     {% if gift_cards %}
         <thead class="title-bar">
         <tr>
