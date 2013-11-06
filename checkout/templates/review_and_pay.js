@@ -20,6 +20,7 @@ if (form) {
             cfg.on.success = function(id, o, args) {
                 e.preventDefault();
                 payment_div.setHTML(o.responseText);
+                run_js();
             };
             Y.io(uri, cfg);
         });

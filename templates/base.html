@@ -20,107 +20,110 @@
 {% block site_wrapper %} {% endblock %}
 <script type="text/javascript">
     YUI().use('node', 'event', 'node-event-simulate', 'io', 'panel', 'custom', 'imageloader', function(Y) {
-        {% block javascript %}
-            Y.Custom.init_ajax_general_handler();
-            // initially hide elements with the 'hide-initially' class
-            Y.all('.hide-initially').each(function(f) {
-                f.addClass('hidden');
-            });
-
-            function selectTab(tab) {
-                var id = tab.getAttribute('id');
-                var parent = tab.ancestor('div', false);
-                var content = parent.one('div#' + id);
-
-                tab.addClass('selected');
-                content.removeClass('hidden');
-
-                // deselect all sibling tabs
-                tab.siblings('.tab').each(function (tab) {
-                    tab.removeClass('selected');
+        var run_js = function() {
+            {% block javascript %}
+                Y.Custom.init_ajax_general_handler();
+                // initially hide elements with the 'hide-initially' class
+                Y.all('.hide-initially').each(function(f) {
+                    f.addClass('hidden');
                 });
 
-                // hide all sibling divs
-                content.siblings('div').each(function (div) {
-                    div.addClass('hidden');
+                function selectTab(tab) {
+                    var id = tab.getAttribute('id');
+                    var parent = tab.ancestor('div', false);
+                    var content = parent.one('div#' + id);
+
+                    tab.addClass('selected');
+                    content.removeClass('hidden');
+
+                    // deselect all sibling tabs
+                    tab.siblings('.tab').each(function (tab) {
+                        tab.removeClass('selected');
+                    });
+
+                    // hide all sibling divs
+                    content.siblings('div').each(function (div) {
+                        div.addClass('hidden');
+                    });
+                }
+
+                // Hook up tabview functionality.  When someone clicks on an a.tabview element, the tab with the matching
+                // id will become selected, and the content with the matching id will become visible.
+                Y.all('a.tabview').each(function(link) {
+                    link.on("click", function (e) {
+                        if (!e.target.hasClass('follow')) {
+                            e.preventDefault();
+                        }
+                        var href = this.getAttribute('href');
+                        var tab = Y.one('.tab' + href);
+                        selectTab(tab);
+                    });
                 });
-            }
 
-            // Hook up tabview functionality.  When someone clicks on an a.tabview element, the tab with the matching
-            // id will become selected, and the content with the matching id will become visible.
-            Y.all('a.tabview').each(function(link) {
-                link.on("click", function (e) {
-                    if (!e.target.hasClass('follow')) {
-                        e.preventDefault();
-                    }
-                    var href = this.getAttribute('href');
-                    var tab = Y.one('.tab' + href);
-                    selectTab(tab);
-                });
-            });
+                Y.all('.tabview .views').each(function(f) {
+                    // give each view within a tabview the same height
+                    var views = f.all('> div');
+                    var maxHeight = 0;
 
-            Y.all('.tabview .views').each(function(f) {
-                // give each view within a tabview the same height
-                var views = f.all('> div');
-                var maxHeight = 0;
+                    views.each(function(view) {
+                        var height = parseInt(view.getComputedStyle('height'));
+                        if (height > maxHeight) {
+                            maxHeight = height;
+                        }
+                    });
 
-                views.each(function(view) {
-                    var height = parseInt(view.getComputedStyle('height'));
-                    if (height > maxHeight) {
-                        maxHeight = height;
-                    }
+                    views.each(function(view) {
+                        //TODO: figure out why this isn't working properly
+                        //view.setStyle('height', maxHeight);
+                    });
                 });
 
-                views.each(function(view) {
-                    //TODO: figure out why this isn't working properly
-                    //view.setStyle('height', maxHeight);
-                });
-            });
-
-            // if the current URL has an anchor, make sure it is visible in the tab-view
-            var url = location.href.split('#');
-            if (url[1]) {
-                var tabHash = url[1];
-                // get the element that the anchor links to
-                var hashElem = Y.one('#' + tabHash);
-                var tab = null;
-                if (hashElem) {
-                    if (hashElem.hasClass('tab')) {
-                        tab = hashElem;
-                    } else {
-                        var parentView = hashElem.ancestor('.view', true);
-                        if (parentView) {
-                            var id = parentView.getAttribute('id');
-                            tab = Y.one('.tab#' + id);
+                // if the current URL has an anchor, make sure it is visible in the tab-view
+                var url = location.href.split('#');
+                if (url[1]) {
+                    var tabHash = url[1];
+                    // get the element that the anchor links to
+                    var hashElem = Y.one('#' + tabHash);
+                    var tab = null;
+                    if (hashElem) {
+                        if (hashElem.hasClass('tab')) {
+                            tab = hashElem;
+                        } else {
+                            var parentView = hashElem.ancestor('.view', true);
+                            if (parentView) {
+                                var id = parentView.getAttribute('id');
+                                tab = Y.one('.tab#' + id);
+                            }
                         }
                     }
-                }
-                if (tab) {
-                    selectTab(tab);
-                }
-            }
-
-            // automatically hide/show (required) & (optional) text in visible form fields
-            Y.all('form').each(function(form) {
-                var required = form.all('.required-text');
-                var optional = form.all('.optional-text');
-                if (required.size() > optional.size()) {
-                    required.each(function(span) {
-                        span.addClass('hidden');
-                    });
-                } else {
-                    optional.each(function(span) {
-                        span.addClass('hidden');
-                    });
+                    if (tab) {
+                        selectTab(tab);
+                    }
                 }
 
-                // when a form submits, display a modal loading panel.
-                form.on('submit', function(e) {
-                    // TODO: could this ever backfire on us and leave a loading panel that will never go away?
-                    Y.Custom.show_loading_panel();
+                // automatically hide/show (required) & (optional) text in visible form fields
+                Y.all('form').each(function(form) {
+                    var required = form.all('.required-text');
+                    var optional = form.all('.optional-text');
+                    if (required.size() > optional.size()) {
+                        required.each(function(span) {
+                            span.addClass('hidden');
+                        });
+                    } else {
+                        optional.each(function(span) {
+                            span.addClass('hidden');
+                        });
+                    }
+
+                    // when a form submits, display a modal loading panel.
+                    form.on('submit', function(e) {
+                        // TODO: could this ever backfire on us and leave a loading panel that will never go away?
+                        Y.Custom.show_loading_panel();
+                    });
                 });
-            });
-        {% endblock %}
+            {% endblock %}
+        };
+        run_js();
     });
 </script>
 </body>
