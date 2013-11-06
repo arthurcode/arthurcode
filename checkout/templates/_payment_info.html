@@ -3,20 +3,42 @@
 
 <h2>2. Enter Payment Info</h2>
 {% if gift_cards %}
-    <h3>Gift Cards ({{ gc_total|currency}})</h3>
-    <dl class="horizontal subtle">
-        {% for card,balance in gift_cards %}
-            <dt>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</dt>
-            <dd>{{ balance|currency }}</dd>
-            <dd>
-                <form method="post" class="remove-gift-card no-help">
-                    {% csrf_token %}
-                    <input type="hidden" id="id_number" name="number" value="{{ card }}">
-                    <button type="submit" name="remove-gift-card" class="link">(remove)</button>
-                </form>
-            </dd>
+    <table class="shopping-cart gift-cards">
+        <thead class="title-bar">
+        <tr>
+            <th>Gift Card</th>
+            <th></th>
+            <th>Value</th>
+        </tr>
+        </thead>
+        <tfoot>
+            <tr>
+                <th colspan="2" class="right">
+                    Gift Card Total:
+                </th>
+                <th class="right">
+                    {{ gc_total|currency }}
+                </th>
+            </tr>
+        </tfoot>
+        <tbody>
+        {% for card, balance in gift_cards %}
+            <tr>
+                <td>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</td>
+                <td>
+                    <form method="post" class="remove-gift-card no-help">
+                        {% csrf_token %}
+                        <input type="hidden" id="id_number" name="number" value="{{ card }}">
+                        <button type="submit" name="remove-gift-card" class="link">remove</button>
+                    </form>
+                </td>
+                <td class="right">
+                    {{ balance|currency }}
+                </td>
+            </tr>
         {% endfor %}
-    </dl>
+        </tbody>
+    </table>
 {% endif %}
 {% if balance_remaining > 0 %}
     <div class="needed-for-javascript">
