@@ -221,13 +221,13 @@ if (wishlist_button) {
             wishlist_button.addClass('hidden');
             add_to_cart_form.appendChild(wishlist_button_copy);
 
-            var panel_div = Y.Node.create('<ul></ul>');
+            var panel_div = Y.Node.create('<ul class="select-wish-list"></ul>');
             // when the "Add to Wish List" button is clicked, prompt the user to choose from the available
             // wishlists, or create a new one.
             // When they click on a choice the corresponding option should be selected, AND the form
             // should be submitted.
             options.each(function(option) {
-                var button = Y.Node.create('<li><button>' + option.getHTML() + '</button></li>');
+                var button = Y.Node.create('<li>' + option.getHTML() + '</li>');
                 button.on('click', function(e) {
                     option.setAttribute('selected', 'true');
                     // submit the form via ajax
@@ -253,6 +253,11 @@ if (wishlist_button) {
             wishlist_button_copy.on('click', function(e) {
                 e.preventDefault();
                 panel_div.toggleClass('hidden');
+                if (panel_div.hasClass('hidden')) {
+                    wishlist_button_copy.setHTML('Add to Wish List');
+                } else {
+                    wishlist_button_copy.setHTML('Select a Wish List');
+                }
             })
         }
     }
