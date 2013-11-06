@@ -579,10 +579,19 @@ class ReviewStep(Step):
 
     def _ajax(self):
         data = self.request.POST.copy()
-        gift_card_form = AddGiftCardForm(existing_gcs=self._get_gift_cards(), data=data)
-        if gift_card_form.is_valid():
-            self._save_gift_card(gift_card_form)
-            gift_card_form = AddGiftCardForm()
+        gift_card_form = None
+        if 'add-gift-card' in data:
+            gift_card_form = AddGiftCardForm(existing_gcs=self._get_gift_cards(), data=data)
+            if gift_card_form.is_valid():
+                self._save_gift_card(gift_card_form)
+                gift_card_form = AddGiftCardForm()
+
+        elif 'remove-gift-card' in data:
+            card_number = data['number']
+            self._remove_gift_card(card_number)
+        else:
+            raise Exception("bad ajax request")
+        gift_card_form = gift_card_form or AddGiftCardForm()
         order = self.checkout.build_order(hit_cache=False)
         credit_form = PaymentInfoForm(order)
         return self._render_form(order, credit_form, gift_card_form, template='_payment_info.html')
