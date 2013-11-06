@@ -1,5 +1,6 @@
 from django.conf.urls import patterns, url
-from checkout.views import checkout, contact_info, shipping_info, billing_info, review, cancel, create_account
+from checkout.views import checkout, contact_info, shipping_info, billing_info, review, cancel, create_account, \
+    redeem_gift_card
 
 urlpatterns = patterns('',
                        url(r'^$', checkout, name="checkout"),
@@ -9,4 +10,5 @@ urlpatterns = patterns('',
                        url(r'^review/$', review, name="checkout_review"),
                        url(r'^create-account/$', create_account, name="checkout_create_account"),
                        url(r'^cancel/$', cancel, name="checkout_cancel"),
+                       url(r'^redeem-gift-card$', redeem_gift_card, name="ajax_redeem_gift_card"),
                        )

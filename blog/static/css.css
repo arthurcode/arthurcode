@@ -2463,7 +2463,7 @@ form.ship-to label {
     margin-top: 1.6em;
 }
 
-.add-gift-card {
+div.add-gift-card {
     padding: 10px;
     background-color: #f0f0f0;
     border: 1px solid darkgray;

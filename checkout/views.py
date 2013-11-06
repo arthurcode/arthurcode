@@ -537,7 +537,7 @@ class ReviewStep(Step):
         add_gift_card_form = AddGiftCardForm()
         return self._render_form(order, credit_form, add_gift_card_form)
 
-    def _render_form(self, order, credit_form, add_gift_card_form):
+    def _render_form(self, order, credit_form, add_gift_card_form, template='review_and_pay.html'):
         balance_remaining = order.get_balance_remaining()
         context = {
             'credit_form': credit_form,
@@ -548,7 +548,7 @@ class ReviewStep(Step):
         }
         if self.checkout.extra_context:
             context.update(self.checkout.extra_context)
-        return render_to_response('review_and_pay.html', context, context_instance=RequestContext(self.request))
+        return render_to_response(template, context, context_instance=RequestContext(self.request))
 
     def _post(self):
         data = self.request.POST.copy()
@@ -582,10 +582,10 @@ class ReviewStep(Step):
         gift_card_form = AddGiftCardForm(existing_gcs=self._get_gift_cards(), data=data)
         if gift_card_form.is_valid():
             self._save_gift_card(gift_card_form)
-            # TODO: return the payment info template snippet.
-            raise Exception("Not implemented")
-        else:
-            raise Exception("form error")
+            gift_card_form = AddGiftCardForm()
+        order = self.checkout.build_order(hit_cache=False)
+        credit_form = PaymentInfoForm(order)
+        return self._render_form(order, credit_form, gift_card_form, template='_payment_info.html')
 
 
     def _save_gift_card(self, form):
@@ -914,7 +914,7 @@ class Checkout:
         return True
 
     _order = None
-    def build_order(self):
+    def build_order(self, hit_cache=True):
         """
         Builds a PyOrder object using the data that has been collected from this checkout process.
         Only the steps that have been completed will be used to collect the data.  This order is NOT saved to the
@@ -922,7 +922,7 @@ class Checkout:
 
         This method caches the PyOrder and is NOT THREAD SAFE.
         """
-        if self._order:
+        if self._order and hit_cache:
             return self._order
         order = PyOrder(self.request)
         order.items = self.get_order_items()
