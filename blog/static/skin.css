@@ -1,0 +1,15 @@
+/* skin css styles */
+
+
+/*
+An element with this class will stand out in reverse color.  Its background and font color choices are chosen for
+boldness.
+*/
+.title-bar {
+    color: white;
+    background: black;
+}
+
+.title-bar a, .title-bar a:link, .title-bar a:visited {
+    color: inherit;
+}
