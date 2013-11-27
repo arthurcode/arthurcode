@@ -65,10 +65,6 @@ p, div, span {
     font-size: larger;
 }
 
-.shadow-box {
-    box-shadow: 5px 5px 5px darkgray;
-}
-
 ul {
     list-style-type: none;
     padding: 0;
@@ -242,7 +238,7 @@ body.products #bd {
 
 #hd #topbar {
     font-size: 16px;
-    height: 30px;                    /* fixed width because we want to 'extend' the bar into the flexible html part of the page */
+    height: 30px;
     width: 100%;
 }
 
@@ -308,16 +304,6 @@ body.products #bd {
     clear: both;
     height: 120px;
     margin: 0;
-}
-
-#hd span.sitename {
-    margin-top: 40px;
-    font-size: 250%;
-    font-family: 'Cinzel Decorative', cursive;
-    color: black;
-    float: left;
-    display: inline-block;
-    text-shadow: 5px 5px 5px darkgray;
 }
 
 #hd span.checkout {

@@ -6,7 +6,7 @@
 
 {% block body %}
     <div class="login-wrapper">
-    <div class="login shadow-box">
+    <div class="login">
         <h2>Log In</h2>
         <span class="subtle create-account">(Not registered? <a class="standard" href="{% url create_account %}{% if next %}?next={{ next }}{% endif %}">Create an Account</a>)</span>
         {% form_errors auth_form %}
