@@ -1,5 +1,9 @@
 /* skin css styles */
 
+h2 {
+    color: black;
+    font-family: 'Droid Serif', serif;
+}
 
 /*
 An element with this class will stand out in reverse color.  Its background and font color choices are chosen for
@@ -12,4 +16,30 @@ boldness.
 
 .title-bar a, .title-bar a:link, .title-bar a:visited {
     color: inherit;
+}
+
+/* LINK */
+a:link, a:visited {
+    color: black;
+}
+
+a.standard:link, a.standard:visited {
+    color: blue;
+}
+
+/* BUTTON */
+button {
+    cursor: pointer;
+}
+
+/* a button that looks like a link */
+button.link {
+    background:none;
+    border: none;
+    padding: 0;
+    text-decoration: underline;
+}
+
+button.link.standard {
+    color: blue;
 }
