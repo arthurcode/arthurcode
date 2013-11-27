@@ -59,102 +59,23 @@ ul {
     margin: 0;
 }
 
-.tabrow {
+.tabrow, .tabcol {
     text-align: center;
-    list-style: none;
-    padding: 0;
-    position: relative;
     float: left;
-}
-
-.tabrow:after {
-    position: absolute;
-    content: "";
-    width: 100%;
-    bottom: 0;
-    left: 0;
-    border-bottom: 1px solid #AAA;
-    z-index: 1;
-}
-
-.tabrow:before {
-    z-index: 1;
 }
 
 .tabrow li {
-    float: left;
     padding: 4px 10px;
-    border: 1px solid #AAA;
-    display: inline-block;
-    position: relative;
-    z-index: 0;
-    border-top-left-radius: 7px;
-    border-top-right-radius: 7px;
-    background: rgb(255,255,255); /* Old browsers */
-    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-}
-
-.tabrow li.selected {
-    background: none !important;
-    background-color: white !important;
-    z-index: 2 !important;
-    border-bottom-color: white !important;
 }
 
 .tabrow a, .tabcol a {
     text-decoration: none;
-    display: inline-block;
     color: inherit !important;
-}
-
-.tabcol {
-    text-align: center;
-    list-style: none;
-    padding: 0;
-    position: relative;
-    float: left;
-    border-top: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-    margin-right: 20px;
 }
 
 .tabcol li {
     padding: 3px 5px;
-    background: rgb(255,255,255); /* Old browsers */
-    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-    border-left: 1px solid lightgray;
-    border-right: 1px solid lightgray;
     min-height: 31px;
-}
-
-.tabcol li.selected {
-    color: white;
-    background: midnightblue;
-    position: relative;
-    border-right: none !important;
-}
-
-.tabcol li.selected :before {
-    content: ' ';
-    height: 0;
-    position: absolute;
-    width: 0;
-    border: 19px solid transparent;
-    border-left-color: midnightblue;
-    top: 0;
-    right: -38px;
 }
 
 html {
@@ -189,15 +110,7 @@ a.click-to-remove img {
     float: left;
     clear: both;
     width: 100%;
-    padding: 20px 0 20px 0;
-}
-
-body.products #bd {
-    padding: 0 0 20px 0;
-}
-
-.checkout #bd {
-    padding-top: 0;
+    padding: 20px 0;
 }
 
 #ft {
@@ -309,15 +222,6 @@ body.products #bd {
     margin-left: 20px;
     float: right;
     display: inline-block;
-}
-
-#primary-navigation li {
-    display: inline-block;
-    float: left;
-}
-
-#primary-navigation li + li {
-    margin-left: 7px;
 }
 
 #primary-navigation li:hover {
@@ -787,10 +691,9 @@ form.stacked span.error, form.stacked span.help-text {
 
 .breadcrumbs {
     font-size: 80%;
-    padding: 10px 0;
+    padding: 0 0 10px 0;
     margin: 0;
     display: inline-block;
-    line-height: 2em;
 }
 
 .breadcrumbs a:link, .breadcrumbs a:visited {
