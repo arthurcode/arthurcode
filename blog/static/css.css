@@ -43,6 +43,29 @@ button {
     padding: 0.25em 0.5em;
 }
 
+
+.whitespace {
+    white-space: pre-wrap;
+}
+
+.hidden {
+    display: none !important;
+}
+
+.invisible {
+    visibility: hidden;
+}
+
+.subtle {
+    font-size: 80%;
+}
+
+span img.error {
+    height: 15px;
+    width: 15px;
+    padding-right: 4px;
+}
+
 /* END base element styles */
 
 /* Start header section styling */
@@ -117,13 +140,12 @@ button {
 }
 
 #hd span.checkout {
-    margin-top: 40px;
+    margin-top: 70px;
     font-size: 200%;
     font-family: 'Cinzel Decorative', cursive;
     font-style: italic;
     display: inline-block;
     margin-left: 20px;
-    color: gray;
 }
 
 #primary-navigation {
@@ -146,6 +168,13 @@ button {
 
 #primary-navigation a:link, #primary-navigation a:visited {
     color: black;
+}
+
+/* show which navigation link is active */
+body.blog #primary-navigation .blog,
+body.contact #primary-navigation .contact,
+body.products #primary-navigation .products {
+    box-shadow: 3px 3px 3px black;
 }
 
 #secondary-navigation {
@@ -179,6 +208,18 @@ ul#secondary-navigation.giftcards li.giftcards
     border-bottom-color: #FFF;
 }
 
+/* Cart summary styles */
+div.cart-summary {
+    display: inline-block;
+    float: right;
+}
+
+div.cart-summary img {
+    height: 20px;
+    margin-right: 5px;
+    vertical-align: text-bottom;
+}
+
 /* END header section styling */
 
 
@@ -206,27 +247,6 @@ ul#secondary-navigation.giftcards li.giftcards
     padding: 10px 0;
 }
 
-.whitespace {
-    white-space: pre-wrap;
-}
-
-.hidden {
-    display: none !important;
-}
-
-.invisible {
-    visibility: hidden;
-}
-
-.subtle {
-    font-size: 80%;
-}
-
-.tabrow, .tabcol {
-    text-align: center;
-    float: left;
-}
-
 .tabrow li {
     padding: 7px 10px;
 }
@@ -236,61 +256,20 @@ ul#secondary-navigation.giftcards li.giftcards
     min-height: 31px;
 }
 
-a.click-to-remove:hover {
-    color: red !important;
-}
-
 a.click-to-remove img {
     width: 14px;
 }
 
+/* search box styles */
 
-
-/* show which navigation link is active */
-body.blog #primary-navigation .blog,
-body.contact #primary-navigation .contact,
-body.products #primary-navigation .products {
-    box-shadow: 3px 3px 3px black;
-}
-
-/* Search box styles.  Solution taken from this page:
-   http://stackoverflow.com/questions/6726135/css-exact-same-height-and-alignment-of-button-and-input-text-box
-*/
-
-form#search {
+#hd form#search {
     float: right;
     margin-right: 10px;
     display: inline-block;
 }
 
-form#search fieldset {
-    font-size: inherit;
-    border-radius: 1em;
-    border-width: 0;
-}
-
-form#search fieldset input, form#search fieldset button {
-    font-size: inherit;
-    padding: 0.3em 0.4em;
-    -moz-box-sizing: content-box;
-    -webkit-box-sizing: content-box;
-    box-sizing: content-box;
-}
-
-form#search fieldset input {
-    border-radius: 0;
-    border-right: none;
+#hd form#search fieldset input {
     width: 11.3em;
-}
-
-form#search fieldset button {
-    border: none;
-    outline: 1px solid darkgray;
-}
-
-form#search .field {
-    margin-top: 0 !important;
-    margin-bottom: 0 !important;
 }
 
 div.refine form#search {
@@ -302,54 +281,12 @@ div.refine form#search fieldset input{
     width: 9em;
 }
 
-body.cart div.cart-summary {
-    box-shadow: 3px 3px 3px black;
-}
-
-div.cart-summary {
-    display: inline-block;
-    float: right;
-}
-
-
-
-div.cart-summary a {
-    display: inline-block;
-}
-
-div.cart-summary img {
-    height: 20px;
-    margin-right: 5px;
-    vertical-align: text-bottom;
-}
-
-#hd .rss {
-    display: inline-block;
-    float: left;
-}
-
-
 /* http://www.w3schools.com/Css/css_list.asp */
 ul.feeds li {
     background-image: url('icons/rss_16x16.png');
     background-repeat: no-repeat;
     background-position: 0 2px;
     padding-left: 20px;
-}
-
-span img.error {
-    height: 15px;
-    width: 15px;
-    padding-right: 4px;
-}
-
-ul.errorlist li {
-    background-image: url('icons/error.png');
-    background-size: 20px 20px;
-    background-repeat: no-repeat;
-    background-position: 0 -3px;
-    padding-left: 25px;
-    margin-bottom: 5px;
 }
 
 #post_data {
@@ -420,244 +357,14 @@ div#comments > ul {
 
 /* General form styles.  By default my form labels & inputs are aligned vertically */
 
-form {
-    width: 40em;  /* By default all forms should have a default width, in em.  Otherwise the two columns
-                     will not expand equally as the font size is increased.  Specific forms can (and probably should)
-                     override this value so that the form is pleasing to the eye. */
-}
-
-form input, form select, form textarea {
-    border-radius: 0;
-    padding: 4px 10px;
-    border-top: 2px solid gray;
-    border-left: 2px solid gray;
-}
-
-form textarea {
-    border-right: 1px solid lightgray;
-    border-bottom: 1px solid lightgray;
-}
-
-form input.quantity {
-    width: 1.5em; /* large enough for 2 digits */
-}
-
-/* display form metadata in italics and slightly smaller text */
-form span.error, form span.required-text, form span.optional-text, form span.help-text {
-    font-style: italic;
-    font-size: 80%;
-}
-
-form .column2 {
-    line-height: 1em;
-    color: darkgray;
-}
-
-form.no-help {
-    width: auto;
-}
-
-form.no-help .column1 {
-    width: auto;
-}
-
-form.no-help .column2 {
-    display: none;
-}
-
 .errorlist {
-    font-size: 80%;
-    border: 3px solid red;
-    background-color: #ffcccc;
-    padding: 8px;
-    line-height: 1.3em;
-    float: left;
-    clear: both;
-    margin-bottom: 1em;
-}
-
-/* display form errors in red */
-form span.error {
-    color: red;
-    display: block;  /* by default they are on their own line */
-}
-
-/* when a field has an error but a red border around the input */
-.field.error textarea, .field.error input, .field.error.radio fieldset, .field.error select {
-    border: 2px solid red;
-}
-
-.field.error input[type='checkbox'] {
-    outline: 2px solid red;  /* border doesn't seem to work for checkboxes */
-}
-
-form {
-    float: left;  /* float to fix a float */
-}
-
-.field {
-    position: relative;  /* need to absolutely position a few of it's children */
-    float: left;         /* float-to-fix-a-float */
-    clear: both;         /* stack fields vertically */
-    width: 100%;
-    margin: 0.75em 0 !important; /* required for the alignment to work properly */
-    padding: 0 !important;
-}
-
-.field .column1 {
-    width: 60%;
-    float: left;
-}
-
-.field .column2 {
-    width: 38%;
-    float: right;
-}
-
-.field.text .column2 {
-    padding-top: 1.3em;
-}
-
-label {
-    padding: 0;
-    line-height: 1.2em;
-}
-
-/* styles for checkbox fields */
-.field.checkbox span.required-text, .field.checkbox span.optional-text {
-    display: none;
-}
-
-.field.checkbox input {
-    position: absolute;
-    width: 15px;
-    padding: 0;
-    top: 3px;
-    left: 0;
-    float: left;
-}
-
-.field.checkbox label {
-    float: left;
-    margin-left: 25px;
-    margin-top: 0 !important;
-}
-
-.field.radio input {
-    float: left;
-    clear: both;
-}
-
-.field.radio label.choice {
-    float: left;
-    clear: none;
-    margin-left: 10px;
-}
-
-.field.radio fieldset {
     font-size: smaller;
-}
-
-/* Align the controls with the form input fields. */
-form .controls {
     float: left;
     clear: both;
-    width: 100%;
 }
 
-.field img.help {
-    height: 25px;
-    width: 25px;
-    cursor: pointer;
-    opacity: 0.75;    /* tone the image down a little bit */
-}
-
-/* Styles for HORIZONTAL forms */
-
-/* Horizontal form layout.  Each field is two columns.  In the first column is the field label followed by
-   the (required) or (optional) string.  In the second column is the input area. Field errors are displayed in
-   the second column, directly above the input area.  Note that the column widths will need to be tuned individually
-   for each form. 25% and 75% seem to work well for the comment form.  In addition, when absolutely positioning the
-   elements in the first column the top coordinates will vary with relative font sizes. Experiment with it.
-
-   The form width is fixed at 30em and each sub-field consumes 100% of its parent's width.  At 30em the form's labels
-   consume as much as possible of the smaller right column.  Any smaller and the label text would break into two lines
-   and cause problems with absolutely positioned elements.
-   */
-
-form.comment {
-    width: 40em;
-    overflow: auto;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-}
-
-/* Styles for text fields */
-/* style the second, larger column within a field */
-form.comment .field.text input, form.comment .field.text textarea {
-    margin-left: 20%;
-    float: left;
-    clear: left;
-}
-
-form.comment .field.text span.error {
-    margin-left: 20%;
-    float: left;
-    clear: left;
-}
-
-.field.checkbox span.error {
-    display: block;
-}
-
-/* when the checkbox label has an error, reverse the ordering of the label text and error text using
-   relative positioning.  Oh god, this is horrible.  The 1em and 2em 'nudges' were determined experimentally and
-   will have to be tuned whenever the relative difference in font sizes is modified. This also assumes that each of
-   the error and label spans takes up exactly one line. */
-.field.checkbox.error span.label {
-    position: relative;
-    top: 1em;
-}
-
-.field.checkbox.error span.error {
-    position: relative;
-    bottom: 2em;
-}
-
-/* Leave a 3% margin between columns */
-form.comment .field.text span.label {
-    position: absolute;
-    text-align: right;
-    right: 83%;
-    top: 0;
-}
-
-form.comment .field.text span.required-text, form.comment .field.text span.optional-text {
-    text-align: right;
-    display: block;
-}
-
-form.comment .controls .submit-post {
-    margin-left: 20%;
-}
-
-/* most of the form fields are required, so we'll hide the (required) in favour of (optional) */
-form.comment span.required-text {
-    visibility: hidden;
-}
-
-form.comment input {
-    width: 50%;
-}
-
-form.comment textarea {
-    width: 79%;
-}
-
-/* Styles for 'stacked' forms.  In a stacked form the label is directly above the input.  This alignment works well
-   for short, simple forms */
-form.stacked span.error, form.stacked span.help-text {
-    display: block;
+.errorList + form {
+    margin-top: 1em;
 }
 
 /* catalogue styles */

@@ -18,6 +18,10 @@ ul {
     list-style-type: none;
 }
 
+.error {
+    color: red;
+}
+
 html {
     background: white; /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30px, rgba(255,255,255,1) 30px) no-repeat; /* FF3.6+ */
@@ -112,6 +116,11 @@ button.wishlist {
     background-color: black;
 }
 
+/* cart summary appearance when we're on the cart page */
+body.cart div.cart-summary {
+    box-shadow: 3px 3px 3px black;
+}
+
 .tabrow a, .tabcol a {
     text-decoration: none;
     color: inherit !important;
@@ -164,4 +173,79 @@ button.wishlist {
 
 .text ul, ul.text {
     margin-left: 1em;
+}
+
+/* search forms */
+
+form#search fieldset button {
+    outline: 1px solid black;
+}
+
+a.click-to-remove:hover {
+    color: red !important;
+}
+
+/* errors */
+.errorlist {
+    border: 3px solid red;
+    background-color: #ffcccc;
+    padding: 8px;
+}
+
+ul.errorlist li {
+    background-image: url('icons/error.png');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: 0 -3px;
+    padding-left: 25px;
+}
+
+/* General FORM styles */
+
+form input, form select, form textarea {
+    border-radius: 0;
+    padding: 4px 10px;
+    border-top: 2px solid gray;
+    border-left: 2px solid gray;
+}
+
+form textarea {
+    border-right: 1px solid lightgray;
+    border-bottom: 1px solid lightgray;
+}
+
+/* display form metadata in italics and slightly smaller text */
+form span.error, form span.required-text, form span.optional-text, form span.help-text {
+    font-style: italic;
+    font-size: smaller;
+}
+
+form .column2 {
+    line-height: 1em;
+    color: darkgray;
+}
+
+/* when a field has an error but a red border around the input */
+.field.error textarea, .field.error input, .field.error.radio fieldset, .field.error select {
+    border: 2px solid red;
+}
+
+.field.error input[type='checkbox'] {
+    outline: 2px solid red;  /* border doesn't seem to work for checkboxes */
+}
+
+/* styles for checkbox fields */
+.field.checkbox span.required-text, .field.checkbox span.optional-text {
+    display: none;
+}
+
+.field.radio fieldset {
+    font-size: smaller;
+}
+
+.field img.help {
+    height: 25px;
+    width: 25px;
+    cursor: pointer;
+    opacity: 0.75;    /* tone the image down a little bit */
 }
