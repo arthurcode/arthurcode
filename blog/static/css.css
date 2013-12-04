@@ -90,6 +90,13 @@ span img.error {
     margin-top: 0.9em;
 }
 
+#hd #search-bar {
+    float: right;
+    clear: right;
+    font-size: 0.8em;
+    margin-top: 1em;
+}
+
 #hd #topbar {
     font-size: 16px;
     height: 30px;
@@ -271,7 +278,7 @@ a.click-to-remove img {
 }
 
 #hd form#search fieldset input {
-    width: 11.3em;
+    width: 10.5em;
 }
 
 div.refine form#search {

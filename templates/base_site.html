@@ -39,7 +39,7 @@
         </ul>
     {% endblock %}
 
-    <div id="utils">
+    <div id="search-bar">
         {% block cart-summary %}
             <div class="cart-summary">
                 {% cart_summary request %}
@@ -57,6 +57,8 @@
                 </fieldset>
             </form>
         {% endblock %}
+    </div>
+    <div id="utils">
         {% block extra-utilities %}{% endblock %}
         {% block secondary-nav-title%}{% endblock %}
     </div>
