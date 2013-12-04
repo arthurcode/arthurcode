@@ -13,7 +13,7 @@
 {% if breadcrumbs %}{% block root-category %}{{ breadcrumbs.0.slug }}{% endblock %}{% endif %}
 
 {% block body %}
-    <div class="breadcrumbs">
+    <div class="breadcrumbs content-left">
         <a href="{% go_to_category '' %}">All Products</a> >
         {% for crumb in breadcrumbs %}
             <a href="{% go_to_category crumb.slug %}">{{ crumb.name }}</a> >
@@ -23,6 +23,7 @@
 
     <div class="product-detail">
         <div class="visual col1">
+            <div class="content-left">
             <div id="primary-img">
                 {% if images %}
                     <a href="{% product_img_url product %}{{ images.0.detail_path }}"><img src="{% product_img_url product %}{{ images.0.path }}" alt="{{ images.0.alt_text }}"></a>
@@ -38,6 +39,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
+            </div>
         </div>
         <div class="description col2">
             <h1>{{ product.name }}</h1>
@@ -129,6 +131,7 @@
 
         <div id="more-detail">
             <div class="col1">
+            <div class="content-left">
                 {% if product.long_description %}
                     <h3>Full Description</h3>
                     <div class="text">{{ product.long_description|markdown }}</div>
@@ -141,6 +144,7 @@
                     {% endfor %}
                     </ul>
                 {% endif %}
+            </div>
             </div>
             <div class="col2">
                 <h3>Dimensions & Weight</h3>
@@ -177,7 +181,7 @@
         </div>
     </div>
 
-    <div id="feedback" class="tabview">
+    <div id="feedback" class="tabview content-left">
         <ul class="tabrow">
             <li class="tab selected" id="reviews"><a class="tabview" href="#reviews">Reviews ({{ reviews.count }})</a></li>
             <li class="tab" id="qa"><a class="tabview" href="#qa">Q & A</a></li>

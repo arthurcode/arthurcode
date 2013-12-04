@@ -3,24 +3,25 @@
 * {
     margin: 0;
 }
-html, body {
-    height: 100%;
-}
+/*html, body {*/
+    /*height: 100%;*/
+/*}*/
 
 em {
     font-weight: bolder;
 }
 
-.wrapper {
-    min-height: 100%;
-    height: auto !important;
-    height: 100%;
-    margin: 0 auto -4em;
-}
+/*.wrapper {*/
+    /*min-height: 100%;*/
+    /*height: auto !important;*/
+    /*height: 100%;*/
+    /*margin: 0 auto -4em;*/
+/*}*/
 
-.footer, .push {
-    height: 4em;
-}
+/*.footer, .push {*/
+    /*height: 4em;*/
+    /*border-left: 1px solid black;*/
+/*}*/
 /* end sticky footer */
 
 /* Base element styles */
@@ -161,7 +162,7 @@ span img.error {
     display: inline-block;
 }
 
-.primary-box h2 {
+h2.primary-box, .primary-box h2 {
     font-family: "Open Sans", sans-serif;
     font-weight: normal;
 }
@@ -230,12 +231,12 @@ div.cart-summary img {
     font-weight: lighter;
     clear:both;
     text-align: center;
+    padding: 20px 0;
 }
 
 #ft .copyright {
     display: block;
 }
-
 /* END footer section styling */
 
 /* START main body section styling */
@@ -245,6 +246,7 @@ div.cart-summary img {
     clear: both;
     width: 100%;
     padding: 10px 0;
+    min-height: 400px;
 }
 
 .tabrow li {
@@ -373,76 +375,53 @@ div#comments > ul {
     font-size: 80%;
     padding: 0 0 10px 0;
     margin: 0;
-    display: inline-block;
-}
-
-.breadcrumbs a:link, .breadcrumbs a:visited {
-    color: inherit;
 }
 
 .breadcrumbs li, .breadcrumbs h3, .breadcrumbs ul {
     display: inline-block;
 }
 
-body.products #bd .search h2 {
-    padding-top: 10px;
-    display: inline-block;
-}
-
+/* two column layout for catalogue pages - 1% margin between columns */
 div.refine {
-    width: 17%;
+    width: 18%;
     font-size: 80%;
     display: inline-block;
     float: left:
     clear: both;
+    padding-bottom: 10px;
+}
+
+div.products {
+    display: inline-block;
+    float: right;
+    clear: right;
+    width: 81%;
 }
 
 div.refine .header {
     padding: 8px;
-    margin-bottom: 15px;
+    /*margin-bottom: 15px;*/
     position: relative;
-    text-align: center;
 }
 
-div.refine .header :before {
-    content: ' ';
-    border: 15px solid transparent;
-    border-top-color: #a4dcd1;
-    height: 0;
-    position: absolute;
-    width: 0;
-    bottom: -30px;
-    left: 50%;
-    margin-left: -15px;
-}
+/*div.refine .header :before {*/
+    /*content: ' ';*/
+    /*border: 15px solid transparent;*/
+    /*border-top-color: #a4dcd1;*/
+    /*height: 0;*/
+    /*position: absolute;*/
+    /*width: 0;*/
+    /*bottom: -30px;*/
+    /*left: 50%;*/
+    /*margin-left: -15px;*/
+/*}*/
 
 div.refine .header h2 {
-    color: black;
     padding-bottom: 0;
-}
-
-div.refine a {
-    color: inherit;
-    text-decoration: none;
-}
-
-div.refine a:hover {
-    text-decoration: underline;
-}
-
-div.refine a.bulk-ops {
-    text-decoration: underline;
-    font-weight: lighter;
-    color: blue;
 }
 
 div.refine li {
     line-height: 1.4em;
-
-}
-
-div.refine li.selected {
-    color: blue;
 }
 
 div.refine li img {
@@ -450,18 +429,9 @@ div.refine li img {
     padding-right: 3px;
 }
 
-div.refine span.count {
-    font-weight: lighter;
-}
-
 div.refine h3 {
-    /* make this look like a typical h2 */
     padding-top: 0.5em;
     padding-bottom: 0.25em;
-    font-family: 'Droid Serif', serif;;
-    font-weight: bolder;
-    font-size: larger;
-    /*border-bottom: 2px solid rgba(165,201,86,1);*/
 }
 
 div.refine .color {
@@ -473,13 +443,6 @@ div.refine .color {
     vertical-align: text-bottom;
 }
 
-div.products {
-    display: inline-block;
-    float: right;
-    clear: right;
-    width: 81%;
-}
-
 div.products .title {
     padding: 8px;
 }
@@ -489,7 +452,6 @@ div.products .title h2 {
     margin-right: 5px;
     margin-bottom: 0;
     padding-bottom: 0;
-    color: black;
 }
 
 div.products .title span.now-showing {
@@ -506,21 +468,10 @@ div.products .content {
     float: left;
     width: 100%;
     padding: 10px 0;
-    border-left: 1px solid lightgray;
-}
-
-div.products .page-size {
-    font-size: 80%;
-    float: left;
-    margin-right: 5px;
 }
 
 div.products .thumbnails div {
     padding-left: 10px;
-}
-
-div.products .page-size select {
-    width: 3em;
 }
 
 div.products .sort-by {
@@ -531,11 +482,6 @@ div.products .sort-by {
 
 div.products .sort-by select {
     width: 10em;
-}
-
-div.products select {
-    padding: 3px 0;
-    border: 1px solid lightgray;
 }
 
 div.products .thumbnails {
@@ -567,54 +513,19 @@ div.products .header, div.products .bottom {
     padding: 0 5px;
 }
 
-.pagination li.current {
-    background-color: white;
-    font-weight: bolder;
-    border: 1px solid gray;
-}
-
 .pagination .next {
     padding-right: 5px;
 }
 
-
 /* thumbnail styles */
 .thumbnail {
-    width: 11.9em;
-    text-align: center;
-    font-size: 80%;
-    line-height: 1.2em;
     float: left;
     clear: right;
-    height: 18em;
-    background-color: white;
-    padding: 10px;
-    border: 1px solid lightgray;
+    margin-right: 5px;
+    margin-bottom: 5px;
 }
 
-div.products .thumbnail {
-    border-top: none;
-    border-left: none;
-    border-right: none;
-}
-
-.thumbnail a img {
-    width: 95%;
-    margin-top: 2%;
-}
-
-.thumbnail span {
-    display: block;
-}
-
-.thumbnail .rating {
-    display: block;
-}
-
-.sale-price, .sale {
-    color: red;
-}
-
+/* product detail 3 column layout */
 div.product-detail .col1 {
     float: left;
     clear: both;
@@ -633,13 +544,8 @@ div.product-detail .col3 {
     float: right;
 }
 
-div.product-detail .visual {
-    border: 1px solid lightgray;
-}
-
 div.product-detail div.other-views {
     padding: 8px;
-    border-top: 1px solid lightgray;
 }
 
 div.product-detail div.other-views img {
@@ -647,7 +553,7 @@ div.product-detail div.other-views img {
     display: inline-block;
 }
 
-#primary-img img {
+div.product-detail .visual #primary-img img {
     width: 100%;
 }
 
@@ -672,10 +578,6 @@ div.product-detail #more-detail .text {
     clear: both;
 }
 
-div.product-detail #more-detail dt:after {
-    content: ':';
-}
-
 div.product-detail .tabrow {
     padding-top: 15px;
 }
@@ -686,7 +588,7 @@ div.product-detail .description h1 {
     padding-bottom: 0.3em;
 }
 
-div#summary {
+div.product-detail div#summary {
     float: left;
     padding: 10px;
     padding-left: 0;

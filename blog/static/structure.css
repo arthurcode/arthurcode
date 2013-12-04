@@ -1,5 +1,11 @@
 /* Collects common structural patterns and elements */
 
+/* padding on core content boxes */
+
+.content-left {
+    padding-left: 10px;
+}
+
 /* a row of buttons, or elements that are styled to look like buttons */
 .buttonrow {
     list-style: none;
@@ -203,4 +209,24 @@ form .controls {
     float: left;
     clear: both;
     width: 100%;
+}
+
+/* thumbnail styles */
+.thumbnail {
+    width: 11em;
+    font-size: 80%;
+    height: 18em;
+    padding: 10px;
+}
+
+.thumbnail a img {
+    width: 95%;
+}
+
+.thumbnail span {
+    display: block;
+}
+
+.thumbnail .rating {
+    display: block;
 }
