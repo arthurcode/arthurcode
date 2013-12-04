@@ -5,15 +5,13 @@
 {% load catalogue_extras %}
 
 {% block title %}Shopping Cart{% endblock %}
-
+{% block body_content_class %}content-left{% endblock %}
 {% block body_class %}cart{% endblock %}
 
 {% block body %}
-
     <h2>Your Shopping Cart <img src="{{ STATIC_URL }}icons/shop_cart.png"></h2>
-
     {% if checkout_errors %}
-        <div class="error-list">
+        <div class="errorList">
             <h2>You cannot checkout until you correct the following problems:</h2>
             <ul>
                 {% for error in checkout_errors %}

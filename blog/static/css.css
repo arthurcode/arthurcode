@@ -849,11 +849,6 @@ div.metadata .brand, div.metadata .ages {
     clear: both;
 }
 
-div.error-list {
-    color: red;
-    border: 1px solid red;
-}
-
 /* account login styles */
 
 form.login {

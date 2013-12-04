@@ -6,7 +6,9 @@
             {% block header %}{% endblock %}
         </div>
         <div id="bd">
-            {% block body %}{% endblock %}
+            <div class="{% block body_content_class %}content-left{% endblock %}">
+                {% block body %}{% endblock %}
+            </div>
         </div>
         <div class="push"></div>
     </div>
