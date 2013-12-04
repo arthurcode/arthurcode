@@ -96,7 +96,7 @@
                 <tbody>
                 {% if order.items %}
                     {% for item in order.items %}
-                        <tr>
+                        <tr class="{% cycle "even" "odd" %}">
                             <td>
                                 {% if item.is_product %}
                                 <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image }}" alt="{{ item.item.product.name }}"/></a>

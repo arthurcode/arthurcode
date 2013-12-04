@@ -106,7 +106,7 @@
                     {% endif %}
 
                     {% if can_add_to_cart %}
-                        <button type="submit" name="submit" class="action add-to-cart">Add to Cart</button>
+                        <button type="submit" name="submit" class="button action add-to-cart"><span>Add to Cart</span></button>
                     {% else %}
                         <span class="out-of-stock">OUT OF STOCK</span>
                         {% if product.instances.all %}<a class="subtle" href="{% url restock_notify product.instances.all.0.id %}">Email me when this product is back in stock</a>{% endif %}
@@ -117,7 +117,7 @@
                         {% else %}
                             {% field form.wishlist 'hidden wishlist'%}
                         {% endif %}
-                        <button id="add-to-wishlist" type="submit" name="add-to-wishlist" class="action wishlist">Add to Wish List</button>
+                        <button id="add-to-wishlist" type="submit" name="add-to-wishlist" class="button wishlist"><span>Add to Wish List</span></button>
                     {% endif %}
                 </form>
                 {% if not request.user.is_authenticated or request.user|is_lazy_user %}

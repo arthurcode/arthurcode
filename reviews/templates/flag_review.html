@@ -18,8 +18,8 @@
     <form method="post" action="">
         {% csrf_token %}
         <div class="controls">
-            <button class="action" name="no" type="submit">Cancel</button>
-            <button type="submit" name="yes" class="action">Yes, Report as Inappropriate</button>
+            <button class="button action" name="no" type="submit"><span>Cancel</span></button>
+            <button type="submit" name="yes" class="button action"><span>Yes, Report as Inappropriate</span></button>
         </div>
     </form>
 {% endblock %}

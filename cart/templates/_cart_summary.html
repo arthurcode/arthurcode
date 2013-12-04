@@ -1,5 +1,5 @@
 {% load static %}
 
 <form method="GET" action="{% url show_cart %}" class="no-help">
-    <button type="submit" class="action"><img src="{% get_static_prefix %}icons/shop_cart.png">Cart ({{ cart_item_count }})</button>
+    <button type="submit" class="button action"><span><img src="{% get_static_prefix %}icons/shop_cart.png">Cart ({{ cart_item_count }})</span></button>
 </form>

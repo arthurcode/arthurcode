@@ -9,7 +9,10 @@
 {% block body_class %}cart{% endblock %}
 
 {% block body %}
-    <h2>Your Shopping Cart <img src="{{ STATIC_URL }}icons/shop_cart.png"></h2>
+    <div class="breadcrumbs">
+
+    </div>
+    <h2>Shopping Cart ({{ cart_subtotal|currency }})</h2>
     {% if checkout_errors %}
         <div class="errorList">
             <h2>You cannot checkout until you correct the following problems:</h2>
@@ -49,11 +52,11 @@
                 <th colspan="{% if wishlists %}8{% else %}7{% endif %}">
                     <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
-                        <button type="submit" name="Checkout" class="action">Checkout Now</button>
+                        <button type="submit" name="Checkout" class="button action"><span>Checkout Now</span></button>
                     </form>
                     {% if continue_shopping_url %}
                         <form method="GET" action="{{ continue_shopping_url }}" class="no-help continue-shopping">
-                            <button type="submit" class="action">Continue Shopping</button>
+                            <button type="submit" class="button action"><span>Continue Shopping</span></button>
                         </form>
                     {% endif %}
                 </th>
@@ -63,7 +66,7 @@
         <tbody>
         {% if cart_items %}
             {% for item in cart_items %}
-                <tr>
+                <tr class="{% cycle "even" "odd" %}">
                     <td>
                         {% if item.is_product %}
                             <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image.path }}" alt="{{ item }}"/></a>

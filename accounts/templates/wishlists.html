@@ -6,8 +6,8 @@
 
 {% block body %}
     <h2>My Wish Lists</h2>
-    <table class="shopping-cart">
-        <thead>
+    <table>
+        <thead class="title-bar">
             <tr>
                 <td>Name</td>
                 <td>Created On</td>
@@ -18,7 +18,7 @@
         <tbody>
             {% if wishlists %}
                 {% for wl in wishlists %}
-                    <tr>
+                    <tr class="{% cycle "even" "odd" %}">
                         <td><a href="{{ wl.get_absolute_url }}">{{ wl.name }}</a></td>
                         <td>{{ wl.created_at|date }}</td>
                         <td>{{ wl.items.all|length }}</td>

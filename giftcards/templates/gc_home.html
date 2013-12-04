@@ -7,7 +7,7 @@
         <p>Already have a gift card? <a class="standard" href="{% url gc_check_balance %}">Check your balance here</a></p>
     </div>
 
-    <h2>Gift Cards</h2>
+    <h2>Buy a Gift Card</h2>
     <p class="subtle">Our gift cards never expire, are shipped for free, and can be used toward any product sold on our site.</p>
     <p class="subtle">You can choose to send your gift card electronically via e-mail, or have them mailed to a physical address.</p>
     <p class="subtle">Enter a dollar amount <em>between $1 and $250</em>.</p>
@@ -15,7 +15,7 @@
     <form method="POST" action="" class="single-field-pop no-help buy-gc">
         {% csrf_token %}
         {% field form.value %}
-        <button type="submit" class="action" name="submit">Add To Cart</button>
+        <button type="submit" class="button action" name="submit"><span>Add To Cart</span></button>
     </form>
 {% endblock %}
 

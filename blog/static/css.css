@@ -40,11 +40,6 @@ body {
     margin: 0 auto;
 }
 
-button {
-    padding: 0.25em 0.5em;
-}
-
-
 .whitespace {
     white-space: pre-wrap;
 }
@@ -148,12 +143,11 @@ span img.error {
 }
 
 #hd span.checkout {
-    margin-top: 70px;
+    margin-top: 90px;
     font-size: 200%;
     font-family: 'Cinzel Decorative', cursive;
     font-style: italic;
     display: inline-block;
-    margin-left: 20px;
 }
 
 #primary-navigation {
@@ -756,14 +750,6 @@ body.cart #bd h2 {
     padding-bottom: 10px;
 }
 
-table .right {
-    text-align: right !important;
-}
-
-table .left {
-    text-align: left !important;
-}
-
 table.shopping-cart {
     min-width: 70%;
     margin-bottom: 20px;
@@ -790,17 +776,6 @@ table.shopping-cart button.action {
     font-size: 120%;
 }
 
-table.shopping-cart th {
-    padding: 0 5px;
-    text-align: center;
-}
-
-table.shopping-cart td {
-    border: 2px solid lightgray;
-    padding: 5px;
-    text-align: center;
-}
-
 table.shopping-cart img {
     width: 6em;    /* TODO: add a max width as well */
     margin: 0 auto;
@@ -820,12 +795,6 @@ table.shopping-cart .update-cart button {
 
 table.shopping-cart form.checkout {
     float: right;
-}
-
-table.shopping-cart .continue-shopping {
-    float: left;
-    font-size: 120%;
-    font-weight: normal;
 }
 
 /* product detail styles */
@@ -1240,12 +1209,6 @@ div.rating img {
 
 table.orders {
     width: 80%;
-    border: 1px solid lightgray;
-}
-
-table.orders td, table.orders th {
-    text-align: center;
-    padding: 4px;
 }
 
 /* By default the data-type and data definition take up ~50% of the dl width.  This can be modified by specific
@@ -1262,10 +1225,6 @@ dl.horizontal dd {
     float: left;
     padding-left: 2%;
     width: 48%;
-}
-
-tr.even td {
-    background-color: #f0f0f0;
 }
 
 dt.even, dt.even + dd {
@@ -1722,7 +1681,6 @@ form.single-field-pop .field {
 form.single-field-pop button {
     float: left;
     clear: none;
-    height: 2em;
     margin-left: 5px;
 }
 
@@ -1992,13 +1950,6 @@ td.note span.note {
 body.shop-wishlist span.metadata {
     font-style: italic;
     font-weight: lighter;
-}
-
-/* by default center form elements within their cells */
-
-table form {
-    float: none;
-    margin: 0 auto;
 }
 
 table form.continue-shopping {

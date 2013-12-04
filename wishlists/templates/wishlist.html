@@ -25,7 +25,7 @@
         <img class="icon" src="{{ STATIC_URL }}icons/facebook.png">
     </div>
     <table class="shopping-cart">
-        <thead>
+        <thead class="title-bar">
         <tr>
             <td>Item Name</td>
             <td>Details</td>
@@ -38,7 +38,7 @@
         <tbody>
         {% if items %}
             {% for item in items %}
-                <tr>
+                <tr class="{% cycle "even" "odd" %}">
                     <td>
                         <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
                         <a href="{{ item.instance.get_absolute_url }}" class="cart">{{ item.instance.name }}</a>
@@ -93,10 +93,10 @@
     </table>
     {% if items %}
         {% with items|last as last_added %}
-            <a class="action" href="{{ last_added.instance.get_absolute_url }}">Continue Shopping</a>
+            <a class="button action" href="{{ last_added.instance.get_absolute_url }}"><span>Continue Shopping</span></a>
         {% endwith %}
     {% else %}
-        <a class="action" href="{% url catalogue_category '' %}">Start Shopping</a>
+        <a class="button action" href="{% url catalogue_category '' %}"><span>Start Shopping</span></a>
     {% endif %}
 {% endblock %}
 

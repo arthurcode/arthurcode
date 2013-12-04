@@ -254,9 +254,9 @@ if (wishlist_button) {
                 e.preventDefault();
                 panel_div.toggleClass('hidden');
                 if (panel_div.hasClass('hidden')) {
-                    wishlist_button_copy.setHTML('Add to Wish List');
+                    wishlist_button_copy.setHTML('<span>Add to Wish List</span>');
                 } else {
-                    wishlist_button_copy.setHTML('Select a Wish List');
+                    wishlist_button_copy.setHTML('<span>Select a Wish List</span>');
                 }
             })
         }

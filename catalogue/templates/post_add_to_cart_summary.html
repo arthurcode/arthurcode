@@ -6,7 +6,7 @@
     {% block thumb %}{% thumb instance.product instance.get_best_image %}{% endblock %}
     <p class="container-summary">{% block container-summary %}Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }}){% endblock %}</p>
     <div class="controls">
-    <a class="action close-panel">{% block close-panel %}Continue Shopping{% endblock %}</a>
-    <a class="action go-to-container" href="{% block go-to-container-url %}{% url show_cart %}{% endblock %}">{% block go-to-container %}View Cart{% endblock %}</a>
+    <a class="button action close-panel"><span>{% block close-panel %}Continue Shopping{% endblock %}</span></a>
+    <a class="button action go-to-container" href="{% block go-to-container-url %}{% url show_cart %}{% endblock %}"><span>{% block go-to-container %}View Cart{% endblock %}</span></a>
     </div>
 </div>
