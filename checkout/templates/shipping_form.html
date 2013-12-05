@@ -6,7 +6,7 @@
     <h2 class="form-h">Choose Shipping Destination</h2>
     <form class="ship-to no-help single-field-pop" action="">
         {% field select_form.ship_to %}
-        <button type="submit" class="action">{% if selected_nickname %}Change{% else %}Choose{% endif %}</button>
+        <button type="submit" class="button action"><span>{% if selected_nickname %}Change{% else %}Choose{% endif %}</span></button>
     </form>
 
     {% if form %}
@@ -33,7 +33,7 @@
         {% field form.region %}
         {% field form.post_code %}
         <div class="controls">
-            <button type="submit" name="submit" class="action">Save and Continue</button>
+            <button type="submit" name="submit" class="button action"><span>Save and Continue</span></button>
         </div>
     </form>
     {% endif %}

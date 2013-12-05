@@ -67,7 +67,7 @@
         {% if cart_items %}
             {% for item in cart_items %}
                 <tr class="{% cycle "even" "odd" %}">
-                    <td>
+                    <td class="thumb">
                         {% if item.is_product %}
                             <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image.path }}" alt="{{ item }}"/></a>
                             <a href="{{ item.get_absolute_url }}" class="cart">{{ item.name }}</a>

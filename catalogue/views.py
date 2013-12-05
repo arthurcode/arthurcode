@@ -226,7 +226,7 @@ def category_view(request, category_slug=""):
         'child_categories': child_categories,
         'sort_key': sort_key,
         'sorts': [
-            ('bestselling', 'Bestselling'),
+            ('bestselling', 'Most Popular'),
             ('priceMin', 'Price (Low to high)'),
             ('priceMax', 'Price (High to Low)'),
             ('nameA', 'Name (A to Z)'),

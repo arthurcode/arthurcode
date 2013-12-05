@@ -8,7 +8,7 @@
         <tr>
             <th>Gift Card</th>
             <th></th>
-            <th>Value</th>
+            <th class="right">Value</th>
         </tr>
         </thead>
         <tfoot>
@@ -25,8 +25,8 @@
     <tbody>
     {% if gift_cards %}
         {% for card, balance in gift_cards %}
-            <tr>
-                <td class="left">{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</td>
+            <tr class="{% cycle "even" "odd" %}">
+                <td>{{ card|slice:":4" }} {{ card|slice:"4:8" }} {{ card|slice:"8:12" }} {{ card|slice:"12:16" }}</td>
                 <td>
                     <form method="post" class="remove-gift-card no-help">
                         {% csrf_token %}
@@ -47,7 +47,7 @@
                 <form method="post" class="no-help add-gift-card single-field-pop{% if not gift_card_form.is_bound %} hide-initially{% endif %}" action="">
                     {% csrf_token %}
                     {% field gift_card_form.card_number %}
-                    <button type="submit" class="action" name="add-gift-card">Redeem</button>
+                    <button type="submit" class="button action" name="add-gift-card"><span>Redeem</span></button>
                 </form>
             </td>
         </tr>
@@ -76,6 +76,6 @@
         </fieldset>
     {% endif %}
     <div class="controls">
-        <button class="action" name="submit">Submit Order</button>
+        <button class="button action" name="submit"><span>Submit Order</span></button>
     </div>
 </form>

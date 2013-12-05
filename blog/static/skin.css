@@ -33,11 +33,15 @@ body {
     color: white;
 }
 
-h2 {
+h1, h2 {
+    font-family: 'Comfortaa', cursive;  /* this font is meant for large sizes only */
+}
+
+h2, h2-wannabe, div.refine h3 {
     color: black;
-    font-family: 'Droid Serif', serif;
     font-size: 130%;
     font-weight: bolder;
+    font-family: 'Comfortaa', cursive;
 }
 
 ul {
@@ -46,6 +50,10 @@ ul {
 
 .error {
     color: red;
+}
+
+.field.error {
+    color: inherit;
 }
 
 .sale-price, .sale {
@@ -67,8 +75,8 @@ An element with this class will stand out in reverse color.  Its background and 
 boldness.
 */
 .title-bar {
-    color: white;
-    background: rgba(80,80,80,1);
+    color: black;
+    background-color: #a4dcd1;
 }
 
 .title-bar a, .title-bar a:link, .title-bar a:visited {
@@ -89,6 +97,10 @@ a.standard:link, a.standard:visited {
 /* <a href="#" class="button button-blue"><span>Button</span></a>
    <button class="button button-blue"><span>Button</span></a>
  */
+
+button {
+    cursor: pointer;
+}
 
 button.button {
     padding: 0;
@@ -391,13 +403,6 @@ div.refine span.count {
     font-weight: lighter;
 }
 
-div.refine h3 {
-    /* make this look like a typical h2 */
-    font-family: 'Droid Serif', serif;;
-    font-weight: bolder;
-    font-size: larger;
-}
-
 div.products, div.refine .header {
     background-color: rgba(235,235,235,1);
 }
@@ -442,6 +447,10 @@ table {
 
 td + td {
     border-left: 1px solid lightgray;
+}
+
+th + th {
+    border-left: 1px solid darkgray;
 }
 
 tfoot {

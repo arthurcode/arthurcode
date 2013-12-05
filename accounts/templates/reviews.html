@@ -21,9 +21,11 @@
         <div class="your-reviews">
             <h2>My Reviews <span class="subtle">({{ reviews.count }})</span></h2>
             <table class="reviews">
-                <thead>
-                <td>Product</td>
-                <td>Review</td>
+                <thead class="title-bar">
+                <tr>
+                    <th>Product</th>
+                    <th>Review</th>
+                </tr>
                 </thead>
 
                 {% for review in reviews %}

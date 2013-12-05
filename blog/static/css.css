@@ -183,7 +183,7 @@ body.products #primary-navigation .products {
     float: left;
     clear: both;
     width: 100%;
-    font-family: 'Droid Serif', serif;
+    font-family: 'Comfortaa', serif;
 
 }
 
@@ -232,7 +232,7 @@ div.cart-summary img {
     font-weight: lighter;
     clear:both;
     text-align: center;
-    padding: 20px 0;
+    padding: 10px 0;
 }
 
 #ft .copyright {
@@ -776,7 +776,7 @@ table.shopping-cart button.action {
     font-size: 120%;
 }
 
-table.shopping-cart img {
+table.shopping-cart .thumb img {
     width: 6em;    /* TODO: add a max width as well */
     margin: 0 auto;
     display: block;
@@ -1832,24 +1832,9 @@ table.reviews .review, table.reviews .thumbnail {
     border: none;
 }
 
-table.reviews thead {
-    font-weight: bolder;
-}
-
-table.reviews thead td {
-    padding: 10px 5px;
-    text-align: center;
-    background-color: #f0f0f0;
-}
-
-table.reviews {
-    border-collapse: collapse;
-    border: 1px solid gray;
-}
-
 table.reviews td {
-    border: 1px solid gray;
     vertical-align: top;
+    border-top: 1px solid lightgray;
 }
 
 .out-of-stock .column-2 dl {
@@ -1884,8 +1869,6 @@ table.reviews td {
     float: left;
     clear: both;
     font-weight: bolder;
-    color: midnightblue;
-    font-family: 'Droid Serif', serif;
 }
 
 .related #bd .thumbnails, .related #bd a.standard {

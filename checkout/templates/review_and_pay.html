@@ -10,7 +10,7 @@
     <div class="review-order">
         <h2>1. Review Your Order</h2>
         <div class="contact">
-            <h3>Customer Information</h3>
+            <h3 class="h2-wannabe">Customer Information</h3>
             <div>
             {{ order.first_name }} {{ order.last_name }} <br>
             {{ order.email }} <br>
@@ -19,14 +19,14 @@
             </div>
         </div>
         <div class="shipping">
-            <h3>Shipping Address</h3>
+            <h3 class="h2-wannabe">Shipping Address</h3>
             <div>
             {% with order.shipping_address as address %}{% include "_address.html" %}{% endwith %}
             <a class="standard subtle" href="{% url checkout_shipping %}">(edit)</a>
             </div>
         </div>
         <div class="billing">
-            <h3>Billing Address</h3>
+            <h3 class="h2-wannabe">Billing Address</h3>
             <div>
             {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}
             <a class="standard subtle" href="{% url checkout_billing %}">(edit)</a>
@@ -97,7 +97,7 @@
                 {% if order.items %}
                     {% for item in order.items %}
                         <tr class="{% cycle "even" "odd" %}">
-                            <td>
+                            <td class="thumb">
                                 {% if item.is_product %}
                                 <a href="{{ item.get_absolute_url }}"><img src="{% product_img_url item.item.product %}{{ item.item.get_best_image }}" alt="{{ item.item.product.name }}"/></a>
                                 <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
