@@ -12,10 +12,6 @@ body {
     background-color: black;
 }
 
-#bd {
-    border-left: 1px solid darkgray;
-}
-
 #ft {
     background: rgb(125,126,125); /* Old browsers */
     background: -moz-linear-gradient(top,  rgba(125,126,125,1) 0%, rgba(14,14,14,1) 100%); /* FF3.6+ */

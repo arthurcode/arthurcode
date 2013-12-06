@@ -6,13 +6,14 @@
 
 {% block body %}
     <h2>Change Your Email Address</h2>
+    <p>Current Email Address: {{ request.user.email }}</p>
     {% form_errors form %}
     <form method="post" action="{% if next %}?next={{ next }}{% endif %}">
         {% csrf_token %}
         {% field form.new_email %}
         {% field form.password %}
         <div class="controls">
-            <button class="action" type="submit" name="submit">Change Email</button>
+            <button class="button action" type="submit" name="submit"><span>Change Email</span></button>
         </div>
     </form>
 {% endblock %}

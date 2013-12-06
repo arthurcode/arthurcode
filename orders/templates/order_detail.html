@@ -18,6 +18,6 @@
     <h2>Order Detail</h2>
     {% order order %}
     {% if order.can_be_canceled %}
-        <div class="actions"><a class="action" href="{% url order_cancel order.id %}">Cancel Order</a></div>
+        <div class="actions"><a class="button action" href="{% url order_cancel order.id %}"><span>Cancel Order</span></a></div>
     {% endif %}
 {% endblock %}

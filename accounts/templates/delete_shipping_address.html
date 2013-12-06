@@ -13,7 +13,7 @@
     </div>
     <form method="post" action="">
         {% csrf_token %}
-        <button class="action" type="submit" name="no">Cancel</button>
-        <button class="action" type="submit" name="yes">Delete Address</button>
+        <button class="button action" type="submit" name="no"><span>Cancel</span></button>
+        <button class="button action" type="submit" name="yes"><span>Delete Address</span></button>
     </form>
 {% endblock %}

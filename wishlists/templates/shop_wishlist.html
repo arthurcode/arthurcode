@@ -24,8 +24,8 @@
         <tbody>
         {% if items %}
             {% for item in items %}
-                <tr>
-                    <td>
+                <tr class="{% cycle "even" "odd" %}">
+                    <td class="thumb">
                         <a href="{{ item.instance.get_absolute_url }}"><img src="{% product_img_url item.instance.product %}{{ item.instance.get_best_image.path }}" alt="{{ item }}"/></a>
                         <a href="{{ item.instance.get_absolute_url }}" class="cart">{{ item.instance.name }}</a>
                     </td>
