@@ -1330,7 +1330,6 @@ body.receipt #bd div {
     font-size: 110%;
     font-weight: bolder;
     margin-bottom: 10px;
-    color: midnightblue;
 }
 
 .review-order table.shopping-cart {
@@ -1364,7 +1363,6 @@ body.receipt #bd div {
 
 .payment-info span.balance {
     font-weight: bolder;
-    color: midnightblue;
     float: left;
     clear: both;
     padding-top: 10px;
@@ -1739,7 +1737,6 @@ form.ship-to label {
 }
 
 .payment-info h3 {
-    color: midnightblue;
     font-weight: bolder;
     float: left;
     clear: both;
