@@ -53,7 +53,6 @@ def cardLuhnChecksumIsValid(card_number):
 
 
 class PaymentInfoForm(forms.Form):
-    card_type = forms.ChoiceField(choices=CreditCardPayment.CARD_TYPES, widget=forms.RadioSelect, label='Card Type')
     card_number = forms.CharField(label='Card Number', widget=forms.TextInput(attrs={'size': 19, 'maxlength': 25}))
     expire_month = forms.ChoiceField(choices=add_empty_choice(cc_expire_months(), '-'), label='Month')
     expire_year = forms.ChoiceField(choices=add_empty_choice(cc_expire_years(), '-'), label='Year')
@@ -68,7 +67,6 @@ class PaymentInfoForm(forms.Form):
 
         if self.amount <= 0:
             # no credit card information is necessary
-            self.fields['card_type'].required = False
             self.fields['card_number'].required = False
             self.fields['expire_month'].required = False
             self.fields['expire_year'].required = False
@@ -103,9 +101,11 @@ class PaymentInfoForm(forms.Form):
 
         if self.is_credit():
             # authorize the funds
-            transaction_id = authorize(cd['card_type'], self.amount, self.pyOrder.billing_address)
+            # TODO: infer the credit card type from the card number
+            card_type = CreditCardPayment.MASTERCARD
+            transaction_id = authorize(card_type, self.amount, self.pyOrder.billing_address)
             cc = CreditCardPayment()
-            cc.card_type = cd['card_type']
+            cc.card_type = card_type
             cc.amount = self.amount
             cc.transaction_id = transaction_id
             cc.status = CreditCardPayment.AUTHORIZED

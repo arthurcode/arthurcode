@@ -1,7 +1,7 @@
 var form = Y.one('form.add-gift-card');
 if (form && form.hasClass('hidden')) {
     // give the user a way to toggle form visibility
-    var node_text = '<span class="toggle-gift-card subtle">Click here to redeem a gift card</span>';
+    var node_text = '<span class="toggle-gift-card subtle">Gift Card? Click here to redeem</span>';
     var node = Y.Node.create(node_text);
     node.on("click", function(e) {
         form.toggleClass('hidden');

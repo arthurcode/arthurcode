@@ -58,7 +58,6 @@
 <form method="post" action="" class="stacked">
     {% csrf_token %}
     {% if balance_remaining %}
-        {% field credit_form.card_type %}
         <p>
             {% field credit_form.card_number %}
             {% field credit_form.cvv %}
