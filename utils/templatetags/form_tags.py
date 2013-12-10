@@ -65,7 +65,7 @@ def aria_required_field(field):
     if not field.field.required:
         return unicode(field)
     soup = BeautifulSoup(unicode(field))
-    element = soup.contents[0]
+    element = soup.body.contents[0]
     element.attrs.update({'required': '', 'aria-required': 'true'})
     return unicode(soup)
 
