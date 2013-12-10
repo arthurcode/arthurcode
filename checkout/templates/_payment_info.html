@@ -1,7 +1,7 @@
 {% load form_tags %}
 {% load extras %}
 
-<h2>2. Enter Payment Info</h2>
+<h2>2. Enter Payment Details</h2>
 {% if gift_cards %}
     <table class="gift-cards shopping-cart">
         <thead class="title-bar">
@@ -52,8 +52,7 @@
     </div>
 {% endif %}
 
-
-{% if balance_remaining %}<h3>Credit Card ({{ balance_remaining|currency }})</h3>{% endif %}
+<span class="balance">Balance to be applied to credit card:  {{ balance_remaining|currency }}</span>
 {% form_errors credit_form %}
 <form method="post" action="" class="stacked">
     {% csrf_token %}
