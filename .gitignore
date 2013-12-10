@@ -1,5 +1,7 @@
 *.pyc
 
+sitelog.*
+
 # PyCharm user-specific files
 #######################
 
