@@ -66,6 +66,10 @@ html {
     background: linear-gradient(to bottom,  rgba(0,0,0,1) 0%, rgba(0,0,0,1) 30px), rgba(255,255,255,1) 30px) no-repeat; /* W3C */
 }
 
+div.loader-panel {
+    opacity: 0.5;
+}
+
 /*
 An element with this class will stand out in reverse color.  Its background and font color choices are chosen for
 boldness.
@@ -225,6 +229,11 @@ button.link.standard {
     border: 1px solid darkgray;
     border-radius: 3px;
     background-color: #a4dcd1;
+}
+
+.primary-box a {
+    color: inherit;
+    text-decoration: none;
 }
 
 #primary-navigation li:hover {
@@ -439,6 +448,7 @@ div.product-detail #more-detail dt:after {
 
 table {
     border: 1px solid lightgray;
+    min-width: 70%;
 }
 
 td + td {
@@ -470,6 +480,26 @@ tr.even td {
     background-color: #f0f0f0;
 }
 
+dt.even, dt.even + dd {
+    background-color: #f0f0f0;
+}
+
+dt.even, dt.even + dd, dt.odd, dt.odd + dd {
+    padding: 5px 0;
+}
+
+table.shopping-cart .total-left {
+    border: 4px solid #a4dcd1;
+    border-right: none;
+    font-size: larger;
+}
+
+table.shopping-cart .total-right {
+    border: 4px solid #a4dcd1;;
+    border-left: none;
+    font-size: larger;
+}
+
 /* by default center form elements within their cells */
 
 table form {
@@ -477,3 +507,173 @@ table form {
     margin: 0 auto;
 }
 
+div.add-to-cart {
+    padding: 10px;
+    border: 1px solid lightgray;
+    box-shadow: 3px 3px 3px gray;
+}
+
+div.add-to-cart .price .old-price {
+    text-decoration: line-through;
+}
+
+div.add-to-cart .price .you-save {
+    color: red;
+}
+
+div.add-to-cart form .field {
+    border-top: 1px solid lightgray;
+    padding-top: 10px !important;
+}
+
+span.out-of-stock {
+    color: red;
+    text-transform: uppercase;
+    clear: both;
+    font-weight: normal;
+}
+
+div.login {
+    padding: 20px;
+    background-color: #f0f0f0;
+}
+
+ul#secondary-navigation.checkout li {
+    position: relative;
+    padding-right: 2.2em;
+}
+
+ul#secondary-navigation.checkout img {
+    position: absolute;
+    height: 2em;
+    top: 0;
+    right: 0;
+    z-index: -999;
+}
+
+.order-summary h2 {
+    text-align: center;
+}
+
+.order-summary {
+    border: 1px solid lightgray;
+    border-top: none;
+    font-size: smaller;
+    padding: 10px;
+}
+
+.order-summary .hr {
+    width: 100%;
+    height: 0;
+    border-bottom: 1px solid black;
+    float: left;
+    clear: left;
+}
+
+.order-summary dl.horizontal dt, .order-summary dl.horizontal dd {
+    text-align: right;
+}
+
+.order-summary .total {
+    font-weight: bolder;
+}
+
+.order-summary a {
+    float: left;
+    clear: both;
+    width: 100%;
+    text-align: center;
+}
+
+div.address {
+    padding: 15px;
+    border: 1px solid lightgray;
+}
+
+div.address p.address, div.address h3, div.address a {
+    float: left;
+    clear: both;
+}
+
+div.address p.address {
+    margin-bottom: 10px;
+    font-size: smaller;
+}
+
+div.address .nickname {
+    font-weight: bolder;
+    padding-bottom: 10px;
+}
+
+div.gift-card-thumb {
+    border-radius: 10px;
+    border: 1px solid gray;
+    color: white;
+    background: rgb(30,87,153); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(30,87,153,1) 0%, rgba(41,137,216,1) 50%, rgba(32,124,202,1) 51%, rgba(125,185,232,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(30,87,153,1)), color-stop(50%,rgba(41,137,216,1)), color-stop(51%,rgba(32,124,202,1)), color-stop(100%,rgba(125,185,232,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(30,87,153,1) 0%,rgba(41,137,216,1) 50%,rgba(32,124,202,1) 51%,rgba(125,185,232,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#1e5799', endColorstr='#7db9e8',GradientType=0 ); /* IE6-9 */
+    box-shadow: 2px 2px 2px gray;
+    text-align: center;
+    width: 11em;
+}
+
+div.gift-card-thumb a {;
+    display: inline-block;
+    padding: 1em 3em;
+    color: inherit;
+    text-decoration: none;
+    line-height: 2em;
+    text-align: center;
+}
+
+div.gift-card-thumb span.value {
+    display: block;
+    font-size: larger;
+}
+
+ul.select-wish-list li {
+    text-align: center;
+    cursor: pointer;
+    padding: 3px 5px;
+    background: rgb(255,255,255); /* Old browsers */
+    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
+    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
+    background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
+    background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
+    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
+}
+
+ul.select-wish-list {
+    border: 1px solid gray;
+}
+
+form.single-field-pop {
+    padding: 20px;
+    background-color: #f0f0f0;
+    border: 1px solid gray;
+}
+
+.tabview .views {
+    float: left;
+    clear: both;
+    padding: 15px;
+    border-left: 1px solid darkgray;
+}
+
+body.account div.views {
+    width: 60%;
+    clear: none;
+    float: left;
+    border: none;
+}
+
+.review-order h3, .receipt h3 {
+    font-weight: bolder;
+}

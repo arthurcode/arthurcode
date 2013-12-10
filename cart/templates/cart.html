@@ -40,10 +40,11 @@
         </thead>
         <tfoot>
         <tr>
-            <th class="right" colspan="{% if wishlists %}7{% else %}6{% endif %}">
-                Cart Subtotal:
+            <th colspan="{% if wishlists %}6{% else %}5{% endif %}"></th>
+            <th class="right total-left">
+                Cart&nbspSubtotal:
             </th>
-            <th class="right">
+            <th class="right total-right">
                 {{ cart_subtotal|currency }}
             </th>
         </tr>

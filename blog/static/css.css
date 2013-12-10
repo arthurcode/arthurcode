@@ -401,21 +401,7 @@ div.products {
 
 div.refine .header {
     padding: 8px;
-    /*margin-bottom: 15px;*/
-    position: relative;
 }
-
-/*div.refine .header :before {*/
-    /*content: ' ';*/
-    /*border: 15px solid transparent;*/
-    /*border-top-color: #a4dcd1;*/
-    /*height: 0;*/
-    /*position: absolute;*/
-    /*width: 0;*/
-    /*bottom: -30px;*/
-    /*left: 50%;*/
-    /*margin-left: -15px;*/
-/*}*/
 
 div.refine .header h2 {
     padding-bottom: 0;
@@ -566,6 +552,7 @@ div.product-detail #more-detail {
     width: 100%;
 }
 
+/* TODO: use javascript to chose more ideal widths depending on the size of dt */
 div.product-detail #more-detail dt {
     width: 30%;
 }
@@ -587,6 +574,7 @@ div.product-detail .description h1 {
     font-weight: bolder;
     font-size: larger;
     padding-bottom: 0.3em;
+    line-height: 1.4em;
 }
 
 div.product-detail div#summary {
@@ -640,18 +628,11 @@ div.add-to-cart {
     width: 10em;
     float: right;
     clear: right;
-    padding: 10px;
-    border: 1px solid lightgray;
     font-size: smaller;
-    box-shadow: 3px 3px 3px gray;
 }
 
 div.add-to-cart button.add-to-cart {
     font-size: 130%;
-}
-
-div.add-to-cart button.link {
-    text-align: left;
 }
 
 div.add-to-cart .price {
@@ -659,18 +640,10 @@ div.add-to-cart .price {
     font-size: 180%;
 }
 
-div.add-to-cart .price .old-price {
-    text-decoration: line-through;
-}
-
 div.add-to-cart .price .you-save, div.add-to-cart .price .old-price {
     font-size: 50%;
     display: block;
     font-weight: normal;
-}
-
-div.add-to-cart .price .you-save {
-    color: red;
 }
 
 div.add-to-cart form {
@@ -690,11 +663,6 @@ div.add-to-cart form label .label {
 div.add-to-cart form label span.error {
     float: left;
     clear: right;
-}
-
-div.add-to-cart form .field {
-    border-top: 1px solid lightgray;
-    padding-top: 10px !important;
 }
 
 div.add-to-cart form .field.text label {
@@ -742,18 +710,6 @@ form.update-cart span.label {
 }
 
 /* shopping cart styles */
-body.cart #bd {
-    border-top: 1px solid lightgray;
-}
-
-body.cart #bd h2 {
-    padding-bottom: 10px;
-}
-
-table.shopping-cart {
-    min-width: 70%;
-    margin-bottom: 20px;
-}
 
 table.shopping-cart img.tick {
     width: 2em;
@@ -766,14 +722,8 @@ table.shopping-cart tbody {
     font-size: 80%;
 }
 
-table.shopping-cart tfoot th {
-    padding-top: 5px;
-    badding-bottom: 5px;
-    font-weight: bolder;
-}
-
 table.shopping-cart button.action {
-    font-size: 120%;
+    font-size: larger;
 }
 
 table.shopping-cart .thumb img {
@@ -798,13 +748,6 @@ table.shopping-cart form.checkout {
 }
 
 /* product detail styles */
-span.out-of-stock {
-    color: red;
-    text-transform: uppercase;
-    clear: both;
-    font-weight: normal;
-}
-
 div.metadata .rating {
     float: left;
     margin-right: 8px;
@@ -820,22 +763,13 @@ div.metadata .brand, div.metadata .ages {
 
 /* account login styles */
 
-form.login {
-    clear: both;
-}
-
 div.login {
     float: left;
-    padding: 20px;
-    margin-left: auto;
-    margin-right: auto;
-    background-color: #f0f0f0;
 }
 
-div.login-wrapper {
-    width: 40%;
-    margin-right: auto;
-    margin-left: auto;
+form.login {
+    float: left;
+    clear: both;
 }
 
 div.login > h2 {
@@ -877,91 +811,7 @@ div.guest {
 
 /* checkout styles */
 
-ul#secondary-navigation.checkout li {
-    position: relative;
-    padding-right: 2.2em;
-}
-
-ul#secondary-navigation.checkout img {
-    position: absolute;
-    height: 2em;
-    top: 0;
-    right: 0;
-    z-index: -999;
-}
-
-div.checkout-nav {
-    float: left;
-    margin-bottom: 1em;
-}
-
-div.checkout-nav a {
-    text-decoration: none;
-    font-size: 120%;
-    background-color: lightgray;
-    padding: 0.75em;
-    display: inline-block;
-    float: left;
-    border-radius: 10%;
-}
-
-div.checkout-nav a.current {
-    border: 2px solid darkgray;
-}
-
-div.checkout-nav img {
-    display: inline-block;
-    float: left;
-    margin-right: 6px;
-}
-
-div.verify-contact-info {
-    margin-bottom: 4em;
-}
-
-div.contact-preview {
-    border: 2px solid lightgray;
-    padding: 1em;
-    float: left;
-}
-
-div.verify-contact-info form .field {
-    display: None;
-}
-
-div.chosen-address {
-    margin-bottom: 4em;
-}
-
-p.address span {
-    display: block;
-}
-
-p.address span.region, p.address span.city {
-    display: inline-block;
-}
-
-div.choose-address {
-    float: left;
-    margin-bottom: 2em;
-}
-
-.address-preview {
-    float: left;
-    margin-right: 2em;
-    border: 2px solid lightgray;
-    padding: 1em;
-}
-
-.address-preview form {
-    width: 100%;
-}
-
-div.choose-address h2, div.chosen-address h2, div.verify-contact-info h2 {
-    margin-bottom: 1em;
-}
-
-div.contact-info, div.new-address-form {
+div.contact-info {
     display: inline-block;
     float: left;
     clear: left;
@@ -979,68 +829,24 @@ div.contact-info form .column2 {
     width: 40%;
 }
 
-.address-preview button.link {
-    position: relative;
-    float: right;
-    bottom: 9.5em;
-    font-size: 80%;
-}
-
-.address-preview p.address {
-    margin-right: 4em;
-}
-
-.contact-preview dl {
-    margin: 0 0 1em 0;
-    padding: 0;
-}
-
-.contact-preview dt {
-    font-weight: bolder;
-}
-
 .order-summary h2 {
     text-align: center;
 }
 
 .order-summary {
-    border: 1px solid lightgray;
-    border-top: none;
     clear: both;
     float: left;
-    font-size: smaller;
-    padding: 10px;
-}
-
-.order-summary .hr {
-    width: 100%;
-    height: 0;
-    border-bottom: 1px solid black;
-    float: left;
-    clear: left;
-}
-
-.order-summary dl.horizontal dt, .order-summary dl.horizontal dd {
-    text-align: right;
-}
-
-.order-summary .total {
-    font-weight: bolder;
-}
-
-.order-summary a {
-    float: left;
-    clear: both;
-    width: 100%;
-    text-align: center;
 }
 
 .checkout-utils {
+    margin-top: 1em;
     float: right;
 }
 
-.checkout-utils a {
-    margin-left: 0.5em;
+.checkout-utils li {
+    display: inline;
+    float: left;
+    margin-left: 1em;
 }
 
 /* styles for the featured products page (home) */
@@ -1049,7 +855,6 @@ div.quick-links {
     display: inline-block;
     float: left;
     clear: both;
-    border-radius: 10px;
 }
 
 div.quick-links li {
@@ -1061,9 +866,7 @@ div.quick-links li + li {
 }
 
 div.quick-links a {
-    color: inherit;
     display: inline-block;
-    text-decoration: none;
     padding: 0.5em 10px;
 }
 
@@ -1187,54 +990,7 @@ div.rating img {
     width: 100%;
 }
 
-.tabview .views {
-    float: left;
-    clear: both;
-    padding: 15px;
-    border-left: 1px solid darkgray;
-}
 
-.readonly label {
-    padding-right: 10px;
-    float: left;
-    clear: both;
-    display: inline;
-}
-
-/* hack alert */
-.comments li {
-    float: left;
-    clear: both;
-}
-
-table.orders {
-    width: 80%;
-}
-
-/* By default the data-type and data definition take up ~50% of the dl width.  This can be modified by specific
-   subclasses */
-
-dl.horizontal dt {
-    float: left;
-    clear: both;
-    text-align: left;
-    width: 50%;
-}
-
-dl.horizontal dd {
-    float: left;
-    padding-left: 2%;
-    width: 48%;
-}
-
-dt.even, dt.even + dd {
-    background-color: #f0f0f0;
-}
-
-dl.contact-info dd, dl.contact-info dt, dl.public-profile dd, dl.public-profile dt {
-    padding-top: 5px;
-    padding-bottom: 5px;
-}
 
 dl.public-profile dt {
     width: 25%;
@@ -1263,50 +1019,21 @@ body.account ul.tabcol {
     float: left;
 }
 
-body.account div.views {
-    width: 60%;
-    clear: none;
-    float: left;
-    border: none;
-}
-
 body.account div.address {
-    padding: 15px;
+    display: inline-block;
     float: left;
+    padding: 15px;
     margin-right: 10px;
     margin-bottom: 20px;
-    border: 1px solid lightgray;
 }
 
-body.account div.address p.address, body.account div.address h3, body.account div.address a, body.account #bd form {
+div.needing-review, div.your-reviews {
     float: left;
     clear: both;
 }
 
-body.account div.address p.address {
-    margin-bottom: 10px;
-    font-size: 80%;
-}
-
-body.account div.address .nickname {
-    font-weight: bolder;
-    padding-bottom: 10px;
-}
-
-body.account div#shipping a {
-    float: left;
-    clear: both;
-}
-
-body.account div.your-reviews {
-    float: left;
-    clear: both;
+div.needing-review + div.your-reviews {
     padding-top: 20px;
-}
-
-div.needing-review {
-    float: left;
-    clear: both;
 }
 
 body.reviewing div.needing-review {
@@ -1318,47 +1045,19 @@ body.reviewing div.needing-review h3 {
     font-weight: bolder;
 }
 
-body.receipt #bd div {
-    clear: both;
-}
-
 .review-order {
     margin-bottom: 20px;
-}
-
-.review-order h3, .receipt h3 {
-    font-size: 110%;
-    font-weight: bolder;
-    margin-bottom: 10px;
-}
-
-.review-order table.shopping-cart {
-    width: 90%;
-    border-collapse: collapse;
-}
-
-.review-order table.shopping-cart tfoot th, .receipt table.shopping-cart tfoot th {
-    font-weight: normal;
-    padding: 0 5px 0 5px;
-}
-
-.review-order table.shopping-cart .total-left {
-    border: 4px solid limegreen;
-    border-right: none;
-    font-size: larger;
-    padding: 5px 0 5px 5px;
-}
-
-.review-order table.shopping-cart .total-right {
-    border: 4px solid limegreen;
-    border-left: none;
-    font-size: larger;
-    padding: 5px 5px 5px 0;
 }
 
 .payment-info table.gift-cards {
     float: left;
     clear: both;
+}
+
+.payment-info div.add-gift-card {
+    float: left;
+    clear: both;
+    padding: 10px 0;
 }
 
 .payment-info span.balance {
@@ -1649,39 +1348,6 @@ yui3-panel
     left: -12px;
 }
 
-form.single-field-pop {
-    padding: 20px;
-    background-color: #f0f0f0;
-    border: 1px solid gray;
-}
-
-form.single-field-pop label {
-    float: left;
-    margin-right: 10px;
-    font-size: 120%;
-}
-
-form.single-field-pop select, form.single-field-pop input {
-    float: left;
-    clear: none;
-}
-
-form.single-field-pop select {
-    height: 2em;
-}
-
-form.single-field-pop .field {
-    float: left;
-    width: auto;
-    margin: 0 !important;
-}
-
-form.single-field-pop button {
-    float: left;
-    clear: none;
-    margin-left: 5px;
-}
-
 form.ship-to {
     clear: both;
     margin-bottom: 20px;
@@ -1703,8 +1369,7 @@ form.ship-to label {
 .checkout .main {
     width: 75%;
     float: left;
-    padding: 40px 20px 20px 20px;
-    border-left: 1px solid lightgray;
+    margin-top: 20px;
 }
 
 .form-h {
@@ -1968,32 +1633,11 @@ form.check-balance, form.buy-gc {
     margin-top: 20px;
 }
 
-div.gift-card-thumb {
-    border-radius: 10px;
-    border: 5px solid steelblue;
-    padding: 10px;
-    text-align: center;
-    line-height: 2em;
-    color: steelblue;
-    font-weight: bolder;
-    min-width: 7em;
-}
-
-div.gift-card-thumb a {
-    color: inherit;
-    text-decoration: none;
-}
-
-div.gift-card-thumb span.value {
-    display: block;
-    font-size: larger;
-}
-
 div.post-add-to-container {
     float: left;
     padding: 20px 30px;
     background: white;
-    max-width: 350px;
+    max-width: 400px;
 }
 
 div.post-add-to-container h2 {
@@ -2004,7 +1648,7 @@ div.post-add-to-container h2 img {
     width: 30px;
 }
 
-div.post-add-to-container .thumbnail {
+div.post-add-to-container .thumbnail, div.post-add-to-container .gift-card-thumb {
     display: block;
     float: none;
     margin: 0 auto;
@@ -2027,33 +1671,10 @@ div.post-add-to-container .controls a.go-to-container {
 }
 
 div.post-add-to-container p.container-summary {
-    font-weight: bolder;
     text-align: center;
     padding-top: 10px;
 }
 
-div.loader-panel {
-    opacity: 0.5;
-}
-
 form.add-gift-card {
     width: auto;
-}
-
-ul.select-wish-list li {
-    text-align: center;
-    cursor: pointer;
-    padding: 3px 5px;
-    background: rgb(255,255,255); /* Old browsers */
-    background: -moz-linear-gradient(top,  rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%); /* FF3.6+ */
-    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1))); /* Chrome,Safari4+ */
-    background: -webkit-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Chrome10+,Safari5.1+ */
-    background: -o-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* Opera 11.10+ */
-    background: -ms-linear-gradient(top,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* IE10+ */
-    background: linear-gradient(to bottom,  rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%); /* W3C */
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-9 */
-}
-
-ul.select-wish-list {
-    border: 1px solid gray;
 }

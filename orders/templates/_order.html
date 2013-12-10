@@ -87,7 +87,7 @@
             <tr>
                 <th class="left" colspan="3"></th>
                 <th class="right total-left">
-                    Total Paid:
+                    Total&nbspPaid:
                 </th>
                 <th class="right total-right">
                     {{ order.total|currency }}
@@ -97,7 +97,7 @@
             <tbody>
             {% if order.items.count %}
                 {% for item in order.get_items %}
-                    <tr>
+                    <tr class="{% cycle "even" "odd" %}">
                         <td>
                             {% if item.is_product %}
                                 <a href="{{ item.get_absolute_url }}" class="cart">{{ item.item.product.name }}</a>
@@ -139,18 +139,33 @@
 
     <div class="payment">
         <h3>Payment Details</h3>
-        <dl class="horizontal">
+        <table>
+            <thead class="title-bar">
+                <tr>
+                    <th>Payment Type</th>
+                    <th>Number</th>
+                    <th class="right">Total</th>
+                </tr>
+            </thead>
+            <tbody>
             {% if order.creditcardpayment %}
-                {% with order.creditcardpayment as credit %}
-                    <dt>{{ credit.get_card_type_display }} xxxx xxxx xxxx {{ credit.token }}</dt>
-                    <dd>{{ credit.amount|currency }}</dd>
-                {% endwith %}
+                <tr class="even">
+                    {% with order.creditcardpayment as credit %}
+                        <td>{{ credit.get_card_type_display }}*</td>
+                        <td>xxxx xxxx xxxx {{ credit.token }}</td>
+                        <td class="right">{{ credit.amount|currency }}</td>
+                    {% endwith %}
+                </tr>
             {% endif %}
             {% for gc in order.gift_cards.all %}
-                <dt>Gift Card xxxx xxxx xxxx {{ gc.card_number|slice:"-4:" }}</dt>
-                <dd>{{ gc.amount|currency }}</dd>
+                <tr class="{% cycle "odd" "even" %}">
+                    <td>Gift Card</td>
+                    <td>xxxx xxxx xxxx {{ gc.card_number|slice:"-4:" }}</td>
+                    <td class="right">{{ gc.amount|currency }}</td>
+                </tr>
             {% endfor %}
-        </dl>
-        <p class="subtle">Your credit card will be charged when your order is shipped.</p>
+            </tbody>
+        </table>
+        {% if order.creditcardpayment %}<p class="subtle">* Your credit card will be charged when your order is shipped.</p>{% endif %}
     </div>
 </div>

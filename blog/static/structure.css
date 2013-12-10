@@ -215,6 +215,48 @@ form .controls {
     width: 100%;
 }
 
+form .readonly label {
+    padding-right: 10px;
+    float: left;
+    clear: both;
+    display: inline;
+}
+
+
+
+form.single-field-pop span.error {
+    display: block;
+    float: left;
+    clear: left;
+}
+
+form.single-field-pop label {
+    float: left;
+    margin-right: 10px;
+    font-size: 120%;
+}
+
+form.single-field-pop select, form.single-field-pop input {
+    float: left;
+    clear: none;
+}
+
+form.single-field-pop select {
+    height: 2em;
+}
+
+form.single-field-pop .field {
+    float: left;
+    width: auto;
+    margin: 0 !important;
+}
+
+form.single-field-pop button {
+    float: left;
+    clear: none;
+    margin-left: 5px;
+}
+
 /* thumbnail styles */
 .thumbnail {
     width: 11em;
@@ -233,4 +275,32 @@ form .controls {
 
 .thumbnail .rating {
     display: block;
+}
+
+h2 + table, h1 + table, h3 + table {
+    margin-top: 20px;
+}
+
+p.address span {
+    display: block;
+}
+
+p.address span.region, p.address span.city {
+    display: inline-block;
+}
+
+/* By default the data-type and data definition take up ~50% of the dl width.  This can be modified by specific
+   subclasses */
+
+dl.horizontal dt {
+    float: left;
+    clear: both;
+    text-align: left;
+    width: 50%;
+}
+
+dl.horizontal dd {
+    float: left;
+    padding-left: 2%;
+    width: 48%;
 }
