@@ -197,7 +197,7 @@ label {
     margin-top: 0 !important;
 }
 
-.field.radio input {
+.field.radio input, .field.readonly .input {
     float: left;
     clear: both;
 }
@@ -221,8 +221,6 @@ form .readonly label {
     clear: both;
     display: inline;
 }
-
-
 
 form.single-field-pop span.error {
     display: block;

@@ -1,6 +1,13 @@
 {% load form_tags %}
 
-<div class="readonly">
-    {% field_label_tag field %}
-    <span>{{ field.value }}</span>
+<div class="readonly field {% field_class field %}{% if field.errors %} error{% endif %}{% if class %} {{ class }}{% endif %}">
+    <div class="column1">
+            {% field_label_tag field %}
+            <span class="input">{{ field.value }}</span>
+    </div>
+    <div class="column2">
+        {% if field.help_text %}
+            <span class="help-text">{% autoescape off %}{{ field.help_text}}{% endautoescape %}</span>
+        {% endif %}
+    </div>
 </div>

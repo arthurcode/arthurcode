@@ -10,6 +10,7 @@ from accounts.accountutils import is_regular_user
 from django.contrib.auth.hashers import check_password
 from django.db.transaction import commit_on_success
 from utils.forms import CanadaShippingForm, BillingForm
+from django.core.urlresolvers import reverse
 
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
@@ -325,6 +326,9 @@ class EditContactInfo(ContactInfoForm):
         kwargs['initial'] = initial
         super(EditContactInfo, self).__init__(request, *args, **kwargs)
         self.request = request
+        self.fields['email'].help_text = \
+            "For security reasons your email address cannot be modified from this form. <a class='standard' href='" + \
+            reverse('account_change_email') + "'>Click here to change it.</a>"
 
     def make_initial_dict(self, request):
         user = request.user
