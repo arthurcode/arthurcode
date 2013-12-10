@@ -4,7 +4,7 @@ import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
 from lazysignup.utils import is_lazy_user
-from utils.validators import not_blank, is_blank
+from utils.validators import not_blank
 from accounts.models import PublicProfile, CustomerProfile, CustomerShippingAddress
 from accounts.accountutils import is_regular_user
 from django.contrib.auth.hashers import check_password
@@ -15,6 +15,9 @@ from django.core.urlresolvers import reverse
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
 SUBSCRIBE_TO_MAILING_LIST_HELP = "If you subscribe to our mailing list, you will receive promotional email from us <em>at most</em> once every two weeks.<br> <em>You can unsubscribe at any time.</em>"
+
+def get_readonly_email_help():
+  return u"For security reasons your email address cannot be modified from this form. <a class='standard' href='%s'>Click here to edit it.</a>" % reverse('account_change_email')
 
 EMAIL_INPUT_SIZE = 30        # visible size
 EMAIL_MAXLENGTH = 75   # actual character maximum
@@ -300,15 +303,19 @@ class ContactInfoForm(forms.Form):
                                          help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
     def __init__(self, request, *args, **kwargs):
+        readonly_email = False
         if 'data' in kwargs and kwargs['data']:
             if request.user.is_authenticated and not is_lazy_user(request.user) and request.user.email:
                 # it's not a simple thing to change a register's user's email address, don't let them do that from
                 # this form
                 kwargs['data']['email'] = request.user.email
                 kwargs['data']['email2'] = request.user.email
+                readonly_email = True
 
         super(ContactInfoForm, self).__init__(*args, **kwargs)
         self.request = request
+        if readonly_email:
+            self.fields['email'].help_text = get_readonly_email_help()
 
     def clean_email2(self):
         email1 = self.cleaned_data.get('email', None)
@@ -326,9 +333,6 @@ class EditContactInfo(ContactInfoForm):
         kwargs['initial'] = initial
         super(EditContactInfo, self).__init__(request, *args, **kwargs)
         self.request = request
-        self.fields['email'].help_text = \
-            "For security reasons your email address cannot be modified from this form. <a class='standard' href='" + \
-            reverse('account_change_email') + "'>Click here to change it.</a>"
 
     def make_initial_dict(self, request):
         user = request.user
