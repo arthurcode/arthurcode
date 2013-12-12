@@ -240,3 +240,21 @@ class ChooseShippingAddressByNickname(forms.Form):
         if not profile:
             return []
         return [a.nickname for a in profile.shipping_addresses.all()]
+
+
+class ChooseShippingMethodForm(forms.Form):
+
+    """
+    TODO: Figure out how to incorporate real-time price estimates and delivery dates into the choice description.
+    """
+
+    # shipping choices
+    STANDARD_GROUND = 1
+    EXPEDITED_GROUND =2
+
+    def __init__(self, shipping_rates, *args, **kwargs):
+        super(ChooseShippingMethodForm, self).__init__(*args, **kwargs)
+        choices = [(self.STANDARD_GROUND, 'Standard Ground ($%d)' % shipping_rates[self.STANDARD_GROUND]),
+            (self.EXPEDITED_GROUND, 'Expedited Ground ($%d)' % shipping_rates[self.EXPEDITED_GROUND])]
+        self.fields['method'] = forms.ChoiceField(choices=choices, widget=forms.RadioSelect, label="Shipping Method",
+                                                  required=True, initial=self.STANDARD_GROUND)

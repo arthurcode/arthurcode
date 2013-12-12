@@ -7,9 +7,9 @@
                 {% else %}
                     <a href="{{ step.1 }}">{{ forloop.counter }}. {{ step.2 }}</a>
                 {% endif %}
-                {% if forloop.counter <= steps|length %}
-                    <img src="{{ STATIC_URL }}icons/tick.png" {% if forloop.counter > completed_step %}class="invisible"{% endif %}/>
-                {% endif %}
+{#                {% if forloop.counter <= steps|length %}#}
+{#                    <img src="{{ STATIC_URL }}icons/tick.png" {% if forloop.counter > completed_step %}class="invisible"{% endif %}/>#}
+{#                {% endif %}#}
             </li>
         {% endfor %}
     </ul>

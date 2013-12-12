@@ -4,7 +4,7 @@ from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
-from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment, AddGiftCardForm
+from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment, AddGiftCardForm, ChooseShippingMethodForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
@@ -41,8 +41,8 @@ class PyOrder(object):
         self.email = None
         self.phone = None
         self.contact_method = None
-        self.shipping_charge = None
         self.gift_cards = []           # [ (gc number, balance), ...]
+        self.shipping_charge = None
 
     def tax_breakdown(self):
         """
@@ -395,17 +395,6 @@ class ShippingInfoStep(Step):
 
     def _visit(self, order):
         order.shipping_address = self.get_address()
-        charge_shipping = False
-
-        for item in order.items:
-            if item.is_product():
-                charge_shipping = True
-                break
-
-        if charge_shipping:
-            order.shipping_charge = decimal.Decimal('5')
-        else:
-            order.shipping_charge = decimal.Decimal('0.00')
 
     def get_existing_nicknames(self):
         """
@@ -433,6 +422,60 @@ class ShippingInfoStep(Step):
             return form.save(CustomerShippingAddress, commit=False)
         # This shouldn't happen, but I guess you never do know
         return None
+
+
+class ShippingMethodStep(Step):
+
+    """
+    Uses Canada Post's API to gather real-time shipping options.
+    """
+
+    data_key = 'shipping_method'
+    form_key = 'shipping_method_form'
+    rate_key = 'shipping_rates'
+
+    def _get(self):
+        form = ChooseShippingMethodForm(self.get_shipping_rates(), data=self.get(self.form_key, default=None))
+        return self._render_form(form)
+
+    def _post(self):
+        data = self.request.POST.copy()
+        form = ChooseShippingMethodForm(self.get_shipping_rates(), data=data)
+        if form.is_valid():
+            self.save(self.form_key, data)
+            self.mark_complete()
+            return HttpResponseRedirect(self.checkout.get_next_url())
+        return self._render_form(form)
+
+    def _render_form(self, form):
+        context = {
+            'form': form,
+        }
+        if self.extra_context:
+            context.update(self.extra_context)
+        if self.checkout.extra_context:
+            context.update(self.checkout.extra_context)
+        return render_to_response('shipping_method_form.html', context, context_instance=RequestContext(self.request))
+
+    def _visit(self, order):
+        rates = self.get_shipping_rates()
+        form = ChooseShippingMethodForm(rates, data=self.get(self.form_key))
+        if form.is_valid():
+            order.shipping_charge = rates[int(form.cleaned_data['method'])]
+
+    def get_shipping_rates(self):
+        """
+        Return a shipping rate dictionary keyed on service type.
+        """
+        rates = self.get(self.rate_key, default=None)
+        if not rates:
+            # TODO: eventually we will ask Canada Post for real-time rates
+            rates = {
+                ChooseShippingMethodForm.STANDARD_GROUND: Decimal('5'),
+                ChooseShippingMethodForm.EXPEDITED_GROUND: Decimal('10'),
+            }
+            self.save(self.rate_key, rates)
+        return rates
 
 
 class BillingInfoStep(Step):
@@ -804,7 +847,7 @@ class Checkout:
             return HttpResponseRedirect(reverse('show_cart'))
 
         self.extra_context = {
-            'steps': STEPS[:4],     # the template doesn't need to know about the 'create account' step
+            'steps': STEPS[:5],     # the template doesn't need to know about the 'create account' step
             'current_step': step,
             'completed_step': highest_completed_step,
             'current_step_name': STEPS[step-1][2],
@@ -882,7 +925,7 @@ class Checkout:
         order.phone = pyOrder.phone
         order.contact_method = pyOrder.contact_method
 
-        order.shipping_charge = pyOrder.shipping_charge
+        order.shipping_charge = pyOrder.shipping_charge()
         order.save()
 
         # save the payment information
@@ -1005,8 +1048,9 @@ class Checkout:
 
 # defines the step ordering and the associated step url or the entire checkout process
 STEPS = [(ContactInfoStep, reverse_lazy('checkout_contact'), 'Contact Info'),
-         (ShippingInfoStep, reverse_lazy('checkout_shipping'), 'Shipping Info'),
-         (BillingInfoStep, reverse_lazy('checkout_billing'), 'Billing Info'),
+         (ShippingInfoStep, reverse_lazy('checkout_shipping'), 'Shipping Address'),
+         (ShippingMethodStep, reverse_lazy('checkout_shipping_method'), 'Shipping Method'),
+         (BillingInfoStep, reverse_lazy('checkout_billing'), 'Billing Address'),
          (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay'),
          (CreateAccount, reverse_lazy('checkout_create_account'), 'Create Account')]
 
@@ -1046,13 +1090,17 @@ def shipping_info(request):
     co = Checkout(request)
     return co.process_step(2)
 
+def shipping_method(request):
+    co = Checkout(request)
+    return co.process_step(3)
+
 
 def billing_info(request):
     """
     Gather or confirm the user's billing information
     """
     co = Checkout(request)
-    return co.process_step(3)
+    return co.process_step(4)
 
 
 def review(request):
@@ -1060,7 +1108,7 @@ def review(request):
     Ask the customer to review their order & pay.
     """
     co = Checkout(request)
-    return co.process_step(4)
+    return co.process_step(5)
 
 
 def cancel(request):
@@ -1077,7 +1125,7 @@ def create_account(request):
     Asks (guest) users if they would like to save their data in an account.
     """
     co = Checkout(request)
-    return co.process_step(5)
+    return co.process_step(6)
 
 
 @ajax_required
@@ -1088,4 +1136,4 @@ def redeem_gift_card(request):
     just verified and saved.
     """
     co = Checkout(request)
-    return co.process_step(4)
+    return co.process_step(5)

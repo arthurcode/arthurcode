@@ -540,7 +540,7 @@ div.login {
 
 ul#secondary-navigation.checkout li {
     position: relative;
-    padding-right: 2.2em;
+    /*padding-right: 2.2em;*/
 }
 
 ul#secondary-navigation.checkout img {

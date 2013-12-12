@@ -1,0 +1,15 @@
+{% extends "base_checkout.html" %}
+
+{% load form_tags %}
+
+{% block forms %}
+    <h2 class="form-h">Choose a Shipping Method</h2>
+    {% form_errors form %}
+    <form method="post" action="">
+        {% csrf_token %}
+        {% field form.method %}
+        <div class="controls">
+            <button class="action button" type="submit"><span>Save and Continue</span></button>
+        </div>
+    </form>
+{% endblock %}

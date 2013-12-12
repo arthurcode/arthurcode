@@ -17,7 +17,7 @@ SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotio
 SUBSCRIBE_TO_MAILING_LIST_HELP = "If you subscribe to our mailing list, you will receive promotional email from us <em>at most</em> once every two weeks.<br> <em>You can unsubscribe at any time.</em>"
 
 def get_readonly_email_help():
-  return u"For security reasons your email address cannot be modified from this form. <a class='standard' href='%s'>Click here to edit it.</a>" % reverse('account_change_email')
+  return u"For security reasons your email address cannot be modified from this form. <a href='%s'>Click here to edit it.</a>" % reverse('account_change_email')
 
 EMAIL_INPUT_SIZE = 30        # visible size
 EMAIL_MAXLENGTH = 75   # actual character maximum
