@@ -10,7 +10,7 @@
         <dt>Status:</dt>
         <dd>{{ order.get_status_display }}</dd>
         <dt>Customer:</dt>
-        <dd>{% if order.user|is_lazy_user %}guest{% else %}#{{ order.user.get_public_profile.id }}{% endif %}</dd>
+        <dd>{% if order.user|is_lazy_user %}guest{% else %}#{{ order.user.get_customer_profile.id }}{% endif %}</dd>
     </dl>
 
     <div class="review-box">
