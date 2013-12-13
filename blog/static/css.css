@@ -1074,16 +1074,16 @@ body.reviewing div.needing-review h3 {
     padding-bottom: 10px;
 }
 
-.receipt dl {
+.receipt dl, .review-order dl {
     float: left;
     width: 100%;
 }
 
-.receipt dl dt {
-    width: 5em;
+.receipt dl dt, .review-order dl dt {
+    width: 5em !important;
 }
 
-.receipt .thank-you {
+.thank-you {
     font-size: 200%;
     color: black;
     padding-bottom: 40px;
@@ -1099,6 +1099,16 @@ div.receipt {
     float: left;
     clear: both;
     padding-top: 20px;
+}
+
+.receipt table {
+    float: left;
+    clear: both;
+}
+
+.receipt .payment {
+    float: left;
+    clear: both;
 }
 
 .review-order div.items {
@@ -1379,21 +1389,10 @@ form.ship-to label {
 }
 
 .checkout div.convert-account p {
-    font-size: 80%;
-    line-height: 1.3em;
-}
-
-.checkout div.cancel {
     float: left;
     clear: both;
-}
-
-.checkout div.cancel button {
-    color: blue;
-}
-
-.receipt .payment dl dt {
-    width: 20em;
+    font-size: 80%;
+    line-height: 1.3em;
 }
 
 .payment-info h3 {

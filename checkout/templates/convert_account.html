@@ -6,31 +6,33 @@
 
 {% block forms %}
 <div class="convert-account">
-<h2>Create an Account (Optional)</h2>
-<p>Thank you for your order.</p>
-<p>You can save the information you entered during checkout by creating an account with us.  It's easy!  Just choose a password:</p>
-    <div class="cancel">
-        <form method="post" action="">
-            {% csrf_token %}
-            <div class="controls">
-                <button type="submit" name="cancel" class="link">No thanks, get receipt --></button>
-            </div>
-        </form>
-    </div>
+    <div class="thank-you">Thank you for your order!</div>
+    <h2>Create an Account (Optional)</h2>
+    <h3>Why sign up?</h3>
+    <ul class="text subtle">
+        <li>Faster checkout with saved contact and shipping information</li>
+        <li>Write product reviews</li>
+        <li>It's easy! Just choose a password</li>
+    </ul>
+
 
     {% form_errors form %}
-<form method="post" action="">
-    {% csrf_token %}
-    <div class="field">
-        <div class="column1">Email: <em>{{ email }}</em></div>
-        <div class="column2"><span class="help-text">This is the email address you will use to login</span></div>
-    </div>
-    {% field form.password1 %}
-    {% field form.password2 %}
-    <div class="controls">
-        <button type="submit" name="submit" class="action">Create Account & Get Receipt</button>
-    </div>
-</form>
+    <form method="post" action="">
+        {% csrf_token %}
+        <div class="field">
+            <div class="column1">Email: <em>{{ email }}</em></div>
+            <div class="column2"><span class="help-text">This is the email address you will use to login</span></div>
+        </div>
+        {% field form.password1 %}
+        {% field form.password2 %}
+        <div class="controls">
+            <button type="submit" name="submit" class="button action"><span>Create Account</span></button>
+        </div>
+    </form>
+    <form method="post" action="" class="no-help">
+        {% csrf_token %}
+        <button type="submit" name="cancel" class="button action"><span>No Thanks</span></button>
+    </form>
 </div>
 {% endblock %}
 

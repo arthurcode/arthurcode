@@ -301,4 +301,5 @@ dl.horizontal dd {
     float: left;
     padding-left: 2%;
     width: 48%;
+    text-align: left;
 }
