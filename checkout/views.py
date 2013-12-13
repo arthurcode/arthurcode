@@ -4,13 +4,12 @@ from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
 from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
-from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, CreditCardPayment, AddGiftCardForm, ChooseShippingMethodForm
+from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, AddGiftCardForm, ChooseShippingMethodForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from cart import cartutils
 from orders.models import Order, OrderShippingAddress, OrderBillingAddress, OrderTax, ProductOrderItem, \
     GiftCardOrderItem
-import decimal
 from utils.util import round_cents
 from accounts.models import CustomerProfile, CustomerShippingAddress, CustomerBillingAddress
 from utils.validators import is_blank
@@ -480,8 +479,8 @@ class ShippingMethodStep(Step):
         if not rates:
             # TODO: eventually we will ask Canada Post for real-time rates
             rates = {
-                ChooseShippingMethodForm.STANDARD_GROUND: Decimal('5'),
-                ChooseShippingMethodForm.EXPEDITED_GROUND: Decimal('10'),
+                Order.STANDARD_GROUND: Decimal('5'),
+                Order.EXPEDITED_GROUND: Decimal('10'),
             }
             self.save(self.rate_key, rates)
         return rates
@@ -937,6 +936,7 @@ class Checkout:
         order.phone = pyOrder.phone
         order.contact_method = pyOrder.contact_method
 
+        order.shipping_method = pyOrder.shipping_method
         order.shipping_charge = pyOrder.shipping_charge()
         order.save()
 

@@ -28,6 +28,13 @@ class Order(models.Model):
                       (SHIPPED, 'Shipped'),
                       (CANCELLED, 'Cancelled'))
 
+    # Shipping service keys
+    STANDARD_GROUND = 1
+    EXPEDITED_GROUND = 2
+
+    SHIPPING_METHODS = ((STANDARD_GROUND, 'Standard Ground'),
+                        (EXPEDITED_GROUND, 'Expedited Ground'))
+
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
     user = models.ForeignKey(User, null=True, blank=True)
     first_name = models.CharField('first name', max_length=30, blank=True, null=True, validators=[not_blank])
@@ -43,6 +50,7 @@ class Order(models.Model):
 
     is_pickup = models.BooleanField(default=False)
     shipping_charge = models.DecimalField(max_digits=9, decimal_places=2, validators=[MinValueValidator(0.0)])
+    shipping_method = models.SmallIntegerField(choices=SHIPPING_METHODS, null=True, blank=True)
 
     def get_products(self):
         return ProductOrderItem.objects.filter(order=self)

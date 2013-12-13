@@ -28,6 +28,11 @@
         </div>
     </div>
     <div class="review-box">
+        <h3>Shipping Method</h3>
+        {{ order.get_shipping_method_display }}<br>
+        {{ order.shipping_charge|currency }}
+    </div>
+    <div class="review-box">
         <h3>Billing Address</h3>
         <div>
             {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}

@@ -4,7 +4,7 @@ import re
 from django import forms
 from django.core.exceptions import ValidationError
 from utils.forms import add_empty_choice
-from orders.models import CreditCardPayment, GiftCardPayment
+from orders.models import CreditCardPayment, GiftCardPayment, Order
 from credit_card import authorize, get_gift_card_balance
 from giftcards.validators import validate_gc_number
 from giftcards.forms import DEFAULT_GC_WIDGET
@@ -248,13 +248,9 @@ class ChooseShippingMethodForm(forms.Form):
     TODO: Figure out how to incorporate real-time price estimates and delivery dates into the choice description.
     """
 
-    # shipping choices
-    STANDARD_GROUND = 1
-    EXPEDITED_GROUND =2
-
     def __init__(self, shipping_rates, *args, **kwargs):
         super(ChooseShippingMethodForm, self).__init__(*args, **kwargs)
-        choices = [(self.STANDARD_GROUND, 'Standard Ground ($%d)' % shipping_rates[self.STANDARD_GROUND]),
-            (self.EXPEDITED_GROUND, 'Expedited Ground ($%d)' % shipping_rates[self.EXPEDITED_GROUND])]
+        choices = [(Order.STANDARD_GROUND, 'Standard Ground ($%d)' % shipping_rates[Order.STANDARD_GROUND]),
+            (Order.EXPEDITED_GROUND, 'Expedited Ground ($%d)' % shipping_rates[Order.EXPEDITED_GROUND])]
         self.fields['method'] = forms.ChoiceField(choices=choices, widget=forms.RadioSelect, label="Shipping Method",
-                                                  required=True, initial=self.STANDARD_GROUND)
+                                                  required=True, initial=Order.STANDARD_GROUND)
