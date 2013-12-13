@@ -32,8 +32,13 @@ class Order(models.Model):
     STANDARD_GROUND = 1
     EXPEDITED_GROUND = 2
 
-    SHIPPING_METHODS = ((STANDARD_GROUND, 'Standard Ground'),
-                        (EXPEDITED_GROUND, 'Expedited Ground'))
+    SHIPPING_DESC = {
+        STANDARD_GROUND: 'Standard Ground',
+        EXPEDITED_GROUND: 'Expedited Ground',
+    }
+
+    SHIPPING_METHODS = ((STANDARD_GROUND, SHIPPING_DESC[STANDARD_GROUND]),
+                        (EXPEDITED_GROUND, SHIPPING_DESC[EXPEDITED_GROUND]))
 
     # will be null if the customer checks out as a guest, or if the order is done in-person or over the phone.
     user = models.ForeignKey(User, null=True, blank=True)

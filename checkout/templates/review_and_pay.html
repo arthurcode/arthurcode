@@ -29,6 +29,7 @@
         <div class="review-box">
             <h3>Shipping Method</h3>
             <a class="standard subtle" href="{% url checkout_shipping_method %}">edit</a><br>
+            {{ order.get_shipping_method_display }}<br>
             {{ order.shipping_charge|currency }}
         </div>
         <div class="review-box">

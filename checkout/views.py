@@ -101,6 +101,10 @@ class PyOrder(object):
             gc_total += balance
         return max(Decimal('0'), self.total() - gc_total)
 
+    def get_shipping_method_display(self):
+        if not self.shipping_method:
+            return "?"
+        return Order.SHIPPING_DESC[self.shipping_method]
 
 
 class Step(object):
