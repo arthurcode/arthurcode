@@ -43,6 +43,7 @@ class PyOrder(object):
         self.contact_method = None
         self.gift_cards = []           # [ (gc number, balance), ...]
         self.shipping_charge = None
+        self.shipping_method = None
 
     def tax_breakdown(self):
         """
@@ -147,6 +148,11 @@ class Step(object):
 
     def get(self, key, default=None):
         return self._get_data().get(key, default)
+
+    def clear(self, key):
+        data = self._get_data()
+        if key in data:
+            del data[key]
 
     def visit(self, order):
         if self.visit_if_complete() and not self.is_complete():
@@ -371,6 +377,7 @@ class ShippingInfoStep(Step):
         if form.is_valid():
             self.save(self.form_key, post_data)
             self.mark_complete()
+            self.checkout.clear_shipping_rates()
             return HttpResponseRedirect(self.checkout.get_next_url())
         return self._render_form(form, self.request.GET.get(ChooseShippingAddressByNickname.SHIP_TO_KEY, None) or post_data.get('nickname'))
 
@@ -461,7 +468,9 @@ class ShippingMethodStep(Step):
         rates = self.get_shipping_rates()
         form = ChooseShippingMethodForm(rates, data=self.get(self.form_key))
         if form.is_valid():
-            order.shipping_charge = rates[int(form.cleaned_data['method'])]
+            method = int(form.cleaned_data['method'])
+            order.shipping_charge = rates[method]
+            order.shipping_method = method
 
     def get_shipping_rates(self):
         """
@@ -476,6 +485,9 @@ class ShippingMethodStep(Step):
             }
             self.save(self.rate_key, rates)
         return rates
+
+    def clear_shipping_rates(self):
+        self.clear(self.rate_key)
 
 
 class BillingInfoStep(Step):
@@ -1044,6 +1056,10 @@ class Checkout:
             if profiles.count() > 0:
                 return profiles[0]
         return None
+
+    def clear_shipping_rates(self):
+        step = ShippingMethodStep(self)
+        step.clear_shipping_rates()
 
 
 # defines the step ordering and the associated step url or the entire checkout process
