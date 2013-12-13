@@ -1107,8 +1107,8 @@ div.receipt {
 
 .review-order, .payment-info {
     float: left;
-    width: 100%;
-    padding: 20px;
+    width: 96%;
+    padding: 2%;
     border: 2px solid lightgray;
 }
 
