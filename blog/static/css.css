@@ -1066,7 +1066,7 @@ body.reviewing div.needing-review h3 {
     padding-top: 10px;
 }
 
-.review-order div.contact, .receipt div.contact, .review-order div.shipping, .receipt div.shipping, .review-order div.billing, .receipt div.billing {
+.review-box {
     float: left;
     clear: none !important;
     margin-right: 30px;
@@ -1099,10 +1099,6 @@ div.receipt {
     float: left;
     clear: both;
     padding-top: 20px;
-}
-
-.review-order div.contact > div, .receipt div.contact > div, .review-order div.shipping > div, .receipt div.shipping > div, .review-order div.billing > div, .receipt div.billing > div {
-    line-height: 1.3em;
 }
 
 .review-order div.items {

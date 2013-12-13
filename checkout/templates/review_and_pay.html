@@ -9,26 +9,31 @@
 {% block forms %}
     <div class="review-order">
         <h2>1. Review Your Order</h2>
-        <div class="contact">
+        <div class="review-box">
             <h3>Customer Information</h3>
             <div>
-            <a class="standard subtle" href="{% url checkout_contact %}">(edit)</a><br>
+            <a class="standard subtle" href="{% url checkout_contact %}">edit</a><br>
             {{ order.first_name }} {{ order.last_name }} <br>
             {{ order.email }} <br>
             {{ order.phone }} <br>
             </div>
         </div>
-        <div class="shipping">
+        <div class="review-box">
             <h3>Shipping Address</h3>
             <div>
-            <a class="standard subtle" href="{% url checkout_shipping %}">(edit)</a>
+            <a class="standard subtle" href="{% url checkout_shipping %}">edit</a>
             {% with order.shipping_address as address %}{% include "_address.html" %}{% endwith %}
             </div>
         </div>
-        <div class="billing">
+        <div class="review-box">
+            <h3>Shipping Method</h3>
+            <a class="standard subtle" href="{% url checkout_shipping_method %}">edit</a><br>
+            {{ order.shipping_charge|currency }}
+        </div>
+        <div class="review-box">
             <h3>Billing Address</h3>
             <div>
-            <a class="standard subtle" href="{% url checkout_billing %}">(edit)</a>
+            <a class="standard subtle" href="{% url checkout_billing %}">edit</a>
             {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}
             </div>
         </div>

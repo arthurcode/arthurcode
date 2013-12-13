@@ -13,7 +13,7 @@
         <dd>{% if order.user|is_lazy_user %}guest{% else %}#{{ order.user.get_public_profile.id }}{% endif %}</dd>
     </dl>
 
-    <div class="contact">
+    <div class="review-box">
         <h3>Customer Information</h3>
         <div>
             {{ order.first_name }} {{ order.last_name }} <br>
@@ -21,13 +21,13 @@
             {{ order.phone }} <br>
         </div>
     </div>
-    <div class="shipping">
+    <div class="review-box">
         <h3>Shipping Address</h3>
         <div>
             {% with order.shipping_address as address %}{% include "_address.html" %}{% endwith %}
         </div>
     </div>
-    <div class="billing">
+    <div class="review-box">
         <h3>Billing Address</h3>
         <div>
             {% with order.billing_address as address %}{% include "_address.html" %}{% endwith %}
