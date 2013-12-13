@@ -478,8 +478,16 @@ class ShippingMethodStep(Step):
         rates = self.get(self.rate_key, default=None)
         if not rates:
             # TODO: eventually we will ask Canada Post for real-time rates
+            gift_cards_only = True
+            for item in self.checkout.get_order_items():
+                if item.is_product():
+                    gift_cards_only = False
+                    break
+            flat_rate = Decimal('5')
+            if gift_cards_only:
+                flat_rate = Decimal('0')
             rates = {
-                Order.STANDARD_GROUND: Decimal('5'),
+                Order.STANDARD_GROUND: flat_rate,
                 Order.EXPEDITED_GROUND: Decimal('10'),
             }
             self.save(self.rate_key, rates)
@@ -937,7 +945,7 @@ class Checkout:
         order.contact_method = pyOrder.contact_method
 
         order.shipping_method = pyOrder.shipping_method
-        order.shipping_charge = pyOrder.shipping_charge()
+        order.shipping_charge = pyOrder.shipping_charge
         order.save()
 
         # save the payment information
