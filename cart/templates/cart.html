@@ -48,21 +48,21 @@
                 {{ cart_subtotal|currency }}
             </th>
         </tr>
-        {% if cart_items %}
-            <tr>
-                <th colspan="{% if wishlists %}8{% else %}7{% endif %}">
+        <tr>
+            <th colspan="{% if wishlists %}8{% else %}7{% endif %}">
+                {% if cart_items %}
                     <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
                         <button type="submit" name="Checkout" class="button action"><span>Checkout Now</span></button>
                     </form>
-                    {% if continue_shopping_url %}
-                        <form method="GET" action="{{ continue_shopping_url }}" class="no-help continue-shopping">
-                            <button type="submit" class="button action"><span>Continue Shopping</span></button>
-                        </form>
-                    {% endif %}
-                </th>
-            </tr>
-        {% endif %}
+                {% endif %}
+                {% if continue_shopping_url %}
+                    <form method="GET" action="{{ continue_shopping_url }}" class="no-help continue-shopping">
+                        <button type="submit" class="button action"><span>Continue Shopping</span></button>
+                    </form>
+                {% endif %}
+            </th>
+        </tr>
         </tfoot>
         <tbody>
         {% if cart_items %}
