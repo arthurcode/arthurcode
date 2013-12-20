@@ -392,6 +392,8 @@ class CustomerShippingAddressForm(CanadaShippingForm):
                                       "Examples: 'Me', 'Office'", validators=[not_blank],
                             widget=DEFAULT_NICKNAME_WIDGET)
 
+    ship_to_me = forms.BooleanField(required=False, label="Ship to Me", initial=False)
+
     def __init__(self, customer, *args, **kwargs):
         super(CustomerShippingAddressForm, self).__init__(*args, **kwargs)
         self.customer = customer

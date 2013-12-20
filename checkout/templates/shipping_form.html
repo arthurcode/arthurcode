@@ -22,12 +22,17 @@
     {% form_errors form %}
     <form method="post" action="" class="shipping">
         {% csrf_token %}
+        {% if is_guest or selected_nickname == "New Address" %}
+            <div class="hidden ship-to-me">
+                {% field form.ship_to_me %}
+            </div>
+        {% endif %}
         {{ form.address_id }}
         {{ form.country }}
         {% if not is_guest and selected_nickname == "New Address" %}
             {% field form.nickname %}
         {% else %}
-            <input type="hidden" name="nickname" value="{{ form.nickname.value }}"/>
+            <input type="hidden" name="nickname" id="id_nickname" value="{{ form.nickname.value }}"/>
         {% endif %}
         {% field form.name %}
         {% field form.phone %}
@@ -41,4 +46,9 @@
         </div>
     </form>
     {% endif %}
+{% endblock %}
+
+{% block javascript %}
+    {{ block.super }}
+    {% include "shipping_form.js" %}
 {% endblock %}
