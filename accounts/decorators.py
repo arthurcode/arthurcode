@@ -1,25 +1,8 @@
 from django.contrib.auth.decorators import user_passes_test
-from lazysignup.utils import is_lazy_user
-from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.core.urlresolvers import reverse_lazy
 from accountutils import is_regular_user, is_guest_passthrough
 from functools import wraps
 import urlparse
-
-
-def non_lazy_login_required(function=None, redirect_field_name=REDIRECT_FIELD_NAME, login_url=None):
-    """
-    Decorator for views that checks that the user is logged in and non-lazy, redirecting
-    to the log-in page if necessary.
-    """
-    actual_decorator = user_passes_test(
-        lambda u: u.is_authenticated() and not is_lazy_user(u),
-        login_url=login_url,
-        redirect_field_name=redirect_field_name
-    )
-    if function:
-        return actual_decorator(function)
-    return actual_decorator
 
 
 def public_profile_required(function=None):
@@ -47,13 +30,12 @@ def public_profile_required_for_regular_users(function=None):
         return actual_decorator(function)
     return actual_decorator
 
-
-def lazy_users_choose_guest(func):
+def anonymous_users_choose_guest(func):
     """
-    Requires that lazy users have explicitly chosen to access this view as a guest.
+    Requires that anonymous users have explicitly chosen to access this view as a guest.
     """
     def wrapped(request, *args, **kwargs):
-        if not is_lazy_user(request.user) or is_guest_passthrough(request):
+        if request.user.is_authenticated() or is_guest_passthrough(request):
             return func(request, *args, **kwargs)
         login_url = reverse_lazy('login_or_create_account')
         path = request.build_absolute_uri()

@@ -1,4 +1,3 @@
-from lazysignup.decorators import allow_lazy_user
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
@@ -9,13 +8,11 @@ from comments.models import MPTTComment
 from questions.forms import AskQuestionForm, EditQuestionForm, AnswerQuestionForm
 from django.views.decorators.http import require_GET
 from comments.views.comment import CommentPostBadRequest
-from accounts.decorators import public_profile_required_for_regular_users, lazy_users_choose_guest
+from accounts.decorators import public_profile_required_for_regular_users, anonymous_users_choose_guest
 from django.contrib.admin.views.decorators import staff_member_required
 from urllib import urlencode
 
-
-@allow_lazy_user
-@lazy_users_choose_guest
+@anonymous_users_choose_guest
 @public_profile_required_for_regular_users
 def ask_view(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)

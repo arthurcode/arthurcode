@@ -1,6 +1,5 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
-from accounts.decorators import non_lazy_login_required
 from forms import CreateWishListForm, RemoveFromWishList, EditWishListForm, EditWishListItemNote
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from models import WishList, WishListItem
@@ -13,10 +12,11 @@ from utils.decorators import ajax_required
 from django.views.decorators.http import require_POST, require_GET
 from catalogue.models import Product
 from cart.forms import ProductAddToWishListForm
+from django.contrib.auth.decorators import login_required
 
 PRODUCT_INSTANCE_KEY = 'addProduct'
 
-@non_lazy_login_required
+@login_required
 def create_wishlist(request):
     if request.method == "POST":
         data = request.POST.copy()
@@ -40,7 +40,7 @@ def create_wishlist(request):
     return render_to_response('create_wishlist.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required
+@login_required
 def view_wishlist(request, wishlist_id):
     wishlist = get_object_or_404(WishList, id=wishlist_id)
     bound_form = None
@@ -88,7 +88,7 @@ def view_wishlist(request, wishlist_id):
     return render_to_response('wishlist.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required
+@login_required
 def edit_wishlist(request, wishlist_id):
     wishlist = get_object_or_404(WishList, id=wishlist_id)
     if request.user != wishlist.user:
@@ -150,7 +150,7 @@ def shop_wishlist(request, token):
     return render_to_response('shop_wishlist.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required
+@login_required
 def delete_wishlist(request, id):
     wishlist = get_object_or_404(WishList, id=id)
     if wishlist.user != request.user:

@@ -3,7 +3,6 @@ from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
 from django.contrib.auth.models import User
-from lazysignup.utils import is_lazy_user
 from utils.validators import not_blank
 from accounts.models import PublicProfile, CustomerProfile, CustomerShippingAddress
 from accounts.accountutils import is_regular_user
@@ -117,25 +116,6 @@ class CustomerCreationForm(UserCreationForm):
             profile.full_clean()
             profile.save()
         return user
-
-
-class ConvertLazyUserForm(CustomerCreationForm):
-    """
-    Example usage:
-    if create_form.is_valid():
-            # Okay, security check complete. Create the new user and log them in.
-            username = create_form.cleaned_data['username']
-            password = create_form.cleaned_data['password2']
-            if isinstance(create_form, ConvertLazyUserForm):
-                LazyUser.objects.convert(create_form)
-            else:
-                create_form.save()
-            ... (log in)
-    """
-
-    def __init__(self, lazyUser, *args, **kwargs):
-        super(ConvertLazyUserForm, self).__init__(*args, **kwargs)
-        self.instance = lazyUser
 
 
 class CustomerAuthenticationForm(AuthenticationForm):
@@ -305,7 +285,7 @@ class ContactInfoForm(forms.Form):
     def __init__(self, request, *args, **kwargs):
         readonly_email = False
         if 'data' in kwargs and kwargs['data']:
-            if request.user.is_authenticated and not is_lazy_user(request.user) and request.user.email:
+            if request.user.is_authenticated() and request.user.email:
                 # it's not a simple thing to change a register's user's email address, don't let them do that from
                 # this form
                 kwargs['data']['email'] = request.user.email

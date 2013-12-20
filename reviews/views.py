@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, render_to_response
 from django.template import RequestContext
 from django.core.urlresolvers import reverse
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect
 from django.contrib.admin.views.decorators import staff_member_required
 from catalogue.models import Product
@@ -8,10 +9,9 @@ from reviews.forms import AddReviewForm, EditReviewForm, FlagReviewForm, AdminDe
 from reviews.models import Review, ReviewFlag
 from utils.storeutils import get_products_needing_review
 from reviews.signals import review_deleted
-from lazysignup.decorators import allow_lazy_user
-from accounts.decorators import non_lazy_login_required, public_profile_required
+from accounts.decorators import public_profile_required
 
-@non_lazy_login_required()
+@login_required
 @public_profile_required()
 def create_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -38,7 +38,7 @@ def create_review(request, product_slug):
     return render_to_response("product_review.html", context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 @public_profile_required()
 def edit_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
@@ -65,7 +65,7 @@ def edit_review(request, product_slug):
     return render_to_response("edit_review.html", context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def delete_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     try:
@@ -88,7 +88,7 @@ def delete_review(request, product_slug):
     return render_to_response('delete_review.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def view_review(request, product_slug):
     product = get_object_or_404(Product, slug=product_slug)
     try:
@@ -128,7 +128,7 @@ def get_view_url(product, edited=False, created=False, deleted=False):
             path += 'deleted=True'
     return path
 
-@allow_lazy_user
+
 def flag(request, id):
     """
     Flags the given review for removal.

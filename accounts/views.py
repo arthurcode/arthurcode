@@ -10,16 +10,12 @@ from django.contrib.sites.models import get_current_site
 from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
-    ConvertLazyUserForm, ChangeEmailForm, EditContactInfo, EditPublicProfileForm, CustomerShippingAddressForm, \
+    ChangeEmailForm, EditContactInfo, EditPublicProfileForm, CustomerShippingAddressForm, \
     CustomerBillingAddressForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
-from django.contrib.auth import SESSION_KEY
 from django.contrib.auth.decorators import login_required
 from django.core.urlresolvers import reverse
-from lazysignup.decorators import is_lazy_user
-from lazysignup.models import LazyUser
-from decorators import non_lazy_login_required
 from orders.models import Order
 from django.contrib.auth.views import password_change, password_change_done, logout as auth_logout, \
     password_reset, password_reset_done, password_reset_confirm, password_reset_complete
@@ -45,9 +41,6 @@ def login_or_create_account(request,
         if auth_form.is_valid():
             # Okay, security check complete. Log the user in.
             user = auth_form.get_user()
-            if is_lazy_user(request.user):
-                # Don't cycle the session key! We don't want to lose our cart!
-                request.session[SESSION_KEY] = user.id
             auth_login(request, auth_form.get_user())
 
             if request.session.test_cookie_worked():
@@ -107,10 +100,7 @@ def create_account(request):
             # Okay, security check complete. Create the new user and log them in.
             username = create_form.cleaned_data['username']
             password = create_form.cleaned_data['password2']
-            if isinstance(create_form, ConvertLazyUserForm):
-                LazyUser.objects.convert(create_form)
-            else:
-                create_form.save()
+            create_form.save()
             user = authenticate(username=username, password=password)
             auth_login(request, user)
 
@@ -177,7 +167,7 @@ def edit_public_profile(request):
     return render_to_response('edit_public_profile.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def view_orders(request):
     orders = Order.objects.filter(user=request.user).order_by('-date')
     context = {
@@ -185,7 +175,7 @@ def view_orders(request):
     }
     return render_to_response('orders.html', context, context_instance=RequestContext(request))
 
-@non_lazy_login_required()
+@login_required
 def view_personal(request):
     public_profile = request.user.get_public_profile()
     customer_profile = request.user.get_customer_profile()
@@ -207,7 +197,7 @@ def view_personal(request):
     }
     return render_to_response('personal.html', context, context_instance=RequestContext(request))
 
-@non_lazy_login_required()
+@login_required
 @require_GET
 def view_wishlists(request):
     wishlists = WishList.objects.filter(user=request.user).order_by('-created_at')
@@ -216,7 +206,7 @@ def view_wishlists(request):
     }
     return render_to_response('wishlists.html', context, context_instance=RequestContext(request))
 
-@non_lazy_login_required()
+@login_required
 def view_reviews(request):
     reviews = Review.objects.filter(user=request.user)
     needing_review = get_products_needing_review(request)
@@ -226,7 +216,7 @@ def view_reviews(request):
     }
     return render_to_response('reviews.html', context, context_instance=RequestContext(request))
 
-@non_lazy_login_required()
+@login_required
 @sensitive_post_parameters()
 @never_cache
 def change_email(request):
@@ -247,7 +237,7 @@ def change_email(request):
     return render_to_response('registration/change_email.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 @sensitive_post_parameters()
 @never_cache
 def change_password(request):
@@ -261,7 +251,7 @@ def change_password_done(request):
     return password_change_done(request, template_name='registration/change_password_done.html')
 
 
-@non_lazy_login_required()
+@login_required
 def logout(request):
     return auth_logout(request, template_name='registration/after_log_out.html', redirect_field_name='next')
 
@@ -310,7 +300,7 @@ def edit_contact_info(request):
     return render_to_response('edit_contact_info.html', context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def add_shipping_address(request):
     """
     Adds a new shipping address to this customer's profile
@@ -328,7 +318,7 @@ def add_shipping_address(request):
     return _add_address(request, template_name, redirect_to, form_clazz, model_clazz, initial_data)
 
 
-@non_lazy_login_required()
+@login_required
 def add_billing_address(request):
     """
     Adds a new billing address to this customer's profile
@@ -364,7 +354,7 @@ def _add_address(request, template_name, redirect_to, form_clazz, model_clazz, i
     return render_to_response(template_name, context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def edit_shipping_address(request, address_id):
     redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#shipping'
     template_name = "edit_shipping_address.html"
@@ -373,7 +363,7 @@ def edit_shipping_address(request, address_id):
     return _edit_address(request, address_id, model_clazz, form_clazz, redirect_to, template_name)
 
 
-@non_lazy_login_required()
+@login_required
 def edit_billing_address(request, address_id):
     redirect_to = request.GET.get('next', None) or reverse('account_personal') + '#billing'
     template_name = "edit_billing_address.html"
@@ -405,14 +395,14 @@ def _edit_address(request, address_id, address_clazz, form_clazz, redirect_to, t
         return render_to_response(template_name, context, context_instance=RequestContext(request))
 
 
-@non_lazy_login_required()
+@login_required
 def delete_shipping_address(request, address_id, redirect_to=None):
     redirect_to = redirect_to or request.GET.get('next', None) or reverse('account_personal') + '#shipping'
     template_name = 'delete_shipping_address.html'
     return _delete_address(request, address_id, CustomerShippingAddress, redirect_to, template_name)
 
 
-@non_lazy_login_required()
+@login_required
 def delete_billing_address(request, address_id, redirect_to=None):
     redirect_to = redirect_to or request.GET.get('next', None) or reverse('account_personal') + '#billing'
     template_name = 'delete_billing_address.html'

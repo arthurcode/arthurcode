@@ -146,7 +146,6 @@ INSTALLED_APPS = (
     'orders',
     'checkout',
     'django_countries',
-    'lazysignup',
     'search',
     'debug_toolbar',
     'reviews',
@@ -232,7 +231,6 @@ TEMPLATE_CONTEXT_PROCESSORS = TCP + ('django.core.context_processors.request',
 
 AUTHENTICATION_BACKENDS = (
   'django.contrib.auth.backends.ModelBackend',
-  'lazysignup.backends.LazySignupBackend',
 )
 
 

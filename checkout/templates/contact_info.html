@@ -1,6 +1,5 @@
 {% extends 'base_checkout.html' %}
 {% load form_tags %}
-{% load lazysignup_tags %}
 
 {% block forms %}
 
@@ -11,7 +10,7 @@
         {% csrf_token %}
         {% field form.first_name %}
         {% field form.last_name %}
-        {% if request.user.is_authenticated and not request.user|is_lazy_user and request.user.email %}
+        {% if request.user.is_authenticated and request.user.email %}
             {% readonly_field form.email %}
         {% else %}
             {% field form.email %}

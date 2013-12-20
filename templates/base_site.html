@@ -1,5 +1,4 @@
 {% extends 'base_hd_ft.html' %}
-{% load lazysignup_tags %}
 {% load cart_tags %}
 {% load cache %}
 
@@ -13,7 +12,7 @@
                 {% cache 1000 account request.user.username %}
                     <a class="wishlists" href="{% url account_wishlists %}">my wish lists</a>
                     <a class="account" href="{% url account_personal %}">my account</a>
-                    {% if user.is_authenticated and not user|is_lazy_user %}
+                    {% if user.is_authenticated %}
                         <a class="logout" href="{% url logout %}?next={% url home %}">log out</a>
                         <span class="welcome">Welcome, {% firstof user.public_name user.first_name user.email %}</span>
                     {% else %}

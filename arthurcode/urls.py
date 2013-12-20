@@ -5,7 +5,6 @@ import cart.urls
 from catalogue.views import home_view
 import checkout.urls
 import accounts.urls
-import lazysignup.urls
 import search.urls
 import reviews.urls
 import questions.urls
@@ -38,8 +37,6 @@ urlpatterns = patterns('',
     url(r'^checkout/', include(checkout.urls)),
 
     url(r'^accounts/', include(accounts.urls)),
-
-    url(r'^convert/', include(lazysignup.urls)),
 
     url(r'^search/', include(search.urls)),
 

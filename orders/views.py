@@ -4,11 +4,10 @@ from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseForbidden, HttpResponseRedirect
 from django.views.decorators.http import require_GET
-from accounts.decorators import non_lazy_login_required
 
 
 @require_GET
-@non_lazy_login_required()
+@login_required
 def detail_view(request, order_id):
     """
     This is the customer's view of their order.  This is not meant to be an admin view.

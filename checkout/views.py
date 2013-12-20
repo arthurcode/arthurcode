@@ -1,9 +1,6 @@
-from lazysignup.decorators import allow_lazy_user
-from lazysignup.utils import is_lazy_user
-from lazysignup.models import LazyUser
 from django.core.urlresolvers import reverse_lazy, reverse
 from django.http import HttpResponseRedirect
-from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm, ConvertLazyUserForm
+from accounts.forms import ContactInfoForm, CustomerShippingAddressForm, CustomerBillingAddressForm
 from checkout.forms import PaymentInfoForm, ChooseShippingAddressByNickname, AddGiftCardForm, ChooseShippingMethodForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
@@ -17,7 +14,6 @@ import checkoututils
 from decimal import Decimal
 from django.views.decorators.http import require_GET, require_POST
 from accounts.accountutils import is_guest_passthrough
-from django.contrib.auth import login as auth_login, authenticate
 from credit_card import get_gift_card_balance
 from utils.decorators import ajax_required
 
@@ -690,58 +686,6 @@ class ReviewStep(Step):
         return False
 
 
-class CreateAccount(Step):
-
-    def _get(self):
-        if not self.checkout.is_guest():
-            # this step only applies to guest accounts
-            self.mark_complete()
-            return HttpResponseRedirect(self.checkout.get_next_url())
-
-        form = ConvertLazyUserForm(self.checkout.get_user())
-        self.request.session.set_test_cookie()
-        return self._render_form(form, self.checkout.get_submitted_order().email)
-
-    def _post(self):
-        post_data = self.request.POST.copy()
-
-        if 'cancel' in post_data:
-            # they don't wish to create an account
-            self.mark_complete()
-            return HttpResponseRedirect(self.checkout.get_next_url())
-
-        order = self.checkout.get_submitted_order()
-        post_data['email'] = order.email
-        post_data['email2'] = order.email
-        form = ConvertLazyUserForm(self.checkout.get_user(), data=post_data)
-
-        if form.is_valid():
-            # convert the lazy user and log them in
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password2']
-            LazyUser.objects.convert(form)
-            user = authenticate(username=username, password=password)
-            auth_login(self.request, user)
-
-            # link customer information to the saved order
-            order.user = user
-            order.save()
-
-            if self.request.session.test_cookie_worked():
-                self.request.session.delete_test_cookie()
-            self.mark_complete()
-            return HttpResponseRedirect(self.checkout.get_next_url())
-        return self._render_form(form, order.email)
-
-    def _render_form(self, form, email):
-        context = {
-            'form': form,
-            'email': email,
-        }
-        if self.checkout.extra_context:
-            context.update(self.checkout.extra_context)
-        return render_to_response('convert_account.html', context, context_instance=RequestContext(self.request))
-
 class Checkout:
 
     DATA_KEY = 'checkout'
@@ -862,7 +806,7 @@ class Checkout:
             return HttpResponseRedirect(reverse('show_cart'))
 
         self.extra_context = {
-            'steps': STEPS[:5],     # the template doesn't need to know about the 'create account' step
+            'steps': STEPS,
             'current_step': step,
             'completed_step': highest_completed_step,
             'current_step_name': STEPS[step-1][2],
@@ -1049,7 +993,7 @@ class Checkout:
         """
         Returns True if this is a guest checkout.  Returns False if the user has logged in to checkout.
         """
-        return is_lazy_user(self.request.user)
+        return not self.request.user.is_authenticated()
 
     def get_customer_profile(self):
         """
@@ -1072,18 +1016,16 @@ STEPS = [(ContactInfoStep, reverse_lazy('checkout_contact'), 'Contact Info'),
          (ShippingInfoStep, reverse_lazy('checkout_shipping'), 'Shipping Address'),
          (ShippingMethodStep, reverse_lazy('checkout_shipping_method'), 'Shipping Method'),
          (BillingInfoStep, reverse_lazy('checkout_billing'), 'Billing Address'),
-         (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay'),
-         (CreateAccount, reverse_lazy('checkout_create_account'), 'Create Account')]
+         (ReviewStep, reverse_lazy('checkout_review'), 'Review & Pay')]
 
 
 @require_GET
-@allow_lazy_user
 def checkout(request):
     """
     Checkout a logged-in user.
     """
     co = Checkout(request)
-    if is_lazy_user(request.user) and not co.is_in_progress():
+    if not request.user.is_authenticated() and not co.is_in_progress():
         if not is_guest_passthrough(request):
             # redirect to the login view where they can explicitly choose to login or checkout as a guest
             login_url = reverse('login_or_create_account')
