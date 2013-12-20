@@ -206,9 +206,8 @@ class ChooseAddressForm(forms.Form):
 
 class ChooseShippingAddressByNickname(forms.Form):
     """
-    Chooses from a set of existing shipping addresses by nickname.
+    Chooses from a set of existing customer shipping addresses by nickname.
     """
-    ME_NICKNAME = "Me"
     NEW_ADDRESS_NICKNAME = "New Address"
     SHIP_TO_KEY = "ship_to"
 
@@ -218,10 +217,8 @@ class ChooseShippingAddressByNickname(forms.Form):
         nicknames = self.get_existing_nicknames()
         nicknames.sort()
 
-        # the choices group always has to start with 'Me'
         choices = []
-        address_book_choices = [(self.ME_NICKNAME, self.ME_NICKNAME)]
-        address_book_choices.extend([(n, n) for n in nicknames if n != self.ME_NICKNAME])
+        address_book_choices = [(n, n) for n in nicknames]
         choices.append(("Address Book", address_book_choices))
         choices.append(("Other", ((self.NEW_ADDRESS_NICKNAME, 'New Address'),)))
         choices = add_empty_choice(choices)

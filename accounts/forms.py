@@ -389,7 +389,7 @@ class CustomerShippingAddressForm(CanadaShippingForm):
 
     nickname = forms.CharField(max_length=CustomerShippingAddress.NICKNAME_MAX_LENGTH, label="Nickname",
                             help_text="Something to distinguish this address from the others in your address book. " +
-                                      "Examples: 'Aunt Mary', 'Office'", validators=[not_blank],
+                                      "Examples: 'Me', 'Office'", validators=[not_blank],
                             widget=DEFAULT_NICKNAME_WIDGET)
 
     def __init__(self, customer, *args, **kwargs):

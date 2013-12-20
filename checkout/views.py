@@ -310,9 +310,6 @@ class ShippingInfoStep(Step):
                     self.save(self.form_key, form.data)
                     self.mark_complete()
                     return HttpResponseRedirect(self.checkout.get_next_url())
-            elif len(existing_nicknames) == 0 and not nickname:
-                # automatically 'choose' the 'Me' nickname so that the user sees this form immediately
-                return HttpResponseRedirect(self.request.path + "?%s=%s" % (ChooseShippingAddressByNickname.SHIP_TO_KEY, ChooseShippingAddressByNickname.ME_NICKNAME))
         saved_data = self.get(self.form_key, {})
         nickname = self.get_nickname(saved_data)
         form = self.get_form_for_nickname(nickname, saved_data)
@@ -333,8 +330,7 @@ class ShippingInfoStep(Step):
 
         if saved_data:
             saved_nickname = saved_data.get('nickname', None)
-            if nickname == ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME and saved_nickname not in self.get_existing_nicknames() \
-                and saved_nickname != ChooseShippingAddressByNickname.ME_NICKNAME:
+            if nickname == ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME and saved_nickname not in self.get_existing_nicknames():
                 use_saved_data = True
             elif saved_nickname == nickname:
                 use_saved_data = True
@@ -356,19 +352,7 @@ class ShippingInfoStep(Step):
         if address and not use_saved_data:
             data = address.as_dict()
 
-        initial = None
-        if nickname == ChooseShippingAddressByNickname.ME_NICKNAME:
-            order = self.checkout.extra_context['order']
-            if not order:
-                order = self.checkout.build_order()
-
-            initial = {
-                'name': "%s %s" % (order.first_name, order.last_name),
-                'nickname': ChooseShippingAddressByNickname.ME_NICKNAME,
-                'phone': order.phone,
-            }
-
-        return CustomerShippingAddressForm(profile, address_id=address_id, data=data, initial=initial)
+        return CustomerShippingAddressForm(profile, address_id=address_id, data=data)
 
     def _post(self):
         """
@@ -387,7 +371,7 @@ class ShippingInfoStep(Step):
     def _render_form(self, form, nickname):
         selected_nickname = nickname
 
-        if nickname and nickname != ChooseShippingAddressByNickname.ME_NICKNAME and nickname not in self.get_existing_nicknames():
+        if nickname and nickname not in self.get_existing_nicknames():
             selected_nickname = ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME
         select_form = ChooseShippingAddressByNickname(self.request, initial={ChooseShippingAddressByNickname.SHIP_TO_KEY: selected_nickname})
 
