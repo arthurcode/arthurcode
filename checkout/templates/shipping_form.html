@@ -3,15 +3,19 @@
 
 {% block forms %}
 
-    <h2 class="form-h">Choose a Shipping Destination</h2>
-    <form class="ship-to no-help single-field-pop" action="">
-        {% field select_form.ship_to %}
-        <button type="submit" class="button action"><span>{% if selected_nickname %}Change{% else %}Choose{% endif %}</span></button>
-    </form>
+    {% if select_form %}
+        <h2 class="form-h">Choose a Shipping Destination</h2>
+        <form class="ship-to no-help single-field-pop" action="">
+            {% field select_form.ship_to %}
+            <button type="submit" class="button action"><span>{% if selected_nickname %}Change{% else %}Choose{% endif %}</span></button>
+        </form>
+    {% endif %}
 
     {% if form %}
-    {% if selected_nickname == "New Address" %}
-        <h2 class="form-h">Add a New Shipping Address</h2>
+    {% if not select_form %}
+        <h2 class="form-h">Enter Shipping Address</h2>
+    {% elif selected_nickname == "New Address" %}
+        <h2 class="form-h">Ship to a New Address</h2>
     {% else %}
         <h2 class="form-h">{% if edit %}Edit{% else %}Enter{% endif %} Shipping Address for '{{ selected_nickname }}'</h2>
     {% endif %}
@@ -20,7 +24,7 @@
         {% csrf_token %}
         {{ form.address_id }}
         {{ form.country }}
-        {% if selected_nickname == "New Address" %}
+        {% if not is_guest and selected_nickname == "New Address" %}
             {% field form.nickname %}
         {% else %}
             <input type="hidden" name="nickname" value="{{ form.nickname.value }}"/>

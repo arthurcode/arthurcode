@@ -323,8 +323,11 @@ class ShippingInfoStep(Step):
 
     def get_form_for_nickname(self, nickname, saved_data=None):
         if not nickname:
-            # can't display any kind of a form until a nickname is chosen
-            return None
+            # a nickname hasn't been chosen.  If this is a guest or a user with no saved addresses return a blank form
+            if self.checkout.is_guest() or not self.get_existing_nicknames():
+                return CustomerShippingAddressForm(self.checkout.get_customer_profile())
+            else:
+                return None
 
         use_saved_data = False
 
@@ -371,9 +374,14 @@ class ShippingInfoStep(Step):
     def _render_form(self, form, nickname):
         selected_nickname = nickname
 
-        if nickname and nickname not in self.get_existing_nicknames():
+        if self.checkout.is_guest() or not self.get_existing_nicknames():
+            # nothing to select from!
+            select_form = None
             selected_nickname = ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME
-        select_form = ChooseShippingAddressByNickname(self.request, initial={ChooseShippingAddressByNickname.SHIP_TO_KEY: selected_nickname})
+        else:
+            if nickname and nickname not in self.get_existing_nicknames():
+                selected_nickname = ChooseShippingAddressByNickname.NEW_ADDRESS_NICKNAME
+            select_form = ChooseShippingAddressByNickname(self.request, initial={ChooseShippingAddressByNickname.SHIP_TO_KEY: selected_nickname})
 
         context = {
             'form': form,
@@ -859,6 +867,7 @@ class Checkout:
             'completed_step': highest_completed_step,
             'current_step_name': STEPS[step-1][2],
             'order': self.build_order(),
+            'is_guest': self.is_guest(),
         }
 
         clazz, url, _ = STEPS[step-1]
