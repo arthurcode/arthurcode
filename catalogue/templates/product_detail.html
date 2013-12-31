@@ -122,7 +122,7 @@
                 {% if not request.user.is_authenticated %}
                     <form class="no-help" method="get" action="{% url login_or_create_account %}">
                         <input type="hidden" name="next" value="{{ request.path }}" />
-                        <button type="submit" class="button wishlist"><span>Log In For Wish Lists</span></button>
+                        <button type="submit" class="button wishlist"><span>Log In to Add to Wish List</span></button>
                     </form>
                 {% endif %}
             </div>

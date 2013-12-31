@@ -35,7 +35,7 @@ class AskQuestionForm(MPTTCommentForm):
 
     def get_comment_create_data(self):
         data = super(AskQuestionForm, self).get_comment_create_data()
-        if self.request.user.is_authenticated:
+        if self.request.user.is_authenticated():
             data['user'] = self.request.user
         data['ip_address'] = self.request.META.get("REMOTE_ADDR", None)
         return data
