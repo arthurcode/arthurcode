@@ -1,8 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 from utils.models import AbstractAddress
-from utils.validators import is_blank, not_blank
-from django.core.exceptions import ValidationError
+from utils.validators import not_blank
 
 
 class PublicProfile(models.Model):
@@ -38,7 +37,6 @@ class CustomerProfile(models.Model):
     phone = models.CharField(max_length=AbstractAddress.PHONE_NUMBER_LENGTH, null=True, blank=True)
     date_added = models.DateField(auto_now_add=True)
     contact_method = models.SmallIntegerField(choices=CONTACT_METHOD, default=UNKNOWN)
-    on_mailing_list = models.BooleanField(default=False)
 
     @property
     def first_name(self):

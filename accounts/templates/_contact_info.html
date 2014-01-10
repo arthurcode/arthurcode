@@ -10,7 +10,5 @@
     {% if customer_profile %}
         <dt class="even">Preferred Contact Method</dt>
         <dd>{{ customer_profile.get_contact_method_display }}</dd>
-        <dt>Subscribed to Mailing List?</dt>
-        <dd>{% if customer_profile.on_mailing_list %}Yes{% else %}No{% endif %}</dd>
     {% endif %}
 </dl>

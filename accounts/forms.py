@@ -10,7 +10,10 @@ from django.contrib.auth.hashers import check_password
 from django.db.transaction import commit_on_success
 from utils.forms import CanadaShippingForm, BillingForm
 from django.core.urlresolvers import reverse
+from emaillist.models import EmailListItem
+import logging
 
+logger = logging.getLogger(__name__)
 
 SUBSCRIBE_TO_MAILING_LIST_LABEL = "Yes, email me information on current promotions and sales."
 SUBSCRIBE_TO_MAILING_LIST_HELP = "If you subscribe to our mailing list, you will receive promotional email from us <em>at most</em> once every two weeks.<br> <em>You can unsubscribe at any time.</em>"
@@ -103,18 +106,18 @@ class CustomerCreationForm(UserCreationForm):
             return None
 
     def save(self, commit=True):
-        """
-        Be aware that the 'on_mailing_list' field is only saved to the public-profile when commit=True.  Code that
-        calls commit=False will have to handle that field manually.
-        """
         user = super(CustomerCreationForm, self).save(commit=False)
         user.email = self.cleaned_data['email']
         if commit:
             user.save()
-            profile = user.get_customer_profile() or CustomerProfile(user=user)
-            profile.on_mailing_list = self.cleaned_data['on_mailing_list']
-            profile.full_clean()
-            profile.save()
+            on_mailing_list = self.cleaned_data.get('on_mailing_list', False)
+            if on_mailing_list:
+                item = EmailListItem(email=user.email, first_name=user.first_name)
+                try:
+                    item.full_clean()
+                    item.save()
+                except Exception, e:
+                    logger.error('Failed to add new user to mailing list', e)
         return user
 
 
@@ -279,8 +282,6 @@ class ContactInfoForm(forms.Form):
                                        label="Preferred Contact Method?",
                                        help_text="We will never contact you personally unless there is a problem with your order.")
     phone = forms.CharField(max_length=20, widget=DEFAULT_PHONE_WIDGET, label="Daytime Phone")
-    on_mailing_list = forms.BooleanField(label=SUBSCRIBE_TO_MAILING_LIST_LABEL, initial=False, required=False,
-                                         help_text=SUBSCRIBE_TO_MAILING_LIST_HELP)
 
     def __init__(self, request, *args, **kwargs):
         readonly_email = False
@@ -330,8 +331,7 @@ class EditContactInfo(ContactInfoForm):
         if profile:
             initial.update({
                 'contact_method': profile.contact_method,
-                'phone': profile.phone,
-                'on_mailing_list': profile.on_mailing_list
+                'phone': profile.phone
             })
         return initial
 
@@ -352,7 +352,6 @@ class EditContactInfo(ContactInfoForm):
 
         profile.phone = self.cleaned_data.get('phone')
         profile.contact_method = self.cleaned_data.get('contact_method')
-        profile.on_mailing_list = self.cleaned_data.get('on_mailing_list')
 
         profile.full_clean()
         profile.save()
