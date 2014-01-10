@@ -25,3 +25,13 @@ def remove_from_list(email):
         # there should only be one item in the list, I'm just being paranoid
         item.delete()
 
+
+def handle_change_of_email(old_email, new_email):
+    if old_email:
+        try:
+            item = EmailListItem.objects.get(email=old_email)
+            item.email = new_email
+            item.full_clean()
+            item.save()
+        except EmailListItem.DoesNotExist:
+            return

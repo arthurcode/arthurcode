@@ -12,6 +12,7 @@ from utils.forms import CanadaShippingForm, BillingForm
 from django.core.urlresolvers import reverse
 from emaillist.models import EmailListItem
 import logging
+import emaillist.utils
 
 logger = logging.getLogger(__name__)
 
@@ -258,11 +259,13 @@ class ChangeEmailForm(forms.Form):
     @commit_on_success
     def do_change_email(self):
         # since the username is derived from the email they both have to change at the same time
+        old_email = self.request.user.email
         email = self.cleaned_data.get('new_email')
         username = username_from_email(email)
         self.request.user.username = username
         self.request.user.email = email
         self.request.user.save()
+        emaillist.utils.handle_change_of_email(old_email, email)
 
 
 class ContactInfoForm(forms.Form):
