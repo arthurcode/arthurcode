@@ -152,6 +152,7 @@ INSTALLED_APPS = (
     'questions',
     'wishlists',
     'giftcards',
+    'coupons',
 )
 
 # A sample logging configuration. The only tangible logging
