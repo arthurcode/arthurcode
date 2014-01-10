@@ -1,0 +1,19 @@
+{% extends "base_site.html" %}
+{% load form_tags %}
+{% block title %}Subscribe To Our Mailing List{% endblock %}
+
+{% block body %}
+    <h2>Subscribe To Mailing List</h2>
+    <p class="subtle">We will e-mail you promotional material and coupons <em>at most once every two weeks</em>.<br>
+       You can un-subscribe at any time.
+    </p>
+    {% form_errors form %}
+    <form method="post" action="{% if next %}?next={{ next }}{% endif %}" class="create-account">
+        {% csrf_token %}
+        {% field form.email %}
+        {% field form.first_name %}
+        <div class="controls">
+            <button type="submit" name="submit" class="button action"><span>Subscribe</span></button>
+        </div>
+    </form>
+{% endblock %}

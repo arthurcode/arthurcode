@@ -11,10 +11,10 @@ def is_on_list(email):
     return EmailListItem.objects.filter(email=email).exists()
 
 
-def add_to_list(email):
+def add_to_list(email, first_name=None):
     if EmailListItem.objects.filter(email=email).exists():
         return
-    item = EmailListItem(email=email)
+    item = EmailListItem(email=email, first_name=first_name)
     item.full_clean()
     item.save()
 

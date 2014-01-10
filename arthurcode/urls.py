@@ -11,6 +11,7 @@ import questions.urls
 import orders.urls
 import wishlists.urls
 import giftcards.urls
+import emaillist.urls
 
 from django.contrib import admin
 admin.autodiscover()
@@ -49,4 +50,6 @@ urlpatterns = patterns('',
     url(r'wishlists/', include(wishlists.urls)),
 
     url(r'giftcards/', include(giftcards.urls)),
+
+    url(r'mailing-list/', include(emaillist.urls)),
 )
