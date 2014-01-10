@@ -18,8 +18,8 @@
         {% endfor %}
         {% field form.comment %}
         <div class="controls">
-            <a class="action" href="{{ question.get_absolute_url }}">Cancel</a>
-            <button class="action" type="submit" name="answer">Post Answer</button>
+            <a class="button action" href="{{ question.get_absolute_url }}"><span>Cancel</span></a>
+            <button class="button action" type="submit" name="answer"><span>Post Answer</span></button>
         </div>
     </form>
 {% endblock %}
