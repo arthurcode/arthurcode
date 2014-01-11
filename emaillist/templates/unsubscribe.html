@@ -1,0 +1,12 @@
+{% extends "base_site.html" %}
+{% block title %}Unsubscribe From Mailing List{% endblock %}
+
+{% block body %}
+    <h2>Unsubscribe From Mailing List</h2>
+    <p>Are you sure that you want to remove <em>{{ email }}</em> from our mailing list?</p>
+    <form method="post" action="">
+        {% csrf_token %}
+        <button class="button action" type="submit" name="cancel"><span>Cancel</span></button>
+        <button class="button action" type="submit" name="submit"><span>Yes, Unsubscribe</span></button>
+    </form>
+{% endblock %}
