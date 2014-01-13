@@ -3,6 +3,11 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+EMAIL_ORDERS = "orders@brainstand.ca"
+EMAIL_SERVICE = "service@brainstand.ca"
+EMAIL_NEWS = "news@brainstand.ca"
+EMAIL_NOTIFICATIONS = "notifications@brainstand.ca"
+
 ADMINS = (
      ('Rhyan Arthur', 'rhyan.arthur@gmail.com'),
 )
@@ -225,6 +230,7 @@ def add_global_settings_to_request(request):
         'site_name': SITE_NAME,
         'site_description': SITE_DESCRIPTION,
         'request': request,
+        'email_service': EMAIL_SERVICE,
     }
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
