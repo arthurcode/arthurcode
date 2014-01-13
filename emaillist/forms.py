@@ -1,10 +1,11 @@
 from django import forms
 import utils
+from accounts.forms import DEFAULT_EMAIL_WIDGET, DEFAULT_NAME_WIDGET, FIRST_NAME_MAXLENGTH
 
 
 class SubscribeToMailingListForm(forms.Form):
-    email = forms.EmailField()
-    first_name = forms.CharField(max_length=30, required=False)
+    email = forms.EmailField(widget=DEFAULT_EMAIL_WIDGET)
+    first_name = forms.CharField(max_length=FIRST_NAME_MAXLENGTH, required=False, widget=DEFAULT_NAME_WIDGET)
 
     def __init__(self, request, *args, **kwargs):
         super(SubscribeToMailingListForm, self).__init__(*args, **kwargs)
