@@ -2,6 +2,7 @@ from django.db.models.signals import pre_save
 from catalogue.models import ProductInstance
 from django.dispatch import receiver
 from django.core.mail import send_mass_mail, mail_managers
+from arthurcode.settings import EMAIL_NOTIFICATIONS
 
 @receiver(pre_save, sender=ProductInstance)
 def on_product_instance_save(sender, instance, **kwargs):
@@ -38,7 +39,7 @@ def on_product_instance_restock(instance):
     Sincerely,
     The Brainstand Toys Team.
     """
-    from_email = "fixme@toytree.com"
+    from_email = EMAIL_NOTIFICATIONS
     send_mass_mail([(subject, message, from_email, [n.email]) for n in notifications], fail_silently=True)
 
     # delete the notifications
