@@ -36,7 +36,7 @@ def on_product_instance_restock(instance):
     specifically for you.
 
     Sincerely,
-    The Toy Tree Team.
+    The Brainstand Toys Team.
     """
     from_email = "fixme@toytree.com"
     send_mass_mail([(subject, message, from_email, [n.email]) for n in notifications], fail_silently=True)

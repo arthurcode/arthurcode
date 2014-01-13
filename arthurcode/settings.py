@@ -219,10 +219,9 @@ LOGGING = {
 }
 
 # local (non-generated) settings
-SITE_NAME = 'The Toy Tree'
+SITE_NAME = 'Brainstand Toys'
 
-# TODO: tweak this description
-SITE_DESCRIPTION = 'A blog focused on web-technologies, such as django and css.'
+SITE_DESCRIPTION = 'A unique toy store with a hand-picked selection of educational & high-quality toys.'
 
 # context processor that adds our custom settings to a request
 def add_global_settings_to_request(request):

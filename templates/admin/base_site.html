@@ -4,8 +4,8 @@
 This template replaces the built-in admin/base_site.html template that ships with django.
 {% endcomment %}
 
-{% block title %}{{ title }} | The Toy Tree site admin {% endblock %}
+{% block title %}{{ title }} | {{ site_name }} site admin {% endblock %}
 
 {% block branding %}
-    <h1 id="site-name">The Toy Tree Administration</h1>
+    <h1 id="site-name">{{ site_name }} Administration</h1>
 {% endblock %}
