@@ -12,11 +12,11 @@ DEFAULT_DESCRIPTION_WIDGET = forms.Textarea(attrs={'maxlength': WishList.DESCRIP
 class CreateWishListForm(forms.Form):
 
     name = forms.CharField(max_length=WishList.NAME_MAX_LENGTH, help_text="Example: Brody's 9th Birthday",
-                           validators=[not_blank], widget=DEFAULT_NAME_WIDGET)
+                           validators=[not_blank], widget=DEFAULT_NAME_WIDGET, label="Wish List Name")
     description = forms.CharField(max_length=WishList.DESCRIPTION_MAX_LENGTH, required=False,
                                   widget=DEFAULT_DESCRIPTION_WIDGET,
                                   help_text="Extra (optional) information for friends and family members who will "
-                                            "be using this list")
+                                            "be shopping from this list")
 
     # holds the id of the product instance we should add to this wish list after it is created, if any
     instance_id = forms.IntegerField(widget=forms.HiddenInput, required=False)
