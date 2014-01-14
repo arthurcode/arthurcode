@@ -1,4 +1,4 @@
-from django.contrib.auth.forms import UserCreationForm, AuthenticationForm
+from django.contrib.auth.forms import UserCreationForm, AuthenticationForm, PasswordResetForm
 from django import forms
 import hashlib
 from django.core.exceptions import ValidationError
@@ -418,5 +418,11 @@ class CustomerBillingAddressForm(BillingForm):
             address.full_clean()
             address.save()
         return address
+
+class CustomPasswordResetForm(PasswordResetForm):
+
+    def __init__(self, *args, **kwargs):
+        super(CustomPasswordResetForm, self).__init__(*args, **kwargs)
+        self.fields['email'].widget = DEFAULT_EMAIL_WIDGET
 
 

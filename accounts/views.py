@@ -11,7 +11,7 @@ from django.http import HttpResponseRedirect, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from accounts.forms import CustomerCreationForm, CustomerAuthenticationForm, CreatePublicProfileForm, \
     ChangeEmailForm, EditContactInfo, EditPublicProfileForm, CustomerShippingAddressForm, \
-    CustomerBillingAddressForm
+    CustomerBillingAddressForm, CustomPasswordResetForm
 from django.shortcuts import render_to_response
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
@@ -263,7 +263,7 @@ def reset_password(request):
     post_reset_redirect = reverse('account_reset_password_done')
     return password_reset(request, is_admin_site=False, template_name=template_name,
                             email_template_name=email_template_name, subject_template_name=subject_template_name,
-                            post_reset_redirect=post_reset_redirect)
+                            post_reset_redirect=post_reset_redirect, password_reset_form=CustomPasswordResetForm)
 
 
 @require_GET
