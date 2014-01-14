@@ -2,6 +2,10 @@
 
 /* padding on core content boxes */
 
+p {
+    padding-bottom: 10px;
+}
+
 .content-left {
     padding-left: 10px;
 }
