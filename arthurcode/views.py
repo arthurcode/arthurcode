@@ -18,3 +18,12 @@ class ContactView(TemplateView):
         data = super(ContactView, self).get_context_data(**kwargs)
         data[PAGE_TITLE_FIELD] = "Contact"
         return data
+
+
+class FAQView(TemplateView):
+    template_name="faq.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(FAQView, self).get_context_data(**kwargs)
+        data[PAGE_TITLE_FIELD] = "Frequently Asked Questions"
+        return data

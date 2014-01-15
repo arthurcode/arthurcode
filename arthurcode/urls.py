@@ -12,7 +12,7 @@ import orders.urls
 import wishlists.urls
 import giftcards.urls
 import emaillist.urls
-from arthurcode.views import AboutView, ContactView
+from arthurcode.views import AboutView, ContactView, FAQView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -31,6 +31,8 @@ urlpatterns = patterns('',
     url(r'^about/', AboutView.as_view(), name="about"),
 
     url(r'^contact/', ContactView.as_view(), name="contact"),
+
+    url(r'^faq/', FAQView.as_view(), name="faq"),
 
     url(r'^blog/', include(blog.urls)),
 

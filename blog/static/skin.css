@@ -677,3 +677,17 @@ body.account div.views {
 .review-order h3, .receipt h3 {
     font-weight: bolder;
 }
+
+dl.faq {
+    max-width: 700px;
+}
+
+dl.faq dt {
+    font-family: 'Comfortaa', cursive;  /* this font is meant for large sizes only */
+    font-size: larger;
+    padding: 20px 0 10px 0;
+}
+
+dl.faq a {
+    color: blue;
+}

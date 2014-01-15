@@ -1,0 +1,20 @@
+{% extends "base_site.html" %}
+
+{% block body %}
+    <h2>Frequently Asked Questions</h2>
+    <dl class="faq">
+        <dt>How do I contact you?</dt>
+        <dd>Please see our <a href="{% url contact %}">contact page</a> for contact information.</dd>
+
+        <dt>What is your return policy?</dt>
+        <dd>Returns are accepted for all items up to 60 days from the date the item(s) were received.
+            Shipping fees are non refundable and the customer is responsible for the cost of return shipping.
+        </dd>
+        <dt>What is your privacy policy?</dt>
+        <dd>
+            Our privacy policy is quite simple: we don't store any of your personal information without your
+            consent and will never sell or rent your personal information to third parties.  You can get all of the
+            details <a href="">here</a>.
+        </dd>
+    </dl>
+{% endblock %}
