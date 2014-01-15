@@ -199,7 +199,10 @@ ul#secondary-navigation.orders li.orders,
 ul#secondary-navigation.personal li.personal,
 ul#secondary-navigation.wishlists li.wishlists,
 ul#secondary-navigation.reviews li.reviews,
-ul#secondary-navigation.giftcards li.giftcards
+ul#secondary-navigation.giftcards li.giftcards,
+ul#secondary-navigation.feeds li.feeds,
+ul#secondary-navigation.archive li.archive,
+ul#secondary-navigation.most-recent li.most-recent
 {
     /* make the selected tab pop out */
     background: none;
@@ -208,6 +211,12 @@ ul#secondary-navigation.giftcards li.giftcards
     color: black;
     border: 1px solid black;
     border-bottom-color: #FFF;
+}
+
+ul#secondary-navigation img {
+    max-height: 1.3em;
+    margin-right: 0.5em;
+    vertical-align: text-bottom;
 }
 
 /* Cart summary styles */
@@ -286,7 +295,7 @@ div.refine form#search fieldset input{
 }
 
 /* http://www.w3schools.com/Css/css_list.asp */
-ul.feeds li {
+li.feed {
     background-image: url('icons/rss_16x16.png');
     background-repeat: no-repeat;
     background-position: 0 2px;

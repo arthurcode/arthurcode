@@ -1,32 +1,25 @@
 {% extends "base_site.html" %}
 
-{% block header %}
-    {{ block.super }}
-    <a class="rss" href="{% url feeds %}"><img src="{{ STATIC_URL }}icons/rss_64x64.png" alt="subscribe to my rss or atom feed" title="Subscribe to my rss or atom feed"></a>
+{% block body_class %}blog{% endblock %}
+{% block secondary-nav-title %}Blog{% endblock %}
+
+{% block secondary-navigation %}
+    {% spaceless %}
+        <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}{{ root_category }}{% endblock %}{% endspaceless %}">
+            <li class="most-recent"><a href="{% url index %}">Most Recent</a></li>
+            <li class="archive"><a href="{% url archive %}">Archive</a></li>
+            <li class="feeds"><a href="{% url feeds %}"><img class="rss" src="{{ STATIC_URL }}icons/rss_64x64.png">Subscribe</a></li>
+        </ul>
+    {% endspaceless %}
 {% endblock %}
+
 {% block body %}
-    <div class="yui3-g">
-    <div class="yui3-u-2-3">
-        {% block content %}{% endblock %}
-    </div>
-    <div class="yui3-u-1-3">
-        {% block sidebar %}
-            <ul>
-                <li><a href="http://www.djangoproject.com/"><img src="https://www.djangoproject.com/m/img/badges/djangopowered126x54_grey.gif" border="0" alt="Powered by Django." title="Powered by Django." /></a></li>
-                {% url archive as archive_url%}
-                <li><a href="{{ archive_url }}">archive</a></li>
-            </ul>
-            {% block related_content %}{% endblock %}
-        {% endblock %}
-    </div>
-    </div>
+    {% block content %}{% endblock %}
+    {% block related_content %}{% endblock %}
 {% endblock %}
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript">
-        YUI().use('node', 'node-event-simulate', function(Y) {
-
             function syncCommentFormFields(form) {
                 var email_on_reply = form.one('input#id_email_on_reply').get("checked");
                 var email_field = null;
@@ -72,7 +65,4 @@
             Y.all('form.comment').each(function(f) {
                 syncCommentFormFields(f);
             });
-
-        });
-    </script>
 {% endblock %}

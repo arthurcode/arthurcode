@@ -1,7 +1,10 @@
 {% extends "blog/base_blog.html" %}
 
 {% block content %}
-    <h1>{{ post.title }} {% if post.is_draft %}<em>(Draft)</em>{% endif %}</h1>
+    <div class="breadcrumbs">
+        <a href="{% url archive %}">archive</a> > {{ post.title }}
+    </div>
+    <h2>{{ post.title }} {% if post.is_draft %}<em>(Draft)</em>{% endif %}</h2>
     {% if post %}
         <ul id="post_data">
             <li>{{ post.get_author_name }}</li>
@@ -41,8 +44,6 @@
 
 {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript">
-        YUI().use('node', 'node-event-simulate', function(Y) {
             // initially hide all comment reply forms
             Y.all('.comment form').each(function(f) {
                 f.addClass('hidden');
@@ -63,6 +64,4 @@
                 var form = e.currentTarget.next('form');
                 form.toggleClass('hidden');
             }, document, 'button#reply');
-        });
-    </script>
 {% endblock %}

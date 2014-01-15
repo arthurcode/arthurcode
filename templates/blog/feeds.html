@@ -1,11 +1,12 @@
 {% extends "blog/base_blog.html" %}
 
-{% block title %}Choose a Feed{% endblock %}
+{% block title %}Subscribe To A Feed{% endblock %}
+{% block root-category %}feeds{% endblock %}
 
 {% block content %}
     <h1>Choose A Feed:</h1>
 
     <ul class="feeds">
-        <li>{{ title }} (<a href="{% url rss %}">{{ rss_version }}</a>) (<a href="{% url atom %}">{{ atom_version }}</a>)</li>
+        <li class="feed">{{ title }} (<a href="{% url rss %}">{{ rss_version }}</a>) (<a href="{% url atom %}">{{ atom_version }}</a>)</li>
     </ul>
 {% endblock content %}
