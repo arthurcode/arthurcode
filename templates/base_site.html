@@ -67,6 +67,7 @@
 {% block footer %}
     <a href="{% url home %}">home</a>
     <a href="{% url about %}">about us</a>
+    <a href="{% url privacy %}">privacy policy</a>
     <span class='copyright'>copyright &copy 2013 www.thetoytree.com</span>
     {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}

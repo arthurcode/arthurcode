@@ -27,3 +27,11 @@ class FAQView(TemplateView):
         data = super(FAQView, self).get_context_data(**kwargs)
         data[PAGE_TITLE_FIELD] = "Frequently Asked Questions"
         return data
+
+class PrivacyPolicyView(TemplateView):
+    template_name="privacy.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(PrivacyPolicyView, self).get_context_data(**kwargs)
+        data[PAGE_TITLE_FIELD] = "Privacy Policy"
+        return data
