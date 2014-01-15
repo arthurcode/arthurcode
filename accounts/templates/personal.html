@@ -19,6 +19,8 @@
         <div class="views">
             <div class="view" id="account">
                 <h2>Account</h2>
+                <p>{{ user.email }}</p>
+                <h3>Quick Links:</h3>
                 <ul>
                     <li><a class="subtle standard" href="{% url account_change_email %}">change your email address</a></li>
                     <li><a class="subtle standard" href="{% url account_change_password %}">change your password</a></li>
