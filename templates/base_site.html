@@ -68,7 +68,8 @@
     <a href="{% url home %}">home</a>
     <a href="{% url about %}">about us</a>
     <a href="{% url privacy %}">privacy policy</a>
-    <span class='copyright'>copyright &copy 2013 www.thetoytree.com</span>
+    <a href="{% url return_policy %}">return policy</a>
+    <span class='copyright'>copyright &copy 2013 www.brainstand.ca</span>
     {% if user.is_staff %}<a href="{% url admin:index %}">admin</a>{% endif %}
 {% endblock %}
 

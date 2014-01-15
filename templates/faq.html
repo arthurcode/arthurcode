@@ -9,12 +9,20 @@
         <dt>What is your return policy?</dt>
         <dd>Returns are accepted for all items up to 60 days from the date the item(s) were received.
             Shipping fees are non refundable and the customer is responsible for the cost of return shipping.
+            Get all the details in our <a href="{% url return_policy %}">return policy</a>.
         </dd>
         <dt>What is your privacy policy?</dt>
         <dd>
             Our privacy policy is quite simple: we don't store any of your personal information without your
-            consent and will never sell or rent your personal information to third parties.  You can get all of the
-            details <a href="{% url privacy %}">here</a>.
+            consent and will never sell or rent your personal information to third parties.  Get all the details in
+            our <a href="{% url privacy %}">privacy policy</a>.
         </dd>
+        <dt>Where do you ship?</dt>
+        <dd>We will ship items anywhere within Canada.  At this time we do not ship to the United States or any other international destinations.</dd>
+        <dt>What do you charge for shipping?</dt>
+        <dd>We charge a flat $5 shipping fee on all orders sent by standard-ground service.<br>
+            Expedited shipping is available for an extra cost.  The cost of expedited shipping depends on the
+            the weight of items being shipped, the shipping destination, and the level of service required.  Expedited shipping
+            options are calculated during checkout time using real-time estimates from Canada Post.</dd>
     </dl>
 {% endblock %}

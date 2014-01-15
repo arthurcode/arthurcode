@@ -35,3 +35,12 @@ class PrivacyPolicyView(TemplateView):
         data = super(PrivacyPolicyView, self).get_context_data(**kwargs)
         data[PAGE_TITLE_FIELD] = "Privacy Policy"
         return data
+
+
+class ReturnPolicyView(TemplateView):
+    template_name="return_policy.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(ReturnPolicyView, self).get_context_data(**kwargs)
+        data[PAGE_TITLE_FIELD] = "Return Policy"
+        return data
