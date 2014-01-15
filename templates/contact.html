@@ -3,8 +3,32 @@
 {% block body_class %}contact{% endblock %}
 
 {% block body %}
-    <div class="yui3-u-1">
-        <p>e-mail: rhyan.arthur@gmail.com</p>
-        <p>Box 815 Oyen, AB.  T0J 2J0, Canada</p>
+{#    http://microformats.org/wiki/hcard#}
+    <h2>Contact Us</h2>
+    <div class="vcard">
+        <span class="fn org">Brainstand Toys Inc.</span>
+        <h3><em>Phone/Email:</em></h3>
+        <p class="subtle">Office Hours: 9am to 5pm (MST), Monday through Friday</p>
+        <a class="email standard" href="mailto:{{ email_service }}">{{ email_service }}</a>
+        <span class="tel">
+            <span class="value">{{ phone_service }}</span>
+            <span class="type">Phone</span>
+        </span>
+        <span class="tel">
+            <span class="value">{{ fax }}</span>
+            <span class="type">Fax</span>
+        </span>
+
+        <h3><em>Mail:</em></h3>
+        <div class="adr">
+            <span class="street-address">606 McCracken Place</span>
+            <span class="post-office-box">PO Box 815</span>
+            <span class="locality">Oyen</span>
+            <span class="region">Alberta</span>
+            <span class="postal-code">T0J 2J0</span>
+            <span class="country-name">Canada</span>
+        </div>
+        <a class="url hidden" href="{% url home %}">www.brainstand.ca</a>
     </div>
+
 {% endblock %}

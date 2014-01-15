@@ -307,3 +307,33 @@ dl.horizontal dd {
     width: 48%;
     text-align: left;
 }
+
+/* vCard/hCard microformat */
+.vcard span, .vcard a {
+    /* by default display all vcard spans on their own line */
+    display: block;
+}
+
+.vcard .tel span {
+    display: inline;
+}
+
+.vcard .tel .type:before {
+    content: "(";
+}
+
+.vcard .tel .type:after {
+    content: ")";
+}
+
+.vcard .adr .locality:after {
+    content: ",";
+}
+
+.vcard .adr .locality, .vcard .adr .region {
+    display: inline;
+}
+
+.vcard h3 {
+    margin-top: 10px;
+}
