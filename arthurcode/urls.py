@@ -12,6 +12,7 @@ import orders.urls
 import wishlists.urls
 import giftcards.urls
 import emaillist.urls
+from arthurcode.views import AboutView, ContactView
 
 from django.contrib import admin
 admin.autodiscover()
@@ -26,6 +27,10 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^about/', AboutView.as_view(), name="about"),
+
+    url(r'^contact/', ContactView.as_view(), name="contact"),
 
     url(r'^blog/', include(blog.urls)),
 
