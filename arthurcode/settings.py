@@ -8,6 +8,8 @@ EMAIL_SERVICE = "service@brainstand.ca"
 EMAIL_NEWS = "news@brainstand.ca"
 EMAIL_NOTIFICATIONS = "notifications@brainstand.ca"
 
+PHONE_SERVICE = "1-800-664-9742"
+
 ADMINS = (
      ('Rhyan Arthur', 'rhyan.arthur@gmail.com'),
 )
@@ -230,6 +232,7 @@ def add_global_settings_to_request(request):
         'site_description': SITE_DESCRIPTION,
         'request': request,
         'email_service': EMAIL_SERVICE,
+        'phone_service': PHONE_SERVICE,
     }
 
 from django.conf.global_settings import TEMPLATE_CONTEXT_PROCESSORS as TCP
