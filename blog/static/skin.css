@@ -398,6 +398,7 @@ div.refine a.bulk-ops {
     text-decoration: underline;
     font-weight: lighter;
     color: blue;
+    display: block;
 }
 
 div.refine li.selected {
@@ -410,6 +411,14 @@ div.refine span.count {
 
 div.products, div.refine .header {
     background-color: rgba(235,235,235,1);
+}
+
+div.products .header, div.refine .header {
+    border-bottom: 2px solid black;
+}
+
+div.products .title, div.refine .header {
+    border-top: 2px solid black;
 }
 
 /* sort-by select box */

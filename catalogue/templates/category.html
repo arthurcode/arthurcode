@@ -26,16 +26,6 @@
         {% if category %}
             {{ category.name }}
         {% endif %}
-
-        {% if search_text %}
-            | <a class="click-to-remove" href="{% remove_search %}">search "{{ search_text }}" <img src="{{ STATIC_URL }}icons/error_x.png"></a>
-        {% endif %}
-
-        {% if filters %}
-            {% for filter in filters %}
-                | <a class="click-to-remove" href="{% remove_filter filter %}">{{ filter }} <img src="{{ STATIC_URL }}icons/error_x.png"></a>
-            {% endfor %}
-        {% endif %}
     </div>
 
     <div class="positioning">
@@ -44,7 +34,16 @@
                 <h2>Narrow By</h2>
             </div>
             <div class="content content-left">
-            {% if filters or search_text %}<a class="bulk-ops click-to-remove" href="{% remove_all_filters_and_search %}">reset all</a>{% endif %}
+                {% if search_text %}
+                    <a class="bulk-ops click-to-remove" href="{% remove_search %}"><img src="{{ STATIC_URL }}icons/checkbox_yes.png"> search "{{ search_text }}"</a>
+                {% endif %}
+
+                {% if filters %}
+                    {% for filter in filters %}
+                        <a class="bulk-ops click-to-remove" href="{% remove_filter filter %}"><img src="{{ STATIC_URL }}icons/checkbox_yes.png"> {{ filter }}</a>
+                    {% endfor %}
+                {% endif %}
+            {% if filters or search_text %}<a class="bulk-ops click-to-remove" href="{% remove_all_filters_and_search %}">clear all filters</a>{% endif %}
             {% if child_categories %}
                 <h3>Subcategory</h3>
                 <ul>

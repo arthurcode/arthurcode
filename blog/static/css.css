@@ -248,6 +248,11 @@ div.cart-summary img {
 #ft .copyright {
     display: block;
 }
+
+#ft a + a {
+    margin-left: 1em;
+}
+
 /* END footer section styling */
 
 /* START main body section styling */
@@ -421,7 +426,7 @@ div.refine li {
     line-height: 1.4em;
 }
 
-div.refine li img {
+div.refine a img {
     vertical-align: text-bottom;
     padding-right: 3px;
 }
