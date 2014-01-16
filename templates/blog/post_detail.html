@@ -1,9 +1,12 @@
 {% extends "blog/base_blog.html" %}
+{% block root-category %}{% if is_archive %}archive{% else %}most-recent{% endif %}{% endblock %}
 
 {% block content %}
-    <div class="breadcrumbs">
-        <a href="{% url archive %}">archive</a> > {{ post.title }}
-    </div>
+    {% if is_archive %}
+        <div class="breadcrumbs">
+            <a href="{% url archive %}">archive</a> > {{ post.title }}
+        </div>
+    {% endif %}
     <h2>{{ post.title }} {% if post.is_draft %}<em>(Draft)</em>{% endif %}</h2>
     {% if post %}
         <ul id="post_data">

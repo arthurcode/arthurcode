@@ -14,7 +14,7 @@ POST_PUB_DATE_FIELD = "pub_date"
 POST_CONTEXT_OBJECT_NAME = "post"
 PAGE_TITLE_FIELD = "page_title"
 META_DESCRIPTION_FIELD = "meta_description"
-ROOT_CATEGORY_FIELD = "root_category"
+IS_ARCHIVE_FIELD = "is_archive"
 
 
 class BlogArchiveBaseView():
@@ -45,7 +45,7 @@ class BlogArchiveView(BlogArchiveBaseView, ArchiveIndexView):
         # django templates can't loop over defaultdicts, change back to a dict
         data['breakdown_by_year'] = dict(breakdown_by_year)
         data[PAGE_TITLE_FIELD] = 'Archive'
-        data[ROOT_CATEGORY_FIELD] = 'archive'
+        data[IS_ARCHIVE_FIELD] = True
         return data
 
 
@@ -84,7 +84,7 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
         data = super(BlogPostDetailView, self).get_context_data(**kwargs)
         data[PAGE_TITLE_FIELD] = data[POST_CONTEXT_OBJECT_NAME].title
         data[META_DESCRIPTION_FIELD] = data[POST_CONTEXT_OBJECT_NAME].synopsis
-        data[ROOT_CATEGORY_FIELD] = 'archive'
+        data[IS_ARCHIVE_FIELD] = True
         return data
 
 
@@ -104,7 +104,7 @@ def index(request):
     return render_to_response("blog/post_detail.html",
                               {POST_CONTEXT_OBJECT_NAME: latest,
                                PAGE_TITLE_FIELD: "Blog",
-                               ROOT_CATEGORY_FIELD: "most-recent",
+                               IS_ARCHIVE_FIELD: False,
                                META_DESCRIPTION_FIELD: latest and latest.synopsis},
                               context_instance=RequestContext(request))
 
