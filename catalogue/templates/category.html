@@ -109,7 +109,7 @@
                 </ul>
             {% endif %}
             {% if products or search_text %}
-                <h3>Search Within These Results</h3>
+                <h3>{% if search_text %}Refine Search{% else %}Search Within These Results{% endif %}</h3>
                 <form id="search" class="no-help" method="post" action="{% go_to_search_url %}">
                     {% csrf_token %}
                     <input type="hidden" name="from" id="id_from" value={{ request.path|urlencode }}>
@@ -127,7 +127,7 @@
 
         <div class="products">
             <div class="title">
-                <h2>{% if search_text %}Search {% endif %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% if search_text %} | "{{ search_text }}"{% endif %}</h2>
+                <h2>{% if search_text %}Search {% endif %}{% if category %}{{ category.name }}{% else %}All Products{% endif %}{% if search_text %} | "{{ search_text }}"{% elif filters %} | {{ filters.0 }}{% endif %}</h2>
                 <span class="now-showing">({% if products %}{% if products.paginator.num_pages > 1 %}{{ products.start_index }}-{% endif %}{{ products.end_index }} of {{ products.paginator.count }}{% else %}0{% endif %})</span>
                 {% if products.paginator.num_pages > 1 %}<a class="subtle" href="{% query_string "pageSize=All" "page" %}">view all</a>{% elif products|length > page_sizes.0 %}<a class="subtle" href="{% query_string "" "pageSize" %}">view less</a>{% endif %}
                 {% if search_text %}<a class="subtle standard" href="{% remove_search %}">clear search</a>{% endif %}
