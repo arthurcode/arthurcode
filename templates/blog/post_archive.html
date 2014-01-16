@@ -7,10 +7,13 @@ Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-d
 {% block content %}
     <ul>
         {% for year,posts in breakdown_by_year.iteritems %}
-            <li>{{ year }}</li>
+            <li><em>{{ year }}</em></li>
             <ul>
                 {% for post in posts %}
-                    <li><a href="{{ post.get_absolute_url }}">{{ post.pub_date }}: {{ post.title }}</a></li>
+                    <dl class="horizontal">
+                        <dt>{{ post.pub_date }}:</dt>
+                        <dd><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></dd>
+                    </dl>
                 {% endfor %}
             </ul>
         {% empty %}

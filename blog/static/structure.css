@@ -294,6 +294,11 @@ p.address span.region, p.address span.city {
 /* By default the data-type and data definition take up ~50% of the dl width.  This can be modified by specific
    subclasses */
 
+dl.horizontal {
+    /* place a sane default width on data definition lists */
+    width: 20em;
+}
+
 dl.horizontal dt {
     float: left;
     clear: both;
