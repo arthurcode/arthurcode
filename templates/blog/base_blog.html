@@ -6,8 +6,8 @@
 {% block secondary-navigation %}
     {% spaceless %}
         <ul id="secondary-navigation" class="tabrow {% spaceless %}{% block root-category %}{{ root_category }}{% endblock %}{% endspaceless %}">
-            <li class="most-recent"><a href="{% url index %}">Most Recent</a></li>
-            <li class="archive"><a href="{% url archive %}">Archive</a></li>
+            <li class="most-recent"><a href="{% url index %}">Latest</a></li>
+            <li class="archive"><a href="{% url archive %}">Archives</a></li>
             <li class="feeds"><a href="{% url feeds %}"><img class="rss" src="{{ STATIC_URL }}icons/rss_64x64.png">Subscribe</a></li>
         </ul>
     {% endspaceless %}
