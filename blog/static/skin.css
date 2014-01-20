@@ -568,7 +568,7 @@ ul#secondary-navigation.checkout img {
     border: 1px solid lightgray;
     border-top: none;
     font-size: smaller;
-    padding: 10px;
+    width: 100%;
 }
 
 .order-summary .hr {
@@ -577,6 +577,11 @@ ul#secondary-navigation.checkout img {
     border-bottom: 1px solid black;
     float: left;
     clear: left;
+}
+
+.order-summary dl.horizontal {
+    padding: 0 2%;
+    width: 96%;
 }
 
 .order-summary dl.horizontal dt, .order-summary dl.horizontal dd {
