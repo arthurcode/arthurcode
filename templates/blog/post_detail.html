@@ -27,6 +27,19 @@
             <div class="text">{{ post.body|markdown }}</div>
         {% endautoescape %}
 
+        {% with post.tags.similar_objects|slice:":5" as related_posts %}
+            {% if related_posts %}
+                <div class="related-content">
+                    <h4>Similar Posts</h4>
+                    <ul>
+                        {% for related_post in related_posts %}
+                            <li><a href="{{ related_post.get_absolute_url }}">{{related_post.title}}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endwith %}
+
         {% if post.is_commenting_enabled %}
             <a href="{{ post.get_comment_url }}">Leave a comment</a>
         {% else %}
@@ -36,21 +49,6 @@
     {% else %}
         No post to display
     {% endif %}
-{% endblock %}
-
-{% block related_content %}
-    {% with post.tags.similar_objects|slice:":5" as related_posts %}
-        {% if related_posts %}
-            <div class="related-content">
-                <h4>Similar Posts</h4>
-                <ul>
-                    {% for related_post in related_posts %}
-                        <li><a href="{{ related_post.get_absolute_url }}">{{related_post.title}}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-    {% endwith %}
 {% endblock %}
 
 {% block javascript %}
