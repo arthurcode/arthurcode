@@ -9,7 +9,7 @@ Reference: https://docs.djangoproject.com/en/dev/ref/class-based-views/generic-d
 {% block content %}
     <ul>
         {% for year,posts in breakdown_by_year.iteritems %}
-            <li><em>{{ year }}</em></li>
+            <li><h2>{{ year }}</h2></li>
             <ul>
                 {% for post in posts %}
                     <dl class="horizontal">
