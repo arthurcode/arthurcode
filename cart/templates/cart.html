@@ -53,7 +53,7 @@
                 {% if cart_items %}
                     <form method="post" action="." class="checkout no-help">
                         {% csrf_token %}
-                        <button type="submit" name="Checkout" class="button action"><span>Checkout Now</span></button>
+                        <button type="submit" name="Checkout" class="button action"><span><img src="{{ STATIC_URL }}icons/shop_cart.png">Checkout Now</span></button>
                     </form>
                 {% endif %}
                 {% if continue_shopping_url %}
