@@ -114,17 +114,24 @@ class Post(models.Model):
         return self.author.user.email
 
     def get_absolute_url(self):
-        params = {
+        if self.is_draft:
+            view_name = "draft_post_detail"
+        else:
+            view_name = "post_detail"
+        return reverse(view_name, kwargs=self._get_url_kwargs())
+
+    def get_comment_url(self):
+        if self.is_draft:
+            return None
+        return reverse("post_comment", kwargs=self._get_url_kwargs())
+
+    def _get_url_kwargs(self):
+        return {
             'year': self.pub_date.year,
             'month': self.pub_date.month,
             'day': self.pub_date.day,
             'slug': self.title_slug
         }
-        if self.is_draft:
-            view_name = "draft_post_detail"
-        else:
-            view_name = "post_detail"
-        return reverse(view_name, kwargs=params)
 
     def is_commenting_enabled(self):
         """

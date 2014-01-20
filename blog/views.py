@@ -88,6 +88,15 @@ class BlogPostDetailView(BlogArchiveBaseView, DateDetailView):
         return data
 
 
+class BlogCommentOnPostView(BlogPostDetailView):
+    template_name = "blog/post_comment.html"
+
+    def get_context_data(self, **kwargs):
+        data = super(BlogCommentOnPostView, self).get_context_data(**kwargs)
+        data[PAGE_TITLE_FIELD] = "Write a Comment"
+        return data
+
+
 class BlogDraftPostDetailView(BlogPostDetailView):
     queryset = Post.objects.filter(is_draft=True)
 

@@ -1,4 +1,6 @@
 {% extends "blog/base_blog.html" %}
+{% load markup %}
+
 {% block root-category %}{% if is_archive %}archive{% else %}most-recent{% endif %}{% endblock %}
 
 {% block content %}
@@ -16,14 +18,20 @@
                 <li>last-modified {{ post.mod_date|date:"F j, Y" }}</li>
             {% endif %}
             {% with post.get_absolute_url as post_url %}
-                {% if post_url != request.get_full_path %}
+                {% if not is_archive %}
                     <li><a href="{{ post_url }}">permalink</a></li>
                 {% endif %}
             {% endwith %}
         </ul>
         {% autoescape off %}
-            <div class="text">{{ post.body }}</div>
+            <div class="text">{{ post.body|markdown }}</div>
         {% endautoescape %}
+
+        {% if post.is_commenting_enabled %}
+            <a href="{{ post.get_comment_url }}">Leave a comment</a>
+        {% else %}
+            Comments are disabled
+        {% endif %}
         {% include "blog/post_comments.html" %}
     {% else %}
         No post to display
