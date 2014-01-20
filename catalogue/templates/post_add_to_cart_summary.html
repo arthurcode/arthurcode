@@ -7,6 +7,6 @@
     <p class="container-summary">{% block container-summary %}Cart Subtotal: {{ subtotal|currency }} ({{ items_in_cart }} item{{ items_in_cart|pluralize }}){% endblock %}</p>
     <div class="controls">
     <a class="button action close-panel"><span>{% block close-panel %}Continue Shopping{% endblock %}</span></a>
-    <a class="button action go-to-container" href="{% block go-to-container-url %}{% url show_cart %}{% endblock %}"><span>{% block go-to-container %}Checkout{% endblock %}</span></a>
+    <a class="button action go-to-container" href="{% block go-to-container-url %}{% url show_cart %}{% endblock %}"><span><img src="{{ STATIC_URL }}icons/shop_cart.png">{% block go-to-container %}Checkout{% endblock %}</span></a>
     </div>
 </div>

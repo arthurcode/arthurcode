@@ -219,6 +219,12 @@ button.link.standard {
     color: blue;
 }
 
+.button img {
+    height: 1.5em;
+    vertical-align: text-bottom;
+    margin-right: 0.5em;
+}
+
 .primary-box {
     border: 1px solid darkgray;
     border-radius: 3px;
