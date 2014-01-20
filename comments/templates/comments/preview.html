@@ -7,9 +7,9 @@
     {% load comment %}
 
     {% if form.errors %}
-        <h1>{% blocktrans count counter=form.errors|length %}Please correct the error below{% plural %}Please correct the errors below{% endblocktrans %}</h1>
+        <h2>{% blocktrans count counter=form.errors|length %}Please correct the error below{% plural %}Please correct the errors below{% endblocktrans %}</h2>
     {% else %}
-        <h1>{% trans "Preview your comment" %}</h1>
+        <h2>{% trans "Preview your comment:" %}</h2>
         <blockquote>{{ comment|linebreaks }}</blockquote>
         <p>
             {% trans "and post your comment or make changes" %}:

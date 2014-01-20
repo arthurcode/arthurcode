@@ -204,6 +204,11 @@ approve_done = confirmation_view(
     doc = 'Displays a "comment was approved" success page.'
 )
 
+delete_done = confirmation_view(
+    template="comments/deleted.html",
+    doc = "Displays a 'comment was deleted' success page."
+)
+
 mark_as_spam_done = confirmation_view(
     template = "comments/marked_spam.html",
     doc = 'Displays a "comment was marked as spam" success page.'

@@ -2,7 +2,10 @@
 {% load comment %}
 
 {% block content %}
-    <h2>Leave a Comment | {{ post.title }}</h2>
+    <div class="breadcrumbs">
+        <a href="{{ post.get_absolute_url }}">{{ post.title }}</a> > leave a comment
+    </div>
+    <h2>Leave a Comment</h2>
     {% if post.is_commenting_enabled %}
         {% render_comment_form for post %}
     {% else %}

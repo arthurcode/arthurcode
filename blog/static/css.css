@@ -319,6 +319,7 @@ li.feed {
 
 /* style the comment section */
 div#comments {
+    padding-top: 20px;
     font-size: 80%;
 }
 
@@ -1553,6 +1554,10 @@ table.reviews td {
 
 .related #bd .thumbnail {
     border: none;
+}
+
+.related-content {
+    padding: 10px 0;
 }
 
 .related #bd .text {
