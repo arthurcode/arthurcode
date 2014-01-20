@@ -34,7 +34,13 @@ if (primary_image) {
                 centered: true,
                 zIndex: 100,
                 modal: true,
-                render: true
+                render: true,
+
+                hideOn: [
+                    {
+                        eventName: 'clickoutside'
+                    }
+                ]
             });
         }
     });
